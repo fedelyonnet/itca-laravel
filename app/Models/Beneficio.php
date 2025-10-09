@@ -25,6 +25,16 @@ class Beneficio extends Model
     ];
 
     /**
+     * Procesa la descripción convirtiendo **texto** a <strong>texto</strong>
+     */
+    public function getDescripcionAttribute($value)
+    {
+        // Limpiar espacios extra alrededor de ** y convertir a HTML
+        $value = preg_replace('/\*\*\s*(.*?)\s*\*\*/', '<strong>$1</strong>', $value);
+        return $value;
+    }
+
+    /**
      * Obtiene la alineación automática según el tipo de acción
      */
     public function getAlineacionBottomAttribute(): string
