@@ -33,7 +33,7 @@
                     <li><a href="/carreras" class="nav-link">Carreras</a></li>
                     <li><a href="#" class="nav-link">Beneficios</a></li>
                     <li><a href="#" class="nav-link">Contacto</a></li>
-                </ul>
+                    </ul>
                 
                 <!-- Mobile Hamburger Button -->
                 <button class="hamburger">

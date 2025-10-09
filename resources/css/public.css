@@ -1313,7 +1313,7 @@ section h2 {
     transform: translate(-50%, -50%);
     width: clamp(130px, calc(170px + (100vw - 1920px) * 0.049), 170px);
     height: 40px;
-    background-image: url('http://devitca.localhost/images/desktop/stroke.png');
+    background-image: url('/images/desktop/stroke.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -1786,7 +1786,7 @@ section h2 {
     transform: translate(-50%, -50%);
     width: clamp(230px, calc(230px + (100vw - 1100px) * 0.067), 285px);
     height: 40px;
-    background-image: url('http://devitca.localhost/images/desktop/stroke-com.png');
+    background-image: url('/images/desktop/stroke-com.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -2027,7 +2027,7 @@ section h2 {
     transform: translate(-50%, -50%);
     width: clamp(130px, calc(245px + (100vw - 1920px) * 0.037), 245px);
     height: 40px;
-    background-image: url('http://devitca.localhost/images/desktop/stroke-sedes.png');
+    background-image: url('/images/desktop/stroke-sedes.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     z-index: -1;
@@ -2618,7 +2618,7 @@ section h2 {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background-image: url('http://devitca.localhost/images/desktop/stroke-com.png');
+        background-image: url('/images/desktop/stroke-com.png');
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
@@ -2959,7 +2959,7 @@ section h2 {
     transform: translate(-50%, -50%);
     width: clamp(150px, calc(150px + (100vw - 1100px) * 0.048), 190px);
     height: 40px;
-    background-image: url('http://devitca.localhost/images/desktop/stroke-ea.png');
+    background-image: url('/images/desktop/stroke-ea.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -3615,7 +3615,7 @@ section h2 {
     transform: translate(-50%, -50%);
     width: clamp(220px, calc(270px + (100vw - 1920px) * 0.0609756), 270px);
     height: 40px;
-    background-image: url('http://devitca.localhost/images/desktop/stroke-sedes.png');
+    background-image: url('/images/desktop/stroke-sedes.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     z-index: -1;
@@ -4070,7 +4070,7 @@ section h2 {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background-image: url('http://devitca.localhost/images/desktop/stroke-ea.png');
+        background-image: url('/images/desktop/stroke-ea.png');
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
@@ -4303,7 +4303,7 @@ section h2 {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background-image: url('http://devitca.localhost/images/mobile/stroke-com-m.png');
+        background-image: url('/images/mobile/stroke-com-m.png');
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
@@ -5490,7 +5490,7 @@ section h2 {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background-image: url('http://devitca.localhost/images/mobile/stroke-ea-m.png');
+        background-image: url('/images/mobile/stroke-ea-m.png');
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
@@ -5738,7 +5738,7 @@ section h2 {
     transform: translate(-50%, -50%);
     width: clamp(320px, calc(320px + (100vw - 1100px) * 0.0671), 375px);
     height: 40px;
-    background-image: url('http://devitca.localhost/images/desktop/stroke-part.png');
+    background-image: url('/images/desktop/stroke-part.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -5799,7 +5799,7 @@ section h2 {
     transform: translate(-50%, -50%);
     width: clamp(320px, calc(320px + (100vw - 1100px) * 0.0671), 375px);
     height: 40px;
-    background-image: url('http://devitca.localhost/images/desktop/stroke-part.png');
+    background-image: url('/images/desktop/stroke-part.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -6534,7 +6534,7 @@ section h2 {
     transform: translate(-50%, -50%);
     width: clamp(320px, calc(320px + (100vw - 1100px) * 0.0671), 375px);
     height: 40px;
-    background-image: url('http://devitca.localhost/images/desktop/stroke-carreras.png');
+    background-image: url('/images/desktop/stroke-carreras.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
