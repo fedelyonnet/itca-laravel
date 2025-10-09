@@ -139,7 +139,7 @@
                                     <div class="beneficios-slide-main">
                                         <div class="beneficios-slide-title">
                                             <div class="beneficios-slide-line1">{{ $beneficio->titulo_linea1 }}</div>
-                                            <div class="beneficios-slide-line2">{{ $beneficio->titulo_linea2 }}</div>
+                                            <div class="beneficios-slide-line2 {{ $beneficio->tipo_titulo === 'small' ? 'beneficios-slide-line2-small' : '' }}">{{ $beneficio->titulo_linea2 }}</div>
                                         </div>
                                         <div class="beneficios-slide-description">
                                             {!! $beneficio->descripcion !!}
