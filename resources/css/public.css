@@ -2105,7 +2105,7 @@ section h2 {
 }
 
 .beneficios-slide-description strong {
-    font-weight: 700; /* Bold */
+    font-weight: 700 !important; /* Bold - override parent font-weight */
 }
 
 .beneficios-slide-bottom {
@@ -4573,7 +4573,7 @@ section h2 {
     }
     
     .beneficios-slide-description strong {
-        font-weight: 700 !important;
+        font-weight: 700 !important; /* Bold - override parent font-weight */
     }
     
     
