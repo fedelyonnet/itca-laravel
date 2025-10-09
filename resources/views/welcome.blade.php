@@ -113,16 +113,16 @@
                             <div class="carousel-track">
                                 <div class="carousel-slide">
                                     @if($mobileImg1 && $mobileImg1->url)
-                                        <img src="{{ asset('storage/' . $mobileImg1->url) }}" alt="Imagen 1" />
+                                        <img src="{{ asset('storage/' . $mobileImg1->url) }}" alt="Imagen 1" loading="lazy" />
                                     @else
-                                        <img src="/images/mobile/foto_1.webp" alt="Imagen 1" />
+                                        <img src="/images/mobile/foto_1.webp" alt="Imagen 1" loading="lazy" />
                                     @endif
                                 </div>
                                 <div class="carousel-slide">
                                     @if($mobileImg2 && $mobileImg2->url)
-                                        <img src="{{ asset('storage/' . $mobileImg2->url) }}" alt="Imagen 2" />
+                                        <img src="{{ asset('storage/' . $mobileImg2->url) }}" alt="Imagen 2" loading="lazy" />
                                     @else
-                                        <img src="/images/mobile/foto_2.webp" alt="Imagen 2" />
+                                        <img src="/images/mobile/foto_2.webp" alt="Imagen 2" loading="lazy" />
                                     @endif
                                     <button class="carousel-promo-button">¡Ver más promos!</button>
                                 </div>
@@ -139,7 +139,7 @@
                                         </video>
                                     @endif
                                     <button class="carousel-play-button">
-                                        <img src="/images/desktop/play.png" alt="Play" class="carousel-play-icon" />
+                                        <img src="/images/desktop/play.png" alt="Play" class="carousel-play-icon" loading="lazy" />
                                     </button>
                                 </div>
                             </div>
@@ -148,7 +148,7 @@
                     
                     <div class="hero-quadrant hero-quadrant-4">
                         <div class="q4-left">
-                            <img src="/images/desktop/llavero.png" alt="Llavero ITCA" class="q4-image" />
+                            <img src="/images/desktop/llavero.png" alt="Llavero ITCA" class="q4-image" loading="lazy" />
                             <button class="q4-promo-button">¡Ver más promos!</button>
                         </div>
                         <div class="q4-right">
@@ -164,7 +164,7 @@
                                 </video>
                             @endif
                             <button class="q4-play-button">
-                                <img src="/images/desktop/play.png" alt="Play" class="q4-play-icon" />
+                                <img src="/images/desktop/play.png" alt="Play" class="q4-play-icon" loading="lazy" />
                             </button>
                         </div>
                     </div>
@@ -283,8 +283,8 @@
                             <div class="swiper-wrapper">
                                 @foreach($beneficios as $beneficio)
                                 <div class="swiper-slide beneficios-carousel-slide">
-                                    <img src="{{ asset('storage/' . $beneficio->imagen_desktop) }}" alt="{{ $beneficio->titulo_linea1 }}" class="beneficios-slide-img-desktop" />
-                                    <img src="{{ asset('storage/' . $beneficio->imagen_mobile) }}" alt="{{ $beneficio->titulo_linea1 }}" class="beneficios-slide-img-mobile" />
+                                    <img src="{{ asset('storage/' . $beneficio->imagen_desktop) }}" alt="{{ $beneficio->titulo_linea1 }}" class="beneficios-slide-img-desktop" loading="lazy" />
+                                    <img src="{{ asset('storage/' . $beneficio->imagen_mobile) }}" alt="{{ $beneficio->titulo_linea1 }}" class="beneficios-slide-img-mobile" loading="lazy" />
                                     <div class="beneficios-slide-content">
                                         <div class="beneficios-slide-main">
                                             <div class="beneficios-slide-title">
@@ -303,7 +303,7 @@
                                                 </div>
                                                 <div class="beneficios-slide-icon beneficios-slide-icon-hidden">
                                                     <a href="#" class="beneficios-slide-icon-btn">
-                                                        <img src="/images/desktop/btnflecha.png" alt="Flecha" />
+                                                        <img src="/images/desktop/btnflecha.png" alt="Flecha" loading="lazy" />
                                                     </a>
                                                 </div>
                                             @elseif($beneficio->getAlineacionBottomAttribute() === 'right')
@@ -312,7 +312,7 @@
                                                 </div>
                                                 <div class="beneficios-slide-icon beneficios-slide-icon-visible">
                                                     <a href="{{ $beneficio->url ?: '#' }}" target="_blank" class="beneficios-slide-icon-btn">
-                                                        <img src="/images/desktop/btnflecha.png" alt="Flecha" />
+                                                        <img src="/images/desktop/btnflecha.png" alt="Flecha" loading="lazy" />
                                                     </a>
                                                 </div>
                                             @else
@@ -321,7 +321,7 @@
                                                 </div>
                                                 <div class="beneficios-slide-icon beneficios-slide-icon-visible">
                                                     <a href="{{ $beneficio->url ?: '#' }}" target="_blank" class="beneficios-slide-icon-btn">
-                                                        <img src="/images/desktop/btnflecha.png" alt="Flecha" />
+                                                        <img src="/images/desktop/btnflecha.png" alt="Flecha" loading="lazy" />
                                                     </a>
                                                 </div>
                                             @endif
@@ -343,10 +343,10 @@
                             <div class="beneficios-controls-wrapper">
                                 <a href="#" class="beneficios-ver-todos-btn">Ver todos los beneficios</a>
                                 <button class="beneficios-carousel-btn beneficios-carousel-btn-prev">
-                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Anterior" class="beneficios-arrow-left" />
+                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Anterior" class="beneficios-arrow-left" loading="lazy" />
                                 </button>
                                 <button class="beneficios-carousel-btn beneficios-carousel-btn-next">
-                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Siguiente" />
+                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Siguiente" loading="lazy" />
                                 </button>
                             </div>
                         </div>
@@ -358,7 +358,7 @@
                             <div class="beneficios-carousel-track">
                                 @foreach($beneficios as $beneficio)
                                 <div class="beneficios-carousel-slide">
-                                    <img src="{{ asset('storage/' . $beneficio->imagen_mobile) }}" alt="{{ $beneficio->titulo_linea1 }}" />
+                                    <img src="{{ asset('storage/' . $beneficio->imagen_mobile) }}" alt="{{ $beneficio->titulo_linea1 }}" loading="lazy" />
                                     <div class="beneficios-slide-content">
                                         <div class="beneficios-slide-main">
                                             <div class="beneficios-slide-title">
@@ -377,7 +377,7 @@
                                                 </div>
                                                 <div class="beneficios-slide-icon beneficios-slide-icon-hidden">
                                                     <a href="#" class="beneficios-slide-icon-btn">
-                                                        <img src="/images/mobile/flechaup.png" alt="Flecha" />
+                                                        <img src="/images/mobile/flechaup.png" alt="Flecha" loading="lazy" />
                                                     </a>
                                                 </div>
                                             @elseif($beneficio->getAlineacionBottomAttribute() === 'right')
@@ -386,7 +386,7 @@
                                                 </div>
                                                 <div class="beneficios-slide-icon beneficios-slide-icon-visible">
                                                     <a href="{{ $beneficio->url ?: '#' }}" target="_blank" class="beneficios-slide-icon-btn">
-                                                        <img src="/images/mobile/flechaup.png" alt="Flecha" />
+                                                        <img src="/images/mobile/flechaup.png" alt="Flecha" loading="lazy" />
                                                     </a>
                                                 </div>
                                             @else
@@ -395,7 +395,7 @@
                                                 </div>
                                                 <div class="beneficios-slide-icon beneficios-slide-icon-hidden">
                                                     <a href="#" class="beneficios-slide-icon-btn">
-                                                        <img src="/images/mobile/flechaup.png" alt="Flecha" />
+                                                        <img src="/images/mobile/flechaup.png" alt="Flecha" loading="lazy" />
                                                     </a>
                                                 </div>
                                             @endif
@@ -449,7 +449,7 @@
                                      data-contacto="{{ $sede->telefono }}">
                                     <img src="{{ asset('storage/' . $sede->imagen_desktop) }}" 
                                          alt="{{ $sede->nombre }}" 
-                                         class="sedes-grid-image">
+                                         class="sedes-grid-image" loading="lazy">
                                     <div class="sedes-grid-title {{ $sede->tipo_titulo === 'dos_lineas' ? 'dos-lineas' : '' }}">
                                         @if($sede->tipo_titulo === 'dos_lineas')
                                             @php
@@ -469,7 +469,7 @@
                                 <div class="sedes-grid-item proximamente">
                                     <img src="{{ asset('storage/' . $sede->imagen_desktop) }}" 
                                          alt="{{ $sede->nombre }}" 
-                                         class="sedes-grid-image">
+                                         class="sedes-grid-image" loading="lazy">
                                     <div class="sedes-grid-title proximamente">
                                         <div class="sedes-title-line">PROXIMAMENTE</div>
                         </div>
@@ -485,7 +485,7 @@
                                 <div class="sedes-accordion-header">
                                     <img src="{{ asset('storage/' . $sede->imagen_mobile) }}" 
                                          alt="{{ $sede->nombre }}" 
-                                         class="sedes-accordion-image">
+                                         class="sedes-accordion-image" loading="lazy">
                                     <div class="sedes-accordion-title {{ $sede->tipo_titulo === 'dos_lineas' ? 'dos-lineas' : '' }}">
                                         @if($sede->tipo_titulo === 'dos_lineas')
                                             @php
@@ -525,7 +525,7 @@
                                     <!-- Header -->
                                     <div class="comunidad-card-header">
                                         <img src="{{ asset('storage/' . $testimonio->avatar) }}" 
-                                             alt="Avatar" class="comunidad-card-avatar">
+                                             alt="Avatar" class="comunidad-card-avatar" loading="lazy">
                                         <div class="comunidad-card-info">
                                             <p class="comunidad-card-sede">{{ $testimonio->sede }}</p>
                                             <p class="comunidad-card-nombre">{{ $testimonio->nombre }}</p>
@@ -541,9 +541,9 @@
                                     
                                     <!-- Bottom -->
                                     <div class="comunidad-card-bottom">
-                                        <img src="/images/desktop/comunidad/stars.png" alt="Stars" class="comunidad-card-stars">
+                                        <img src="/images/desktop/comunidad/stars.png" alt="Stars" class="comunidad-card-stars" loading="lazy">
                                         <img src="{{ asset('storage/' . $testimonio->icono) }}" 
-                                             alt="Icono" class="comunidad-card-google">
+                                             alt="Icono" class="comunidad-card-google" loading="lazy">
                                     </div>
                                 </div>
                             </div>
@@ -564,7 +564,7 @@
                                     <div class="comunidad-grid-image">
                                         <!-- Header -->
                                         <div class="comunidad-card-header">
-                                            <img src="{{ asset('storage/' . $testimonio->avatar) }}" alt="Avatar" class="comunidad-card-avatar">
+                                            <img src="{{ asset('storage/' . $testimonio->avatar) }}" alt="Avatar" class="comunidad-card-avatar" loading="lazy">
                                             <div class="comunidad-card-info">
                                                 <p class="comunidad-card-sede">{{ $testimonio->sede }}</p>
                                                 <p class="comunidad-card-nombre">{{ $testimonio->nombre }}</p>
@@ -580,8 +580,8 @@
                                         
                                         <!-- Bottom -->
                                         <div class="comunidad-card-bottom">
-                                            <img src="/images/desktop/comunidad/stars.png" alt="Stars" class="comunidad-card-stars">
-                                            <img src="{{ asset('storage/' . $testimonio->icono) }}" alt="Icono" class="comunidad-card-google">
+                                            <img src="/images/desktop/comunidad/stars.png" alt="Stars" class="comunidad-card-stars" loading="lazy">
+                                            <img src="{{ asset('storage/' . $testimonio->icono) }}" alt="Icono" class="comunidad-card-google" loading="lazy">
                                         </div>
                                     </div>
                                 </div>
@@ -599,10 +599,10 @@
                             <div class="comunidad-tablet-controls-wrapper">
                                 <a href="#" class="comunidad-tablet-ver-todos-btn">Ver más opiniones</a>
                                 <button class="comunidad-tablet-carousel-btn comunidad-tablet-carousel-btn-prev">
-                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Anterior" class="comunidad-tablet-arrow-left" />
+                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Anterior" class="comunidad-tablet-arrow-left" loading="lazy" />
                                 </button>
                                 <button class="comunidad-tablet-carousel-btn comunidad-tablet-carousel-btn-next">
-                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Siguiente" />
+                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Siguiente" loading="lazy" />
                                 </button>
                             </div>
                         </div>
@@ -624,7 +624,7 @@
                         <div class="comunidad-carousel-slide">
                             <div class="comunidad-mobile-card">
                                 <div class="comunidad-card-header">
-                                    <img src="{{ asset('storage/' . $testimonio->avatar) }}" alt="Avatar" class="comunidad-card-avatar">
+                                    <img src="{{ asset('storage/' . $testimonio->avatar) }}" alt="Avatar" class="comunidad-card-avatar" loading="lazy">
                                     <div class="comunidad-card-info">
                                         <p class="comunidad-card-sede">{{ $testimonio->sede }}</p>
                                         <p class="comunidad-card-nombre">{{ $testimonio->nombre }}</p>
@@ -636,8 +636,8 @@
                                     <p class="comunidad-card-texto">{{ $testimonio->texto }}</p>
                                 </div>
                                 <div class="comunidad-card-bottom">
-                                    <img src="/images/desktop/comunidad/stars.png" alt="Stars" class="comunidad-card-stars">
-                                    <img src="{{ asset('storage/' . $testimonio->icono) }}" alt="Icono" class="comunidad-card-google">
+                                    <img src="/images/desktop/comunidad/stars.png" alt="Stars" class="comunidad-card-stars" loading="lazy">
+                                    <img src="{{ asset('storage/' . $testimonio->icono) }}" alt="Icono" class="comunidad-card-google" loading="lazy">
                                 </div>
                             </div>
                         </div>
@@ -948,7 +948,7 @@
                                 @foreach($partners as $partner)
                                     <div>
                                         <a href="{{ $partner->url }}" target="_blank" class="partners-logo">
-                                            <img src="{{ asset('storage/' . $partner->logo) }}" alt="{{ $partner->url }}">
+                                            <img src="{{ asset('storage/' . $partner->logo) }}" alt="{{ $partner->url }}" loading="lazy">
                                         </a>
                                     </div>
                                 @endforeach
@@ -957,7 +957,7 @@
                                 @foreach($partners as $partner)
                     <div>
                                         <a href="{{ $partner->url }}" target="_blank" class="partners-logo">
-                                            <img src="{{ asset('storage/' . $partner->logo) }}" alt="{{ $partner->url }}">
+                                            <img src="{{ asset('storage/' . $partner->logo) }}" alt="{{ $partner->url }}" loading="lazy">
                                         </a>
                                     </div>
                                 @endforeach
