@@ -142,7 +142,7 @@
                                             <div class="beneficios-slide-line2 {{ $beneficio->tipo_titulo === 'small' ? 'beneficios-slide-line2-small' : '' }}">{{ $beneficio->titulo_linea2 }}</div>
                                         </div>
                                         <div class="beneficios-slide-description">
-                                            {!! preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', e($beneficio->descripcion)) !!}
+                                            {!! $beneficio->descripcion !!}
                                         </div>
                                     </div>
                                     @if($beneficio->mostrar_bottom)
