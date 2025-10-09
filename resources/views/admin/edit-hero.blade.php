@@ -17,12 +17,32 @@
                             $desktopImg1 = $heroes->where('version', 'desktop')->where('type', 'img1')->first();
                             $desktopImg2 = $heroes->where('version', 'desktop')->where('type', 'img2')->first();
                             $desktopVideo = $heroes->where('version', 'desktop')->where('type', 'video')->first();
+                            
+                            // Configuración de badges
+                            $badges = [
+                                'desktop' => [
+                                    'img1' => ['title' => 'Imagen Principal', 'size' => '768 × 206 px'],
+                                    'img2' => ['title' => 'Imagen Secundaria', 'size' => '376 × 418 px'],
+                                    'video' => ['title' => 'Video Principal', 'size' => '376 × 418 px']
+                                ],
+                                'mobile' => [
+                                    'img1' => ['title' => 'Imagen 1', 'size' => '417 × 462 px'],
+                                    'img2' => ['title' => 'Imagen 2', 'size' => '417 × 462 px'],
+                                    'video' => ['title' => 'Video Mobile', 'size' => '417 × 462 px']
+                                ]
+                            ];
                             @endphp
                             
                         <!-- Estructura del hero -->
                         <div class="space-y-6">
                             <!-- Fila 1: img1 (768x206) -->
                             <div class="w-full bg-gray-600 rounded relative desktop-hero-img1">
+                                <!-- Badge flotante -->
+                                <div class="absolute top-2 right-2 text-white px-2 py-1 rounded text-xs" style="background-color: rgba(0, 0, 0, 0.4); z-index: 50;">
+                                    <div class="font-medium">{{ $badges['desktop']['img1']['title'] }}</div>
+                                    <div class="text-gray-300">{{ $badges['desktop']['img1']['size'] }}</div>
+                                </div>
+                                
                                 @if($desktopImg1 && $desktopImg1->url)
                                     <img src="{{ asset('storage/' . $desktopImg1->url) }}" alt="img1" class="w-full h-full object-cover rounded">
                                     @else
@@ -66,6 +86,12 @@
                             <div class="flex gap-4">
                                 <!-- img2 -->
                                 <div class="flex-1 bg-gray-600 rounded relative desktop-hero-img2">
+                                    <!-- Badge flotante -->
+                                    <div class="absolute top-2 right-2 text-white px-2 py-1 rounded text-xs" style="background-color: rgba(0, 0, 0, 0.4); z-index: 50;">
+                                        <div class="font-medium">{{ $badges['desktop']['img2']['title'] }}</div>
+                                        <div class="text-gray-300">{{ $badges['desktop']['img2']['size'] }}</div>
+                                    </div>
+                                    
                                     @if($desktopImg2 && $desktopImg2->url)
                                         <img src="{{ asset('storage/' . $desktopImg2->url) }}" alt="img2" class="w-full h-full object-cover rounded">
                                     @else
@@ -107,6 +133,12 @@
                                 
                                 <!-- video -->
                                 <div class="flex-1 bg-gray-600 rounded relative desktop-hero-video">
+                                    <!-- Badge flotante -->
+                                    <div class="absolute top-2 right-2 text-white px-2 py-1 rounded text-xs" style="background-color: rgba(0, 0, 0, 0.4); z-index: 50;">
+                                        <div class="font-medium">{{ $badges['desktop']['video']['title'] }}</div>
+                                        <div class="text-gray-300">{{ $badges['desktop']['video']['size'] }}</div>
+                                    </div>
+                                    
                                     @if($desktopVideo && $desktopVideo->url)
                                         <video class="w-full h-full object-cover rounded" muted loop autoplay>
                                             <source src="{{ asset('storage/' . $desktopVideo->url) }}" type="video/mp4">
@@ -166,6 +198,12 @@
                         <div class="grid grid-cols-3 gap-4">
                             <!-- img1 -->
                             <div class="w-full bg-gray-600 rounded relative mobile-hero-container">
+                                <!-- Badge flotante -->
+                                <div class="absolute top-2 right-2 text-white px-2 py-1 rounded text-xs" style="background-color: rgba(0, 0, 0, 0.4); z-index: 50;">
+                                    <div class="font-medium">{{ $badges['mobile']['img1']['title'] }}</div>
+                                    <div class="text-gray-300">{{ $badges['mobile']['img1']['size'] }}</div>
+                                </div>
+                                
                                 @if($mobileImg1 && $mobileImg1->url)
                                     <img src="{{ asset('storage/' . $mobileImg1->url) }}" alt="img1" class="w-full h-full object-cover rounded">
                                 @else
@@ -207,6 +245,12 @@
                             
                             <!-- img2 -->
                             <div class="w-full bg-gray-600 rounded relative mobile-hero-container">
+                                <!-- Badge flotante -->
+                                <div class="absolute top-2 right-2 text-white px-2 py-1 rounded text-xs" style="background-color: rgba(0, 0, 0, 0.4); z-index: 50;">
+                                    <div class="font-medium">{{ $badges['mobile']['img2']['title'] }}</div>
+                                    <div class="text-gray-300">{{ $badges['mobile']['img2']['size'] }}</div>
+                                </div>
+                                
                                 @if($mobileImg2 && $mobileImg2->url)
                                     <img src="{{ asset('storage/' . $mobileImg2->url) }}" alt="img2" class="w-full h-full object-cover rounded">
                                 @else
@@ -248,6 +292,12 @@
                             
                             <!-- video -->
                             <div class="w-full bg-gray-600 rounded relative mobile-hero-container">
+                                <!-- Badge flotante -->
+                                <div class="absolute top-2 right-2 text-white px-2 py-1 rounded text-xs" style="background-color: rgba(0, 0, 0, 0.4); z-index: 50;">
+                                    <div class="font-medium">{{ $badges['mobile']['video']['title'] }}</div>
+                                    <div class="text-gray-300">{{ $badges['mobile']['video']['size'] }}</div>
+                                </div>
+                                
                                 @if($mobileVideo && $mobileVideo->url)
                                     <video class="w-full h-full object-cover rounded" muted loop autoplay>
                                         <source src="{{ asset('storage/' . $mobileVideo->url) }}" type="video/mp4">
