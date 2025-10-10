@@ -6559,6 +6559,11 @@ section h2 {
     height: auto !important;
 }
 
+/* Specific background color for beneficios section in carreras page */
+body:has(.lista-carreras) .beneficios-section {
+    background-color: #02115A !important;
+}
+
 body {
     margin: 0;
     padding: 0;
