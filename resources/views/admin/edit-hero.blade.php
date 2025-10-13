@@ -397,11 +397,11 @@
                                 
                                 <!-- Fila 1: Texto del sticky -->
                                 <div class="space-y-1">
-                                    <label class="text-white text-sm">Texto del sticky:</label>
-                                    <input type="text" name="texto" id="texto" 
-                                           class="w-full p-2 rounded text-gray-800 text-sm"
-                                           placeholder="¡Oferta especial! 🎉 **50% descuento** //hasta agotar stock//"
-                                           value="{{ $stickyBar->texto }}">
+                                    <label class="text-white text-sm">Texto del sticky (**text** para bold, //text// para italic):</label>
+                <input type="text" name="texto" id="texto" 
+                       class="w-full p-2 rounded text-gray-800 text-sm"
+                       placeholder="¡Oferta especial! 🎉 **50% descuento** //hasta agotar stock//"
+                       value="{{ $stickyBar->texto }}">
                                 </div>
                                 
                                 <!-- Fila 2: Texto del URL -->
