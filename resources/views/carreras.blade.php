@@ -133,13 +133,13 @@
                         <div class="swiper-wrapper">
                             @foreach($beneficios as $beneficio)
                             <div class="swiper-slide beneficios-carousel-slide">
-                                <img src="{{ asset('storage/' . $beneficio->imagen_desktop) }}" alt="{{ $beneficio->titulo }}" class="beneficios-slide-img-desktop" />
-                                <img src="{{ asset('storage/' . $beneficio->imagen_mobile) }}" alt="{{ $beneficio->titulo }}" class="beneficios-slide-img-mobile" />
-                                <div class="beneficios-slide-content beneficios-slide-{{ Str::slug($beneficio->titulo) }}">
+                                <img src="{{ asset('storage/' . $beneficio->imagen_desktop) }}" alt="{{ $beneficio->titulo_linea1 }}" class="beneficios-slide-img-desktop" />
+                                <img src="{{ asset('storage/' . $beneficio->imagen_mobile) }}" alt="{{ $beneficio->titulo_linea1 }}" class="beneficios-slide-img-mobile" />
+                                <div class="beneficios-slide-content beneficios-slide-{{ Str::slug($beneficio->titulo_linea1) }}">
                                     <div class="beneficios-slide-main">
                                         <div class="beneficios-slide-title">
-                                            <div class="beneficios-slide-line1">{{ $beneficio->titulo }}</div>
-                                            <div class="beneficios-slide-line2">{{ $beneficio->subtitulo }}</div>
+                                            <div class="beneficios-slide-line1">{{ $beneficio->titulo_linea1 }}</div>
+                                            <div class="beneficios-slide-line2 {{ $beneficio->tipo_titulo === 'small' ? 'beneficios-slide-line2-small' : '' }}">{{ $beneficio->titulo_linea2 }}</div>
                                         </div>
                                         <div class="beneficios-slide-description">
                                             {!! $beneficio->descripcion !!}
