@@ -36,16 +36,16 @@ class StickyBarController extends Controller
         ]);
         
         // Siempre obtener o crear el único registro
-        $stickyBar = StickyBar::firstOrCreate(
-            ['id' => 1],
-            [
+        $stickyBar = StickyBar::first();
+        if (!$stickyBar) {
+            $stickyBar = StickyBar::create([
                 'visible' => true,
                 'texto' => '¡Oferta especial! 🎉 **50% descuento** //hasta agotar stock//',
                 'texto_url' => 'más info',
                 'url' => null,
                 'color' => '#1f2937'
-            ]
-        );
+            ]);
+        }
         
         $updateData = [
             'visible' => $request->input('visible') == '1',
