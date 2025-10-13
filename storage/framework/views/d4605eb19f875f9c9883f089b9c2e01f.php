@@ -1,2 +1,0 @@
-<img src="<?php echo e(asset('images/logo.png')); ?>" alt="ITCA Logo" class="h-24 w-auto" <?php echo e($attributes); ?>>
-<?php /**PATH /home/fede/Desktop/itca-laravel/resources/views/components/application-logo.blade.php ENDPATH**/ ?>
