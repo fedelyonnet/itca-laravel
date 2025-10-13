@@ -19,3 +19,7 @@ yarn-error.log
 
 # YoYo AI version control directory
 .yoyo/
+/storage/logs/*
+/storage/app/public/*
+/storage/framework/sessions/*
+/storage/framework/views/*
