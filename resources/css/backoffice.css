@@ -306,6 +306,16 @@
     overflow-y: auto;
 }
 
+/* Fix z-index for dropdown menus to appear above hero badges */
+.dropdown-menu {
+    z-index: 100 !important;
+}
+
+/* Ensure hero badges stay below dropdown menus */
+.hero-badge {
+    z-index: 10 !important;
+}
+
 /* SweetAlert2 Dark Theme - Elegant and Compact */
 .swal2-popup-dark {
     background-color: #1f2937 !important;

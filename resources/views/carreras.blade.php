@@ -133,50 +133,28 @@
                         <div class="swiper-wrapper">
                             @foreach($beneficios as $beneficio)
                             <div class="swiper-slide beneficios-carousel-slide">
-                                <img src="{{ asset('storage/' . $beneficio->imagen_desktop) }}" alt="{{ $beneficio->titulo_linea1 }} {{ $beneficio->titulo_linea2 }}" class="beneficios-slide-img-desktop" />
-                                <img src="{{ asset('storage/' . $beneficio->imagen_mobile) }}" alt="{{ $beneficio->titulo_linea1 }} {{ $beneficio->titulo_linea2 }}" class="beneficios-slide-img-mobile" />
-                                <div class="beneficios-slide-content beneficios-slide-{{ Str::slug($beneficio->titulo_linea1 . '-' . $beneficio->titulo_linea2) }}">
+                                <img src="{{ asset('storage/' . $beneficio->imagen_desktop) }}" alt="{{ $beneficio->titulo }}" class="beneficios-slide-img-desktop" />
+                                <img src="{{ asset('storage/' . $beneficio->imagen_mobile) }}" alt="{{ $beneficio->titulo }}" class="beneficios-slide-img-mobile" />
+                                <div class="beneficios-slide-content beneficios-slide-{{ Str::slug($beneficio->titulo) }}">
                                     <div class="beneficios-slide-main">
                                         <div class="beneficios-slide-title">
-                                            <div class="beneficios-slide-line1">{{ $beneficio->titulo_linea1 }}</div>
-                                            <div class="beneficios-slide-line2 {{ $beneficio->tipo_titulo === 'small' ? 'beneficios-slide-line2-small' : '' }}">{{ $beneficio->titulo_linea2 }}</div>
+                                            <div class="beneficios-slide-line1">{{ $beneficio->titulo }}</div>
+                                            <div class="beneficios-slide-line2">{{ $beneficio->subtitulo }}</div>
                                         </div>
                                         <div class="beneficios-slide-description">
                                             {!! $beneficio->descripcion !!}
                                         </div>
                                     </div>
-                                    @if($beneficio->mostrar_bottom)
-                                    <div class="beneficios-slide-bottom beneficios-slide-bottom-{{ $beneficio->getAlineacionBottomAttribute() }}">
-                                        @if($beneficio->getAlineacionBottomAttribute() === 'left')
-                                            <div class="beneficios-slide-link beneficios-slide-link-visible">
-                                                <a href="{{ $beneficio->url }}" target="_blank">{{ $beneficio->texto_boton ?: 'Ver más' }}</a>
-                                            </div>
-                                            <div class="beneficios-slide-icon beneficios-slide-icon-hidden">
-                                                <a href="#" class="beneficios-slide-icon-btn">
-                                                    <img src="/images/desktop/btnflecha.png" alt="Flecha" loading="lazy" />
-                                                </a>
-                                            </div>
-                                        @elseif($beneficio->getAlineacionBottomAttribute() === 'right')
-                                            <div class="beneficios-slide-link beneficios-slide-link-hidden">
-                                                <a href="{{ $beneficio->url }}" target="_blank">{{ $beneficio->texto_boton ?: 'Ver más' }}</a>
-                                            </div>
-                                            <div class="beneficios-slide-icon beneficios-slide-icon-visible">
-                                                <a href="{{ $beneficio->url }}" class="beneficios-slide-icon-btn">
-                                                    <img src="/images/desktop/btnflecha.png" alt="Flecha" loading="lazy" />
-                                                </a>
-                                            </div>
-                                        @else
-                                            <div class="beneficios-slide-link beneficios-slide-link-hidden">
-                                                <a href="{{ $beneficio->url }}" target="_blank">{{ $beneficio->texto_boton ?: 'Ver más' }}</a>
-                                            </div>
-                                            <div class="beneficios-slide-icon beneficios-slide-icon-hidden">
-                                                <a href="#" class="beneficios-slide-icon-btn">
-                                                    <img src="/images/desktop/btnflecha.png" alt="Flecha" loading="lazy" />
-                                                </a>
-                                            </div>
-                                        @endif
+                                    <div class="beneficios-slide-bottom">
+                                        <div class="beneficios-slide-link {{ $beneficio->mostrar_boton ? 'beneficios-slide-link-visible' : 'beneficios-slide-link-hidden' }}">
+                                            <a href="{{ $beneficio->url_boton }}">{{ $beneficio->texto_boton }}</a>
+                                        </div>
+                                        <div class="beneficios-slide-icon {{ $beneficio->mostrar_boton ? 'beneficios-slide-icon-hidden' : 'beneficios-slide-icon-visible' }}">
+                                            <a href="{{ $beneficio->url_boton }}" class="beneficios-slide-icon-btn">
+                                                <img src="/images/desktop/btnflecha.png" alt="Flecha" />
+                                            </a>
+                                        </div>
                                     </div>
-                                    @endif
                                 </div>
                             </div>
                             @endforeach

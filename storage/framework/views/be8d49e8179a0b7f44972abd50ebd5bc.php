@@ -20,8 +20,21 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
     </head>
 <body>
+        <!-- Sticky Bar -->
+        <?php if($stickyBar && $stickyBar->visible == true): ?>
+        <div class="sticky-bar" style="background-color: <?php echo e($stickyBar->color); ?> !important;">
+            <div class="container">
+                <div class="sticky-bar-content">
+                    <div class="sticky-bar-text-container">
+                        <span class="sticky-bar-text"><?php echo $stickyBar->getFormattedTextAttribute(); ?></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
+
         <!-- Header -->
-    <header class="header">
+    <header class="header <?php echo e($stickyBar && $stickyBar->visible == true ? 'header-with-sticky' : ''); ?>">
         <div class="container">
             <nav class="nav">
                 <!-- Logo -->
@@ -292,7 +305,7 @@
                                                 <div class="beneficios-slide-line2 <?php echo e($beneficio->tipo_titulo === 'small' ? 'beneficios-slide-line2-small' : ''); ?>"><?php echo e($beneficio->titulo_linea2); ?></div>
                     </div>
                                             <div class="beneficios-slide-description">
-                                                <?php echo preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', e($beneficio->descripcion)); ?>
+                                                <?php echo $beneficio->descripcion; ?>
 
                     </div>
                     </div>
@@ -367,7 +380,7 @@
                                                 <div class="beneficios-slide-line2 <?php echo e($beneficio->tipo_titulo === 'small' ? 'beneficios-slide-line2-small' : ''); ?>"><?php echo e($beneficio->titulo_linea2); ?></div>
                                             </div>
                                             <div class="beneficios-slide-description">
-                                                <?php echo preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', e($beneficio->descripcion)); ?>
+                                                <?php echo $beneficio->descripcion; ?>
 
                                             </div>
                                         </div>

@@ -10,6 +10,7 @@ use App\Models\Sede;
 use App\Models\Testimonio;
 use App\Models\Partner;
 use App\Models\EnAccion;
+use App\Models\StickyBar;
 
 class WelcomeController extends Controller
 {
@@ -57,6 +58,9 @@ class WelcomeController extends Controller
         // Obtener videos de En Acción mobile para el carousel
         $videosMobile = EnAccion::where('version', 'mob')->orderBy('created_at', 'desc')->get();
         
+        // Obtener Sticky Bar
+        $stickyBar = StickyBar::first();
+        
         return view('welcome', compact(
             'desktopImg1', 'desktopImg2', 'desktopVideo',
             'mobileImg1', 'mobileImg2', 'mobileVideo',
@@ -65,7 +69,8 @@ class WelcomeController extends Controller
             'sedes',
             'testimonios',
             'partners',
-            'video1', 'video3', 'video5', 'videosTablet', 'videosMobile'
+            'video1', 'video3', 'video5', 'videosTablet', 'videosMobile',
+            'stickyBar'
         ));
     }
 

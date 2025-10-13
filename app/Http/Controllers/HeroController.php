@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Hero;
+use App\Models\StickyBar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,7 +12,17 @@ class HeroController extends Controller
     public function index()
     {
         $heroes = Hero::all();
-        return view('admin.edit-hero', compact('heroes'));
+        $stickyBar = StickyBar::first();
+        
+        if (!$stickyBar) {
+            $stickyBar = StickyBar::create([
+                'visible' => true,
+                'texto' => '¡Oferta especial! 🎉 **50% descuento** //hasta agotar stock//',
+                'color' => '#1f2937'
+            ]);
+        }
+        
+        return view('admin.edit-hero', compact('heroes', 'stickyBar'));
     }
 
     public function update(Request $request, $id)

@@ -18,6 +18,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/edit-hero', [App\Http\Controllers\HeroController::class, 'index'])->name('admin.edit-hero');
         Route::post('/edit-hero/{id}', [App\Http\Controllers\HeroController::class, 'update'])->name('admin.hero.update');
         Route::delete('/edit-hero/{id}', [App\Http\Controllers\HeroController::class, 'destroy'])->name('admin.hero.delete');
+        
+        // Rutas de sticky bar
+        Route::post('/sticky-bar', [App\Http\Controllers\StickyBarController::class, 'update'])->name('admin.sticky-bar.update');
         Route::get('/carreras', [App\Http\Controllers\CursoController::class, 'index'])->name('admin.carreras');
         Route::get('/carreras/create', [App\Http\Controllers\CursoController::class, 'create'])->name('admin.carreras.create');
         Route::post('/carreras', [App\Http\Controllers\CursoController::class, 'store'])->name('admin.carreras.store');

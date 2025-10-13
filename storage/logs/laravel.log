@@ -12175,3 +12175,797 @@
 [2025-10-07 20:05:21] local.INFO: Featured toggled {"new_featured":false} 
 [2025-10-07 20:05:22] local.INFO: Toggle featured {"curso_id":8,"curso_nombre":"Mecánica y Electrónica de la Motocicleta","current_featured":false,"featured_count":1} 
 [2025-10-07 20:05:22] local.INFO: Featured toggled {"new_featured":true} 
+[2025-10-09 16:28:22] local.INFO: Moviendo curso {"curso_id":8,"curso_nombre":"Mecánica y Electrónica de la Motocicleta","orden_actual":0,"direccion":"down"} 
+[2025-10-09 16:28:22] local.INFO: Curso siguiente encontrado {"curso_siguiente_id":9,"curso_siguiente_nombre":"Mecánica y Tecnologías del Automóvil","curso_siguiente_orden":2} 
+[2025-10-09 16:28:22] local.INFO: Intercambio completado {"curso_nuevo_orden":2,"curso_siguiente_nuevo_orden":0} 
+[2025-10-10 11:42:06] local.ERROR: file_put_contents(/home/fede/Desktop/itca-laravel/storage/framework/views/ef6640c1f55cd47deb10f7883ceedcbd.php): Failed to open stream: Permission denied {"userId":1,"exception":"[object] (ErrorException(code: 0): file_put_contents(/home/fede/Desktop/itca-laravel/storage/framework/views/ef6640c1f55cd47deb10f7883ceedcbd.php): Failed to open stream: Permission denied at /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:204)
+[stacktrace]
+#0 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(258): Illuminate\\Foundation\\Bootstrap\\HandleExceptions->handleError()
+#1 [internal function]: Illuminate\\Foundation\\Bootstrap\\HandleExceptions->Illuminate\\Foundation\\Bootstrap\\{closure}()
+#2 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php(204): file_put_contents()
+#3 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/Compilers/BladeCompiler.php(196): Illuminate\\Filesystem\\Filesystem->put()
+#4 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/Engines/CompilerEngine.php(67): Illuminate\\View\\Compilers\\BladeCompiler->compile()
+#5 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/View.php(209): Illuminate\\View\\Engines\\CompilerEngine->get()
+#6 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/View.php(192): Illuminate\\View\\View->getContents()
+#7 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/View.php(161): Illuminate\\View\\View->renderContents()
+#8 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Response.php(79): Illuminate\\View\\View->render()
+#9 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Response.php(35): Illuminate\\Http\\Response->setContent()
+#10 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(920): Illuminate\\Http\\Response->__construct()
+#11 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(887): Illuminate\\Routing\\Router::toResponse()
+#12 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(807): Illuminate\\Routing\\Router->prepareResponse()
+#13 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(170): Illuminate\\Routing\\Router->Illuminate\\Routing\\{closure}()
+#14 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php(51): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#15 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Routing\\Middleware\\SubstituteBindings->handle()
+#16 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php(64): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#17 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Auth\\Middleware\\Authenticate->handle()
+#18 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php(88): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#19 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken->handle()
+#20 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#21 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\View\\Middleware\\ShareErrorsFromSession->handle()
+#22 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php(121): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#23 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php(64): Illuminate\\Session\\Middleware\\StartSession->handleStatefulRequest()
+#24 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Session\\Middleware\\StartSession->handle()
+#25 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php(37): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#26 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse->handle()
+#27 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php(75): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#28 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Cookie\\Middleware\\EncryptCookies->handle()
+#29 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(127): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#30 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(807): Illuminate\\Pipeline\\Pipeline->then()
+#31 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(786): Illuminate\\Routing\\Router->runRouteWithinStack()
+#32 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(750): Illuminate\\Routing\\Router->runRoute()
+#33 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(739): Illuminate\\Routing\\Router->dispatchToRoute()
+#34 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(201): Illuminate\\Routing\\Router->dispatch()
+#35 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(170): Illuminate\\Foundation\\Http\\Kernel->Illuminate\\Foundation\\Http\\{closure}()
+#36 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#37 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php(31): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle()
+#38 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull->handle()
+#39 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#40 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php(51): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle()
+#41 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\TrimStrings->handle()
+#42 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php(27): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#43 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Http\\Middleware\\ValidatePostSize->handle()
+#44 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php(110): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#45 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance->handle()
+#46 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#47 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Http\\Middleware\\HandleCors->handle()
+#48 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php(58): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#49 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Http\\Middleware\\TrustProxies->handle()
+#50 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php(22): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#51 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\InvokeDeferredCallbacks->handle()
+#52 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(127): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#53 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(176): Illuminate\\Pipeline\\Pipeline->then()
+#54 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(145): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter()
+#55 /home/fede/Desktop/itca-laravel/public/index.php(51): Illuminate\\Foundation\\Http\\Kernel->handle()
+#56 {main}
+"} 
+[2025-10-10 11:42:10] local.ERROR: file_put_contents(/home/fede/Desktop/itca-laravel/storage/framework/views/ef6640c1f55cd47deb10f7883ceedcbd.php): Failed to open stream: Permission denied {"userId":1,"exception":"[object] (ErrorException(code: 0): file_put_contents(/home/fede/Desktop/itca-laravel/storage/framework/views/ef6640c1f55cd47deb10f7883ceedcbd.php): Failed to open stream: Permission denied at /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:204)
+[stacktrace]
+#0 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(258): Illuminate\\Foundation\\Bootstrap\\HandleExceptions->handleError()
+#1 [internal function]: Illuminate\\Foundation\\Bootstrap\\HandleExceptions->Illuminate\\Foundation\\Bootstrap\\{closure}()
+#2 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php(204): file_put_contents()
+#3 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/Compilers/BladeCompiler.php(196): Illuminate\\Filesystem\\Filesystem->put()
+#4 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/Engines/CompilerEngine.php(67): Illuminate\\View\\Compilers\\BladeCompiler->compile()
+#5 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/View.php(209): Illuminate\\View\\Engines\\CompilerEngine->get()
+#6 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/View.php(192): Illuminate\\View\\View->getContents()
+#7 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/View.php(161): Illuminate\\View\\View->renderContents()
+#8 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Response.php(79): Illuminate\\View\\View->render()
+#9 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Response.php(35): Illuminate\\Http\\Response->setContent()
+#10 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(920): Illuminate\\Http\\Response->__construct()
+#11 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(887): Illuminate\\Routing\\Router::toResponse()
+#12 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(807): Illuminate\\Routing\\Router->prepareResponse()
+#13 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(170): Illuminate\\Routing\\Router->Illuminate\\Routing\\{closure}()
+#14 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php(51): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#15 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Routing\\Middleware\\SubstituteBindings->handle()
+#16 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php(64): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#17 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Auth\\Middleware\\Authenticate->handle()
+#18 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php(88): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#19 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken->handle()
+#20 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#21 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\View\\Middleware\\ShareErrorsFromSession->handle()
+#22 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php(121): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#23 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php(64): Illuminate\\Session\\Middleware\\StartSession->handleStatefulRequest()
+#24 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Session\\Middleware\\StartSession->handle()
+#25 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php(37): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#26 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse->handle()
+#27 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php(75): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#28 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Cookie\\Middleware\\EncryptCookies->handle()
+#29 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(127): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#30 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(807): Illuminate\\Pipeline\\Pipeline->then()
+#31 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(786): Illuminate\\Routing\\Router->runRouteWithinStack()
+#32 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(750): Illuminate\\Routing\\Router->runRoute()
+#33 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(739): Illuminate\\Routing\\Router->dispatchToRoute()
+#34 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(201): Illuminate\\Routing\\Router->dispatch()
+#35 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(170): Illuminate\\Foundation\\Http\\Kernel->Illuminate\\Foundation\\Http\\{closure}()
+#36 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#37 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php(31): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle()
+#38 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull->handle()
+#39 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#40 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php(51): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle()
+#41 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\TrimStrings->handle()
+#42 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php(27): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#43 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Http\\Middleware\\ValidatePostSize->handle()
+#44 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php(110): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#45 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance->handle()
+#46 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#47 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Http\\Middleware\\HandleCors->handle()
+#48 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php(58): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#49 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Http\\Middleware\\TrustProxies->handle()
+#50 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php(22): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#51 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\InvokeDeferredCallbacks->handle()
+#52 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(127): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#53 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(176): Illuminate\\Pipeline\\Pipeline->then()
+#54 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(145): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter()
+#55 /home/fede/Desktop/itca-laravel/public/index.php(51): Illuminate\\Foundation\\Http\\Kernel->handle()
+#56 {main}
+"} 
+[2025-10-10 12:22:35] local.ERROR: file_put_contents(/home/fede/Desktop/itca-laravel/storage/framework/views/be8d49e8179a0b7f44972abd50ebd5bc.php): Failed to open stream: Permission denied {"userId":1,"exception":"[object] (ErrorException(code: 0): file_put_contents(/home/fede/Desktop/itca-laravel/storage/framework/views/be8d49e8179a0b7f44972abd50ebd5bc.php): Failed to open stream: Permission denied at /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:204)
+[stacktrace]
+#0 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(258): Illuminate\\Foundation\\Bootstrap\\HandleExceptions->handleError()
+#1 [internal function]: Illuminate\\Foundation\\Bootstrap\\HandleExceptions->Illuminate\\Foundation\\Bootstrap\\{closure}()
+#2 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php(204): file_put_contents()
+#3 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/Compilers/BladeCompiler.php(196): Illuminate\\Filesystem\\Filesystem->put()
+#4 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/Engines/CompilerEngine.php(67): Illuminate\\View\\Compilers\\BladeCompiler->compile()
+#5 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/View.php(209): Illuminate\\View\\Engines\\CompilerEngine->get()
+#6 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/View.php(192): Illuminate\\View\\View->getContents()
+#7 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/View.php(161): Illuminate\\View\\View->renderContents()
+#8 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Response.php(79): Illuminate\\View\\View->render()
+#9 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Response.php(35): Illuminate\\Http\\Response->setContent()
+#10 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(920): Illuminate\\Http\\Response->__construct()
+#11 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(887): Illuminate\\Routing\\Router::toResponse()
+#12 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(807): Illuminate\\Routing\\Router->prepareResponse()
+#13 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(170): Illuminate\\Routing\\Router->Illuminate\\Routing\\{closure}()
+#14 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php(51): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#15 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Routing\\Middleware\\SubstituteBindings->handle()
+#16 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php(88): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#17 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken->handle()
+#18 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#19 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\View\\Middleware\\ShareErrorsFromSession->handle()
+#20 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php(121): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#21 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php(64): Illuminate\\Session\\Middleware\\StartSession->handleStatefulRequest()
+#22 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Session\\Middleware\\StartSession->handle()
+#23 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php(37): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#24 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse->handle()
+#25 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php(75): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#26 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Cookie\\Middleware\\EncryptCookies->handle()
+#27 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(127): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#28 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(807): Illuminate\\Pipeline\\Pipeline->then()
+#29 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(786): Illuminate\\Routing\\Router->runRouteWithinStack()
+#30 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(750): Illuminate\\Routing\\Router->runRoute()
+#31 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(739): Illuminate\\Routing\\Router->dispatchToRoute()
+#32 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(201): Illuminate\\Routing\\Router->dispatch()
+#33 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(170): Illuminate\\Foundation\\Http\\Kernel->Illuminate\\Foundation\\Http\\{closure}()
+#34 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#35 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php(31): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle()
+#36 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull->handle()
+#37 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#38 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php(51): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle()
+#39 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\TrimStrings->handle()
+#40 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php(27): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#41 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Http\\Middleware\\ValidatePostSize->handle()
+#42 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php(110): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#43 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance->handle()
+#44 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#45 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Http\\Middleware\\HandleCors->handle()
+#46 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php(58): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#47 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Http\\Middleware\\TrustProxies->handle()
+#48 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php(22): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#49 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\InvokeDeferredCallbacks->handle()
+#50 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(127): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#51 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(176): Illuminate\\Pipeline\\Pipeline->then()
+#52 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(145): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter()
+#53 /home/fede/Desktop/itca-laravel/public/index.php(51): Illuminate\\Foundation\\Http\\Kernel->handle()
+#54 {main}
+"} 
+[2025-10-10 12:33:01] local.ERROR: file_put_contents(/home/fede/Desktop/itca-laravel/storage/framework/views/be8d49e8179a0b7f44972abd50ebd5bc.php): Failed to open stream: Permission denied {"userId":1,"exception":"[object] (ErrorException(code: 0): file_put_contents(/home/fede/Desktop/itca-laravel/storage/framework/views/be8d49e8179a0b7f44972abd50ebd5bc.php): Failed to open stream: Permission denied at /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:204)
+[stacktrace]
+#0 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(258): Illuminate\\Foundation\\Bootstrap\\HandleExceptions->handleError()
+#1 [internal function]: Illuminate\\Foundation\\Bootstrap\\HandleExceptions->Illuminate\\Foundation\\Bootstrap\\{closure}()
+#2 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php(204): file_put_contents()
+#3 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/Compilers/BladeCompiler.php(196): Illuminate\\Filesystem\\Filesystem->put()
+#4 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/Engines/CompilerEngine.php(67): Illuminate\\View\\Compilers\\BladeCompiler->compile()
+#5 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/View.php(209): Illuminate\\View\\Engines\\CompilerEngine->get()
+#6 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/View.php(192): Illuminate\\View\\View->getContents()
+#7 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/View.php(161): Illuminate\\View\\View->renderContents()
+#8 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Response.php(79): Illuminate\\View\\View->render()
+#9 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Response.php(35): Illuminate\\Http\\Response->setContent()
+#10 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(920): Illuminate\\Http\\Response->__construct()
+#11 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(887): Illuminate\\Routing\\Router::toResponse()
+#12 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(807): Illuminate\\Routing\\Router->prepareResponse()
+#13 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(170): Illuminate\\Routing\\Router->Illuminate\\Routing\\{closure}()
+#14 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php(51): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#15 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Routing\\Middleware\\SubstituteBindings->handle()
+#16 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php(88): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#17 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken->handle()
+#18 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#19 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\View\\Middleware\\ShareErrorsFromSession->handle()
+#20 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php(121): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#21 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php(64): Illuminate\\Session\\Middleware\\StartSession->handleStatefulRequest()
+#22 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Session\\Middleware\\StartSession->handle()
+#23 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php(37): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#24 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse->handle()
+#25 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php(75): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#26 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Cookie\\Middleware\\EncryptCookies->handle()
+#27 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(127): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#28 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(807): Illuminate\\Pipeline\\Pipeline->then()
+#29 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(786): Illuminate\\Routing\\Router->runRouteWithinStack()
+#30 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(750): Illuminate\\Routing\\Router->runRoute()
+#31 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(739): Illuminate\\Routing\\Router->dispatchToRoute()
+#32 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(201): Illuminate\\Routing\\Router->dispatch()
+#33 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(170): Illuminate\\Foundation\\Http\\Kernel->Illuminate\\Foundation\\Http\\{closure}()
+#34 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#35 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php(31): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle()
+#36 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull->handle()
+#37 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#38 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php(51): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle()
+#39 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\TrimStrings->handle()
+#40 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php(27): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#41 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Http\\Middleware\\ValidatePostSize->handle()
+#42 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php(110): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#43 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance->handle()
+#44 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#45 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Http\\Middleware\\HandleCors->handle()
+#46 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php(58): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#47 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Http\\Middleware\\TrustProxies->handle()
+#48 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php(22): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#49 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\InvokeDeferredCallbacks->handle()
+#50 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(127): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#51 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(176): Illuminate\\Pipeline\\Pipeline->then()
+#52 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(145): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter()
+#53 /home/fede/Desktop/itca-laravel/public/index.php(51): Illuminate\\Foundation\\Http\\Kernel->handle()
+#54 {main}
+"} 
+[2025-10-10 12:37:07] local.INFO: Toggle featured {"curso_id":8,"curso_nombre":"Mecánica y Electrónica de la Motocicleta","current_featured":true,"featured_count":2} 
+[2025-10-10 12:37:07] local.INFO: Featured toggled {"new_featured":false} 
+[2025-10-10 12:37:09] local.INFO: Toggle featured {"curso_id":8,"curso_nombre":"Mecánica y Electrónica de la Motocicleta","current_featured":false,"featured_count":1} 
+[2025-10-10 12:37:09] local.INFO: Featured toggled {"new_featured":true} 
+[2025-10-10 12:49:10] local.ERROR: Command "session:clear" is not defined.
+
+Did you mean one of these?
+    auth:clear-resets
+    cache:clear
+    config:clear
+    event:clear
+    optimize:clear
+    queue:clear
+    route:clear
+    schedule:clear-cache
+    session:table
+    view:clear {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"session:clear\" is not defined.
+
+Did you mean one of these?
+    auth:clear-resets
+    cache:clear
+    config:clear
+    event:clear
+    optimize:clear
+    queue:clear
+    route:clear
+    schedule:clear-cache
+    session:table
+    view:clear at /home/fede/Desktop/itca-laravel/vendor/symfony/console/Application.php:743)
+[stacktrace]
+#0 /home/fede/Desktop/itca-laravel/vendor/symfony/console/Application.php(301): Symfony\\Component\\Console\\Application->find()
+#1 /home/fede/Desktop/itca-laravel/vendor/symfony/console/Application.php(194): Symfony\\Component\\Console\\Application->doRun()
+#2 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#3 /home/fede/Desktop/itca-laravel/artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle()
+#4 {main}
+"} 
+[2025-10-10 12:54:51] local.INFO: Upload logo method called  
+[2025-10-10 12:54:51] local.INFO: Logo uploaded:   
+[2025-10-10 12:54:51] local.INFO: StickyBar updated: 0  
+[2025-10-10 12:55:54] local.INFO: Upload logo method called  
+[2025-10-10 12:55:54] local.INFO: Logo path:   
+[2025-10-10 12:55:54] local.INFO: File exists: YES  
+[2025-10-10 12:55:54] local.INFO: Logo uploaded:   
+[2025-10-10 12:55:54] local.INFO: StickyBar updated: 0  
+[2025-10-10 12:58:13] local.INFO: Upload logo method called  
+[2025-10-10 12:58:13] local.INFO: Logo path: sticky-bar/3Nwx0QLlkUcj1ShDOAYnwZtkw30LunUigIdUOjbJ.png  
+[2025-10-10 12:58:13] local.INFO: File exists: YES  
+[2025-10-10 12:58:13] local.INFO: Full path: /home/fede/Desktop/itca-laravel/storage/app/public/sticky-bar/3Nwx0QLlkUcj1ShDOAYnwZtkw30LunUigIdUOjbJ.png  
+[2025-10-10 12:58:13] local.INFO: Logo uploaded: sticky-bar/3Nwx0QLlkUcj1ShDOAYnwZtkw30LunUigIdUOjbJ.png  
+[2025-10-10 12:58:13] local.INFO: StickyBar updated: sticky-bar/3Nwx0QLlkUcj1ShDOAYnwZtkw30LunUigIdUOjbJ.png  
+[2025-10-10 12:59:52] local.INFO: StickyBar update method called  
+[2025-10-10 12:59:52] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","texto":"gte","color":"#1f2937"}  
+[2025-10-10 12:59:52] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":null,"texto":"gte","color":"#1f2937","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T12:59:52.000000Z"}  
+[2025-10-10 13:00:11] local.INFO: Upload logo method called  
+[2025-10-10 13:00:11] local.INFO: Logo path: sticky-bar/3msdmVCv5hZb0d9QhtCimzgB60hm1TsHSDowmbrb.png  
+[2025-10-10 13:00:11] local.INFO: File exists: YES  
+[2025-10-10 13:00:11] local.INFO: Full path: /home/fede/Desktop/itca-laravel/storage/app/public/sticky-bar/3msdmVCv5hZb0d9QhtCimzgB60hm1TsHSDowmbrb.png  
+[2025-10-10 13:00:11] local.INFO: Logo uploaded: sticky-bar/3msdmVCv5hZb0d9QhtCimzgB60hm1TsHSDowmbrb.png  
+[2025-10-10 13:00:11] local.INFO: StickyBar updated: sticky-bar/3msdmVCv5hZb0d9QhtCimzgB60hm1TsHSDowmbrb.png  
+[2025-10-10 13:09:07] local.INFO: StickyBar update method called  
+[2025-10-10 13:09:07] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","color":"#dc2626"}  
+[2025-10-10 13:12:45] local.INFO: StickyBar update method called  
+[2025-10-10 13:12:45] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","color":"#dc2626"}  
+[2025-10-10 13:12:48] local.INFO: StickyBar update method called  
+[2025-10-10 13:12:48] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","color":"#059669"}  
+[2025-10-10 13:13:28] local.INFO: StickyBar update method called  
+[2025-10-10 13:13:28] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","color":"#059669"}  
+[2025-10-10 13:13:30] local.INFO: StickyBar update method called  
+[2025-10-10 13:13:30] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","color":"#059669"}  
+[2025-10-10 13:14:15] local.INFO: StickyBar update method called  
+[2025-10-10 13:14:15] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","color":"#059669"}  
+[2025-10-10 13:14:15] local.ERROR: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'texto' cannot be null (Connection: mysql, SQL: update `sticky_bars` set `texto` = ?, `color` = #059669, `sticky_bars`.`updated_at` = 2025-10-10 13:14:15 where `id` = 1) {"userId":1,"exception":"[object] (Illuminate\\Database\\QueryException(code: 23000): SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'texto' cannot be null (Connection: mysql, SQL: update `sticky_bars` set `texto` = ?, `color` = #059669, `sticky_bars`.`updated_at` = 2025-10-10 13:14:15 where `id` = 1) at /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Database/Connection.php:825)
+[stacktrace]
+#0 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Database/Connection.php(779): Illuminate\\Database\\Connection->runQueryCallback()
+#1 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Database/Connection.php(584): Illuminate\\Database\\Connection->run()
+#2 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Database/Connection.php(536): Illuminate\\Database\\Connection->affectingStatement()
+#3 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php(3830): Illuminate\\Database\\Connection->update()
+#4 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php(1175): Illuminate\\Database\\Query\\Builder->update()
+#5 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php(1239): Illuminate\\Database\\Eloquent\\Builder->update()
+#6 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php(1156): Illuminate\\Database\\Eloquent\\Model->performUpdate()
+#7 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php(1014): Illuminate\\Database\\Eloquent\\Model->save()
+#8 /home/fede/Desktop/itca-laravel/app/Http/Controllers/StickyBarController.php(47): Illuminate\\Database\\Eloquent\\Model->update()
+#9 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Controller.php(54): App\\Http\\Controllers\\StickyBarController->update()
+#10 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php(44): Illuminate\\Routing\\Controller->callAction()
+#11 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Route.php(266): Illuminate\\Routing\\ControllerDispatcher->dispatch()
+#12 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Route.php(212): Illuminate\\Routing\\Route->runController()
+#13 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(808): Illuminate\\Routing\\Route->run()
+#14 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(170): Illuminate\\Routing\\Router->Illuminate\\Routing\\{closure}()
+#15 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php(51): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#16 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Routing\\Middleware\\SubstituteBindings->handle()
+#17 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php(64): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#18 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Auth\\Middleware\\Authenticate->handle()
+#19 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php(88): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#20 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken->handle()
+#21 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#22 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\View\\Middleware\\ShareErrorsFromSession->handle()
+#23 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php(121): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#24 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php(64): Illuminate\\Session\\Middleware\\StartSession->handleStatefulRequest()
+#25 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Session\\Middleware\\StartSession->handle()
+#26 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php(37): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#27 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse->handle()
+#28 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php(75): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#29 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Cookie\\Middleware\\EncryptCookies->handle()
+#30 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(127): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#31 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(807): Illuminate\\Pipeline\\Pipeline->then()
+#32 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(786): Illuminate\\Routing\\Router->runRouteWithinStack()
+#33 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(750): Illuminate\\Routing\\Router->runRoute()
+#34 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(739): Illuminate\\Routing\\Router->dispatchToRoute()
+#35 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(201): Illuminate\\Routing\\Router->dispatch()
+#36 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(170): Illuminate\\Foundation\\Http\\Kernel->Illuminate\\Foundation\\Http\\{closure}()
+#37 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#38 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php(31): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle()
+#39 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull->handle()
+#40 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#41 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php(51): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle()
+#42 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\TrimStrings->handle()
+#43 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php(27): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#44 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Http\\Middleware\\ValidatePostSize->handle()
+#45 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php(110): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#46 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance->handle()
+#47 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#48 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Http\\Middleware\\HandleCors->handle()
+#49 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php(58): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#50 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Http\\Middleware\\TrustProxies->handle()
+#51 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php(22): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#52 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\InvokeDeferredCallbacks->handle()
+#53 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(127): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#54 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(176): Illuminate\\Pipeline\\Pipeline->then()
+#55 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(145): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter()
+#56 /home/fede/Desktop/itca-laravel/public/index.php(51): Illuminate\\Foundation\\Http\\Kernel->handle()
+#57 {main}
+
+[previous exception] [object] (PDOException(code: 23000): SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'texto' cannot be null at /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Database/Connection.php:596)
+[stacktrace]
+#0 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Database/Connection.php(596): PDOStatement->execute()
+#1 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Database/Connection.php(812): Illuminate\\Database\\Connection->Illuminate\\Database\\{closure}()
+#2 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Database/Connection.php(779): Illuminate\\Database\\Connection->runQueryCallback()
+#3 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Database/Connection.php(584): Illuminate\\Database\\Connection->run()
+#4 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Database/Connection.php(536): Illuminate\\Database\\Connection->affectingStatement()
+#5 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php(3830): Illuminate\\Database\\Connection->update()
+#6 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php(1175): Illuminate\\Database\\Query\\Builder->update()
+#7 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php(1239): Illuminate\\Database\\Eloquent\\Builder->update()
+#8 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php(1156): Illuminate\\Database\\Eloquent\\Model->performUpdate()
+#9 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php(1014): Illuminate\\Database\\Eloquent\\Model->save()
+#10 /home/fede/Desktop/itca-laravel/app/Http/Controllers/StickyBarController.php(47): Illuminate\\Database\\Eloquent\\Model->update()
+#11 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Controller.php(54): App\\Http\\Controllers\\StickyBarController->update()
+#12 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php(44): Illuminate\\Routing\\Controller->callAction()
+#13 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Route.php(266): Illuminate\\Routing\\ControllerDispatcher->dispatch()
+#14 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Route.php(212): Illuminate\\Routing\\Route->runController()
+#15 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(808): Illuminate\\Routing\\Route->run()
+#16 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(170): Illuminate\\Routing\\Router->Illuminate\\Routing\\{closure}()
+#17 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php(51): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#18 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Routing\\Middleware\\SubstituteBindings->handle()
+#19 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php(64): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#20 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Auth\\Middleware\\Authenticate->handle()
+#21 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php(88): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#22 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken->handle()
+#23 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#24 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\View\\Middleware\\ShareErrorsFromSession->handle()
+#25 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php(121): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#26 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php(64): Illuminate\\Session\\Middleware\\StartSession->handleStatefulRequest()
+#27 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Session\\Middleware\\StartSession->handle()
+#28 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php(37): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#29 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse->handle()
+#30 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php(75): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#31 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Cookie\\Middleware\\EncryptCookies->handle()
+#32 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(127): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#33 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(807): Illuminate\\Pipeline\\Pipeline->then()
+#34 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(786): Illuminate\\Routing\\Router->runRouteWithinStack()
+#35 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(750): Illuminate\\Routing\\Router->runRoute()
+#36 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(739): Illuminate\\Routing\\Router->dispatchToRoute()
+#37 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(201): Illuminate\\Routing\\Router->dispatch()
+#38 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(170): Illuminate\\Foundation\\Http\\Kernel->Illuminate\\Foundation\\Http\\{closure}()
+#39 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#40 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php(31): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle()
+#41 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull->handle()
+#42 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#43 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php(51): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle()
+#44 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\TrimStrings->handle()
+#45 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php(27): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#46 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Http\\Middleware\\ValidatePostSize->handle()
+#47 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php(110): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#48 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance->handle()
+#49 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#50 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Http\\Middleware\\HandleCors->handle()
+#51 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php(58): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#52 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Http\\Middleware\\TrustProxies->handle()
+#53 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php(22): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#54 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\InvokeDeferredCallbacks->handle()
+#55 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(127): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#56 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(176): Illuminate\\Pipeline\\Pipeline->then()
+#57 /home/fede/Desktop/itca-laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(145): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter()
+#58 /home/fede/Desktop/itca-laravel/public/index.php(51): Illuminate\\Foundation\\Http\\Kernel->handle()
+#59 {main}
+"} 
+[2025-10-10 13:14:45] local.INFO: StickyBar update method called  
+[2025-10-10 13:14:45] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","color":"#059669"}  
+[2025-10-10 13:14:45] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":null,"texto":"gte","color":"#059669","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T13:14:45.000000Z"}  
+[2025-10-10 13:14:47] local.INFO: StickyBar update method called  
+[2025-10-10 13:14:47] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","color":"#d97706"}  
+[2025-10-10 13:14:47] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":null,"texto":"gte","color":"#d97706","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T13:14:47.000000Z"}  
+[2025-10-10 13:14:49] local.INFO: StickyBar update method called  
+[2025-10-10 13:14:49] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","color":"#dc2626"}  
+[2025-10-10 13:14:49] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":null,"texto":"gte","color":"#dc2626","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T13:14:49.000000Z"}  
+[2025-10-10 13:14:51] local.INFO: StickyBar update method called  
+[2025-10-10 13:14:51] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","color":"#1f2937"}  
+[2025-10-10 13:14:51] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":null,"texto":"gte","color":"#1f2937","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T13:14:51.000000Z"}  
+[2025-10-10 13:14:52] local.INFO: StickyBar update method called  
+[2025-10-10 13:14:52] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","color":"#7c3aed"}  
+[2025-10-10 13:14:52] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":null,"texto":"gte","color":"#7c3aed","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T13:14:52.000000Z"}  
+[2025-10-10 13:15:05] local.INFO: StickyBar update method called  
+[2025-10-10 13:15:05] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1"}  
+[2025-10-10 13:16:47] local.INFO: StickyBar update method called  
+[2025-10-10 13:16:47] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1"}  
+[2025-10-10 13:16:57] local.INFO: StickyBar update method called  
+[2025-10-10 13:16:57] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1"}  
+[2025-10-10 13:18:21] local.INFO: StickyBar update method called  
+[2025-10-10 13:18:21] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1","texto":"gte","color":"#7c3aed"}  
+[2025-10-10 13:18:21] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":null,"texto":"gte","color":"#7c3aed","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T13:18:21.000000Z"}  
+[2025-10-10 13:18:25] local.INFO: StickyBar update method called  
+[2025-10-10 13:18:25] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","texto":"gte","color":"#7c3aed"}  
+[2025-10-10 13:18:25] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":null,"texto":"gte","color":"#7c3aed","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T13:18:25.000000Z"}  
+[2025-10-10 13:34:37] local.INFO: StickyBar update method called  
+[2025-10-10 13:34:37] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1","texto":"gte","color":"#7c3aed"}  
+[2025-10-10 13:34:37] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":null,"texto":"gte","color":"#7c3aed","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T13:34:37.000000Z"}  
+[2025-10-10 14:53:16] local.INFO: StickyBar update method called  
+[2025-10-10 14:53:16] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","color":"#865e3c"}  
+[2025-10-10 15:02:26] local.INFO: StickyBar update method called  
+[2025-10-10 15:02:26] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1","texto":"gte","color":"#ff0098"}  
+[2025-10-10 15:03:28] local.INFO: StickyBar update method called  
+[2025-10-10 15:03:28] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1","texto":"gte","color":"#ff0000"}  
+[2025-10-10 15:04:03] local.INFO: StickyBar update method called  
+[2025-10-10 15:04:03] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1","texto":"gte","color":"#e9ff00"}  
+[2025-10-10 15:04:03] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":null,"texto":"gte","color":"#e9ff00","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:04:03.000000Z"}  
+[2025-10-10 15:04:10] local.INFO: StickyBar update method called  
+[2025-10-10 15:04:10] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1","texto":"gte","color":"#e600ff"}  
+[2025-10-10 15:04:10] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":null,"texto":"gte","color":"#e600ff","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:04:10.000000Z"}  
+[2025-10-10 15:04:54] local.INFO: Upload logo method called  
+[2025-10-10 15:04:54] local.INFO: Logo path: sticky-bar/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png  
+[2025-10-10 15:04:54] local.INFO: File exists: YES  
+[2025-10-10 15:04:54] local.INFO: Full path: /home/fede/Desktop/itca-laravel/storage/app/public/sticky-bar/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png  
+[2025-10-10 15:04:54] local.INFO: Logo uploaded: sticky-bar/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png  
+[2025-10-10 15:04:54] local.INFO: StickyBar updated: sticky-bar/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png  
+[2025-10-10 15:06:56] local.INFO: StickyBar update method called  
+[2025-10-10 15:06:56] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","texto":"gte","color":"#dbff00"}  
+[2025-10-10 15:06:56] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":"sticky-bar\/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png","texto":"gte","color":"#dbff00","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:06:56.000000Z"}  
+[2025-10-10 15:07:05] local.INFO: StickyBar update method called  
+[2025-10-10 15:07:05] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1","texto":"gte","color":"#dbff00"}  
+[2025-10-10 15:07:05] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png","texto":"gte","color":"#dbff00","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:07:05.000000Z"}  
+[2025-10-10 15:07:16] local.INFO: StickyBar update method called  
+[2025-10-10 15:07:16] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","texto":null,"color":"#dbff00"}  
+[2025-10-10 15:07:16] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":"sticky-bar\/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png","texto":"gte","color":"#dbff00","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:07:16.000000Z"}  
+[2025-10-10 15:07:29] local.INFO: StickyBar update method called  
+[2025-10-10 15:07:29] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","texto":"fdgd","color":"#dbff00"}  
+[2025-10-10 15:07:29] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":"sticky-bar\/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png","texto":"fdgd","color":"#dbff00","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:07:29.000000Z"}  
+[2025-10-10 15:07:37] local.INFO: StickyBar update method called  
+[2025-10-10 15:07:37] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","texto":"fdgd sdfs","color":"#dbff00"}  
+[2025-10-10 15:07:37] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":"sticky-bar\/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png","texto":"fdgd sdfs","color":"#dbff00","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:07:37.000000Z"}  
+[2025-10-10 15:07:39] local.INFO: StickyBar update method called  
+[2025-10-10 15:07:39] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1","texto":"fdgd sdfs","color":"#dbff00"}  
+[2025-10-10 15:07:39] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png","texto":"fdgd sdfs","color":"#dbff00","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:07:39.000000Z"}  
+[2025-10-10 15:07:42] local.INFO: StickyBar update method called  
+[2025-10-10 15:07:42] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","texto":"fdgd sdfs  sdf","color":"#dbff00"}  
+[2025-10-10 15:07:42] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":"sticky-bar\/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png","texto":"fdgd sdfs  sdf","color":"#dbff00","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:07:42.000000Z"}  
+[2025-10-10 15:11:31] local.INFO: StickyBar update method called  
+[2025-10-10 15:11:31] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1","texto":"fdgd sdfs  sdf","color":"#dbff00"}  
+[2025-10-10 15:11:31] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png","texto":"fdgd sdfs  sdf","color":"#dbff00","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:11:31.000000Z"}  
+[2025-10-10 15:11:34] local.INFO: StickyBar update method called  
+[2025-10-10 15:11:34] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","texto":"fdgd sdfs  sdf","color":"#00b9ff"}  
+[2025-10-10 15:11:34] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":"sticky-bar\/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png","texto":"fdgd sdfs  sdf","color":"#00b9ff","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:11:34.000000Z"}  
+[2025-10-10 15:12:20] local.INFO: StickyBar update method called  
+[2025-10-10 15:12:20] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1","texto":"fdgd sdfs  sdf","color":"#00b9ff"}  
+[2025-10-10 15:12:20] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png","texto":"fdgd sdfs  sdf","color":"#00b9ff","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:12:20.000000Z"}  
+[2025-10-10 15:12:25] local.INFO: StickyBar update method called  
+[2025-10-10 15:12:25] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1","texto":"fdgd sdfs  sdf  sdf","color":"#00b9ff"}  
+[2025-10-10 15:12:25] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png","texto":"fdgd sdfs  sdf  sdf","color":"#00b9ff","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:12:25.000000Z"}  
+[2025-10-10 15:12:28] local.INFO: StickyBar update method called  
+[2025-10-10 15:12:28] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1","texto":"fdgd sdfs  sdf  sdf","color":"#00ff45"}  
+[2025-10-10 15:12:28] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png","texto":"fdgd sdfs  sdf  sdf","color":"#00ff45","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:12:28.000000Z"}  
+[2025-10-10 15:12:32] local.INFO: StickyBar update method called  
+[2025-10-10 15:12:32] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1","texto":null,"color":"#00ff45"}  
+[2025-10-10 15:12:32] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png","texto":"fdgd sdfs  sdf  sdf","color":"#00ff45","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:12:28.000000Z"}  
+[2025-10-10 15:12:40] local.INFO: StickyBar update method called  
+[2025-10-10 15:12:40] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1","texto":"fdgd sdfs  sdf  sdf","color":"#f000ff"}  
+[2025-10-10 15:12:40] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png","texto":"fdgd sdfs  sdf  sdf","color":"#f000ff","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:12:40.000000Z"}  
+[2025-10-10 15:13:24] local.INFO: StickyBar update method called  
+[2025-10-10 15:13:24] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","texto":"fdgd sdfs  sdf  sdf","color":"#f000ff"}  
+[2025-10-10 15:13:24] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":"sticky-bar\/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png","texto":"fdgd sdfs  sdf  sdf","color":"#f000ff","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:13:24.000000Z"}  
+[2025-10-10 15:13:26] local.INFO: StickyBar update method called  
+[2025-10-10 15:13:26] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1","texto":"fdgd sdfs  sdf  sdf","color":"#f000ff"}  
+[2025-10-10 15:13:26] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png","texto":"fdgd sdfs  sdf  sdf","color":"#f000ff","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:13:26.000000Z"}  
+[2025-10-10 15:13:30] local.INFO: StickyBar update method called  
+[2025-10-10 15:13:30] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","texto":"fdgd sdfs  sdf  sdf","color":"#f000ff"}  
+[2025-10-10 15:13:30] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":"sticky-bar\/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png","texto":"fdgd sdfs  sdf  sdf","color":"#f000ff","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:13:30.000000Z"}  
+[2025-10-10 15:13:37] local.INFO: StickyBar update method called  
+[2025-10-10 15:13:37] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"0","texto":"fdgd sdfs  sdf  sdfdsf","color":"#f000ff"}  
+[2025-10-10 15:13:37] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png","texto":"fdgd sdfs  sdf  sdfdsf","color":"#f000ff","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:13:37.000000Z"}  
+[2025-10-10 15:13:41] local.INFO: StickyBar update method called  
+[2025-10-10 15:13:41] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1","texto":"fdgd sdfs  sdf  sdfdsf","color":"#00ff99"}  
+[2025-10-10 15:13:41] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png","texto":"fdgd sdfs  sdf  sdfdsf","color":"#00ff99","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:13:41.000000Z"}  
+[2025-10-10 15:13:45] local.INFO: StickyBar update method called  
+[2025-10-10 15:13:45] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","texto":"fdgd sdfs  sdf  sdfdsf","color":"#00ff99"}  
+[2025-10-10 15:13:45] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":"sticky-bar\/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png","texto":"fdgd sdfs  sdf  sdfdsf","color":"#00ff99","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:13:45.000000Z"}  
+[2025-10-10 15:13:48] local.INFO: StickyBar update method called  
+[2025-10-10 15:13:48] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"0","texto":"fdgd sdfs  sdf  sdfdsf","color":"#b5ff00"}  
+[2025-10-10 15:13:48] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png","texto":"fdgd sdfs  sdf  sdfdsf","color":"#b5ff00","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:13:48.000000Z"}  
+[2025-10-10 15:15:27] local.INFO: StickyBar update method called  
+[2025-10-10 15:15:27] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","texto":"fdgd sdfs  sdf  sdfdsf","color":"#b5ff00"}  
+[2025-10-10 15:15:27] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":"sticky-bar\/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png","texto":"fdgd sdfs  sdf  sdfdsf","color":"#b5ff00","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:15:27.000000Z"}  
+[2025-10-10 15:15:31] local.INFO: StickyBar update method called  
+[2025-10-10 15:15:31] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"0","texto":"fdgd sdfs  sdf  sdfdsf","color":"#b5ff00"}  
+[2025-10-10 15:15:31] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":"sticky-bar\/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png","texto":"fdgd sdfs  sdf  sdfdsf","color":"#b5ff00","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:15:27.000000Z"}  
+[2025-10-10 15:15:34] local.INFO: StickyBar update method called  
+[2025-10-10 15:15:34] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"0","texto":"fdgd sdfs  sdf  sdfdsf","color":"#e2ff00"}  
+[2025-10-10 15:15:34] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":"sticky-bar\/7eBK5huwLGYyZU04qhHdlZ3QDh8RPL6KnNtJxNAa.png","texto":"fdgd sdfs  sdf  sdfdsf","color":"#e2ff00","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:15:34.000000Z"}  
+[2025-10-10 15:15:47] local.INFO: StickyBar update method called  
+[2025-10-10 15:15:47] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"0","texto":"fdgd sdfs  sdf  sdfdsf","color":"#ff0083"}  
+[2025-10-10 15:15:47] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":null,"texto":"fdgd sdfs  sdf  sdfdsf","color":"#ff0083","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:15:47.000000Z"}  
+[2025-10-10 15:15:51] local.INFO: StickyBar update method called  
+[2025-10-10 15:15:51] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"0","texto":null,"color":"#ff0083"}  
+[2025-10-10 15:15:51] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":null,"texto":"fdgd sdfs  sdf  sdfdsf","color":"#ff0083","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:15:47.000000Z"}  
+[2025-10-10 15:16:05] local.INFO: Upload logo method called  
+[2025-10-10 15:16:05] local.INFO: Logo path: sticky-bar/YpS9JpysWlHuX6kkFIb8To5nqgo33gfXTW0WEWCZ.png  
+[2025-10-10 15:16:05] local.INFO: File exists: YES  
+[2025-10-10 15:16:05] local.INFO: Full path: /home/fede/Desktop/itca-laravel/storage/app/public/sticky-bar/YpS9JpysWlHuX6kkFIb8To5nqgo33gfXTW0WEWCZ.png  
+[2025-10-10 15:16:05] local.INFO: Logo uploaded: sticky-bar/YpS9JpysWlHuX6kkFIb8To5nqgo33gfXTW0WEWCZ.png  
+[2025-10-10 15:16:05] local.INFO: StickyBar updated: sticky-bar/YpS9JpysWlHuX6kkFIb8To5nqgo33gfXTW0WEWCZ.png  
+[2025-10-10 15:19:07] local.INFO: StickyBar update method called  
+[2025-10-10 15:19:07] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"0","texto":"fede","color":"#aaff00"}  
+[2025-10-10 15:19:07] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":"sticky-bar\/YpS9JpysWlHuX6kkFIb8To5nqgo33gfXTW0WEWCZ.png","texto":"fede","color":"#aaff00","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:19:07.000000Z"}  
+[2025-10-10 15:20:33] local.INFO: StickyBar update method called  
+[2025-10-10 15:20:33] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"0","texto":"fede \ud83c\udf89","color":"#aaff00"}  
+[2025-10-10 15:20:33] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":"sticky-bar\/YpS9JpysWlHuX6kkFIb8To5nqgo33gfXTW0WEWCZ.png","texto":"fede \ud83c\udf89","color":"#aaff00","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:20:33.000000Z"}  
+[2025-10-10 15:20:38] local.INFO: StickyBar update method called  
+[2025-10-10 15:20:38] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1","texto":"fede \ud83c\udf89","color":"#aaff00"}  
+[2025-10-10 15:20:38] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/YpS9JpysWlHuX6kkFIb8To5nqgo33gfXTW0WEWCZ.png","texto":"fede \ud83c\udf89","color":"#aaff00","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:20:38.000000Z"}  
+[2025-10-10 15:28:55] local.INFO: Upload logo method called  
+[2025-10-10 15:28:55] local.INFO: Logo path: sticky-bar/imVjfdUxAPHJZ3NYE2pXIBgArdeL3JJ5coEneLOq.png  
+[2025-10-10 15:28:55] local.INFO: File exists: YES  
+[2025-10-10 15:28:55] local.INFO: Full path: /home/fede/Desktop/itca-laravel/storage/app/public/sticky-bar/imVjfdUxAPHJZ3NYE2pXIBgArdeL3JJ5coEneLOq.png  
+[2025-10-10 15:28:55] local.INFO: Logo uploaded: sticky-bar/imVjfdUxAPHJZ3NYE2pXIBgArdeL3JJ5coEneLOq.png  
+[2025-10-10 15:28:55] local.INFO: StickyBar updated: sticky-bar/imVjfdUxAPHJZ3NYE2pXIBgArdeL3JJ5coEneLOq.png  
+[2025-10-10 15:28:58] local.INFO: StickyBar update method called  
+[2025-10-10 15:28:58] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1","texto":"fede \ud83c\udf89","color":"#aaff00"}  
+[2025-10-10 15:28:58] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/imVjfdUxAPHJZ3NYE2pXIBgArdeL3JJ5coEneLOq.png","texto":"fede \ud83c\udf89","color":"#aaff00","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:28:55.000000Z"}  
+[2025-10-10 15:29:02] local.INFO: StickyBar update method called  
+[2025-10-10 15:29:02] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1","texto":"fede \ud83c\udf89","color":"#00ff0a"}  
+[2025-10-10 15:29:02] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/imVjfdUxAPHJZ3NYE2pXIBgArdeL3JJ5coEneLOq.png","texto":"fede \ud83c\udf89","color":"#00ff0a","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:29:02.000000Z"}  
+[2025-10-10 15:30:03] local.INFO: StickyBar update method called  
+[2025-10-10 15:30:03] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff0a"}  
+[2025-10-10 15:30:03] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/imVjfdUxAPHJZ3NYE2pXIBgArdeL3JJ5coEneLOq.png","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff0a","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:30:03.000000Z"}  
+[2025-10-10 15:31:01] local.INFO: StickyBar update method called  
+[2025-10-10 15:31:01] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#ffb000"}  
+[2025-10-10 15:31:01] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/imVjfdUxAPHJZ3NYE2pXIBgArdeL3JJ5coEneLOq.png","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#ffb000","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:31:01.000000Z"}  
+[2025-10-10 15:38:14] local.INFO: StickyBar update method called  
+[2025-10-10 15:38:14] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#ff006a"}  
+[2025-10-10 15:38:14] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":null,"texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#ff006a","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:38:14.000000Z"}  
+[2025-10-10 15:38:45] local.INFO: StickyBar update method called  
+[2025-10-10 15:38:45] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ffae"}  
+[2025-10-10 15:38:45] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":null,"texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ffae","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:38:45.000000Z"}  
+[2025-10-10 15:42:23] local.INFO: Upload logo method called  
+[2025-10-10 15:42:23] local.INFO: Logo path: sticky-bar/EZjFCrXhlHWqkA41OiMnD3dV8iI7eq4EhY5zoJaD.png  
+[2025-10-10 15:42:23] local.INFO: File exists: YES  
+[2025-10-10 15:42:23] local.INFO: Full path: /home/fede/Desktop/itca-laravel/storage/app/public/sticky-bar/EZjFCrXhlHWqkA41OiMnD3dV8iI7eq4EhY5zoJaD.png  
+[2025-10-10 15:42:23] local.INFO: Logo uploaded: sticky-bar/EZjFCrXhlHWqkA41OiMnD3dV8iI7eq4EhY5zoJaD.png  
+[2025-10-10 15:42:23] local.INFO: StickyBar updated: sticky-bar/EZjFCrXhlHWqkA41OiMnD3dV8iI7eq4EhY5zoJaD.png  
+[2025-10-10 15:42:47] local.INFO: StickyBar update method called  
+[2025-10-10 15:42:47] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#ae00ff"}  
+[2025-10-10 15:42:47] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/EZjFCrXhlHWqkA41OiMnD3dV8iI7eq4EhY5zoJaD.png","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#ae00ff","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:42:47.000000Z"}  
+[2025-10-10 15:42:57] local.INFO: StickyBar update method called  
+[2025-10-10 15:42:57] local.INFO: Request data: {"_token":"Rqfq1UOZ9rqrmKOP45F7GZa0HsaduC1huXjgbnwy","visible":"1","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#ffeb00"}  
+[2025-10-10 15:42:57] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/EZjFCrXhlHWqkA41OiMnD3dV8iI7eq4EhY5zoJaD.png","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#ffeb00","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T15:42:57.000000Z"}  
+[2025-10-10 19:22:03] local.INFO: StickyBar update method called  
+[2025-10-10 19:22:03] local.INFO: Request data: {"_token":"BPPak1HEziJXxTYSq4WiKRUQGKDMWO1sAU6MvXo6","visible":"1","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ffca"}  
+[2025-10-10 19:22:03] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/EZjFCrXhlHWqkA41OiMnD3dV8iI7eq4EhY5zoJaD.png","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ffca","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T19:22:03.000000Z"}  
+[2025-10-10 19:26:52] local.INFO: StickyBar update method called  
+[2025-10-10 19:26:52] local.INFO: Request data: {"_token":"BPPak1HEziJXxTYSq4WiKRUQGKDMWO1sAU6MvXo6","visible":"1","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#c600ff"}  
+[2025-10-10 19:26:52] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/EZjFCrXhlHWqkA41OiMnD3dV8iI7eq4EhY5zoJaD.png","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#c600ff","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T19:26:52.000000Z"}  
+[2025-10-10 19:29:50] local.INFO: Upload logo method called  
+[2025-10-10 19:29:50] local.INFO: Logo path: sticky-bar/omclrUxJzQouOExLyR1DGRolnaOvAR1WjB5k8CLh.png  
+[2025-10-10 19:29:50] local.INFO: File exists: YES  
+[2025-10-10 19:29:50] local.INFO: Full path: /home/fede/Desktop/itca-laravel/storage/app/public/sticky-bar/omclrUxJzQouOExLyR1DGRolnaOvAR1WjB5k8CLh.png  
+[2025-10-10 19:29:50] local.INFO: Logo uploaded: sticky-bar/omclrUxJzQouOExLyR1DGRolnaOvAR1WjB5k8CLh.png  
+[2025-10-10 19:29:50] local.INFO: StickyBar updated: sticky-bar/omclrUxJzQouOExLyR1DGRolnaOvAR1WjB5k8CLh.png  
+[2025-10-10 19:30:03] local.INFO: StickyBar update method called  
+[2025-10-10 19:30:03] local.INFO: Request data: {"_token":"BPPak1HEziJXxTYSq4WiKRUQGKDMWO1sAU6MvXo6","visible":"1","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#dfff00"}  
+[2025-10-10 19:30:03] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/omclrUxJzQouOExLyR1DGRolnaOvAR1WjB5k8CLh.png","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#dfff00","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T19:30:03.000000Z"}  
+[2025-10-10 19:30:51] local.INFO: StickyBar update method called  
+[2025-10-10 19:30:51] local.INFO: Request data: {"_token":"BPPak1HEziJXxTYSq4WiKRUQGKDMWO1sAU6MvXo6","visible":"1","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#2800ff"}  
+[2025-10-10 19:30:51] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":null,"texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#2800ff","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T19:30:51.000000Z"}  
+[2025-10-10 19:31:11] local.INFO: StickyBar update method called  
+[2025-10-10 19:31:11] local.INFO: Request data: {"_token":"BPPak1HEziJXxTYSq4WiKRUQGKDMWO1sAU6MvXo6","visible":"1","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00e6ff"}  
+[2025-10-10 19:31:11] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":null,"texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00e6ff","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T19:31:11.000000Z"}  
+[2025-10-10 19:31:24] local.INFO: StickyBar update method called  
+[2025-10-10 19:31:24] local.INFO: Request data: {"_token":"BPPak1HEziJXxTYSq4WiKRUQGKDMWO1sAU6MvXo6","visible":"1","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00fff4"}  
+[2025-10-10 19:31:24] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":null,"texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00fff4","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T19:31:24.000000Z"}  
+[2025-10-10 19:31:38] local.INFO: StickyBar update method called  
+[2025-10-10 19:31:38] local.INFO: Request data: {"_token":"BPPak1HEziJXxTYSq4WiKRUQGKDMWO1sAU6MvXo6","visible":"1","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d"}  
+[2025-10-10 19:31:38] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":null,"texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T19:31:38.000000Z"}  
+[2025-10-10 19:32:11] local.INFO: Upload logo method called  
+[2025-10-10 19:32:11] local.INFO: Logo path: sticky-bar/4bR1AE230jmWDS1PL95dPmxrBte7YcWDDz9pwZtp.png  
+[2025-10-10 19:32:11] local.INFO: File exists: YES  
+[2025-10-10 19:32:11] local.INFO: Full path: /home/fede/Desktop/itca-laravel/storage/app/public/sticky-bar/4bR1AE230jmWDS1PL95dPmxrBte7YcWDDz9pwZtp.png  
+[2025-10-10 19:32:11] local.INFO: Logo uploaded: sticky-bar/4bR1AE230jmWDS1PL95dPmxrBte7YcWDDz9pwZtp.png  
+[2025-10-10 19:32:11] local.INFO: StickyBar updated: sticky-bar/4bR1AE230jmWDS1PL95dPmxrBte7YcWDDz9pwZtp.png  
+[2025-10-10 19:32:47] local.INFO: StickyBar update method called  
+[2025-10-10 19:32:47] local.INFO: Request data: {"_token":"BPPak1HEziJXxTYSq4WiKRUQGKDMWO1sAU6MvXo6","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d"}  
+[2025-10-10 19:32:47] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":"sticky-bar\/4bR1AE230jmWDS1PL95dPmxrBte7YcWDDz9pwZtp.png","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-10T19:32:47.000000Z"}  
+[2025-10-11 10:41:48] local.INFO: StickyBar update method called  
+[2025-10-11 10:41:48] local.INFO: Request data: {"_token":"xlOWR9gu5vPanMGjKsBkVppJ1g7dGvR6wdbztxCv","visible":"1","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d"}  
+[2025-10-11 10:41:48] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/4bR1AE230jmWDS1PL95dPmxrBte7YcWDDz9pwZtp.png","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-11T10:41:48.000000Z"}  
+[2025-10-11 10:43:00] local.INFO: StickyBar update method called  
+[2025-10-11 10:43:00] local.INFO: Request data: {"_token":"xlOWR9gu5vPanMGjKsBkVppJ1g7dGvR6wdbztxCv","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d"}  
+[2025-10-11 10:43:00] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":"sticky-bar\/4bR1AE230jmWDS1PL95dPmxrBte7YcWDDz9pwZtp.png","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-11T10:43:00.000000Z"}  
+[2025-10-11 10:45:00] local.INFO: StickyBar update method called  
+[2025-10-11 10:45:00] local.INFO: Request data: {"_token":"xlOWR9gu5vPanMGjKsBkVppJ1g7dGvR6wdbztxCv","visible":"1","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d"}  
+[2025-10-11 10:45:00] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/4bR1AE230jmWDS1PL95dPmxrBte7YcWDDz9pwZtp.png","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-11T10:45:00.000000Z"}  
+[2025-10-11 10:45:05] local.INFO: StickyBar update method called  
+[2025-10-11 10:45:05] local.INFO: Request data: {"_token":"xlOWR9gu5vPanMGjKsBkVppJ1g7dGvR6wdbztxCv","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d"}  
+[2025-10-11 10:45:05] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":"sticky-bar\/4bR1AE230jmWDS1PL95dPmxrBte7YcWDDz9pwZtp.png","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-11T10:45:05.000000Z"}  
+[2025-10-11 10:46:18] local.INFO: StickyBar update method called  
+[2025-10-11 10:46:18] local.INFO: Request data: {"_token":"xlOWR9gu5vPanMGjKsBkVppJ1g7dGvR6wdbztxCv","visible":"1","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d"}  
+[2025-10-11 10:46:18] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/4bR1AE230jmWDS1PL95dPmxrBte7YcWDDz9pwZtp.png","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-11T10:46:18.000000Z"}  
+[2025-10-11 10:46:25] local.INFO: StickyBar update method called  
+[2025-10-11 10:46:25] local.INFO: Request data: {"_token":"xlOWR9gu5vPanMGjKsBkVppJ1g7dGvR6wdbztxCv","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d"}  
+[2025-10-11 10:46:25] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":"sticky-bar\/4bR1AE230jmWDS1PL95dPmxrBte7YcWDDz9pwZtp.png","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-11T10:46:25.000000Z"}  
+[2025-10-11 10:49:41] local.INFO: StickyBar update method called  
+[2025-10-11 10:49:41] local.INFO: Request data: {"_token":"xlOWR9gu5vPanMGjKsBkVppJ1g7dGvR6wdbztxCv","visible":"1","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d"}  
+[2025-10-11 10:49:41] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/4bR1AE230jmWDS1PL95dPmxrBte7YcWDDz9pwZtp.png","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-11T10:49:41.000000Z"}  
+[2025-10-11 10:49:48] local.INFO: StickyBar update method called  
+[2025-10-11 10:49:48] local.INFO: Request data: {"_token":"xlOWR9gu5vPanMGjKsBkVppJ1g7dGvR6wdbztxCv","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d"}  
+[2025-10-11 10:49:48] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":"sticky-bar\/4bR1AE230jmWDS1PL95dPmxrBte7YcWDDz9pwZtp.png","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-11T10:49:48.000000Z"}  
+[2025-10-11 10:53:35] local.INFO: StickyBar update method called  
+[2025-10-11 10:53:35] local.INFO: Request data: {"_token":"xlOWR9gu5vPanMGjKsBkVppJ1g7dGvR6wdbztxCv","visible":"1","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d"}  
+[2025-10-11 10:53:35] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/4bR1AE230jmWDS1PL95dPmxrBte7YcWDDz9pwZtp.png","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-11T10:53:35.000000Z"}  
+[2025-10-11 10:53:38] local.INFO: StickyBar update method called  
+[2025-10-11 10:53:38] local.INFO: Request data: {"_token":"xlOWR9gu5vPanMGjKsBkVppJ1g7dGvR6wdbztxCv","visible":"1","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d"}  
+[2025-10-11 10:53:38] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/4bR1AE230jmWDS1PL95dPmxrBte7YcWDDz9pwZtp.png","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-11T10:53:35.000000Z"}  
+[2025-10-11 10:54:03] local.INFO: StickyBar update method called  
+[2025-10-11 10:54:03] local.INFO: Request data: {"_token":"xlOWR9gu5vPanMGjKsBkVppJ1g7dGvR6wdbztxCv","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d"}  
+[2025-10-11 10:54:03] local.INFO: StickyBar updated: {"id":1,"visible":false,"logo_url":null,"texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-11T10:54:03.000000Z"}  
+[2025-10-11 10:55:15] local.INFO: Upload logo method called  
+[2025-10-11 10:55:15] local.INFO: Logo path: sticky-bar/Ar89HBwM3zbitAmQ919zWGNK4wdGtZcwr3iLPnIy.png  
+[2025-10-11 10:55:15] local.INFO: File exists: YES  
+[2025-10-11 10:55:15] local.INFO: Full path: /home/fede/Desktop/itca-laravel/storage/app/public/sticky-bar/Ar89HBwM3zbitAmQ919zWGNK4wdGtZcwr3iLPnIy.png  
+[2025-10-11 10:55:15] local.INFO: Logo uploaded: sticky-bar/Ar89HBwM3zbitAmQ919zWGNK4wdGtZcwr3iLPnIy.png  
+[2025-10-11 10:55:15] local.INFO: StickyBar updated: sticky-bar/Ar89HBwM3zbitAmQ919zWGNK4wdGtZcwr3iLPnIy.png  
+[2025-10-11 10:55:28] local.INFO: StickyBar update method called  
+[2025-10-11 10:55:28] local.INFO: Request data: {"_token":"xlOWR9gu5vPanMGjKsBkVppJ1g7dGvR6wdbztxCv","visible":"1","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d"}  
+[2025-10-11 10:55:28] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/Ar89HBwM3zbitAmQ919zWGNK4wdGtZcwr3iLPnIy.png","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-11T10:55:28.000000Z"}  
+[2025-10-11 10:55:33] local.INFO: StickyBar update method called  
+[2025-10-11 10:55:33] local.INFO: Request data: {"_token":"xlOWR9gu5vPanMGjKsBkVppJ1g7dGvR6wdbztxCv","visible":"1","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d"}  
+[2025-10-11 10:55:33] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/Ar89HBwM3zbitAmQ919zWGNK4wdGtZcwr3iLPnIy.png","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-11T10:55:28.000000Z"}  
+[2025-10-11 10:57:27] local.INFO: Upload logo method called  
+[2025-10-11 10:57:27] local.INFO: Logo path: sticky-bar/5YNMaV3LeSFxHKLhpUY26AJfCxG5lAkeGrw5Pdig.png  
+[2025-10-11 10:57:27] local.INFO: File exists: YES  
+[2025-10-11 10:57:27] local.INFO: Full path: /home/fede/Desktop/itca-laravel/storage/app/public/sticky-bar/5YNMaV3LeSFxHKLhpUY26AJfCxG5lAkeGrw5Pdig.png  
+[2025-10-11 10:57:27] local.INFO: Logo uploaded: sticky-bar/5YNMaV3LeSFxHKLhpUY26AJfCxG5lAkeGrw5Pdig.png  
+[2025-10-11 10:57:27] local.INFO: StickyBar updated: sticky-bar/5YNMaV3LeSFxHKLhpUY26AJfCxG5lAkeGrw5Pdig.png  
+[2025-10-11 10:59:58] local.INFO: Upload logo method called  
+[2025-10-11 10:59:58] local.INFO: Logo path: sticky-bar/FcXTvdKQkcxjLnjSVPYam9QKvUmlGuYOFFZPsGiO.svg  
+[2025-10-11 10:59:58] local.INFO: File exists: YES  
+[2025-10-11 10:59:58] local.INFO: Full path: /home/fede/Desktop/itca-laravel/storage/app/public/sticky-bar/FcXTvdKQkcxjLnjSVPYam9QKvUmlGuYOFFZPsGiO.svg  
+[2025-10-11 10:59:58] local.INFO: Logo uploaded: sticky-bar/FcXTvdKQkcxjLnjSVPYam9QKvUmlGuYOFFZPsGiO.svg  
+[2025-10-11 10:59:58] local.INFO: StickyBar updated: sticky-bar/FcXTvdKQkcxjLnjSVPYam9QKvUmlGuYOFFZPsGiO.svg  
+[2025-10-11 11:00:01] local.INFO: StickyBar update method called  
+[2025-10-11 11:00:01] local.INFO: Request data: {"_token":"xlOWR9gu5vPanMGjKsBkVppJ1g7dGvR6wdbztxCv","visible":"1","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d"}  
+[2025-10-11 11:00:01] local.INFO: StickyBar updated: {"id":1,"visible":true,"logo_url":"sticky-bar\/FcXTvdKQkcxjLnjSVPYam9QKvUmlGuYOFFZPsGiO.svg","texto":"Aprovecha hasta 35% OFF y hasta 12 cuotas sin inter\u00e9s en CURSOS y CARRERAS  |  Hasta el 10\/10 \u23f0","color":"#00ff7d","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-11T10:59:58.000000Z"}  
+[2025-10-11 11:04:55] local.INFO: Upload logo method called  
+[2025-10-11 11:04:55] local.INFO: Logo path: sticky-bar/lCUE9FAGfc6CjmnV0w5ppxnu8lh8DhB11LNCD0Mp.svg  
+[2025-10-11 11:04:55] local.INFO: File exists: YES  
+[2025-10-11 11:04:55] local.INFO: Full path: /home/fede/Desktop/itca-laravel/storage/app/public/sticky-bar/lCUE9FAGfc6CjmnV0w5ppxnu8lh8DhB11LNCD0Mp.svg  
+[2025-10-11 11:04:55] local.INFO: Logo uploaded: sticky-bar/lCUE9FAGfc6CjmnV0w5ppxnu8lh8DhB11LNCD0Mp.svg  
+[2025-10-11 11:04:55] local.INFO: StickyBar updated: sticky-bar/lCUE9FAGfc6CjmnV0w5ppxnu8lh8DhB11LNCD0Mp.svg  
+[2025-10-11 11:14:21] local.INFO: Upload logo method called  
+[2025-10-11 11:14:21] local.INFO: Logo path: sticky-bar/ygjTawTZzI1gVQcjK2Tbln4KbSMylh1T09ZFvZ2r.png  
+[2025-10-11 11:14:21] local.INFO: File exists: YES  
+[2025-10-11 11:14:21] local.INFO: Full path: /home/fede/Desktop/itca-laravel/storage/app/public/sticky-bar/ygjTawTZzI1gVQcjK2Tbln4KbSMylh1T09ZFvZ2r.png  
+[2025-10-11 11:14:21] local.INFO: Logo uploaded: sticky-bar/ygjTawTZzI1gVQcjK2Tbln4KbSMylh1T09ZFvZ2r.png  
+[2025-10-11 11:14:21] local.INFO: StickyBar updated: sticky-bar/ygjTawTZzI1gVQcjK2Tbln4KbSMylh1T09ZFvZ2r.png  
+[2025-10-11 11:16:56] local.INFO: Upload logo method called  
+[2025-10-11 11:16:56] local.INFO: Logo path: sticky-bar/KGQv8E4ElYk01q8VengZ242BuiAJk3jd0Xer6LWy.svg  
+[2025-10-11 11:16:56] local.INFO: File exists: YES  
+[2025-10-11 11:16:56] local.INFO: Full path: /home/fede/Desktop/itca-laravel/storage/app/public/sticky-bar/KGQv8E4ElYk01q8VengZ242BuiAJk3jd0Xer6LWy.svg  
+[2025-10-11 11:16:56] local.INFO: Logo uploaded: sticky-bar/KGQv8E4ElYk01q8VengZ242BuiAJk3jd0Xer6LWy.svg  
+[2025-10-11 11:16:56] local.INFO: StickyBar updated: sticky-bar/KGQv8E4ElYk01q8VengZ242BuiAJk3jd0Xer6LWy.svg  
+[2025-10-11 11:17:27] local.INFO: Upload logo method called  
+[2025-10-11 11:17:27] local.INFO: Logo path: sticky-bar/JBRzOHoaHtpxg5dVw7wMKkjitXT6xQUCcTMVTTxP.svg  
+[2025-10-11 11:17:27] local.INFO: File exists: YES  
+[2025-10-11 11:17:27] local.INFO: Full path: /home/fede/Desktop/itca-laravel/storage/app/public/sticky-bar/JBRzOHoaHtpxg5dVw7wMKkjitXT6xQUCcTMVTTxP.svg  
+[2025-10-11 11:17:27] local.INFO: Logo uploaded: sticky-bar/JBRzOHoaHtpxg5dVw7wMKkjitXT6xQUCcTMVTTxP.svg  
+[2025-10-11 11:17:27] local.INFO: StickyBar updated: sticky-bar/JBRzOHoaHtpxg5dVw7wMKkjitXT6xQUCcTMVTTxP.svg  
+[2025-10-11 11:48:15] local.INFO: Upload logo method called  
+[2025-10-11 11:48:15] local.INFO: Logo path: sticky-bar/ClGz9Wpokce7ZW4KyDSMCLJnY2aPvdEIeQeNyAHI.png  
+[2025-10-11 11:48:15] local.INFO: File exists: YES  
+[2025-10-11 11:48:15] local.INFO: Full path: /home/fede/Desktop/itca-laravel/storage/app/public/sticky-bar/ClGz9Wpokce7ZW4KyDSMCLJnY2aPvdEIeQeNyAHI.png  
+[2025-10-11 11:48:15] local.INFO: Logo uploaded: sticky-bar/ClGz9Wpokce7ZW4KyDSMCLJnY2aPvdEIeQeNyAHI.png  
+[2025-10-11 11:48:15] local.INFO: StickyBar updated: sticky-bar/ClGz9Wpokce7ZW4KyDSMCLJnY2aPvdEIeQeNyAHI.png  
+[2025-10-11 11:48:55] local.INFO: Upload logo method called  
+[2025-10-11 11:48:55] local.INFO: Logo path: sticky-bar/6PqKykgGrcnMmC59pSqZxfaYMzWTJTJuXYU8OMNP.png  
+[2025-10-11 11:48:55] local.INFO: File exists: YES  
+[2025-10-11 11:48:55] local.INFO: Full path: /home/fede/Desktop/itca-laravel/storage/app/public/sticky-bar/6PqKykgGrcnMmC59pSqZxfaYMzWTJTJuXYU8OMNP.png  
+[2025-10-11 11:48:55] local.INFO: Logo uploaded: sticky-bar/6PqKykgGrcnMmC59pSqZxfaYMzWTJTJuXYU8OMNP.png  
+[2025-10-11 11:48:55] local.INFO: StickyBar updated: sticky-bar/6PqKykgGrcnMmC59pSqZxfaYMzWTJTJuXYU8OMNP.png  
+[2025-10-13 12:32:02] local.INFO: StickyBar update method called  
+[2025-10-13 12:32:02] local.INFO: Request data: {"_token":"3GwibVXSSJuFASYGfqmviNVMTVc1OFZrnLtyDAyR","visible":"1","linea_1":"Oferta para alumnos","linea_2":"50 % de descuento","url":"http:\/\/clarin.com.ar","color":"#9cff00"}  
+[2025-10-13 12:32:02] local.INFO: StickyBar updated: {"id":1,"visible":true,"color":"#9cff00","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-13T12:32:02.000000Z","linea_1":"Oferta para alumnos","linea_2":"50 % de descuento","url":"http:\/\/clarin.com.ar"}  
+[2025-10-13 12:38:04] local.INFO: StickyBar update method called  
+[2025-10-13 12:38:04] local.INFO: Request data: {"_token":"3GwibVXSSJuFASYGfqmviNVMTVc1OFZrnLtyDAyR","visible":"1","linea_1":"Oferta para alumnos","linea_2":"50 % de descuento","texto_link":"mas info","url":"http:\/\/www.clarin.com.ar","color":"#9cff00"}  
+[2025-10-13 12:38:04] local.INFO: StickyBar updated: {"id":1,"visible":true,"color":"#9cff00","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-13T12:38:04.000000Z","linea_1":"Oferta para alumnos","linea_2":"50 % de descuento","url":"http:\/\/www.clarin.com.ar","texto_link":"mas info"}  
+[2025-10-13 12:38:32] local.INFO: StickyBar update method called  
+[2025-10-13 12:38:32] local.INFO: Request data: {"_token":"3GwibVXSSJuFASYGfqmviNVMTVc1OFZrnLtyDAyR","visible":"1","linea_1":"Oferta para alumnos","linea_2":"50 % de descuento |","texto_link":"mas info","url":"http:\/\/www.clarin.com.ar","color":"#9cff00"}  
+[2025-10-13 12:38:32] local.INFO: StickyBar updated: {"id":1,"visible":true,"color":"#9cff00","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-13T12:38:32.000000Z","linea_1":"Oferta para alumnos","linea_2":"50 % de descuento |","url":"http:\/\/www.clarin.com.ar","texto_link":"mas info"}  
+[2025-10-13 12:38:41] local.INFO: StickyBar update method called  
+[2025-10-13 12:38:41] local.INFO: Request data: {"_token":"3GwibVXSSJuFASYGfqmviNVMTVc1OFZrnLtyDAyR","visible":"1","linea_1":"Oferta para alumnos","linea_2":"50 % de descuento |","texto_link":"mas info","url":"http:\/\/www.clarin.com.ar","color":"#ff00be"}  
+[2025-10-13 12:38:41] local.INFO: StickyBar updated: {"id":1,"visible":true,"color":"#ff00be","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-13T12:38:41.000000Z","linea_1":"Oferta para alumnos","linea_2":"50 % de descuento |","url":"http:\/\/www.clarin.com.ar","texto_link":"mas info"}  
+[2025-10-13 12:38:58] local.INFO: StickyBar update method called  
+[2025-10-13 12:38:58] local.INFO: Request data: {"_token":"3GwibVXSSJuFASYGfqmviNVMTVc1OFZrnLtyDAyR","visible":"1","linea_1":"Oferta para alumnos","linea_2":"50 % de descuento |","texto_link":"mas info","url":"http:\/\/www.clarin.com.ar","color":"#edff00"}  
+[2025-10-13 12:38:58] local.INFO: StickyBar updated: {"id":1,"visible":true,"color":"#edff00","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-13T12:38:58.000000Z","linea_1":"Oferta para alumnos","linea_2":"50 % de descuento |","url":"http:\/\/www.clarin.com.ar","texto_link":"mas info"}  
+[2025-10-13 12:39:26] local.INFO: StickyBar update method called  
+[2025-10-13 12:39:26] local.INFO: Request data: {"_token":"3GwibVXSSJuFASYGfqmviNVMTVc1OFZrnLtyDAyR","visible":"1","linea_1":"Oferta para alumnos","linea_2":"en cursos 50 % de descuento |","texto_link":"M\u00e1s info","url":"http:\/\/www.clarin.com.ar","color":"#00ff96"}  
+[2025-10-13 12:39:26] local.INFO: StickyBar updated: {"id":1,"visible":true,"color":"#00ff96","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-13T12:39:26.000000Z","linea_1":"Oferta para alumnos","linea_2":"en cursos 50 % de descuento |","url":"http:\/\/www.clarin.com.ar","texto_link":"M\u00e1s info"}  
+[2025-10-13 12:40:40] local.INFO: StickyBar update method called  
+[2025-10-13 12:40:40] local.INFO: Request data: {"_token":"3GwibVXSSJuFASYGfqmviNVMTVc1OFZrnLtyDAyR","visible":"1","linea_1":"Oferta para alumnos","linea_2":"en cursos 50 % \ud83d\ude80 de descuento |","texto_link":"M\u00e1s info","url":"http:\/\/www.clarin.com.ar","color":"#00ff96"}  
+[2025-10-13 12:40:40] local.INFO: StickyBar updated: {"id":1,"visible":true,"color":"#00ff96","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-13T12:40:40.000000Z","linea_1":"Oferta para alumnos","linea_2":"en cursos 50 % \ud83d\ude80 de descuento |","url":"http:\/\/www.clarin.com.ar","texto_link":"M\u00e1s info"}  
+[2025-10-13 12:41:33] local.INFO: StickyBar update method called  
+[2025-10-13 12:41:33] local.INFO: Request data: {"_token":"3GwibVXSSJuFASYGfqmviNVMTVc1OFZrnLtyDAyR","visible":"1","linea_1":"Oferta para alumnos \ud83c\udf89","linea_2":"en cursos 50 % \ud83d\ude80 de descuento |","texto_link":"M\u00e1s info","url":"http:\/\/www.clarin.com.ar","color":"#00ff96"}  
+[2025-10-13 12:41:33] local.INFO: StickyBar updated: {"id":1,"visible":true,"color":"#00ff96","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-13T12:41:33.000000Z","linea_1":"Oferta para alumnos \ud83c\udf89","linea_2":"en cursos 50 % \ud83d\ude80 de descuento |","url":"http:\/\/www.clarin.com.ar","texto_link":"M\u00e1s info"}  
+[2025-10-13 12:41:49] local.INFO: StickyBar update method called  
+[2025-10-13 12:41:49] local.INFO: Request data: {"_token":"3GwibVXSSJuFASYGfqmviNVMTVc1OFZrnLtyDAyR","visible":"1","linea_1":"Oferta para alumnos \ud83c\udf89","linea_2":"en cursos 50 % \ud83d\ude80 de descuento |","texto_link":null,"url":"http:\/\/www.clarin.com.ar","color":"#00ff96"}  
+[2025-10-13 12:41:49] local.INFO: StickyBar updated: {"id":1,"visible":true,"color":"#00ff96","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-13T12:41:49.000000Z","linea_1":"Oferta para alumnos \ud83c\udf89","linea_2":"en cursos 50 % \ud83d\ude80 de descuento |","url":"http:\/\/www.clarin.com.ar","texto_link":null}  
+[2025-10-13 12:42:04] local.INFO: StickyBar update method called  
+[2025-10-13 12:42:04] local.INFO: Request data: {"_token":"3GwibVXSSJuFASYGfqmviNVMTVc1OFZrnLtyDAyR","visible":"1","linea_1":"Oferta para alumnos \ud83c\udf89","linea_2":"en cursos 50 % \ud83d\ude80 de descuento |","texto_link":"M\u00e1s info","url":"http:\/\/www.clarin.com.ar","color":"#00ff96"}  
+[2025-10-13 12:42:04] local.INFO: StickyBar updated: {"id":1,"visible":true,"color":"#00ff96","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-13T12:42:04.000000Z","linea_1":"Oferta para alumnos \ud83c\udf89","linea_2":"en cursos 50 % \ud83d\ude80 de descuento |","url":"http:\/\/www.clarin.com.ar","texto_link":"M\u00e1s info"}  
+[2025-10-13 12:54:23] local.INFO: StickyBar update method called  
+[2025-10-13 12:54:23] local.INFO: Request data: {"_token":"3GwibVXSSJuFASYGfqmviNVMTVc1OFZrnLtyDAyR","visible":"1","texto":null,"url":"http:\/\/www.clarin.com.ar","color":"#00ff96"}  
+[2025-10-13 12:54:23] local.INFO: StickyBar updated: {"id":1,"visible":true,"color":"#00ff96","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-13T12:42:04.000000Z","url":"http:\/\/www.clarin.com.ar","texto":null}  
+[2025-10-13 12:57:18] local.INFO: StickyBar update method called  
+[2025-10-13 12:57:18] local.INFO: Request data: {"_token":"3GwibVXSSJuFASYGfqmviNVMTVc1OFZrnLtyDAyR","visible":"1","texto":"\u00a1Oferta **black friday** 40 % off hasta el \/\/20\/10!\/\/ |","texto_url":"M\u00e1s info","url":"http:\/\/www.clarin.com.ar","color":"#00ff96"}  
+[2025-10-13 12:57:18] local.INFO: StickyBar updated: {"id":1,"visible":true,"color":"#00ff96","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-13T12:57:18.000000Z","url":"http:\/\/www.clarin.com.ar","texto":"\u00a1Oferta **black friday** 40 % off hasta el \/\/20\/10!\/\/ |","texto_url":"M\u00e1s info"}  
+[2025-10-13 12:57:31] local.INFO: StickyBar update method called  
+[2025-10-13 12:57:31] local.INFO: Request data: {"_token":"3GwibVXSSJuFASYGfqmviNVMTVc1OFZrnLtyDAyR","visible":"1","texto":"\u00a1Oferta **black friday** 40 % off hasta el \/\/20\/10!\/\/ |","texto_url":"M\u00e1s info","url":"http:\/\/www.clarin.com.ar","color":"#00ff03"}  
+[2025-10-13 12:57:31] local.INFO: StickyBar updated: {"id":1,"visible":true,"color":"#00ff03","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-13T12:57:31.000000Z","url":"http:\/\/www.clarin.com.ar","texto":"\u00a1Oferta **black friday** 40 % off hasta el \/\/20\/10!\/\/ |","texto_url":"M\u00e1s info"}  
+[2025-10-13 12:58:48] local.INFO: StickyBar update method called  
+[2025-10-13 12:58:48] local.INFO: Request data: {"_token":"3GwibVXSSJuFASYGfqmviNVMTVc1OFZrnLtyDAyR","visible":"1","texto":"\u00a1Oferta **black friday** \ud83d\ude80 40 % off hasta el \/\/20\/10!\/\/  \ud83c\udf89 |","texto_url":"M\u00e1s info","url":"http:\/\/www.clarin.com.ar","color":"#00ffe3"}  
+[2025-10-13 12:58:48] local.INFO: StickyBar updated: {"id":1,"visible":true,"color":"#00ffe3","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-13T12:58:48.000000Z","url":"http:\/\/www.clarin.com.ar","texto":"\u00a1Oferta **black friday** \ud83d\ude80 40 % off hasta el \/\/20\/10!\/\/  \ud83c\udf89 |","texto_url":"M\u00e1s info"}  
+[2025-10-13 12:59:11] local.INFO: StickyBar update method called  
+[2025-10-13 12:59:11] local.INFO: Request data: {"_token":"3GwibVXSSJuFASYGfqmviNVMTVc1OFZrnLtyDAyR","visible":"1","texto":"\u00a1Oferta **black friday** \ud83d\ude80 40 % off hasta el \/\/20\/10!\/\/  \ud83c\udf89 |","texto_url":null,"url":"http:\/\/www.clarin.com.ar","color":"#00ffe3"}  
+[2025-10-13 12:59:11] local.INFO: StickyBar updated: {"id":1,"visible":true,"color":"#00ffe3","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-13T12:59:11.000000Z","url":"http:\/\/www.clarin.com.ar","texto":"\u00a1Oferta **black friday** \ud83d\ude80 40 % off hasta el \/\/20\/10!\/\/  \ud83c\udf89 |","texto_url":null}  
+[2025-10-13 12:59:26] local.INFO: StickyBar update method called  
+[2025-10-13 12:59:26] local.INFO: Request data: {"_token":"3GwibVXSSJuFASYGfqmviNVMTVc1OFZrnLtyDAyR","visible":"1","texto":"\u00a1Oferta **black friday** \ud83d\ude80 40 % off hasta el \/\/20\/10!\/\/  \ud83c\udf89 |","texto_url":"M\u00e1s info","url":"http:\/\/www.clarin.com.ar","color":"#00ffe3"}  
+[2025-10-13 12:59:26] local.INFO: StickyBar updated: {"id":1,"visible":true,"color":"#00ffe3","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-13T12:59:26.000000Z","url":"http:\/\/www.clarin.com.ar","texto":"\u00a1Oferta **black friday** \ud83d\ude80 40 % off hasta el \/\/20\/10!\/\/  \ud83c\udf89 |","texto_url":"M\u00e1s info"}  
+[2025-10-13 13:00:49] local.INFO: StickyBar update method called  
+[2025-10-13 13:00:49] local.INFO: Request data: {"_token":"3GwibVXSSJuFASYGfqmviNVMTVc1OFZrnLtyDAyR","visible":"1","texto":"\u00a1Oferta **black friday** \ud83d\ude80 40 % off hasta el \/\/20\/10!\/\/  \ud83c\udf89 |","texto_url":"M\u00e1s info","url":"http:\/\/www.clarin.com.ar","color":"#00ffe3"}  
+[2025-10-13 13:00:49] local.INFO: StickyBar updated: {"id":1,"visible":true,"color":"#00ffe3","created_at":"2025-10-10T12:21:26.000000Z","updated_at":"2025-10-13T12:59:26.000000Z","url":"http:\/\/www.clarin.com.ar","texto":"\u00a1Oferta **black friday** \ud83d\ude80 40 % off hasta el \/\/20\/10!\/\/  \ud83c\udf89 |","texto_url":"M\u00e1s info"}  

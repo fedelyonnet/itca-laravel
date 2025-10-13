@@ -98,12 +98,63 @@ body {
    5. MENÚ
    ======================================== */
 
+/* Sticky Bar */
+.sticky-bar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: transparent;
+}
+
+.sticky-bar-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+
+.sticky-bar-text-container {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+
+.sticky-bar-text {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: #1a1a1a;
+}
+
+.sticky-bar-icon {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
 /* Header */
 .header {
     background-color: var(--menu-bg);
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 999;
+}
+
+/* Header cuando hay sticky bar visible */
+.header-with-sticky {
+    top: 40px;
 }
 
 /* Navegación */
@@ -608,6 +659,41 @@ section h2 {
 
 /* Mobile: 0px - 599px */
 @media (max-width: 599px) {
+    /* Sticky Bar mobile */
+    .sticky-bar {
+        height: auto;
+        min-height: 40px;
+        padding: 4px 0;
+    }
+    
+    
+    .sticky-bar-content {
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    .sticky-bar-text {
+        font-size: 12px;
+        text-align: center;
+        line-height: 1.2;
+        white-space: normal;
+        word-wrap: break-word;
+    }
+    
+    .sticky-bar-icon {
+        font-size: 14px;
+    }
+    
+    .sticky-bar-right {
+        gap: 8px;
+    }
+    
+    /* Header mobile - ajustar top para sticky bar */
+    .header-with-sticky {
+        top: 40px;
+    }
+    
     /* Menú hamburguesa para móviles */
     .nav-links {
         display: none;
@@ -940,6 +1026,37 @@ section h2 {
         max-width: 100%;
     }
     
+    /* Sticky Bar tablet */
+    .sticky-bar {
+        height: auto;
+        min-height: 45px;
+        padding: 6px 0;
+    }
+    
+    .sticky-bar-content {
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        height: 100%; /* Asegurar que ocupe toda la altura */
+    }
+    
+    .sticky-bar-text {
+        font-size: 13px;
+        text-align: center;
+        line-height: 1.2;
+        white-space: normal;
+        word-wrap: break-word;
+    }
+    
+    .sticky-bar-icon {
+        font-size: 15px;
+    }
+    
+    /* Header tablet - ajustar top para sticky bar */
+    .header-with-sticky {
+        top: 45px;
+    }
+    
     /* Ocultar carrusel mobile en tablet */
     .mobile-carousel-section {
         display: none !important;
@@ -1067,10 +1184,30 @@ section h2 {
     
 }
 
+
 /* Desktop: 1100px - 1920px (fluido) */
 @media (min-width: 1100px) {
     .container {
         max-width: clamp(1100px, 100vw, 1920px);
+    }
+    
+    /* Sticky Bar responsive */
+    .sticky-bar {
+        height: 40px;
+    }
+    
+    
+    .sticky-bar-text {
+        font-size: clamp(14px, calc(14px + (100vw - 1100px) * 0.0025), 16px);
+    }
+    
+    .sticky-bar-icon {
+        font-size: clamp(16px, calc(16px + (100vw - 1100px) * 0.0025), 18px);
+    }
+    
+    /* Header desktop - ajustar top para sticky bar */
+    .header-with-sticky {
+        top: 40px;
     }
     
     /* Ocultar carrusel mobile en desktop */
