@@ -193,21 +193,25 @@
                 <!-- Slick Carousel de Logos -->
                 <div class="partners-carousel">
                     <div class="partners-slider">
-                        @foreach($partners as $partner)
-                        <div>
-                            <a href="{{ $partner->url }}" target="_blank" class="partners-logo">
-                                <img src="{{ asset('storage/' . $partner->logo) }}" alt="{{ $partner->nombre ?? 'Partner' }}">
-                            </a>
-                        </div>
-                        @endforeach
-                        <!-- Segunda copia para el loop infinito -->
-                        @foreach($partners as $partner)
-                        <div>
-                            <a href="{{ $partner->url }}" target="_blank" class="partners-logo">
-                                <img src="{{ asset('storage/' . $partner->logo) }}" alt="{{ $partner->nombre ?? 'Partner' }}">
-                            </a>
-                        </div>
-                        @endforeach
+                        @if($partners->count() > 0)
+                            <!-- Primera copia de logos -->
+                            @foreach($partners as $partner)
+                                <div>
+                                    <a href="{{ $partner->url }}" target="_blank" class="partners-logo">
+                                        <img src="{{ asset('storage/' . $partner->logo) }}" alt="{{ $partner->url }}" loading="lazy">
+                                    </a>
+                                </div>
+                            @endforeach
+                            
+                            <!-- Segunda copia de logos para loop infinito -->
+                            @foreach($partners as $partner)
+                                <div>
+                                    <a href="{{ $partner->url }}" target="_blank" class="partners-logo">
+                                        <img src="{{ asset('storage/' . $partner->logo) }}" alt="{{ $partner->url }}" loading="lazy">
+                                    </a>
+                                </div>
+                            @endforeach
+                        @endif
                     </div>
                 </div>
             </div>
@@ -228,6 +232,22 @@
                         <div class="contacto-sede-content" id="{{ Str::slug($sede->nombre) }}-content">
                             <div class="contacto-sede-direccion">{{ $sede->direccion }}</div>
                             <div class="contacto-sede-contacto">Contacto: {{ $sede->telefono }}</div>
+                            
+                            @if($sede->link_google_maps)
+                                <div class="contacto-sede-link">
+                                    <a href="{{ $sede->link_google_maps }}" target="_blank" class="contacto-sede-link-maps">
+                                        📍 Ver en Maps
+                                    </a>
+                                </div>
+                            @endif
+                            
+                            @if($sede->link_whatsapp)
+                                <div class="contacto-sede-link">
+                                    <a href="{{ $sede->link_whatsapp }}" target="_blank" class="contacto-sede-link-whatsapp">
+                                        💬 WhatsApp
+                                    </a>
+                                </div>
+                            @endif
                         </div>
                         @endforeach
                     </div>
@@ -390,18 +410,6 @@
             grabCursor: true,
         });
 
-        // Partners Carousel
-        $('.partners-slider').slick({
-            autoplay: true,
-            autoplaySpeed: 0,
-            speed: 3000,
-            cssEase: 'linear',
-            infinite: true,
-            arrows: false,
-            dots: false,
-            pauseOnHover: false,
-            variableWidth: true
-        });
 
         // Contacto Sedes Expand/Collapse
         document.addEventListener('DOMContentLoaded', function() {

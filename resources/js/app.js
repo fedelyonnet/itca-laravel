@@ -760,16 +760,44 @@ document.addEventListener('DOMContentLoaded', function() {
             // Obtener datos de la card desde atributos data
             const direccion = card.dataset.direccion || 'Dirección no disponible';
             const contacto = card.dataset.contacto || 'Contacto no disponible';
+            const linkGoogleMaps = card.dataset.linkGoogleMaps || '';
+            const linkWhatsapp = card.dataset.linkWhatsapp || '';
             
             // Crear el back con contenido dinámico
             const back = document.createElement('div');
             back.className = 'sedes-card-back';
-            back.innerHTML = `
+            
+            // Construir el HTML dinámicamente
+            let backContent = `
                 <div class="sedes-back-content">
-                    <div class="sedes-direccion">${direccion}</div>
-                    <div class="sedes-contacto">Contacto: ${contacto}</div>
-                </div>
+                    <div class="sedes-item">${direccion}</div>
+                    <div class="sedes-item">Contacto: ${contacto}</div>
             `;
+            
+            // Agregar enlaces como items individuales
+            if (linkGoogleMaps) {
+                backContent += `
+                    <div class="sedes-item">
+                        <a href="${linkGoogleMaps}" target="_blank" class="sedes-link sedes-link-maps">
+                            📍 Ver en Maps
+                        </a>
+                    </div>
+                `;
+            }
+            
+            if (linkWhatsapp) {
+                backContent += `
+                    <div class="sedes-item">
+                        <a href="${linkWhatsapp}" target="_blank" class="sedes-link sedes-link-whatsapp">
+                            💬 WhatsApp
+                        </a>
+                    </div>
+                `;
+            }
+            
+            backContent += `</div>`;
+            
+            back.innerHTML = backContent;
             card.appendChild(back);
             
             // Event listener para toggle
@@ -1070,7 +1098,7 @@ function initializePartnersCarousel() {
         $('.partners-slider').slick({
             autoplay: true,
             autoplaySpeed: 0,
-            speed: 3000,
+            speed: 1500,
             cssEase: 'linear',
             infinite: true,
             arrows: false,

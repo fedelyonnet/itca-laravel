@@ -293,7 +293,23 @@
                               placeholder="Escribe la dirección completa..."></textarea>
                 </div>
 
-                <!-- Tercera fila: Imágenes -->
+                <!-- Tercera fila: Links -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-300 mb-1">Link Google Maps</label>
+                        <input type="url" id="modalLinkGoogleMaps" name="link_google_maps" 
+                               class="w-full px-2 py-1.5 bg-gray-600 border border-gray-500 rounded text-white focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm"
+                               placeholder="https://maps.google.com/...">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-300 mb-1">Link WhatsApp</label>
+                        <input type="url" id="modalLinkWhatsapp" name="link_whatsapp" 
+                               class="w-full px-2 py-1.5 bg-gray-600 border border-gray-500 rounded text-white focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm"
+                               placeholder="https://wa.me/...">
+                    </div>
+                </div>
+
+                <!-- Cuarta fila: Imágenes -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-medium text-gray-300 mb-1">Imagen Desktop <span class="text-red-400" id="desktopRequired">*</span></label>
@@ -310,7 +326,7 @@
                     </div>
                 </div>
 
-                <!-- Cuarta fila: Tipo de Título -->
+                <!-- Quinta fila: Tipo de Título -->
                 <div>
                     <label class="block text-xs font-medium text-gray-300 mb-1">Tipo de Título</label>
                     <select id="modalTipoTitulo" name="tipo_titulo" 
@@ -321,7 +337,7 @@
                     <p class="text-xs text-gray-400 mt-1">Si eliges "Dos líneas", el título se dividirá automáticamente en la primera palabra y el resto</p>
                 </div>
 
-                <!-- Quinta fila: Disponible -->
+                <!-- Sexta fila: Disponible -->
                 <div class="flex items-center">
                     <label class="flex items-center text-xs text-gray-300">
                         <input type="checkbox" id="modalDisponible" name="disponible" value="1" checked
@@ -389,6 +405,8 @@
                     document.getElementById('modalNombre').value = data.nombre;
                     document.getElementById('modalDireccion').value = data.direccion;
                     document.getElementById('modalTelefono').value = data.telefono;
+                    document.getElementById('modalLinkGoogleMaps').value = data.link_google_maps || '';
+                    document.getElementById('modalLinkWhatsapp').value = data.link_whatsapp || '';
                     document.getElementById('modalDisponible').checked = data.disponible;
                     document.getElementById('modalTipoTitulo').value = data.tipo_titulo || 'normal';
                     

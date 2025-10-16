@@ -296,8 +296,8 @@
                             <div class="swiper-wrapper">
                                 @foreach($beneficios as $beneficio)
                                 <div class="swiper-slide beneficios-carousel-slide">
-                                    <img src="{{ asset('storage/' . $beneficio->imagen_desktop) }}" alt="{{ $beneficio->titulo_linea1 }}" class="beneficios-slide-img-desktop" loading="lazy" />
-                                    <img src="{{ asset('storage/' . $beneficio->imagen_mobile) }}" alt="{{ $beneficio->titulo_linea1 }}" class="beneficios-slide-img-mobile" loading="lazy" />
+                                    <img src="{{ asset('storage/' . $beneficio->imagen_desktop) }}" alt="{{ $beneficio->titulo_linea1 }}" class="beneficios-slide-img-desktop" />
+                                    <img src="{{ asset('storage/' . $beneficio->imagen_mobile) }}" alt="{{ $beneficio->titulo_linea1 }}" class="beneficios-slide-img-mobile" />
                                     <div class="beneficios-slide-content">
                                         <div class="beneficios-slide-main">
                                             <div class="beneficios-slide-title">
@@ -371,7 +371,7 @@
                             <div class="beneficios-carousel-track">
                                 @foreach($beneficios as $beneficio)
                                 <div class="beneficios-carousel-slide">
-                                    <img src="{{ asset('storage/' . $beneficio->imagen_mobile) }}" alt="{{ $beneficio->titulo_linea1 }}" loading="lazy" />
+                                    <img src="{{ asset('storage/' . $beneficio->imagen_mobile) }}" alt="{{ $beneficio->titulo_linea1 }}" />
                                     <div class="beneficios-slide-content">
                                         <div class="beneficios-slide-main">
                                             <div class="beneficios-slide-title">
@@ -459,7 +459,9 @@
                                 <div class="sedes-grid-item" 
                                      id="sede-{{ $sede->id }}-card"
                                      data-direccion="{{ $sede->direccion }}"
-                                     data-contacto="{{ $sede->telefono }}">
+                                     data-contacto="{{ $sede->telefono }}"
+                                     data-link-google-maps="{{ $sede->link_google_maps }}"
+                                     data-link-whatsapp="{{ $sede->link_whatsapp }}">
                                     <img src="{{ asset('storage/' . $sede->imagen_desktop) }}" 
                                          alt="{{ $sede->nombre }}" 
                                          class="sedes-grid-image" loading="lazy">
@@ -516,6 +518,22 @@
                                 <div class="sedes-accordion-content">
                                     <div class="sedes-accordion-direccion">{{ $sede->direccion }}</div>
                                     <div class="sedes-accordion-contacto">Contacto: {{ $sede->telefono }}</div>
+                                    
+                                    @if($sede->link_google_maps)
+                                        <div class="sedes-accordion-link">
+                                            <a href="{{ $sede->link_google_maps }}" target="_blank" class="sedes-link sedes-link-maps">
+                                                📍 Ver en Maps
+                                            </a>
+                                        </div>
+                                    @endif
+                                    
+                                    @if($sede->link_whatsapp)
+                                        <div class="sedes-accordion-link">
+                                            <a href="{{ $sede->link_whatsapp }}" target="_blank" class="sedes-link sedes-link-whatsapp">
+                                                💬 WhatsApp
+                                            </a>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         @endforeach
@@ -995,6 +1013,22 @@
                                 <div class="contacto-sede-content" id="{{ Str::slug($sede->nombre) }}-content">
                                     <div class="contacto-sede-direccion">{{ $sede->direccion }}</div>
                                     <div class="contacto-sede-contacto">Contacto: {{ $sede->telefono }}</div>
+                                    
+                                    @if($sede->link_google_maps)
+                                        <div class="contacto-sede-link">
+                                            <a href="{{ $sede->link_google_maps }}" target="_blank" class="contacto-sede-link-maps">
+                                                📍 Ver en Maps
+                                            </a>
+                                        </div>
+                                    @endif
+                                    
+                                    @if($sede->link_whatsapp)
+                                        <div class="contacto-sede-link">
+                                            <a href="{{ $sede->link_whatsapp }}" target="_blank" class="contacto-sede-link-whatsapp">
+                                                💬 WhatsApp
+                                            </a>
+                                        </div>
+                                    @endif
                                 </div>
                             @endforeach
                         </div>

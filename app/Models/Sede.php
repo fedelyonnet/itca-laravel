@@ -18,6 +18,8 @@ class Sede extends Model
         'imagen_mobile',
         'direccion',
         'telefono',
+        'link_google_maps',
+        'link_whatsapp',
         'disponible',
         'orden',
     ];

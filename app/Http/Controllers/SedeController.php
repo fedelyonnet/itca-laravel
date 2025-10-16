@@ -21,6 +21,8 @@ class SedeController extends Controller
             'tipo_titulo' => 'required|in:normal,dos_lineas',
             'direccion' => 'required|string|max:500',
             'telefono' => 'required|string|max:50',
+            'link_google_maps' => 'nullable|url|max:500',
+            'link_whatsapp' => 'nullable|url|max:500',
             'imagen_desktop' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'imagen_mobile' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'disponible' => 'boolean',
@@ -39,6 +41,8 @@ class SedeController extends Controller
             'tipo_titulo' => $request->tipo_titulo,
             'direccion' => $request->direccion,
             'telefono' => $request->telefono,
+            'link_google_maps' => $request->link_google_maps,
+            'link_whatsapp' => $request->link_whatsapp,
             'imagen_desktop' => $desktopPath,
             'imagen_mobile' => $mobilePath,
             'disponible' => $request->has('disponible'),
@@ -57,6 +61,8 @@ class SedeController extends Controller
             'tipo_titulo' => $sede->tipo_titulo,
             'direccion' => $sede->direccion,
             'telefono' => $sede->telefono,
+            'link_google_maps' => $sede->link_google_maps,
+            'link_whatsapp' => $sede->link_whatsapp,
             'disponible' => $sede->disponible,
         ]);
     }
@@ -70,6 +76,8 @@ class SedeController extends Controller
             'tipo_titulo' => 'required|in:normal,dos_lineas',
             'direccion' => 'required|string|max:500',
             'telefono' => 'required|string|max:50',
+            'link_google_maps' => 'nullable|url|max:500',
+            'link_whatsapp' => 'nullable|url|max:500',
             'imagen_desktop' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'imagen_mobile' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'disponible' => 'boolean',
@@ -80,6 +88,8 @@ class SedeController extends Controller
             'tipo_titulo' => $request->tipo_titulo,
             'direccion' => $request->direccion,
             'telefono' => $request->telefono,
+            'link_google_maps' => $request->link_google_maps,
+            'link_whatsapp' => $request->link_whatsapp,
             'disponible' => $request->has('disponible'),
         ];
 
