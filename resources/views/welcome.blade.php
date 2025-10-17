@@ -188,8 +188,9 @@
             <section class="carreras-section">
                 <div class="carreras-container">
                     <h2 class="carreras-title">¡Elegí <span class="carreras-title-highlight">la carrera</span> para vos!</h2>
-                    <div class="carreras-images">
-                        @foreach($cursosFeatured as $index => $curso)
+                    <div class="carreras-images-wrapper">
+                        <div class="carreras-images-row">
+                            @foreach($cursosFeatured as $index => $curso)
                             @php
                                 // Determinar modalidad
                                 $modalidad = '';
@@ -276,6 +277,21 @@
                                 </div>
                             </div>
                         @endforeach
+                        </div>
+                        
+                        <!-- Div de ancho completo -->
+                        <div class="carreras-UTN">
+                            <div class="carreras-UTN-left">
+                                <div class="carreras-UTN-text">
+                                    <div class="carreras-UTN-line1">Nuestras <span class="carreras-UTN-bold">especializaciones</span></div>
+                                    <div class="carreras-UTN-line2">están certificadas por:</div>
+                                </div>
+                            </div>
+                            <div class="carreras-UTN-right">
+                                <img src="/images/desktop/logo-utn.png" alt="Logo UTN" class="carreras-UTN-logo">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>

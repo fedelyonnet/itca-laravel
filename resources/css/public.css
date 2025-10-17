@@ -1176,7 +1176,21 @@ section h2 {
         display: none;
     }
     
-    /* Carreras images en tablet: una debajo de la otra, moto arriba */
+    /* Wrapper en tablet */
+    .carreras-images-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: clamp(20px, calc(20px + (100vw - 600px) * 0.04), 30px);
+    }
+    
+    /* Fila de carreras en tablet */
+    .carreras-images-row {
+        display: flex;
+        flex-direction: column;
+        gap: clamp(20px, calc(20px + (100vw - 600px) * 0.04), 30px);
+    }
+    
+    /* Mantener compatibilidad */
     .carreras-images {
         flex-direction: column;
         gap: clamp(20px, calc(20px + (100vw - 600px) * 0.04), 30px);
@@ -1457,14 +1471,14 @@ section h2 {
    CARRERAS SECTION - DESKTOP (1100px - 1920px)
    ======================================== */
 .carreras-section {
-    background-color: var(--section-bg-even); /* #02115A */
+    background-color: var(--menu-bg); /* #010C42 - Igual al menú */
     padding: clamp(30px, calc(30px + (100vw - 1100px) * 0.037), 60px) 0;
 }
 
 .carreras-container {
     max-width: clamp(1070px, 85vw, 1557px);
     margin: 0 auto;
-    padding: 0 clamp(20px, calc(20px + (100vw - 1100px) * 0.024), 40px);
+    padding: 0;
 }
 
 .carreras-title {
@@ -1500,11 +1514,168 @@ section h2 {
     z-index: -1;
 }
 
+/* Wrapper principal */
+.carreras-images-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(30px, calc(30px + (100vw - 1000px) * 0.0273), 50px);
+}
+
+/* Fila de carreras */
+.carreras-images-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: clamp(20px, calc(20px + (100vw - 1100px) * 0.024), 40px);
+}
+
+/* Mantener compatibilidad con la clase original */
 .carreras-images {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: clamp(20px, calc(20px + (100vw - 1100px) * 0.024), 40px);
+}
+
+/* Div UTN - Ancho completo (solo desktop) */
+.carreras-UTN {
+    width: 100%;
+    height: clamp(120px, calc(120px + (100vw - 1100px) * 0.05), 162px);
+    background-color: #02115A; /* Azul ITCA */
+    border: 1px solid white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(25px, calc(25px + (100vw - 1100px) * 0.012), 35px);
+    color: white;
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+}
+
+/* Divs internos UTN - Mitad y mitad */
+.carreras-UTN-left,
+.carreras-UTN-right {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+/* Div izquierdo UTN - texto alineado a la derecha */
+.carreras-UTN-left {
+    justify-content: flex-end;
+}
+
+/* Div derecho UTN - logo alineado a la izquierda */
+.carreras-UTN-right {
+    justify-content: flex-start;
+}
+
+/* Texto UTN - Solo desktop */
+.carreras-UTN-text {
+    text-align: right;
+    color: #66F7A7;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400; /* Regular */
+    font-size: clamp(24px, calc(24px + (100vw - 1100px) * 0.008), 31px);
+    letter-spacing: 0.02em; /* 2% */
+    line-height: 1.2;
+}
+
+.carreras-UTN-line1,
+.carreras-UTN-line2 {
+    display: block;
+}
+
+.carreras-UTN-bold {
+    font-weight: 700; /* Bold */
+}
+
+/* Logo UTN */
+.carreras-UTN-logo {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+
+/* Ocultar UTN en tablet y mobile */
+@media (max-width: 1099px) {
+    .carreras-UTN {
+        display: none;
+    }
+}
+
+/* ========================================
+   CARRERAS UTN - PÁGINA CARRERAS (CUSTOM)
+   ======================================== */
+
+/* Div UTN - Ancho completo (solo desktop) - PÁGINA CARRERAS */
+.carreras-UTN-carreras {
+    width: 100%;
+    height: clamp(120px, calc(120px + (100vw - 1100px) * 0.05), 162px); /* Responsive height */
+    background-color: var(--menu-bg); /* #010C42 - Igual al menú */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(25px, calc(25px + (100vw - 1100px) * 0.012), 35px); /* Responsive internal gap */
+    color: white;
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px; /* Base font size, will be overridden by .carreras-UTN-carreras-text */
+    margin-top: clamp(30px, calc(30px + (100vw - 1100px) * 0.037), 50px); /* Espacio superior */
+}
+
+/* Divs internos UTN - Mitad y mitad - PÁGINA CARRERAS */
+.carreras-UTN-carreras-left,
+.carreras-UTN-carreras-right {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+/* Div izquierdo UTN - texto alineado a la derecha - PÁGINA CARRERAS */
+.carreras-UTN-carreras-left {
+    justify-content: flex-end;
+}
+
+/* Div derecho UTN - logo alineado a la izquierda - PÁGINA CARRERAS */
+.carreras-UTN-carreras-right {
+    justify-content: flex-start;
+}
+
+/* Texto UTN - Solo desktop - PÁGINA CARRERAS */
+.carreras-UTN-carreras-text {
+    text-align: right;
+    color: #66F7A7;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400; /* Regular */
+    font-size: clamp(24px, calc(24px + (100vw - 1100px) * 0.008), 31px); /* Responsive font size */
+    letter-spacing: 0.02em; /* 2% */
+    line-height: 1.2;
+}
+
+.carreras-UTN-carreras-bold {
+    font-weight: 700; /* Bold */
+}
+
+/* Logo UTN - PÁGINA CARRERAS */
+.carreras-UTN-carreras-logo {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* Ocultar UTN en tablet y mobile - PÁGINA CARRERAS */
+@media (max-width: 1099px) {
+    .carreras-UTN-carreras {
+        display: none;
+    }
 }
 
     .carreras-image-container {
@@ -1513,7 +1684,11 @@ section h2 {
     }
 
 .carreras-image {
-    width: clamp(525px, calc(767px + (100vw - 1920px) * 0.3556), 767px);
+    width: clamp(
+        calc((1070px - 20px) / 2), 
+        calc((85vw - clamp(20px, calc(20px + (100vw - 1100px) * 0.024), 40px)) / 2), 
+        calc((1557px - 40px) / 2)
+    );
     height: clamp(272px, calc(417px + (100vw - 1920px) * 0.1768), 417px);
     object-fit: cover;
     border-radius: clamp(10px, 0.7vw, 14px);
@@ -1673,7 +1848,7 @@ section h2 {
    ======================================== */
 @media (max-width: 599px) {
     .carreras-section {
-        background-color: var(--section-bg-even); /* #02115A */
+        background-color: var(--menu-bg); /* #010C42 - Igual al menú */
         padding: clamp(30px, calc(30px + (100vw - 320px) * 0.107), 60px) 0;
     }
     
@@ -1906,6 +2081,23 @@ section h2 {
         margin: 0 0 clamp(25px, calc(25px + (100vw - 320px) * 0.054), 40px) 0;
     }
     
+    /* Wrapper en mobile */
+    .carreras-images-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: clamp(15px, calc(15px + (100vw - 320px) * 0.018), 20px);
+    }
+    
+    /* Fila de carreras en mobile */
+    .carreras-images-row {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: clamp(15px, calc(15px + (100vw - 320px) * 0.018), 20px);
+    }
+    
+    /* Mantener compatibilidad */
     .carreras-images {
         display: flex;
         flex-direction: column;
@@ -3539,7 +3731,7 @@ section h2 {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    justify-content: flex-end;
+    justify-content: flex-start;
     flex: 1;
     width: 100%;
 }
@@ -3593,8 +3785,7 @@ section h2 {
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
-    padding: clamp(4px, calc(4px + (100vw - 1100px) * 0.0098), 12px) 0;
-    padding-bottom: clamp(10px, calc(10px + (100vw - 1100px) * 0.011), 19px);
+    padding-top: 10px;
 }
 
 .en-accion-item-2-div-4-btn {
@@ -3644,7 +3835,7 @@ section h2 {
     line-height: 1.4;
     margin: 0;
     width: 100%;
-    max-width: clamp(455px, calc(455px + (100vw - 1100px) * 0.139), 569px);
+    max-width: clamp(445px, calc(445px + (100vw - 1100px) * 0.192), 602px);
 }
 
 .en-accion-item-2-div-2-link {
@@ -3660,9 +3851,9 @@ section h2 {
 }
 
 .en-accion-item-2-div-3-image {
-    width: clamp(455px, calc(455px + (100vw - 1100px) * 0.139), 569px);
+    width: clamp(445px, calc(445px + (100vw - 1100px) * 0.192), 602px);
     height: auto;
-    object-fit: contain;
+    padding-top: clamp(5px, calc(5px + (100vw - 1100px) * 0.111), 96px);
 }
 
 .en-accion-item-3 {
@@ -6634,9 +6825,11 @@ section h2 {
     background-color: transparent;
     border-radius: 8px;
     padding: clamp(20px, 3vw, 40px);
+    padding-bottom: clamp(20px, 3vw, 40px);
     display: flex;
     flex-direction: column;
     gap: clamp(20px, 3vw, 30px);
+    padding-bottom: 0;
 }
 
 .carrera-wrapper {
