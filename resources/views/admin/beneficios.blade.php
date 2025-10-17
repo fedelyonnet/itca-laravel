@@ -607,8 +607,8 @@
                     
                     if (desktopRequired) desktopRequired.style.display = 'none';
                     if (mobileRequired) mobileRequired.style.display = 'none';
-                    if (desktopHelp) desktopHelp.textContent = 'Dejar vacío para mantener la imagen actual';
-                    if (mobileHelp) mobileHelp.textContent = 'Dejar vacío para mantener la imagen actual';
+                    if (desktopHelp) desktopHelp.innerHTML = '378 × 420 px<br><small class="text-gray-500">Dejar vacío para mantener la imagen actual</small>';
+                    if (mobileHelp) mobileHelp.innerHTML = '378 × 273 px<br><small class="text-gray-500">Dejar vacío para mantener la imagen actual</small>';
                     
                     // Abrir modal
                     const modal = document.getElementById('modalAgregarBeneficio');

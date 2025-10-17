@@ -219,7 +219,7 @@
             document.getElementById('methodField').value = 'PUT';
             document.getElementById('partnerForm').action = `/admin/partners/${id}`;
             document.getElementById('logoRequired').style.display = 'none';
-            document.getElementById('logoHelp').textContent = 'Dejar vacío para mantener el logo actual';
+            document.getElementById('logoHelp').innerHTML = 'Formatos: JPEG, PNG, JPG, GIF, WebP. Máximo 2MB<br><small class="text-gray-500">Dejar vacío para mantener el logo actual</small>';
             
             // Obtener datos del partner
             fetch(`/admin/partners/${id}/data`)

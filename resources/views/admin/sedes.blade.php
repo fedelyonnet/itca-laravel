@@ -411,8 +411,8 @@
                     document.getElementById('modalTipoTitulo').value = data.tipo_titulo || 'normal';
                     
                     // Actualizar ayuda de imágenes para modo edición
-                    document.getElementById('desktopHelp').textContent = 'Opcional - mantiene la imagen actual si no se selecciona';
-                    document.getElementById('mobileHelp').textContent = 'Opcional - mantiene la imagen actual si no se selecciona';
+                    document.getElementById('desktopHelp').innerHTML = '377 × 196 px<br><small class="text-gray-500">Opcional - mantiene la imagen actual si no se selecciona</small>';
+                    document.getElementById('mobileHelp').innerHTML = '388 × 65 px<br><small class="text-gray-500">Opcional - mantiene la imagen actual si no se selecciona</small>';
                     document.getElementById('desktopRequired').textContent = '';
                     document.getElementById('mobileRequired').textContent = '';
                     

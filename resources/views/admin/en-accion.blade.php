@@ -214,7 +214,7 @@
             // Configurar para modo creación
             document.getElementById('modalVideo').setAttribute('required', 'required');
             document.getElementById('videoRequired').style.display = 'inline';
-            document.getElementById('videoHelp').textContent = 'Formatos: MP4, AVI, MOV, WMV. Máximo 100MB';
+            updateVideoHelp();
             
             isEditMode = false;
         }
@@ -226,8 +226,106 @@
         function resetModal() {
             document.getElementById('videoForm').reset();
             document.getElementById('videoRequired').style.display = 'inline';
-            document.getElementById('videoHelp').textContent = 'Formatos: MP4, AVI, MOV, WMV. Máximo 100MB';
+            
+            // Mostrar el dropdown de versión al resetear (para modo creación)
+            const versionDiv = document.getElementById('modalVersion').closest('div');
+            if (versionDiv) {
+                versionDiv.style.display = 'block';
+            }
+            
+            updateVideoHelp();
             document.getElementById('modalVideo').setAttribute('required', 'required');
+        }
+
+        function updateVideoHelp() {
+            const version = document.getElementById('modalVersion').value;
+            const url = document.getElementById('modalUrl').value;
+            
+            let sizeRecommendation = '';
+            let platform = '';
+            
+            // Detectar plataforma basada en la URL
+            if (url) {
+                const urlLower = url.toLowerCase();
+                if (urlLower.includes('youtube.com') || urlLower.includes('youtu.be')) {
+                    platform = 'YouTube';
+                } else if (urlLower.includes('instagram.com')) {
+                    platform = 'Instagram';
+                } else if (urlLower.includes('tiktok.com')) {
+                    platform = 'TikTok';
+                }
+            }
+            
+            // Determinar recomendaciones de tamaño basadas en versión y plataforma
+            if (version === 'desktop') {
+                if (platform === 'YouTube') {
+                    sizeRecommendation = '770 × 393 px';
+                } else if (platform === 'Instagram' || platform === 'TikTok') {
+                    sizeRecommendation = '376 × 620 px';
+                } else {
+                    sizeRecommendation = '770 × 393 px (YouTube) o 376 × 620 px (IG/TT)';
+                }
+            } else if (version === 'mob') {
+                sizeRecommendation = '375 × 602 px';
+            } else {
+                sizeRecommendation = 'Selecciona versión para ver recomendaciones';
+            }
+            
+            // Actualizar el texto de ayuda
+            if (isEditMode) {
+                document.getElementById('videoHelp').innerHTML = `${sizeRecommendation}<br><small class="text-gray-500">Dejar vacío para mantener el video actual</small>`;
+            } else {
+                document.getElementById('videoHelp').innerHTML = `${sizeRecommendation}<br><small class="text-gray-500">Formatos: MP4, AVI, MOV, WMV. Máximo 100MB</small>`;
+            }
+        }
+
+        function getPlatformFromUrl(url) {
+            if (!url) return 'Desconocida';
+            
+            const urlLower = url.toLowerCase();
+            if (urlLower.includes('youtube.com') || urlLower.includes('youtu.be')) {
+                return 'YouTube';
+            } else if (urlLower.includes('instagram.com')) {
+                return 'Instagram';
+            } else if (urlLower.includes('tiktok.com')) {
+                return 'TikTok';
+            }
+            return 'Desconocida';
+        }
+
+        function updateVideoHelpForEdit(version, url) {
+            let sizeRecommendation = '';
+            let platform = '';
+            
+            // Detectar plataforma basada en la URL
+            if (url) {
+                const urlLower = url.toLowerCase();
+                if (urlLower.includes('youtube.com') || urlLower.includes('youtu.be')) {
+                    platform = 'YouTube';
+                } else if (urlLower.includes('instagram.com')) {
+                    platform = 'Instagram';
+                } else if (urlLower.includes('tiktok.com')) {
+                    platform = 'TikTok';
+                }
+            }
+            
+            // Determinar recomendaciones de tamaño basadas en versión y plataforma
+            if (version === 'desktop') {
+                if (platform === 'YouTube') {
+                    sizeRecommendation = '770 × 393 px';
+                } else if (platform === 'Instagram' || platform === 'TikTok') {
+                    sizeRecommendation = '376 × 620 px';
+                } else {
+                    sizeRecommendation = '770 × 393 px (YouTube) o 376 × 620 px (IG/TT)';
+                }
+            } else if (version === 'mob') {
+                sizeRecommendation = '375 × 602 px';
+            } else {
+                sizeRecommendation = 'Selecciona versión para ver recomendaciones';
+            }
+            
+            // Actualizar el texto de ayuda para edición
+            document.getElementById('videoHelp').innerHTML = `${sizeRecommendation}<br><small class="text-gray-500">Dejar vacío para mantener el video actual</small>`;
         }
 
         function handleFormSubmit(event) {
@@ -241,8 +339,8 @@
             const url = document.querySelector('input[name="url"]').value.trim();
             const video = document.querySelector('input[name="video"]').files.length;
             
-            // Validar campos obligatorios
-            if (!version) {
+            // Validar campos obligatorios (solo en modo creación)
+            if (!isEditMode && !version) {
                 showValidationModal("Error", "La versión es obligatoria");
                 return false;
             }
@@ -312,6 +410,18 @@
                     errorMessage.classList.add('translate-x-full');
                 }, 5000);
             }
+            
+            // Agregar event listeners para actualizar recomendaciones dinámicamente
+            const versionSelect = document.getElementById('modalVersion');
+            const urlInput = document.getElementById('modalUrl');
+            
+            if (versionSelect) {
+                versionSelect.addEventListener('change', updateVideoHelp);
+            }
+            
+            if (urlInput) {
+                urlInput.addEventListener('input', updateVideoHelp);
+            }
         });
 
         // Función para editar video
@@ -326,8 +436,13 @@
                 // Abrir modal
                 document.getElementById('videoModal').classList.remove('hidden');
                 
+                // Detectar plataforma y versión para el título
+                const platform = getPlatformFromUrl(video.url);
+                const versionText = video.version === 'desktop' ? 'Desktop' : 'Mobile';
+                const titleText = `Editar Video ${platform} ${versionText}`;
+                
                 // Configurar para edición
-                document.getElementById('modalTitle').textContent = 'Editar Video';
+                document.getElementById('modalTitle').textContent = titleText;
                 document.getElementById('modalSubmitBtn').textContent = 'Actualizar Video';
                 document.getElementById('methodField').value = 'PUT';
                 document.getElementById('videoForm').action = `/admin/en-accion/${videoId}`;
@@ -335,11 +450,19 @@
                 // Hacer el video opcional en modo edición
                 document.getElementById('modalVideo').removeAttribute('required');
                 document.getElementById('videoRequired').style.display = 'none';
-                document.getElementById('videoHelp').textContent = 'Dejar vacío para mantener el video actual';
+                
+                // Ocultar el dropdown de versión en modo edición
+                const versionDiv = document.getElementById('modalVersion').closest('div');
+                if (versionDiv) {
+                    versionDiv.style.display = 'none';
+                }
                 
                 // Llenar el formulario con los datos del video
                 document.getElementById('modalVersion').value = video.version;
                 document.getElementById('modalUrl').value = video.url;
+                
+                // Actualizar recomendaciones basadas en los datos existentes
+                updateVideoHelpForEdit(video.version, video.url);
                 
                 isEditMode = true;
             } catch (error) {

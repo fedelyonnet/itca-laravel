@@ -436,8 +436,8 @@
             document.getElementById('modalSubmitBtn').textContent = 'Actualizar Carrera';
             document.getElementById('desktopRequired').style.display = 'none';
             document.getElementById('mobileRequired').style.display = 'none';
-            document.getElementById('desktopHelp').textContent = 'Dejar vacío para mantener la imagen actual';
-            document.getElementById('mobileHelp').textContent = 'Dejar vacío para mantener la imagen actual';
+            document.getElementById('desktopHelp').innerHTML = 'Recomendado: 768 × 418 px<br><small class="text-gray-500">Dejar vacío para mantener la imagen actual</small>';
+            document.getElementById('mobileHelp').innerHTML = 'Recomendado: 388 × 429 px<br><small class="text-gray-500">Dejar vacío para mantener la imagen actual</small>';
             
             document.getElementById('modalAgregarCarrera').classList.remove('hidden');
         }

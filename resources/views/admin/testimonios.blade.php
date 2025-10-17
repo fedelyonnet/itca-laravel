@@ -328,8 +328,8 @@
                     document.getElementById('modalTiempo').value = data.tiempo_testimonio;
                     
                     // Actualizar ayuda de imágenes para modo edición
-                    document.getElementById('avatarHelp').textContent = 'Opcional - mantiene la imagen actual si no se selecciona';
-                    document.getElementById('iconoHelp').textContent = 'Opcional - mantiene la imagen actual si no se selecciona';
+                    document.getElementById('avatarHelp').innerHTML = '80 × 80 px<br><small class="text-gray-500">Opcional - mantiene la imagen actual si no se selecciona</small>';
+                    document.getElementById('iconoHelp').innerHTML = '33 × 33 px<br><small class="text-gray-500">Opcional - mantiene la imagen actual si no se selecciona</small>';
                     document.getElementById('avatarRequired').textContent = '';
                     document.getElementById('iconoRequired').textContent = '';
                     

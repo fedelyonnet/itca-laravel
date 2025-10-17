@@ -3364,6 +3364,50 @@ section h2 {
     width: 100%;
     height: clamp(310px, 32.3vw, 620px);
     background-color: #87CEEB; /* Celeste */
+    position: relative;
+    overflow: hidden;
+}
+
+.en-accion-item-1 video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 14px;
+}
+
+/* Botón de play del video en-accion-item-1 */
+.en-accion-item-1 .en-accion-play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    width: clamp(40px, 3vw, 58px);
+    height: clamp(40px, 3vw, 58px);
+    cursor: pointer;
+    padding: 0;
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+.en-accion-item-1 .en-accion-play-icon {
+    width: clamp(40px, 3vw, 58px);
+    height: clamp(40px, 3vw, 58px);
+    object-fit: contain;
+}
+
+/* Ocultar botón play cuando el video está reproduciéndose */
+.en-accion-item-1 .en-accion-video.playing + .en-accion-play-button {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Ocultar botón Instagram cuando el video está reproduciéndose */
+.en-accion-item-1 .en-accion-video.playing ~ .en-accion-instagram-btn {
+    opacity: 0;
+    pointer-events: none;
 }
 
 .en-accion-item-2 {
@@ -3685,7 +3729,8 @@ section h2 {
 .en-accion-instagram-btn {
     position: absolute;
     bottom: clamp(10px, 1vw, 20px);
-    right: clamp(10px, 1vw, 20px);
+    left: 50%;
+    transform: translateX(-50%);
     font-family: 'Montserrat', sans-serif;
     font-size: clamp(10px, calc(10px + (100vw - 1100px) * 0.0037), 13px);
     font-weight: 500; /* Medium */
@@ -3701,6 +3746,7 @@ section h2 {
     display: inline-block;
     transition: all 0.3s ease;
     z-index: 15;
+    white-space: nowrap;
 }
 
 .en-accion-instagram-btn:hover {
@@ -3909,7 +3955,8 @@ section h2 {
 .en-accion-tiktok-btn {
     position: absolute;
     bottom: clamp(10px, 1vw, 20px);
-    right: clamp(10px, 1vw, 20px);
+    left: 50%;
+    transform: translateX(-50%);
     font-family: 'Montserrat', sans-serif;
     font-size: clamp(10px, calc(10px + (100vw - 1100px) * 0.0037), 13px);
     font-weight: 500; /* Medium */
@@ -3925,6 +3972,7 @@ section h2 {
     display: inline-block;
     transition: all 0.3s ease;
     z-index: 15;
+    white-space: nowrap;
 }
 
 .en-accion-tiktok-btn:hover {
