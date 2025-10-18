@@ -477,50 +477,8 @@
             handleCarrerasImages();
         });
 
-        // Beneficios Carousel
-        const beneficiosSwiper = new Swiper('.beneficios-swiper', {
-            // Configuración básica
-            loop: false,
-            slidesPerView: 'auto', // Usar 'auto' para que respete el CSS
-            slidesPerGroup: 1, // Por defecto avanza de a 1
-            spaceBetween: 5,
-            speed: 600, // Velocidad fija para todos los movimientos
-            // Configuración responsive
-            breakpoints: {
-                600: {
-                    slidesPerView: 'auto',
-                    slidesPerGroup: 1, // En tablet avanza de a 1 slide
-                    spaceBetween: 15,
-                },
-                1100: {
-                    slidesPerView: 'auto',
-                    slidesPerGroup: 2, // En desktop avanza de a 2 slides
-                    spaceBetween: 15,
-                },
-                1366: {
-                    slidesPerView: 'auto',
-                    slidesPerGroup: 2,
-                    spaceBetween: 18,
-                },
-                1920: {
-                    slidesPerView: 'auto',
-                    slidesPerGroup: 2,
-                    spaceBetween: 20,
-                }
-            },
-            
-            // Navegación con botones personalizados
-            navigation: {
-                nextEl: '.beneficios-carousel-btn-next',
-                prevEl: '.beneficios-carousel-btn-prev',
-                disabledClass: 'swiper-button-disabled',
-            },
-            
-            // Soporte para touch/drag
-            touchRatio: 1,
-            touchAngle: 45,
-            grabCursor: true,
-        });
+        // Beneficios Carousel - La inicialización se maneja en app.js
+        // No es necesario duplicar la configuración aquí
 
 
         // Contacto Sedes Expand/Collapse
