@@ -148,7 +148,7 @@
                             <div class="swiper-slide beneficios-carousel-slide">
                                 <img src="{{ asset('storage/' . $beneficio->imagen_desktop) }}" alt="{{ $beneficio->titulo_linea1 }}" class="beneficios-slide-img-desktop" />
                                 <img src="{{ asset('storage/' . $beneficio->imagen_mobile) }}" alt="{{ $beneficio->titulo_linea1 }}" class="beneficios-slide-img-mobile" />
-                                <div class="beneficios-slide-content beneficios-slide-{{ Str::slug($beneficio->titulo_linea1) }}">
+                                <div class="beneficios-slide-content">
                                     <div class="beneficios-slide-main">
                                         <div class="beneficios-slide-title">
                                             <div class="beneficios-slide-line1">{{ $beneficio->titulo_linea1 }}</div>
@@ -158,16 +158,38 @@
                                             {!! $beneficio->descripcion !!}
                                         </div>
                                     </div>
-                                    <div class="beneficios-slide-bottom">
-                                        <div class="beneficios-slide-link {{ $beneficio->mostrar_boton ? 'beneficios-slide-link-visible' : 'beneficios-slide-link-hidden' }}">
-                                            <a href="{{ $beneficio->url_boton }}">{{ $beneficio->texto_boton }}</a>
-                                        </div>
-                                        <div class="beneficios-slide-icon {{ $beneficio->mostrar_boton ? 'beneficios-slide-icon-hidden' : 'beneficios-slide-icon-visible' }}">
-                                            <a href="{{ $beneficio->url_boton }}" class="beneficios-slide-icon-btn">
-                                                <img src="/images/desktop/btnflecha.png" alt="Flecha" />
-                                            </a>
-                                        </div>
+                                    @if($beneficio->mostrar_bottom)
+                                    <div class="beneficios-slide-bottom beneficios-slide-bottom-{{ $beneficio->getAlineacionBottomAttribute() }}">
+                                        @if($beneficio->getAlineacionBottomAttribute() === 'left')
+                                            <div class="beneficios-slide-link beneficios-slide-link-visible">
+                                                <a href="{{ $beneficio->url }}" target="_blank">{{ $beneficio->texto_boton ?: 'Ver más' }}</a>
+                                            </div>
+                                            <div class="beneficios-slide-icon beneficios-slide-icon-hidden">
+                                                <a href="#" class="beneficios-slide-icon-btn">
+                                                    <img src="/images/desktop/btnflecha.png" alt="Flecha" loading="lazy" />
+                                                </a>
+                                            </div>
+                                        @elseif($beneficio->getAlineacionBottomAttribute() === 'right')
+                                            <div class="beneficios-slide-link beneficios-slide-link-hidden">
+                                                <a href="#">Ver más</a>
+                                            </div>
+                                            <div class="beneficios-slide-icon beneficios-slide-icon-visible">
+                                                <a href="{{ $beneficio->url ?: '#' }}" target="_blank" class="beneficios-slide-icon-btn">
+                                                    <img src="/images/desktop/btnflecha.png" alt="Flecha" loading="lazy" />
+                                                </a>
+                                            </div>
+                                        @else
+                                            <div class="beneficios-slide-link beneficios-slide-link-hidden">
+                                                <a href="#">Ver más</a>
+                                            </div>
+                                            <div class="beneficios-slide-icon beneficios-slide-icon-visible">
+                                                <a href="{{ $beneficio->url ?: '#' }}" target="_blank" class="beneficios-slide-icon-btn">
+                                                    <img src="/images/desktop/btnflecha.png" alt="Flecha" loading="lazy" />
+                                                </a>
+                                            </div>
+                                        @endif
                                     </div>
+                                    @endif
                                 </div>
                             </div>
                             @endforeach
@@ -189,6 +211,83 @@
                             <button class="beneficios-carousel-btn beneficios-carousel-btn-next">
                                 <img src="/images/desktop/beneficios/arrow-b.png" alt="Siguiente" />
                             </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Carrusel Nativo de Beneficios (solo mobile) -->
+                    <div class="beneficios-mobile-carousel-section">
+                        <div class="beneficios-mobile-carousel">
+                            <div class="beneficios-carousel-track">
+                                @foreach($beneficios as $beneficio)
+                                <div class="beneficios-carousel-slide">
+                                    <img src="{{ asset('storage/' . $beneficio->imagen_mobile) }}" alt="{{ $beneficio->titulo_linea1 }}" />
+                                    <div class="beneficios-slide-content">
+                                        <div class="beneficios-slide-main">
+                                            <div class="beneficios-slide-title">
+                                                <div class="beneficios-slide-line1">{{ $beneficio->titulo_linea1 }}</div>
+                                                <div class="beneficios-slide-line2 {{ $beneficio->tipo_titulo === 'small' ? 'beneficios-slide-line2-small' : '' }}">{{ $beneficio->titulo_linea2 }}</div>
+                                            </div>
+                                            <div class="beneficios-slide-description">
+                                                {!! $beneficio->descripcion !!}
+                                            </div>
+                                        </div>
+                                        @if($beneficio->mostrar_bottom)
+                                        <div class="beneficios-slide-bottom beneficios-slide-bottom-{{ $beneficio->getAlineacionBottomAttribute() }}">
+                                            @if($beneficio->getAlineacionBottomAttribute() === 'left')
+                                                <div class="beneficios-slide-link beneficios-slide-link-visible">
+                                                    <a href="{{ $beneficio->url }}" target="_blank">{{ $beneficio->texto_boton ?: 'Ver más' }}</a>
+                                                </div>
+                                                <div class="beneficios-slide-icon beneficios-slide-icon-hidden">
+                                                    <a href="#" class="beneficios-slide-icon-btn">
+                                                        <img src="/images/mobile/flechaup.png" alt="Flecha" loading="lazy" />
+                                                    </a>
+                                                </div>
+                                            @elseif($beneficio->getAlineacionBottomAttribute() === 'right')
+                                                <div class="beneficios-slide-link beneficios-slide-link-hidden">
+                                                    <a href="#">Ver más</a>
+                                                </div>
+                                                <div class="beneficios-slide-icon beneficios-slide-icon-visible">
+                                                    <a href="{{ $beneficio->url ?: '#' }}" target="_blank" class="beneficios-slide-icon-btn">
+                                                        <img src="/images/mobile/flechaup.png" alt="Flecha" loading="lazy" />
+                                                    </a>
+                                                </div>
+                                            @else
+                                                <div class="beneficios-slide-link beneficios-slide-link-hidden">
+                                                    <a href="#">Ver más</a>
+                                                </div>
+                                                <div class="beneficios-slide-icon beneficios-slide-icon-visible">
+                                                    <a href="{{ $beneficio->url ?: '#' }}" target="_blank" class="beneficios-slide-icon-btn">
+                                                        <img src="/images/mobile/flechaup.png" alt="Flecha" loading="lazy" />
+                                                    </a>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        @endif
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        
+                        <!-- Barra de estado del carrusel de beneficios -->
+                        <div class="beneficios-carousel-controls">
+                            <div class="beneficios-progress-bar">
+                                <div class="beneficios-progress-track"></div>
+                                <div class="beneficios-progress-indicator"></div>
+                            </div>
+                            
+                            <!-- Botones de navegación y ver todos -->
+                            <div class="beneficios-controls-row">
+                                <a href="#" class="beneficios-ver-todos-btn">Ver todos los beneficios</a>
+                                
+                                <button class="beneficios-carousel-btn beneficios-arrow-left" onclick="scrollBeneficiosCarousel('left')">
+                                    <img src="/images/mobile/arrowicon.png" alt="Anterior" />
+                                </button>
+                                
+                                <button class="beneficios-carousel-btn beneficios-arrow-right" onclick="scrollBeneficiosCarousel('right')">
+                                    <img src="/images/mobile/arrowicon.png" alt="Siguiente" />
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
