@@ -667,7 +667,6 @@
     // Verificar que el elemento existe antes de inicializar
     const beneficiosSwiperElement = document.querySelector('.beneficios-swiper');
     if (!beneficiosSwiperElement) {
-        console.log('Beneficios Swiper element not found');
         return;
     }
     
