@@ -664,6 +664,13 @@
         progressIndicator.style.transform = `translateX(${position}px)`;
     }
     
+    // Verificar que el elemento existe antes de inicializar
+    const beneficiosSwiperElement = document.querySelector('.beneficios-swiper');
+    if (!beneficiosSwiperElement) {
+        console.log('Beneficios Swiper element not found');
+        return;
+    }
+    
     const beneficiosSwiper = new Swiper('.beneficios-swiper', {
         // Configuración básica
         loop: false,
@@ -717,6 +724,10 @@
                 updateNavigationButtons(this);
             },
             slideChange: function () {
+                updateProgressBar(this);
+                updateNavigationButtons(this);
+            },
+            resize: function () {
                 updateProgressBar(this);
                 updateNavigationButtons(this);
             }
