@@ -9,48 +9,36 @@
 
 // Función para actualizar la barra de progreso
 function updateProgressBar(swiper) {
-    console.log('🔄 updateProgressBar ejecutándose');
-    const progressIndicator = swiper.el.closest('.beneficios-carousel-section').querySelector('.beneficios-progress-indicator');
-    const progressBar = swiper.el.closest('.beneficios-carousel-section').querySelector('.beneficios-progress-bar');
-    
-    console.log('📊 Elementos encontrados:', { progressIndicator, progressBar });
-    
-    if (!progressIndicator || !progressBar || !swiper) {
-        console.log('❌ Faltan elementos');
-        return;
+    if (!swiper || !swiper.el) return;
+    // Priorizar contenedor desktop para evitar colisiones con mobile
+    let container = swiper.el.closest('.beneficios-desktop');
+    if (!container) {
+        container = swiper.el.closest('.beneficios-carousel-section');
     }
-    
-    console.log('✅ Todos los elementos encontrados, continuando...');
-    
-    // Calcular progreso real basado en la posición actual
-    const totalSlides = swiper.slides.length;
-    const currentSlide = swiper.activeIndex;
-    
-    // Ajustar el cálculo para considerar las posiciones reales de navegación
-    let progress;
-    if (swiper.isEnd) {
-        // Si estamos al final, la barra debe estar completamente a la derecha
-        progress = 1;
-    } else if (swiper.isBeginning) {
-        // Si estamos al inicio, la barra debe estar completamente a la izquierda
-        progress = 0;
-    } else {
-        // Para posiciones intermedias, usar cálculo proporcional
-        // Usar totalSlides - 1 para todos los dispositivos
-        const maxNavigableSlide = totalSlides - 1;
-        progress = currentSlide / maxNavigableSlide;
+    if (!container) return;
+    // En home, usar clases específicas para desktop si existen
+    const progressIndicator = container.querySelector('.beneficios-desktop-progress-indicator') || container.querySelector('.beneficios-progress-indicator');
+    const progressBar = container.querySelector('.beneficios-desktop-progress-bar') || container.querySelector('.beneficios-progress-bar');
+    if (!progressIndicator || !progressBar) return;
+
+    let progress = 0;
+    if (Array.isArray(swiper.snapGrid) && typeof swiper.snapIndex === 'number') {
+        const maxSnap = Math.max(1, swiper.snapGrid.length - 1);
+        progress = Math.max(0, Math.min(1, swiper.snapIndex / maxSnap));
+    } else if (typeof swiper.progress === 'number') {
+        progress = Math.max(0, Math.min(1, swiper.progress));
+    } else if (typeof swiper.activeIndex === 'number' && swiper.slides) {
+        const maxNavigableSlide = Math.max(1, swiper.slides.length - 1);
+        progress = Math.max(0, Math.min(1, swiper.activeIndex / maxNavigableSlide));
     }
-    
-    // Obtener dimensiones reales del DOM
+
     const trackWidth = progressBar.offsetWidth;
     const indicatorWidth = progressIndicator.offsetWidth;
-    const maxPosition = trackWidth - indicatorWidth;
-    
-    // Calcular posición final
+    const maxPosition = Math.max(0, trackWidth - indicatorWidth);
     const position = progress * maxPosition;
-    
-    // Aplicar transformación
-    progressIndicator.style.transform = `translateX(${position}px)`;
+    // Usar posicionamiento por left para máxima compatibilidad en build
+    progressIndicator.style.transform = 'none';
+    progressIndicator.style.left = `${position}px`;
 }
 
 // Función para actualizar el estado de los botones de navegación
@@ -163,8 +151,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (video.paused) {
                 video.play().then(() => {
                     video.classList.add('playing');
-                }).catch(error => {
-                    console.log('Error playing video:', error);
+                }).catch(() => {
+                    // silencio
                 });
             } else {
                 video.pause();
@@ -220,8 +208,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (video.paused) {
                 video.play().then(() => {
                     video.classList.add('playing');
-                }).catch(error => {
-                    console.log('Error playing video:', error);
+                }).catch(() => {
+                    // silencio
                 });
             } else {
                 video.pause();
@@ -278,8 +266,8 @@ document.addEventListener('DOMContentLoaded', function() {
         let currentSlide = 0;
         const totalSlides = 3;
         
-        // Función para actualizar la barra de progreso
-        function updateProgressBar() {
+        // Función para actualizar la barra de progreso (EN ACCION MOBILE)
+        function updateEnAccionMobileProgressBar() {
             if (enAccionMobileProgressIndicator) {
                 const progressWidth = (currentSlide / (totalSlides - 1)) * 66.666;
                 enAccionMobileProgressIndicator.style.left = `${progressWidth}%`;
@@ -293,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const firstSlide = enAccionMobileCarousel.querySelector('.en-accion-carousel-slide');
                 const slideWidth = firstSlide.offsetWidth + 15; // Ancho dinámico + 15px padding
                 enAccionMobileCarousel.scrollLeft -= slideWidth;
-                updateProgressBar();
+                updateEnAccionMobileProgressBar();
             }
         }
         
@@ -304,7 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const firstSlide = enAccionMobileCarousel.querySelector('.en-accion-carousel-slide');
                 const slideWidth = firstSlide.offsetWidth + 15; // Ancho dinámico + 15px padding
                 enAccionMobileCarousel.scrollLeft += slideWidth;
-                updateProgressBar();
+                updateEnAccionMobileProgressBar();
             }
         }
         
@@ -322,7 +310,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Inicializar la barra de progreso
-        updateProgressBar();
+        updateEnAccionMobileProgressBar();
         
         // Sincronizar la barra con el scroll del carousel
         enAccionMobileCarousel.addEventListener('scroll', function() {
@@ -332,7 +320,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (newSlide !== currentSlide && newSlide >= 0 && newSlide < totalSlides) {
                 currentSlide = newSlide;
-                updateProgressBar();
+                updateEnAccionMobileProgressBar();
             }
         });
     }
@@ -415,8 +403,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (video.paused) {
                 video.play().then(() => {
                     video.classList.add('playing');
-                }).catch(error => {
-                    console.log('Error playing video:', error);
+                }).catch(() => {
+                    // silencio
                 });
             } else {
                 video.pause();
@@ -699,16 +687,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // CARRUSEL DE BENEFICIOS CON SWIPER
     // ========================================
     
-    // Verificar que el elemento existe antes de inicializar
-    const beneficiosSwiperElement = document.querySelector('.beneficios-carousel-section .beneficios-swiper');
-    console.log('🔍 Buscando Swiper:', beneficiosSwiperElement);
-    if (!beneficiosSwiperElement) {
-        console.log('❌ No se encontró Swiper');
-        return;
-    }
-    console.log('✅ Swiper encontrado');
-    
-    const beneficiosSwiper = new Swiper('.beneficios-carousel-section .beneficios-swiper', {
+    // Inicializador con guardas para esperar a window.Swiper (CDN) en producción
+    function initBeneficiosSwiper(retryCount = 0) {
+        const beneficiosSwiperElement = document.querySelector('.beneficios-desktop .beneficios-carousel-section .beneficios-swiper');
+        if (!beneficiosSwiperElement) {
+            if (retryCount < 20) {
+                return setTimeout(() => initBeneficiosSwiper(retryCount + 1), 100);
+            }
+            return;
+        }
+        if (typeof window === 'undefined' || typeof window.Swiper === 'undefined') {
+            if (retryCount < 20) {
+                return setTimeout(() => initBeneficiosSwiper(retryCount + 1), 100);
+            }
+            return;
+        }
+        
+        const beneficiosSwiper = new window.Swiper('.beneficios-desktop .beneficios-carousel-section .beneficios-swiper', {
         // Configuración básica
         loop: false,
         slidesPerView: 'auto', // Usar 'auto' para que respete el CSS
@@ -741,8 +736,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Navegación con botones personalizados
         navigation: {
-            nextEl: '.beneficios-carousel-section:not(.beneficios-mobile-carousel-section) .beneficios-carousel-btn-next',
-            prevEl: '.beneficios-carousel-section:not(.beneficios-mobile-carousel-section) .beneficios-carousel-btn-prev',
+            nextEl: '.beneficios-desktop .beneficios-carousel-btn-next',
+            prevEl: '.beneficios-desktop .beneficios-carousel-btn-prev',
             disabledClass: 'swiper-button-disabled',
         },
         
@@ -751,28 +746,64 @@ document.addEventListener('DOMContentLoaded', function() {
         touchAngle: 45,
         grabCursor: true,
         
-        // Transiciones suaves
+        // Transiciones y observadores
         effect: 'slide',
+        watchSlidesProgress: true,
+        observer: true,
+        observeParents: true,
         
         // Eventos
         on: {
             init: function () {
-                console.log('🚀 Swiper init event');
+                // Recalcular con pequeño atraso por imágenes/layout
                 updateProgressBar(this);
                 updateNavigationButtons(this);
+                setTimeout(() => updateProgressBar(this), 50);
+                // Vincular clics de navegación para forzar actualización inmediata
+                const container = this.el.closest('.beneficios-desktop') || this.el.closest('.beneficios-carousel-section');
+                if (container) {
+                    const nextBtn = container.querySelector('.beneficios-carousel-btn-next');
+                    const prevBtn = container.querySelector('.beneficios-carousel-btn-prev');
+                    if (nextBtn) nextBtn.addEventListener('click', () => setTimeout(() => updateProgressBar(this), 0));
+                    if (prevBtn) prevBtn.addEventListener('click', () => setTimeout(() => updateProgressBar(this), 0));
+                }
             },
             slideChange: function () {
-                console.log('🔄 Swiper slideChange event');
                 updateProgressBar(this);
                 updateNavigationButtons(this);
             },
+            progress: function () {
+                // Actualizar continuamente según progreso interno
+                updateProgressBar(this);
+            },
+            setTranslate: function () {
+                // Asegurar update cuando cambia translate
+                updateProgressBar(this);
+            },
+            transitionEnd: function () {
+                // Al finalizar transición CSS
+                updateProgressBar(this);
+            },
+            slideChangeTransitionEnd: function () {
+                // Asegurar medición pos-transición
+                updateProgressBar(this);
+            },
             resize: function () {
-                console.log('📏 Swiper resize event');
                 updateProgressBar(this);
                 updateNavigationButtons(this);
+                setTimeout(() => updateProgressBar(this), 50);
             }
         }
-    });
+        });
+        
+        // Recalcular cuando la ventana terminó de cargar (imágenes listas)
+        window.addEventListener('load', () => {
+            setTimeout(() => updateProgressBar(beneficiosSwiper), 100);
+        });
+    }
+    
+    // Ejecutar inicialización protegida
+    initBeneficiosSwiper();
     
 });
 
@@ -882,7 +913,22 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
     
-    const comunidadSwiper = new Swiper('.comunidad-swiper', {
+    function initComunidadSwiper(retryCount = 0) {
+        const swiperElement = document.querySelector('.comunidad-swiper');
+        if (!swiperElement) {
+            if (retryCount < 20) {
+                return setTimeout(() => initComunidadSwiper(retryCount + 1), 100);
+            }
+            return;
+        }
+        if (typeof window === 'undefined' || typeof window.Swiper === 'undefined') {
+            if (retryCount < 20) {
+                return setTimeout(() => initComunidadSwiper(retryCount + 1), 100);
+            }
+            return;
+        }
+        
+        const comunidadSwiper = new window.Swiper('.comunidad-swiper', {
         // Configuración básica
         loop: false,
         slidesPerView: 'auto', // Usar 'auto' para que respete el CSS
@@ -908,7 +954,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateComunidadProgressBar(this);
             }
         }
-    });
+        });
+    }
+    
+    // Ejecutar inicialización protegida
+    initComunidadSwiper();
 });
 
 // ========================================

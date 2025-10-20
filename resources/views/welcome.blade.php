@@ -306,8 +306,9 @@
                         <span class="beneficios-text-highlight">sus beneficios</span>
                     </h2>
                     
-                    <!-- Carrusel de Beneficios con Swiper -->
-                    <div class="beneficios-carousel-section">
+                    <!-- Carrusel de Beneficios con Swiper (Desktop/Tablet) -->
+                    <div class="beneficios-desktop">
+                        <div class="beneficios-carousel-section">
                         <div class="swiper beneficios-swiper">
                             <div class="swiper-wrapper">
                                 @foreach($beneficios as $beneficio)
@@ -365,9 +366,9 @@
                         <!-- Botones de navegación -->
                         <div class="beneficios-carousel-controls">
                         <!-- Barra de progreso -->
-                        <div class="beneficios-progress-bar">
+                        <div class="beneficios-progress-bar beneficios-desktop-progress-bar">
                             <div class="beneficios-progress-track"></div>
-                            <div class="beneficios-progress-indicator"></div>
+                            <div class="beneficios-progress-indicator beneficios-desktop-progress-indicator"></div>
                         </div>
                             <div class="beneficios-controls-wrapper">
                                 <a href="#" class="beneficios-ver-todos-btn">Ver todos los beneficios</a>
@@ -378,6 +379,7 @@
                                     <img src="/images/desktop/beneficios/arrow-b.png" alt="Siguiente" />
                                 </button>
                             </div>
+                        </div>
                         </div>
                     </div>
                     
