@@ -1610,9 +1610,23 @@ section h2 {
     color: #66F7A7;
     font-family: 'Montserrat', sans-serif;
     font-weight: 400; /* Regular */
-    font-size: clamp(24px, calc(24px + (100vw - 1100px) * 0.008), 31px);
+    font-size: 16px; /* Base para 1100px */
     letter-spacing: 0.02em; /* 2% */
     line-height: 1.2;
+}
+
+/* Desktop: 1366px-1919px */
+@media (min-width: 1366px) and (max-width: 1919px) {
+    .carreras-UTN-text-base {
+        font-size: 18px;
+    }
+}
+
+/* Desktop: 1920px+ */
+@media (min-width: 1920px) {
+    .carreras-UTN-text-base {
+        font-size: 21px;
+    }
 }
 
 /* Clase legacy para compatibilidad */
@@ -2507,7 +2521,7 @@ section h2 {
 .beneficios-slide-title {
     display: flex;
     flex-direction: column;
-    gap: clamp(5px, 0.5vw, 8px);
+    gap: 4px;
     height: clamp(60px, calc(60px + (100vw - 1100px) * 0.057), 100px); /* Altura fluida: 60px en 1100, 70px en 1366, 100px en 1920 */
     justify-content: center; /* Centra verticalmente el contenido */
     overflow: hidden; /* Evita desbordamiento */
@@ -2627,7 +2641,7 @@ section h2 {
 
 .beneficios-slide-line1 {
     font-family: 'Special Gothic Expanded One', sans-serif;
-    font-size: clamp(23px, calc(34px + (100vw - 1920px) * 0.0177), 34px);
+    font-size: clamp(17px, calc(25px + (100vw - 1920px) * 0.015), 25px);
     font-weight: 400; /* Regular */
     letter-spacing: 0.04em; /* 4% */
     color: var(--text-white);
@@ -2636,7 +2650,7 @@ section h2 {
 
 .beneficios-slide-line2 {
     font-family: 'Special Gothic Expanded One', sans-serif;
-    font-size: clamp(17px, calc(34px + (100vw - 1920px) * 0.0258), 34px);
+    font-size: clamp(17px, calc(25px + (100vw - 1920px) * 0.015), 25px);
     font-weight: 400; /* Regular */
     letter-spacing: 0.04em; /* 4% */
     color: var(--text-white);
