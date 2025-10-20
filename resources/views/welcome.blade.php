@@ -280,15 +280,15 @@
                         </div>
                         
                         <!-- Div de ancho completo -->
-                        <div class="carreras-UTN">
+                        <div class="carreras-UTN-base carreras-UTN-home">
                             <div class="carreras-UTN-left">
-                                <div class="carreras-UTN-text">
+                                <div class="carreras-UTN-text-base">
                                     <div class="carreras-UTN-line1">Nuestras <span class="carreras-UTN-bold">especializaciones</span></div>
                                     <div class="carreras-UTN-line2">están certificadas por:</div>
                                 </div>
                             </div>
                             <div class="carreras-UTN-right">
-                                <img src="/images/desktop/logo-utn.png" alt="Logo UTN" class="carreras-UTN-logo">
+                                <img src="/images/desktop/logo-utn.png" alt="Logo UTN" class="carreras-UTN-logo-base">
                             </div>
                         </div>
                     </div>
@@ -364,18 +364,18 @@
                         
                         <!-- Botones de navegación -->
                         <div class="beneficios-carousel-controls">
-                            <!-- Barra de progreso -->
-                            <div class="beneficios-progress-bar">
-                                <div class="beneficios-progress-track"></div>
-                                <div class="beneficios-progress-indicator"></div>
-                            </div>
+                        <!-- Barra de progreso -->
+                        <div class="beneficios-progress-bar">
+                            <div class="beneficios-progress-track"></div>
+                            <div class="beneficios-progress-indicator"></div>
+                        </div>
                             <div class="beneficios-controls-wrapper">
                                 <a href="#" class="beneficios-ver-todos-btn">Ver todos los beneficios</a>
                                 <button class="beneficios-carousel-btn beneficios-carousel-btn-prev">
-                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Anterior" class="beneficios-arrow-left" loading="lazy" />
+                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Anterior" class="beneficios-arrow-left" />
                                 </button>
                                 <button class="beneficios-carousel-btn beneficios-carousel-btn-next">
-                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Siguiente" loading="lazy" />
+                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Siguiente" />
                                 </button>
                             </div>
                         </div>
@@ -599,7 +599,9 @@
                     
                     <!-- Botón Ver más opiniones - Desktop -->
                     <div class="comunidad-desktop-ver-todos">
-                        <a href="#" class="comunidad-desktop-ver-todos-btn">Ver más opiniones</a>
+                        <div class="comunidad-desktop-ver-todos-wrapper">
+                            <a href="#" class="comunidad-desktop-ver-todos-btn">Ver más opiniones</a>
+                        </div>
                     </div>
                     
                     <!-- Carrusel de Comunidad con Swiper -->
@@ -885,13 +887,11 @@
                                 @endif
                             </div>
                             <div class="en-accion-item en-accion-item-2">
-                                <div class="en-accion-item-2-div-1">
+                                <div class="en-accion-item-2-content">
                                     <div class="en-accion-item-2-div-1-button">
                                         <span class="en-accion-item-2-div-1-text-1">Últimas</span>
                                         <span class="en-accion-item-2-div-1-text-2">noticias</span>
                                     </div>
-                                </div>
-                                <div class="en-accion-item-2-content">
                                     <div class="en-accion-item-2-div-2">
                                         <h3 class="en-accion-item-2-div-2-title">Nueva alianza: <span class="en-accion-item-2-div-2-title-light">ITCA y Royal Enfield</span></h3>
                                     </div>
@@ -1141,8 +1141,8 @@
     
     <!-- JavaScript para desplegable de sedes -->
     <script>
+        // Funcionalidad de sedes - Acordeón
         document.addEventListener('DOMContentLoaded', function() {
-            // Funcionalidad de sedes - Acordeón
             const sedeRows = document.querySelectorAll('.contacto-sede-row[data-sede]');
             
             sedeRows.forEach(row => {

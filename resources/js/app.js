@@ -7,6 +7,74 @@
 // FUNCIONES GLOBALES PARA BENEFICIOS
 // ========================================
 
+// Función para actualizar la barra de progreso
+function updateProgressBar(swiper) {
+    console.log('🔄 updateProgressBar ejecutándose');
+    const progressIndicator = swiper.el.closest('.beneficios-carousel-section').querySelector('.beneficios-progress-indicator');
+    const progressBar = swiper.el.closest('.beneficios-carousel-section').querySelector('.beneficios-progress-bar');
+    
+    console.log('📊 Elementos encontrados:', { progressIndicator, progressBar });
+    
+    if (!progressIndicator || !progressBar || !swiper) {
+        console.log('❌ Faltan elementos');
+        return;
+    }
+    
+    console.log('✅ Todos los elementos encontrados, continuando...');
+    
+    // Calcular progreso real basado en la posición actual
+    const totalSlides = swiper.slides.length;
+    const currentSlide = swiper.activeIndex;
+    
+    // Ajustar el cálculo para considerar las posiciones reales de navegación
+    let progress;
+    if (swiper.isEnd) {
+        // Si estamos al final, la barra debe estar completamente a la derecha
+        progress = 1;
+    } else if (swiper.isBeginning) {
+        // Si estamos al inicio, la barra debe estar completamente a la izquierda
+        progress = 0;
+    } else {
+        // Para posiciones intermedias, usar cálculo proporcional
+        // Usar totalSlides - 1 para todos los dispositivos
+        const maxNavigableSlide = totalSlides - 1;
+        progress = currentSlide / maxNavigableSlide;
+    }
+    
+    // Obtener dimensiones reales del DOM
+    const trackWidth = progressBar.offsetWidth;
+    const indicatorWidth = progressIndicator.offsetWidth;
+    const maxPosition = trackWidth - indicatorWidth;
+    
+    // Calcular posición final
+    const position = progress * maxPosition;
+    
+    // Aplicar transformación
+    progressIndicator.style.transform = `translateX(${position}px)`;
+}
+
+// Función para actualizar el estado de los botones de navegación
+function updateNavigationButtons(swiper) {
+    const nextBtn = swiper.el.closest('.beneficios-carousel-section').querySelector('.beneficios-carousel-btn-next');
+    const prevBtn = swiper.el.closest('.beneficios-carousel-section').querySelector('.beneficios-carousel-btn-prev');
+    
+    if (!nextBtn || !prevBtn) return;
+    
+    // Deshabilitar botón anterior si estamos en el primer slide
+    if (swiper.isBeginning) {
+        prevBtn.classList.add('swiper-button-disabled');
+    } else {
+        prevBtn.classList.remove('swiper-button-disabled');
+    }
+    
+    // Deshabilitar botón siguiente si hemos llegado al final
+    if (swiper.isEnd) {
+        nextBtn.classList.add('swiper-button-disabled');
+    } else {
+        nextBtn.classList.remove('swiper-button-disabled');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     
     // ========================================
@@ -628,94 +696,19 @@ document.addEventListener('DOMContentLoaded', function() {
     window.scrollBeneficiosCarousel = scrollBeneficiosCarousel;
 
     // ========================================
-    // FUNCIONES PARA BENEFICIOS (DENTRO DEL SCOPE)
-    // ========================================
-    
-    // Función para actualizar la barra de progreso
-    const updateProgressBar = function(swiper) {
-        if (!swiper || !swiper.el) return;
-        
-        const carouselSection = swiper.el.closest('.beneficios-carousel-section');
-        if (!carouselSection) return;
-        
-        const progressIndicator = carouselSection.querySelector('.beneficios-progress-indicator');
-        const progressBar = carouselSection.querySelector('.beneficios-progress-bar');
-        
-        if (!progressIndicator || !progressBar) return;
-        
-        // Calcular progreso real basado en la posición actual
-        const totalSlides = swiper.slides.length;
-        const currentSlide = swiper.activeIndex;
-        
-        // Ajustar el cálculo para considerar las posiciones reales de navegación
-        let progress;
-        if (swiper.isEnd) {
-            progress = 1;
-        } else if (swiper.isBeginning) {
-            progress = 0;
-        } else {
-            const maxNavigableSlide = totalSlides - 1;
-            progress = currentSlide / maxNavigableSlide;
-        }
-        
-        // Obtener dimensiones reales del DOM
-        const trackWidth = progressBar.offsetWidth;
-        const indicatorWidth = progressIndicator.offsetWidth;
-        const maxPosition = trackWidth - indicatorWidth;
-        
-        // Calcular posición final
-        const position = progress * maxPosition;
-        
-        // Aplicar transformación
-        progressIndicator.style.transform = `translateX(${position}px)`;
-    };
-
-    // Función para actualizar el estado de los botones de navegación
-    const updateNavigationButtons = function(swiper) {
-        const nextBtn = swiper.el.closest('.beneficios-carousel-section').querySelector('.beneficios-carousel-btn-next');
-        const prevBtn = swiper.el.closest('.beneficios-carousel-section').querySelector('.beneficios-carousel-btn-prev');
-        
-        if (!nextBtn || !prevBtn) return;
-        
-        // Deshabilitar botón anterior si estamos en el primer slide
-        if (swiper.isBeginning) {
-            prevBtn.classList.add('swiper-button-disabled');
-        } else {
-            prevBtn.classList.remove('swiper-button-disabled');
-        }
-        
-        // Deshabilitar botón siguiente si hemos llegado al final
-        if (swiper.isEnd) {
-            nextBtn.classList.add('swiper-button-disabled');
-        } else {
-            nextBtn.classList.remove('swiper-button-disabled');
-        }
-    };
-
-    // ========================================
     // CARRUSEL DE BENEFICIOS CON SWIPER
     // ========================================
     
-    // Esperar a que el CSS esté completamente cargado
-    function waitForCSS() {
-        return new Promise((resolve) => {
-            if (document.readyState === 'complete') {
-                resolve();
-            } else {
-                window.addEventListener('load', resolve);
-            }
-        });
+    // Verificar que el elemento existe antes de inicializar
+    const beneficiosSwiperElement = document.querySelector('.beneficios-carousel-section .beneficios-swiper');
+    console.log('🔍 Buscando Swiper:', beneficiosSwiperElement);
+    if (!beneficiosSwiperElement) {
+        console.log('❌ No se encontró Swiper');
+        return;
     }
+    console.log('✅ Swiper encontrado');
     
-    // Inicializar Swiper después de que todo esté cargado
-    waitForCSS().then(() => {
-        // Verificar que el elemento existe antes de inicializar
-        const beneficiosSwiperElement = document.querySelector('.beneficios-carousel-section .beneficios-swiper');
-        if (!beneficiosSwiperElement) {
-            return;
-        }
-        
-        const beneficiosSwiper = new Swiper('.beneficios-carousel-section .beneficios-swiper', {
+    const beneficiosSwiper = new Swiper('.beneficios-carousel-section .beneficios-swiper', {
         // Configuración básica
         loop: false,
         slidesPerView: 'auto', // Usar 'auto' para que respete el CSS
@@ -764,19 +757,21 @@ document.addEventListener('DOMContentLoaded', function() {
         // Eventos
         on: {
             init: function () {
+                console.log('🚀 Swiper init event');
                 updateProgressBar(this);
                 updateNavigationButtons(this);
             },
             slideChange: function () {
+                console.log('🔄 Swiper slideChange event');
                 updateProgressBar(this);
                 updateNavigationButtons(this);
             },
             resize: function () {
+                console.log('📏 Swiper resize event');
                 updateProgressBar(this);
                 updateNavigationButtons(this);
             }
         }
-    });
     });
     
 });
@@ -849,38 +844,38 @@ document.addEventListener('DOMContentLoaded', function() {
         function updateComunidadProgressBar(swiper) {
             const progressIndicator = document.querySelector('.comunidad-tablet-progress-indicator');
             const progressBar = document.querySelector('.comunidad-tablet-progress-bar');
-            if (!progressIndicator || !progressBar || !swiper) return;
-            
-            // Calcular progreso real basado en la posición actual
-            const totalSlides = swiper.slides.length;
-            const currentSlide = swiper.activeIndex;
-            
-            // Ajustar el cálculo para considerar las posiciones reales de navegación
-            let progress;
-            if (swiper.isEnd) {
-                // Si estamos al final, la barra debe estar completamente a la derecha
-                progress = 1;
-            } else if (swiper.isBeginning) {
-                // Si estamos al inicio, la barra debe estar completamente a la izquierda
-                progress = 0;
-            } else {
-                // Para posiciones intermedias, usar cálculo proporcional
-                // Usar totalSlides - 1 para todos los dispositivos
-                const maxNavigableSlide = totalSlides - 1;
-                progress = currentSlide / maxNavigableSlide;
-            }
-            
-            // Obtener dimensiones reales del DOM
-            const trackWidth = progressBar.offsetWidth;
-            const indicatorWidth = progressIndicator.offsetWidth;
-            const maxPosition = trackWidth - indicatorWidth;
-            
-            // Calcular posición final
-            const position = progress * maxPosition;
-            
-            // Aplicar transformación
-            progressIndicator.style.transform = `translateX(${position}px)`;
+        if (!progressIndicator || !progressBar || !swiper) return;
+        
+        // Calcular progreso real basado en la posición actual
+        const totalSlides = swiper.slides.length;
+        const currentSlide = swiper.activeIndex;
+        
+        // Ajustar el cálculo para considerar las posiciones reales de navegación
+        let progress;
+        if (swiper.isEnd) {
+            // Si estamos al final, la barra debe estar completamente a la derecha
+            progress = 1;
+        } else if (swiper.isBeginning) {
+            // Si estamos al inicio, la barra debe estar completamente a la izquierda
+            progress = 0;
+        } else {
+            // Para posiciones intermedias, usar cálculo proporcional
+            // Usar totalSlides - 1 para todos los dispositivos
+            const maxNavigableSlide = totalSlides - 1;
+            progress = currentSlide / maxNavigableSlide;
         }
+        
+        // Obtener dimensiones reales del DOM
+        const trackWidth = progressBar.offsetWidth;
+        const indicatorWidth = progressIndicator.offsetWidth;
+        const maxPosition = trackWidth - indicatorWidth;
+        
+        // Calcular posición final
+        const position = progress * maxPosition;
+        
+        // Aplicar transformación
+        progressIndicator.style.transform = `translateX(${position}px)`;
+    }
     
     const swiperElement = document.querySelector('.comunidad-swiper');
     if (!swiperElement) {

@@ -1205,6 +1205,11 @@ section h2 {
         max-width: clamp(1100px, 100vw, 1920px);
     }
     
+    /* Barra de progreso desktop - transición más suave */
+    .beneficios-carousel-section .beneficios-progress-indicator {
+        transition: transform 0.6s ease;
+    }
+    
     /* Sticky Bar responsive */
     .sticky-bar {
         height: 40px;
@@ -1537,7 +1542,33 @@ section h2 {
     gap: clamp(20px, calc(20px + (100vw - 1100px) * 0.024), 40px);
 }
 
-/* Div UTN - Ancho completo (solo desktop) */
+/* Clase base UTN - Ancho completo (solo desktop) */
+.carreras-UTN-base {
+    width: 100%;
+    height: clamp(120px, calc(120px + (100vw - 1100px) * 0.05), 162px);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(25px, calc(25px + (100vw - 1100px) * 0.012), 35px);
+    color: white;
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+}
+
+/* Modificadores de color para UTN */
+.carreras-UTN-home {
+    background-color: #02115A; /* Azul ITCA */
+    border: 1px solid white;
+}
+
+.carreras-UTN-carreras {
+    background-color: var(--menu-bg); /* #010C42 - Igual al menú */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Clase legacy para compatibilidad */
 .carreras-UTN {
     width: 100%;
     height: clamp(120px, calc(120px + (100vw - 1100px) * 0.05), 162px);
@@ -1573,13 +1604,24 @@ section h2 {
     justify-content: flex-start;
 }
 
-/* Texto UTN - Solo desktop */
-.carreras-UTN-text {
+/* Texto UTN - Clase base con tamaños correctos */
+.carreras-UTN-text-base {
     text-align: right;
     color: #66F7A7;
     font-family: 'Montserrat', sans-serif;
     font-weight: 400; /* Regular */
     font-size: clamp(24px, calc(24px + (100vw - 1100px) * 0.008), 31px);
+    letter-spacing: 0.02em; /* 2% */
+    line-height: 1.2;
+}
+
+/* Clase legacy para compatibilidad */
+.carreras-UTN-text {
+    text-align: right;
+    color: #66F7A7;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400; /* Regular */
+    font-size: clamp(18px, calc(22px - (100vw - 1100px) * 0.008), 22px);
     letter-spacing: 0.02em; /* 2% */
     line-height: 1.2;
 }
@@ -1593,7 +1635,13 @@ section h2 {
     font-weight: 700; /* Bold */
 }
 
-/* Logo UTN */
+/* Logo UTN - Clase base con tamaños correctos */
+.carreras-UTN-logo-base {
+    height: clamp(84px, calc(84px + (100vw - 1100px) * 0.048), 124px);
+    object-fit: contain;
+}
+
+/* Clase legacy para compatibilidad */
 .carreras-UTN-logo {
     max-width: 100%;
     max-height: 100%;
@@ -1603,7 +1651,8 @@ section h2 {
 
 /* Ocultar UTN en tablet y mobile */
 @media (max-width: 1099px) {
-    .carreras-UTN {
+    .carreras-UTN,
+    .carreras-UTN-base {
         display: none;
     }
 }
@@ -1627,7 +1676,6 @@ section h2 {
     font-weight: bold;
     font-family: 'Montserrat', sans-serif;
     font-size: 16px; /* Base font size, will be overridden by .carreras-UTN-carreras-text */
-    margin-top: clamp(30px, calc(30px + (100vw - 1100px) * 0.037), 50px); /* Espacio superior */
 }
 
 /* Divs internos UTN - Mitad y mitad - PÁGINA CARRERAS */
@@ -1666,8 +1714,8 @@ section h2 {
 
 /* Logo UTN - PÁGINA CARRERAS */
 .carreras-UTN-carreras-logo {
-    max-width: 100%;
-    max-height: 100%;
+    width: clamp(207px, calc(207px + (100vw - 1100px) * 0.25), 415px);
+    height: clamp(62px, calc(62px + (100vw - 1100px) * 0.075), 125px);
     object-fit: contain;
 }
 
@@ -2713,8 +2761,8 @@ section h2 {
     height: 100%;
     background-color: #66F7A7;
     border-radius: 2.5px;
-    transition: transform 0.6s ease;
     transform: translateX(0);
+    transition: transform 0.3s ease-out;
 }
 
 /* Beneficios section - Tablet (600px-1099px) */
@@ -3639,7 +3687,8 @@ section h2 {
 .en-accion-youtube-btn {
     position: absolute;
     bottom: clamp(10px, 1vw, 20px);
-    right: clamp(10px, 1vw, 20px);
+    left: 50%;
+    transform: translateX(-50%);
     font-family: 'Montserrat', sans-serif;
     font-size: clamp(10px, calc(10px + (100vw - 1100px) * 0.0037), 13px);
     font-weight: 500; /* Medium */
@@ -3764,7 +3813,7 @@ section h2 {
     display: flex;
     flex-direction: column;
     padding-left: clamp(30px, calc(30px + (100vw - 1100px) * 0.0244), 50px);
-    padding-top: clamp(10px, calc(10px + (100vw - 1366px) * 0.0541), 40px);
+    padding-top: clamp(12px, calc(12px + (100vw - 1100px) * 0.086), 40px);
     padding-right: 0;
     padding-bottom: 0;
     align-items: flex-start;
@@ -3780,6 +3829,7 @@ section h2 {
     justify-content: flex-start;
     flex: 1;
     width: 100%;
+    gap: clamp(1px, calc(1px + (100vw - 1100px) * 0.023), 20px);
 }
 
 .en-accion-item-2-div-1 {
@@ -3897,9 +3947,8 @@ section h2 {
 }
 
 .en-accion-item-2-div-3-image {
-    width: clamp(445px, calc(445px + (100vw - 1100px) * 0.192), 602px);
+    width: clamp(470px, calc(480px + (100vw - 1366px) * 0.31), 652px);
     height: auto;
-    padding-top: clamp(5px, calc(5px + (100vw - 1100px) * 0.111), 96px);
 }
 
 .en-accion-item-3 {
@@ -4054,9 +4103,13 @@ section h2 {
 
 /* Botón "Ver más opiniones" - Desktop */
 .comunidad-desktop-ver-todos {
-    display: flex;
     margin-top: clamp(30px, 3vw, 50px);
-    padding-left: clamp(373px, calc(417px + (100vw - 1366px) * 0.2857), 575px);
+}
+
+.comunidad-desktop-ver-todos-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .comunidad-desktop-ver-todos-btn {
@@ -6876,7 +6929,7 @@ section h2 {
     padding-bottom: clamp(20px, 3vw, 40px);
     display: flex;
     flex-direction: column;
-    gap: clamp(20px, 3vw, 30px);
+    gap: clamp(30px, calc(30px + (100vw - 1100px) * 0.024), 50px);
     padding-bottom: 0;
 }
 
