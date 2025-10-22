@@ -577,8 +577,10 @@
                                              alt="Avatar" class="comunidad-card-avatar" loading="lazy">
                                         <div class="comunidad-card-info">
                                             <p class="comunidad-card-sede">{{ $testimonio->sede }}</p>
-                                            <p class="comunidad-card-nombre">{{ $testimonio->nombre }}</p>
-                                            <p class="comunidad-card-tiempo">hace {{ $testimonio->tiempo_testimonio }} meses</p>
+                                            <div class="comunidad-card-wrapper">
+                                                <p class="comunidad-card-nombre">{{ $testimonio->nombre }}</p>
+                                                <p class="comunidad-card-tiempo">hace {{ $testimonio->tiempo_testimonio }} meses</p>
+                                            </div>
                                             <p class="comunidad-card-carrera">{{ $testimonio->carrera }}</p>
                                         </div>
                                     </div>
@@ -618,8 +620,10 @@
                                             <img src="{{ asset('storage/' . $testimonio->avatar) }}" alt="Avatar" class="comunidad-card-avatar" loading="lazy">
                                             <div class="comunidad-card-info">
                                                 <p class="comunidad-card-sede">{{ $testimonio->sede }}</p>
-                                                <p class="comunidad-card-nombre">{{ $testimonio->nombre }}</p>
-                                                <p class="comunidad-card-tiempo">hace {{ $testimonio->tiempo_testimonio }} meses</p>
+                                                <div class="comunidad-card-wrapper">
+                                                    <p class="comunidad-card-nombre">{{ $testimonio->nombre }}</p>
+                                                    <p class="comunidad-card-tiempo">hace {{ $testimonio->tiempo_testimonio }} meses</p>
+                                                </div>
                                                 <p class="comunidad-card-carrera">{{ $testimonio->carrera }}</p>
                                             </div>
                                         </div>
@@ -678,8 +682,10 @@
                                     <img src="{{ asset('storage/' . $testimonio->avatar) }}" alt="Avatar" class="comunidad-card-avatar" loading="lazy">
                                     <div class="comunidad-card-info">
                                         <p class="comunidad-card-sede">{{ $testimonio->sede }}</p>
-                                        <p class="comunidad-card-nombre">{{ $testimonio->nombre }}</p>
-                                        <p class="comunidad-card-tiempo">hace {{ $testimonio->tiempo_testimonio }} meses</p>
+                                        <div class="comunidad-card-wrapper">
+                                            <p class="comunidad-card-nombre">{{ $testimonio->nombre }}</p>
+                                            <p class="comunidad-card-tiempo">hace {{ $testimonio->tiempo_testimonio }} meses</p>
+                                        </div>
                                         <p class="comunidad-card-carrera">{{ $testimonio->carrera }}</p>
                                     </div>
                                 </div>
