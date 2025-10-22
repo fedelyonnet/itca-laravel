@@ -117,9 +117,9 @@
                     <!-- Div UTN - Ancho completo (solo desktop) -->
                     <div class="carreras-UTN-carreras">
                         <div class="carreras-UTN-carreras-left">
-                            <div class="carreras-UTN-carreras-text">
-                                <div class="carreras-UTN-carreras-line1">Nuestras <span class="carreras-UTN-carreras-bold">especializaciones</span></div>
-                                <div class="carreras-UTN-carreras-line2">están certificadas por:</div>
+                            <div class="carreras-UTN-text-base">
+                                <div class="carreras-UTN-line1">Nuestras <span class="carreras-UTN-bold">especializaciones</span></div>
+                                <div class="carreras-UTN-line2">están certificadas por:</div>
                             </div>
                         </div>
                         <div class="carreras-UTN-carreras-right">

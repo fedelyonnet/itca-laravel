@@ -1559,8 +1559,8 @@ section h2 {
 
 /* Modificadores de color para UTN */
 .carreras-UTN-home {
-    background-color: #02115A; /* Azul ITCA */
-    border: 1px solid white;
+    background-color: var(--menu-bg); /* #010C42 - Igual al menú */
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .carreras-UTN-carreras {
