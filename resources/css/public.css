@@ -1545,7 +1545,7 @@ section h2 {
 /* Clase base UTN - Ancho completo (solo desktop) */
 .carreras-UTN-base {
     width: 100%;
-    height: clamp(120px, calc(120px + (100vw - 1100px) * 0.05), 162px);
+    height: clamp(85px, calc(85px + (100vw - 1100px) * 0.04), 118px);
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -1571,7 +1571,7 @@ section h2 {
 /* Clase legacy para compatibilidad */
 .carreras-UTN {
     width: 100%;
-    height: clamp(120px, calc(120px + (100vw - 1100px) * 0.05), 162px);
+    height: clamp(85px, calc(85px + (100vw - 1100px) * 0.04), 118px);
     background-color: #02115A; /* Azul ITCA */
     border: 1px solid white;
     border-radius: 12px;
@@ -1678,7 +1678,7 @@ section h2 {
 /* Div UTN - Ancho completo (solo desktop) - PÁGINA CARRERAS */
 .carreras-UTN-carreras {
     width: 100%;
-    height: clamp(120px, calc(120px + (100vw - 1100px) * 0.05), 162px); /* Responsive height */
+    height: clamp(85px, calc(85px + (100vw - 1100px) * 0.04), 118px); /* Responsive height */
     background-color: var(--menu-bg); /* #010C42 - Igual al menú */
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 12px;
@@ -2293,7 +2293,7 @@ section h2 {
     border-radius: clamp(6px, 0.6vw, 10px);
     display: flex;
     flex-direction: column;
-    padding: clamp(15px, 1.5vw, 20px);
+    padding: clamp(24px, calc(24px + (100vw - 1100px) * 0.0024), 26px);
     box-sizing: border-box;
     aspect-ratio: 375/310; /* Mantiene la proporción de 1920px */
 }
@@ -2305,8 +2305,8 @@ section h2 {
 }
 
 .comunidad-card-avatar {
-    width: clamp(60px, calc(60px + (100vw - 1100px) * 0.0232), 79px);
-    height: clamp(60px, calc(60px + (100vw - 1100px) * 0.0232), 79px);
+    width: clamp(60px, calc(60px + (100vw - 1100px) * 0.0415), 94px);
+    height: clamp(60px, calc(60px + (100vw - 1100px) * 0.0415), 94px);
     border-radius: 50%;
     margin-right: clamp(10px, 1vw, 15px);
     object-fit: cover;
@@ -2318,6 +2318,13 @@ section h2 {
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+.comunidad-card-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-top: clamp(3px, calc(3px + (100vw - 1100px) * 0.0024), 5px);
+    margin-bottom: clamp(3px, calc(3px + (100vw - 1100px) * 0.0024), 5px);
 }
 
 .comunidad-card-sede {
@@ -2356,6 +2363,7 @@ section h2 {
     letter-spacing: 0.01em;
     margin: 0;
     max-width: 200px;
+    line-height: clamp(12px, calc(12px + (100vw - 1100px) * 0.0037), 15px);
 }
 
 .comunidad-card-main {
@@ -2369,7 +2377,7 @@ section h2 {
 
 .comunidad-card-texto {
     font-family: 'Montserrat', sans-serif;
-    font-size: clamp(12px, calc(12px + (100vw - 1100px) * 0.0024), 14px);
+    font-size: clamp(12px, calc(12px + (100vw - 1100px) * 0.00122), 13px);
     font-weight: 300;
     color: #ffffff;
     letter-spacing: 0.02em;
@@ -5280,7 +5288,7 @@ section h2 {
         border-radius: clamp(6px, 0.6vw, 10px);
         display: flex;
         flex-direction: column;
-        padding: clamp(15px, 1.5vw, 20px);
+        padding: clamp(16px, calc(16px + (100vw - 320px) * 0.2), 30px);
         box-sizing: border-box;
     }
     

@@ -1192,5 +1192,5 @@ function initializePartnersCarousel() {
 
 $(document).ready(function() {
     // Initialize only once when document is ready
-    setTimeout(initializePartnersCarousel, 1000);
+    setTimeout(initializePartnersCarousel, 100);
 });
