@@ -220,7 +220,14 @@ body {
 /* Hero section */
 .hero {
     background-color: var(--section-bg-odd);
-    padding: 0 0 clamp(30px, 2.6vw, 50px) 0; /* Fluido: 30px → 50px */
+    padding: 0;
+}
+
+/* Hero section - Mobile padding bottom */
+@media (max-width: 599px) {
+    .hero {
+        padding-bottom: clamp(20px, calc(20px + (100vw - 320px) * 0.0909), 30px);
+    }
 }
 
 /* Contenedor del hero */
@@ -1971,7 +1978,9 @@ section h2 {
 @media (max-width: 599px) {
     .carreras-section {
         background-color: var(--section-bg-even); /* #02115A - Igual a sedes */
-        padding: clamp(30px, calc(30px + (100vw - 320px) * 0.107), 60px) 0;
+        padding: 0;
+        padding-top: clamp(20px, calc(20px + (100vw - 320px) * 0.1364), 35px);
+        padding-bottom: clamp(20px, calc(20px + (100vw - 320px) * 0.1364), 35px);
     }
     
     /* Ocultar barras de información de desktop en mobile */
@@ -4861,7 +4870,7 @@ section h2 {
 @media (max-width: 599px) {
     .comunidad-section {
         background-color: var(--section-bg-odd);
-        padding: clamp(40px, 3vw, 60px) 0;
+        padding: 0;
     }
     
     .comunidad-container {
@@ -4927,7 +4936,9 @@ section h2 {
     
     .beneficios-section {
         background-color: var(--section-bg-odd);
-        padding: clamp(40px, 3vw, 60px) 0;
+        padding: 0;
+        padding-top: clamp(20px, calc(20px + (100vw - 320px) * 0.1364), 35px);
+        padding-bottom: clamp(20px, calc(20px + (100vw - 320px) * 0.1364), 35px);
     }
     
     .beneficios-container {
@@ -5155,7 +5166,7 @@ section h2 {
     /* Primera línea del título */
     .beneficios-slide-line1 {
         font-family: 'Special Gothic Expanded One', sans-serif;
-        font-size: clamp(25px, calc(25px + (100vw - 320px) * 0.0636), 32px);
+        font-size: clamp(18px, calc(18px + (100vw - 320px) * 0.0727), 26px);
         font-weight: 400;
         letter-spacing: 0.04em; /* 4% */
         color: var(--text-white);
@@ -5165,7 +5176,7 @@ section h2 {
     /* Segunda línea del título */
     .beneficios-slide-line2 {
         font-family: 'Special Gothic Expanded One', sans-serif;
-        font-size: clamp(25px, calc(25px + (100vw - 320px) * 0.0636), 32px);
+        font-size: clamp(18px, calc(18px + (100vw - 320px) * 0.0727), 26px);
         font-weight: 400;
         letter-spacing: 0.04em; /* 4% */
         color: var(--text-white);
@@ -5567,7 +5578,9 @@ section h2 {
 @media (max-width: 599px) {
     .en-accion-section {
         background-color: var(--section-bg-even);
-        padding: clamp(40px, 3vw, 60px) 0;
+        padding: 0;
+        padding-top: clamp(20px, calc(20px + (100vw - 320px) * 0.1364), 35px);
+        padding-bottom: clamp(20px, calc(20px + (100vw - 320px) * 0.1364), 35px);
     }
     
     .en-accion-container {
@@ -5593,9 +5606,8 @@ section h2 {
         display: block !important;
         position: relative;
         margin: 0;
-        padding: 20px 0 0 0;
-        background-color: var(--section-bg-even);
         margin-left: calc(-50vw + 50%);
+        padding: 0;
     }
     
     .en-accion-mobile-carousel {
@@ -6229,7 +6241,9 @@ section h2 {
 @media (max-width: 599px) {
     .sedes-section {
         background-color: var(--section-bg-even);
-        padding: clamp(40px, 3vw, 60px) 0;
+        padding: 0;
+        padding-top: clamp(20px, calc(20px + (100vw - 320px) * 0.1364), 35px);
+        padding-bottom: clamp(20px, calc(20px + (100vw - 320px) * 0.1364), 35px);
     }
     
     /* Ocultar grid desktop en mobile */
@@ -6462,9 +6476,13 @@ section h2 {
    ======================================== */
 .partners-section {
     background-color: #010C42;
-    padding: clamp(40px, 5vw, 80px) 0;
+    padding: 0;
     width: 100vw;
     margin-left: calc(-50vw + 50%);
+    min-height: auto !important;
+    height: auto !important;
+    padding-top: clamp(20px, calc(20px + (100vw - 320px) * 0.1364), 35px);
+    padding-bottom: clamp(20px, calc(20px + (100vw - 320px) * 0.1364), 35px);
 }
 
 .partners-content {
@@ -6522,7 +6540,7 @@ section h2 {
    ======================================== */
 .contacto-section {
     background-color: #02115A;
-    padding: clamp(40px, 5vw, 80px) 0;
+    padding: 0;
     width: 100vw;
     margin-left: calc(-50vw + 50%);
     height: auto;
@@ -6582,7 +6600,7 @@ section h2 {
    ======================================== */
 .contacto-section {
     background-color: #02115A;
-    padding: clamp(40px, 5vw, 80px) 0;
+    padding: 0;
     width: 100vw;
     margin-left: calc(-50vw + 50%);
     height: auto;
@@ -6635,6 +6653,7 @@ section h2 {
         gap: clamp(20px, 4vw, 30px);
         padding: 0 clamp(15px, 4vw, 25px);
         padding-left: clamp(0px, calc(0px + (100vw - 320px) * 0.178), 15px);
+        padding-top: clamp(20px, calc(20px + (100vw - 320px) * 0.1364), 35px);
     }
     
     /* Ocultar redes sociales del tercio contacto en mobile */
@@ -6648,7 +6667,9 @@ section h2 {
     .contacto-tercio.contacto-sedes {
         background-color: #02115A;
         padding: clamp(20px, 4vw, 30px);
+        padding-top: clamp(20px, 4vw, 30px);
         border-radius: 8px;
+        padding-top: 0;
     }
     
     .contacto-tercio.contacto-info {
@@ -7064,7 +7085,6 @@ section h2 {
    ======================================== */
 .partners-carousel {
     width: 100%;
-    margin-top: clamp(60px, calc(60px + (100vw - 1100px) * 0.0488), 100px);
 }
 
 /* Vertical alignment for logos - minimal CSS */
@@ -7376,6 +7396,7 @@ body {
     padding: 0;
     min-height: auto !important;
     height: auto !important;
+    overflow-x: hidden;
 }
 
 html {
