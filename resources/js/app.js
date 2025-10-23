@@ -266,12 +266,39 @@ document.addEventListener('DOMContentLoaded', function() {
         let currentSlide = 0;
         const totalSlides = 3;
         
+        // Variable para evitar actualizaciones múltiples
+        let isUpdatingProgress = false;
+        
         // Función para actualizar la barra de progreso (EN ACCION MOBILE)
         function updateEnAccionMobileProgressBar() {
+            if (isUpdatingProgress) return;
+            isUpdatingProgress = true;
+            
             if (enAccionMobileProgressIndicator) {
-                const progressWidth = (currentSlide / (totalSlides - 1)) * 66.666;
-                enAccionMobileProgressIndicator.style.left = `${progressWidth}%`;
+                const progressBar = document.querySelector('.en-accion-mobile-progress-bar');
+                if (!progressBar) {
+                    isUpdatingProgress = false;
+                    return;
+                }
+                
+                // Calcular progreso (0 a 1)
+                const progress = currentSlide / (totalSlides - 1);
+                
+                // Obtener ancho de la barra y del indicador
+                const trackWidth = progressBar.offsetWidth;
+                const indicatorWidth = enAccionMobileProgressIndicator.offsetWidth;
+                const maxPosition = Math.max(0, trackWidth - indicatorWidth);
+                const position = progress * maxPosition;
+                
+                // Usar left como beneficios (más compatible)
+                enAccionMobileProgressIndicator.style.transform = 'none';
+                enAccionMobileProgressIndicator.style.left = `${position}px`;
             }
+            
+            // Reset flag después de un pequeño delay
+            setTimeout(() => {
+                isUpdatingProgress = false;
+            }, 50);
         }
         
         // Función para ir al slide anterior

@@ -288,7 +288,8 @@
                                 </div>
                             </div>
                             <div class="carreras-UTN-right">
-                                <img src="/images/desktop/logo-utn.png" alt="Logo UTN" class="carreras-UTN-logo-base">
+                                <img src="/images/desktop/logo-utn.png" alt="Logo UTN" class="carreras-UTN-logo-base carreras-UTN-logo-desktop">
+                                <img src="/images/mobile/utn-mobile.png" alt="Logo UTN" class="carreras-UTN-logo-base carreras-UTN-logo-mobile">
                             </div>
                         </div>
                     </div>
@@ -408,7 +409,7 @@
                                                 </div>
                                                 <div class="beneficios-slide-icon beneficios-slide-icon-hidden">
                                                     <a href="#" class="beneficios-slide-icon-btn">
-                                                        <img src="/images/mobile/flechaup.png" alt="Flecha" loading="lazy" />
+                                                        <img src="/images/desktop/btnflecha.png" alt="Flecha" loading="lazy" />
                                                     </a>
                                                 </div>
                                             @elseif($beneficio->getAlineacionBottomAttribute() === 'right')
@@ -417,7 +418,7 @@
                                                 </div>
                                                 <div class="beneficios-slide-icon beneficios-slide-icon-visible">
                                                     <a href="{{ $beneficio->url ?: '#' }}" target="_blank" class="beneficios-slide-icon-btn">
-                                                        <img src="/images/mobile/flechaup.png" alt="Flecha" loading="lazy" />
+                                                        <img src="/images/desktop/btnflecha.png" alt="Flecha" loading="lazy" />
                                                     </a>
                                                 </div>
                                             @else
@@ -426,7 +427,7 @@
                                                 </div>
                                                 <div class="beneficios-slide-icon beneficios-slide-icon-hidden">
                                                     <a href="#" class="beneficios-slide-icon-btn">
-                                                        <img src="/images/mobile/flechaup.png" alt="Flecha" loading="lazy" />
+                                                        <img src="/images/desktop/btnflecha.png" alt="Flecha" loading="lazy" />
                                                     </a>
                                                 </div>
                                             @endif
@@ -450,11 +451,11 @@
                                 <a href="#" class="beneficios-ver-todos-btn">Ver todos los beneficios</a>
                                 
                                 <button class="beneficios-carousel-btn beneficios-arrow-left" onclick="scrollBeneficiosCarousel('left')">
-                                    <img src="/images/mobile/arrowicon.png" alt="Anterior" />
+                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Anterior" />
                                 </button>
                                 
                                 <button class="beneficios-carousel-btn beneficios-arrow-right" onclick="scrollBeneficiosCarousel('right')">
-                                    <img src="/images/mobile/arrowicon.png" alt="Siguiente" />
+                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Siguiente" />
                                 </button>
                             </div>
                     </div>
@@ -711,10 +712,10 @@
                     <div class="comunidad-controls-row">
                         <a href="#" class="comunidad-ver-todos-btn">Ver más opiniones</a>
                         <button class="comunidad-carousel-btn comunidad-btn-prev" onclick="scrollComunidadCarousel(-1)">
-                            <img src="/images/mobile/arrowicon.png" alt="Previous" class="comunidad-arrow-left">
+                            <img src="/images/desktop/beneficios/arrow-b.png" alt="Previous" class="comunidad-arrow-left">
                         </button>
                         <button class="comunidad-carousel-btn comunidad-btn-next" onclick="scrollComunidadCarousel(1)">
-                            <img src="/images/mobile/arrowicon.png" alt="Next">
+                            <img src="/images/desktop/beneficios/arrow-b.png" alt="Next">
                         </button>
                     </div>
                 </div>
@@ -816,16 +817,19 @@
                         
                         <!-- Controles del carrusel -->
                         <div class="en-accion-mobile-carousel-controls">
-                            <button class="en-accion-mobile-prev-btn">
-                                <img src="/images/mobile/arrowicon.png" alt="Anterior" />
-                            </button>
+                            <!-- Barra de progreso arriba -->
                             <div class="en-accion-mobile-progress-bar">
-                                <div class="en-accion-mobile-progress-track"></div>
                                 <div class="en-accion-mobile-progress-indicator"></div>
                             </div>
-                            <button class="en-accion-mobile-next-btn">
-                                <img src="/images/mobile/arrowicon.png" alt="Siguiente" />
-                            </button>
+                            <!-- Botones de navegación abajo -->
+                            <div class="en-accion-mobile-controls-wrapper">
+                                <button class="en-accion-mobile-prev-btn">
+                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Anterior" />
+                                </button>
+                                <button class="en-accion-mobile-next-btn">
+                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Siguiente" />
+                                </button>
+                            </div>
                         </div>
                     </div>
                     
@@ -844,7 +848,12 @@
                             <div class="en-accion-mobile-news-image">
                                 <img src="/images/desktop/en-accion/news.png" alt="News" class="en-accion-mobile-news-img">
                             </div>
-                            <a href="#" class="en-accion-mobile-news-btn">Ver más noticias</a>
+                            <div class="en-accion-mobile-news-bottom">
+                                <a href="#" class="en-accion-mobile-news-btn">Ver más noticias</a>
+                                <a href="#" class="en-accion-mobile-news-btn-flecha">
+                                    <img src="/images/desktop/btnflecha.png" alt="Flecha" />
+                                </a>
+                            </div>
                         </div>
                     </div>
                     
@@ -865,7 +874,8 @@
                             A través de nuestra División Corporativa, trabajamos en conjunto con las empresas líderes de la industria aportando conocimiento y habilidades a los equipos técnicos. Nuestro compromiso es proveer los conocimientos y habilidades para que sus equipos técnicos cumplan las metas delineadas para llegar a los objetivos...
                             <a href="#" class="en-accion-mobile-corp-link">Ver más</a>
                         </div>
-                        <div class="en-accion-mobile-corp-button">
+                        <div class="en-accion-mobile-corp-bottom">
+                            <a href="#" class="en-accion-mobile-news-btn more-news-corp">Ver más noticias</a>
                             <a href="#" class="en-accion-mobile-corp-btn">
                                 <img src="/images/desktop/btnflecha.png" alt="Flecha" />
                             </a>

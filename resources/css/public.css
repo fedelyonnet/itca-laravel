@@ -1476,7 +1476,7 @@ section h2 {
    CARRERAS SECTION - DESKTOP (1100px - 1920px)
    ======================================== */
 .carreras-section {
-    background-color: var(--menu-bg); /* #010C42 - Igual al menú */
+    background-color: var(--section-bg-even); /* #02115A - Igual a sedes */
     padding: clamp(30px, calc(30px + (100vw - 1100px) * 0.037), 60px) 0;
 }
 
@@ -1559,12 +1559,12 @@ section h2 {
 
 /* Modificadores de color para UTN */
 .carreras-UTN-home {
-    background-color: var(--menu-bg); /* #010C42 - Igual al menú */
+    background-color: var(--section-bg-even); /* #02115A - Azul medio */
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .carreras-UTN-carreras {
-    background-color: var(--menu-bg); /* #010C42 - Igual al menú */
+    background-color: var(--section-bg-odd); /* #010C42 - Azul oscuro para contraste */
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -1655,6 +1655,15 @@ section h2 {
     object-fit: contain;
 }
 
+/* Mostrar logo desktop, ocultar mobile en desktop */
+.carreras-UTN-logo-desktop {
+    display: block;
+}
+
+.carreras-UTN-logo-mobile {
+    display: none;
+}
+
 /* Clase legacy para compatibilidad */
 .carreras-UTN-logo {
     max-width: 100%;
@@ -1669,6 +1678,57 @@ section h2 {
     .carreras-UTN-base {
         display: none;
     }
+    
+    /* UTN Mobile - Estructura vertical */
+    .carreras-UTN-base {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        height: auto !important;
+        width: clamp(280px, calc(388px + (100vw - 430px) * 1.27), 388px) !important;
+        margin: 0 auto !important;
+        padding: clamp(20px, calc(20px + (100vw - 320px) * 0.1), 30px) !important;
+        gap: clamp(10px, calc(10px + (100vw - 320px) * 0.05), 15px) !important;
+    }
+    
+    .carreras-UTN-left,
+    .carreras-UTN-right {
+        width: 100% !important;
+        height: auto !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    .carreras-UTN-left {
+        margin-top: clamp(-10px, calc(-10px + (100vw - 320px) * -0.05), -5px) !important;
+    }
+    
+    .carreras-UTN-text-base {
+        text-align: center !important;
+        font-size: clamp(15px, calc(15px + (100vw - 360px) * 0.01), 16px) !important;
+    }
+    
+    .carreras-UTN-bold {
+        font-weight: 500 !important;
+    }
+    
+    .carreras-UTN-logo-base {
+        height: clamp(60px, calc(60px + (100vw - 320px) * 0.1), 80px) !important;
+        width: auto !important;
+    }
+    
+    /* Mostrar logo mobile, ocultar desktop */
+    .carreras-UTN-logo-desktop {
+        display: none !important;
+    }
+    
+    .carreras-UTN-logo-mobile {
+        display: block !important;
+        height: auto !important;
+        width: clamp(255px, calc(255px + (100vw - 320px) * 0.45), 264px) !important;
+    }
 }
 
 /* ========================================
@@ -1679,7 +1739,7 @@ section h2 {
 .carreras-UTN-carreras {
     width: 100%;
     height: clamp(85px, calc(85px + (100vw - 1100px) * 0.04), 118px); /* Responsive height */
-    background-color: var(--menu-bg); /* #010C42 - Igual al menú */
+    background-color: var(--section-bg-odd); /* #010C42 - Azul oscuro para contraste */
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 12px;
     display: flex;
@@ -1910,7 +1970,7 @@ section h2 {
    ======================================== */
 @media (max-width: 599px) {
     .carreras-section {
-        background-color: var(--menu-bg); /* #010C42 - Igual al menú */
+        background-color: var(--section-bg-even); /* #02115A - Igual a sedes */
         padding: clamp(30px, calc(30px + (100vw - 320px) * 0.107), 60px) 0;
     }
     
@@ -2120,8 +2180,8 @@ section h2 {
     }
     
     .carreras-title-arrow { /* Flecha del título */
-        width: clamp(45px, calc(45px + (100vw - 320px) * 0.0273), 48px);
-        height: clamp(45px, calc(45px + (100vw - 320px) * 0.0273), 48px);
+        width: clamp(35px, calc(35px + (100vw - 320px) * 0.1143), 48px);
+        height: auto;
         object-fit: contain;
         flex: 0 0 auto;
     }
@@ -2157,6 +2217,7 @@ section h2 {
         justify-content: center;
         align-items: center;
         gap: clamp(15px, calc(15px + (100vw - 320px) * 0.018), 20px);
+        margin-bottom: clamp(12px, calc(12px + (100vw - 360px) * 0.1857), 25px);
     }
     
     /* Mantener compatibilidad */
@@ -5163,8 +5224,8 @@ section h2 {
     }
     
     .beneficios-slide-icon-btn {
-        width: clamp(25px, calc(25px + (100vw - 320px) * 0.1455), 41px) !important;
-        height: clamp(25px, calc(25px + (100vw - 320px) * 0.1455), 41px) !important;
+        width: clamp(35px, calc(35px + (100vw - 320px) * 0.1143), 48px) !important;
+        height: auto !important;
         background: transparent !important;
         border: none !important;
         cursor: pointer !important;
@@ -5614,11 +5675,42 @@ section h2 {
     /* Controles del carrusel */
     .en-accion-mobile-carousel-controls {
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
-        gap: 20px;
+        gap: clamp(12px, 1.5vw, 18px);
         margin-top: 20px;
         padding: 0 20px;
+    }
+    
+    /* Barra de progreso */
+    .en-accion-mobile-progress-bar {
+        position: relative;
+        width: clamp(60px, calc(60px + (100vw - 320px) * 2.7818), 366px) !important;
+        height: clamp(2px, calc(2px + (100vw - 320px) * 0.0182), 4px);
+        background-color: rgba(255, 255, 255, 0.3);
+        border-radius: 2px;
+        align-self: center;
+    }
+    
+    /* Indicador de progreso */
+    .en-accion-mobile-progress-indicator {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: clamp(40px, calc(40px + (100vw - 320px) * 0.6455), 111px);
+        height: 100%;
+        background-color: #66F7A7;
+        border-radius: 2px;
+        transition: left 0.3s ease;
+    }
+    
+    /* Wrapper para botones de navegación */
+    .en-accion-mobile-controls-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: clamp(15px, calc(15px + (100vw - 320px) * 0.018), 20px);
     }
     
     .en-accion-mobile-prev-btn,
@@ -5651,13 +5743,6 @@ section h2 {
         background-color: rgba(255, 255, 255, 0.1);
     }
     
-    /* Barra de progreso */
-    .en-accion-mobile-progress-bar {
-        position: relative;
-        width: clamp(60px, calc(60px + (100vw - 320px) * 0.3636), 100px); /* De 60px en 320 a 100px en 430 */
-        height: clamp(2px, calc(2px + (100vw - 320px) * 0.0182), 4px); /* De 2px en 320 a 4px en 430 */
-        align-self: center;
-    }
     
     .en-accion-mobile-progress-track {
         width: 100%;
@@ -5912,6 +5997,51 @@ section h2 {
         filter: brightness(0.9);
     }
     
+    .en-accion-mobile-news-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: clamp(15px, calc(15px + (100vw - 320px) * 0.2273), 30px);
+        min-height: 50px;
+    }
+    
+    .en-accion-mobile-news-bottom .en-accion-mobile-news-btn {
+        margin: 0 !important;
+        margin-right: auto !important;
+        text-align: left !important;
+        display: inline-block !important;
+        align-self: center !important;
+    }
+    
+    .en-accion-mobile-news-btn-flecha {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: clamp(35px, calc(35px + (100vw - 320px) * 0.1143), 48px) !important;
+        height: auto !important;
+        background: transparent !important;
+        border: none !important;
+        cursor: pointer !important;
+        object-fit: contain;
+        flex: 0 0 auto;
+    }
+    
+    .en-accion-mobile-news-btn-flecha:hover {
+        background-color: rgba(255, 255, 255, 0.2) !important;
+        transform: scale(1.1) !important;
+    }
+    
+    .en-accion-mobile-news-btn-flecha:active {
+        transform: scale(0.95) !important;
+        background-color: rgba(255, 255, 255, 0.3) !important;
+    }
+    
+    .en-accion-mobile-news-btn-flecha img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: contain !important;
+    }
+    
     /* Estilos para sección corp mobile */
     .en-accion-mobile-corp {
         background-color: rgba(255, 255, 255, 0.1); /* #FFFFFF al 10% */
@@ -5998,15 +6128,57 @@ section h2 {
         vertical-align: 1px;
     }
     
+    .en-accion-mobile-corp-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: clamp(15px, calc(15px + (100vw - 320px) * 0.2273), 30px);
+        min-height: 50px;
+    }
+    
+    .en-accion-mobile-corp-bottom .en-accion-mobile-corp-btn {
+        align-self: center !important;
+    }
+    
+    .en-accion-mobile-corp-bottom .en-accion-mobile-news-btn {
+        margin: 0 !important;
+        margin-right: auto !important;
+        text-align: left !important;
+        display: inline-block !important;
+        align-self: center !important;
+    }
+    
     .en-accion-mobile-corp-button {
         text-align: right;
     }
     
     .en-accion-mobile-corp-btn {
-        width: clamp(45px, calc(45px + (100vw - 320px) * 0.0273), 48px);
-        height: clamp(45px, calc(45px + (100vw - 320px) * 0.0273), 48px);
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: clamp(35px, calc(35px + (100vw - 320px) * 0.1143), 48px) !important;
+        height: auto !important;
+        background: transparent !important;
+        border: none !important;
+        cursor: pointer !important;
         object-fit: contain;
         flex: 0 0 auto;
+    }
+    
+    .en-accion-mobile-corp-btn:hover {
+        background-color: rgba(255, 255, 255, 0.2) !important;
+        transform: scale(1.1) !important;
+    }
+    
+    .en-accion-mobile-corp-btn:active {
+        transform: scale(0.95) !important;
+        background-color: rgba(255, 255, 255, 0.3) !important;
+    }
+    
+    .en-accion-mobile-corp-btn img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: contain !important;
     }
     
     .en-accion-title {
