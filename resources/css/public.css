@@ -220,7 +220,7 @@ body {
 /* Hero section */
 .hero {
     background-color: var(--section-bg-odd);
-    padding: 0;
+    padding-bottom: clamp(20px, calc(20px + (100vw - 1366px) * 0.0185), 30px);
 }
 
 /* Hero section - Mobile padding bottom */
@@ -816,7 +816,8 @@ section h2 {
         display: block;
         position: relative;
         margin: 0;
-        padding: 20px 0 0 0;
+        padding: 0;
+        padding-top: clamp(40px, calc(40px + (100vw - 320px) * 0.2273), 65px);
         background-color: var(--menu-bg);
         margin-left: calc(-50vw + 50%);
     }
@@ -1979,8 +1980,8 @@ section h2 {
     .carreras-section {
         background-color: var(--section-bg-even); /* #02115A - Igual a sedes */
         padding: 0;
-        padding-top: clamp(20px, calc(20px + (100vw - 320px) * 0.1364), 35px);
-        padding-bottom: clamp(20px, calc(20px + (100vw - 320px) * 0.1364), 35px);
+        padding-top: clamp(40px, calc(40px + (100vw - 320px) * 0.2273), 65px);
+        padding-bottom: clamp(40px, calc(40px + (100vw - 320px) * 0.2273), 65px);
     }
     
     /* Ocultar barras de información de desktop en mobile */
@@ -4937,8 +4938,8 @@ section h2 {
     .beneficios-section {
         background-color: var(--section-bg-odd);
         padding: 0;
-        padding-top: clamp(20px, calc(20px + (100vw - 320px) * 0.1364), 35px);
-        padding-bottom: clamp(20px, calc(20px + (100vw - 320px) * 0.1364), 35px);
+        padding-top: clamp(40px, calc(40px + (100vw - 320px) * 0.2273), 65px);
+        padding-bottom: clamp(40px, calc(40px + (100vw - 320px) * 0.2273), 65px);
     }
     
     .beneficios-container {
@@ -5317,7 +5318,9 @@ section h2 {
     display: block !important;
     position: relative;
     margin: 0;
-    padding: 20px 0 0 0;
+    padding: 0;
+    padding-top: clamp(40px, calc(40px + (100vw - 320px) * 0.2273), 65px);
+    padding-bottom: clamp(40px, calc(40px + (100vw - 320px) * 0.2273), 65px);
     background-color: var(--section-bg-odd);
     margin-left: calc(-50vw + 50%);
 }
@@ -5372,7 +5375,6 @@ section h2 {
         gap: clamp(12px, 1.5vw, 18px);
         padding-left: 0;
         padding-top: 10px;
-        padding-bottom: clamp(20px, calc(20px + (100vw - 320px) * 0.0357), 30px);
     }
     
     .comunidad-progress-bar {
@@ -5579,8 +5581,8 @@ section h2 {
     .en-accion-section {
         background-color: var(--section-bg-even);
         padding: 0;
-        padding-top: clamp(20px, calc(20px + (100vw - 320px) * 0.1364), 35px);
-        padding-bottom: clamp(20px, calc(20px + (100vw - 320px) * 0.1364), 35px);
+        padding-top: clamp(40px, calc(40px + (100vw - 320px) * 0.2273), 65px);
+        padding-bottom: clamp(40px, calc(40px + (100vw - 320px) * 0.2273), 65px);
     }
     
     .en-accion-container {
@@ -5898,12 +5900,17 @@ section h2 {
     .en-accion-mobile-news,
     .en-accion-mobile-corp {
         display: block !important;
-        margin: clamp(20px, 3vw, 30px) 0;
+        margin-top: clamp(40px, calc(40px + (100vw - 320px) * 0.2273), 65px);
+        margin-bottom: clamp(40px, calc(40px + (100vw - 320px) * 0.2273), 65px);
         background-color: #010C42;
         border: 1px solid rgba(212, 212, 212, 0.5);
         border-radius: clamp(10px, 0.7vw, 14px);
         padding: 20px;
         color: var(--text-white);
+    }
+    
+    .en-accion-mobile-corp {
+        margin-bottom: 0;
     }
     
     /* Estilos para sección de noticias mobile */
@@ -6242,8 +6249,8 @@ section h2 {
     .sedes-section {
         background-color: var(--section-bg-even);
         padding: 0;
-        padding-top: clamp(20px, calc(20px + (100vw - 320px) * 0.1364), 35px);
-        padding-bottom: clamp(20px, calc(20px + (100vw - 320px) * 0.1364), 35px);
+        padding-top: clamp(40px, calc(40px + (100vw - 320px) * 0.2273), 65px);
+        padding-bottom: clamp(40px, calc(40px + (100vw - 320px) * 0.2273), 65px);
     }
     
     /* Ocultar grid desktop en mobile */
@@ -7108,6 +7115,14 @@ section h2 {
     width: auto;
     height: auto;
     object-fit: contain;
+}
+
+/* Partners section - Mobile (320px-599px) */
+@media (max-width: 599px) {
+    .partners-section {
+        padding-top: clamp(40px, calc(40px + (100vw - 320px) * 0.2273), 65px);
+        padding-bottom: clamp(40px, calc(40px + (100vw - 320px) * 0.2273), 65px);
+    }
 }
 
 /* Mobile responsive - logos fluidos entre 320px y 599px */

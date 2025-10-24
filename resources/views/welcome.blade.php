@@ -289,7 +289,7 @@
                             </div>
                             <div class="carreras-UTN-right">
                                 <img src="/images/desktop/logo-utn.png" alt="Logo UTN" class="carreras-UTN-logo-base carreras-UTN-logo-desktop">
-                                <img src="/images/mobile/utn-mobile.png" alt="Logo UTN" class="carreras-UTN-logo-base carreras-UTN-logo-mobile">
+                                <img src="/images/mobile/utn-mobile.webp" alt="Logo UTN" class="carreras-UTN-logo-base carreras-UTN-logo-mobile">
                             </div>
                         </div>
                     </div>
