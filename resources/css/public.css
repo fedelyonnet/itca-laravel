@@ -816,8 +816,10 @@ section h2 {
         display: block;
         position: relative;
         margin: 0;
+        margin-left: 0px;
         padding: 0;
-        padding-top: clamp(40px, calc(40px + (100vw - 320px) * 0.2273), 65px);
+        padding-top: 0px;
+        margin-top: clamp(40px, calc(40px + (100vw - 320px) * 0.2273), 65px);
         background-color: var(--menu-bg);
         margin-left: calc(-50vw + 50%);
     }
