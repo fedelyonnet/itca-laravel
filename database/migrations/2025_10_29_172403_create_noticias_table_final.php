@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('orden')->default(0);
             $table->boolean('visible')->default(true);
             $table->string('titulo', 255);
+            $table->string('slug', 255)->unique();
             $table->text('contenido');
             $table->timestamp('fecha_publicacion');
             $table->string('imagen', 255)->nullable();
