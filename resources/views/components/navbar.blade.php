@@ -79,6 +79,13 @@
                    role="menuitem">
                     Edición En Acción
                 </a>
+                
+                <a href="{{ route('admin.noticias') }}" 
+                   @keydown.enter="window.location.href = '{{ route('admin.noticias') }}'"
+                   class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
+                   role="menuitem">
+                    Edición Noticias
+                </a>
             </div>
         </div>
     </div>

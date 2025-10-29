@@ -758,12 +758,14 @@
                                 <span class="en-accion-tablet-news-text-2">noticias</span>
                             </div>
                             <div class="en-accion-tablet-news-content">
-                                <h3 class="en-accion-tablet-news-title">Nueva alianza: <span class="en-accion-tablet-news-title-light">ITCA y Royal Enfield</span></h3>
-                                <p class="en-accion-tablet-news-text">La reconocida marca y fabricante de motocicletas se apoyará en nuestro Instituto para la capacitación de posventa. El motivo de la asistencia de Motoblog fue presenciar la firma de un convenio de mutuo beneficio entre el ITCA y Royal Enfield Argentina...<a href="#" class="en-accion-tablet-news-link">Ver más</a></p>
-                                <div class="en-accion-tablet-news-image">
-                                    <img src="/images/desktop/en-accion/news.png" alt="News" class="en-accion-tablet-news-img">
-                                </div>
-                                <a href="#" class="en-accion-tablet-news-btn">Ver más noticias</a>
+                                @if($noticiaDestacada)
+                                    <h3 class="en-accion-tablet-news-title">{!! $noticiaDestacada->titulo !!}</h3>
+                                    <p class="en-accion-tablet-news-text">{{ Str::limit(strip_tags($noticiaDestacada->contenido), 280) }}...<a href="{{ $noticiaDestacada->slug }}" class="en-accion-tablet-news-link">Ver más</a></p>
+                                    <div class="en-accion-tablet-news-image">
+                                        <img src="{{ asset('storage/' . $noticiaDestacada->imagen) }}" alt="{{ $noticiaDestacada->titulo }}" class="en-accion-tablet-news-img">
+                                    </div>
+                                    <a href="{{ $noticiaDestacada->slug }}" class="en-accion-tablet-news-btn">Ver más noticias</a>
+                                @endif
                             </div>
                         </div>
                         
@@ -840,20 +842,21 @@
                             <span class="en-accion-mobile-news-text-2">noticias</span>
                         </div>
                         <div class="en-accion-mobile-news-content">
-                            <h3 class="en-accion-mobile-news-title">
-                                <span class="en-accion-mobile-news-title-bold">Nueva alianza:</span><br>
-                                <span class="en-accion-mobile-news-title-light">ITCA y Royal Enfield</span>
-                            </h3>
-                            <p class="en-accion-mobile-news-text">La reconocida marca y fabricante de motocicletas se apoyará en nuestro Instituto para la capacitación de posventa. El motivo de la asistencia de Motoblog fue presenciar la firma de un convenio de mutuo beneficio entre el ITCA y Royal Enfield Argentina...<a href="#" class="en-accion-mobile-news-link">Ver más</a></p>
-                            <div class="en-accion-mobile-news-image">
-                                <img src="/images/desktop/en-accion/news.png" alt="News" class="en-accion-mobile-news-img">
-                            </div>
-                            <div class="en-accion-mobile-news-bottom">
-                                <a href="#" class="en-accion-mobile-news-btn">Ver más noticias</a>
-                                <a href="#" class="en-accion-mobile-news-btn-flecha">
-                                    <img src="/images/desktop/btnflecha.png" alt="Flecha" />
-                                </a>
-                            </div>
+                            @if($noticiaDestacada)
+                                <h3 class="en-accion-mobile-news-title">
+                                    {!! $noticiaDestacada->titulo !!}
+                                </h3>
+                                <p class="en-accion-mobile-news-text">{{ Str::words(strip_tags($noticiaDestacada->contenido), 25) }}<a href="{{ $noticiaDestacada->slug }}" class="en-accion-mobile-news-link">Ver más</a></p>
+                                <div class="en-accion-mobile-news-image">
+                                    <img src="{{ asset('storage/' . $noticiaDestacada->imagen) }}" alt="{{ $noticiaDestacada->titulo }}" class="en-accion-mobile-news-img">
+                                </div>
+                                <div class="en-accion-mobile-news-bottom">
+                                    <a href="{{ $noticiaDestacada->slug }}" class="en-accion-mobile-news-btn">Ver más noticias</a>
+                                    <a href="{{ $noticiaDestacada->slug }}" class="en-accion-mobile-news-btn-flecha">
+                                        <img src="/images/desktop/btnflecha.png" alt="Flecha" />
+                                    </a>
+                                </div>
+                            @endif
                         </div>
                     </div>
                     
@@ -910,18 +913,22 @@
                                         <span class="en-accion-item-2-div-1-text-1">Últimas</span>
                                         <span class="en-accion-item-2-div-1-text-2">noticias</span>
                                     </div>
-                                    <div class="en-accion-item-2-div-2">
-                                        <h3 class="en-accion-item-2-div-2-title">Nueva alianza: <span class="en-accion-item-2-div-2-title-light">ITCA y Royal Enfield</span></h3>
-                                    </div>
-                                    <div class="en-accion-item-2-div-2-text">
-                                        <p>La reconocida marca y fabricante de motocicletas se apoyará en nuestro Instituto para la capacitación de posventa. El motivo de la asistencia de Motoblog fue presenciar la firma de un convenio de mutuo beneficio entre el ITCA y Royal Enfield Argentina...<a href="#" class="en-accion-item-2-div-2-link">Ver más</a></p>
-                                    </div>
-                                    <div class="en-accion-item-2-div-3">
-                                        <img src="/images/desktop/en-accion/news.png" alt="News" class="en-accion-item-2-div-3-image">
-                                    </div>
-                                    <div class="en-accion-item-2-div-4">
-                                        <a href="#" class="en-accion-item-2-div-4-btn">Ver más noticias</a>
-                                    </div>
+                                    @if($noticiaDestacada)
+                                        <div class="en-accion-item-2-div-2">
+                                            <h3 class="en-accion-item-2-div-2-title">{!! $noticiaDestacada->titulo !!}</h3>
+                                        </div>
+                                        <div class="en-accion-item-2-div-2-text">
+                                            <p class="en-accion-item-2-text-content">
+                                                {{ Str::limit(strip_tags($noticiaDestacada->contenido), 280) }}<a href="{{ $noticiaDestacada->slug }}" class="en-accion-item-2-div-2-link">Ver más</a>
+                                            </p>
+                                        </div>
+                                        <div class="en-accion-item-2-div-3">
+                                            <img src="{{ asset('storage/' . $noticiaDestacada->imagen) }}" alt="{{ $noticiaDestacada->titulo }}" class="en-accion-item-2-div-3-image">
+                                        </div>
+                                        <div class="en-accion-item-2-div-4">
+                                            <a href="{{ $noticiaDestacada->slug }}" class="en-accion-item-2-div-4-btn">Ver más noticias</a>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                             <div class="en-accion-item en-accion-item-3">

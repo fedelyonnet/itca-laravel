@@ -11,6 +11,7 @@ use App\Models\Testimonio;
 use App\Models\Partner;
 use App\Models\EnAccion;
 use App\Models\StickyBar;
+use App\Models\Noticia;
 
 class WelcomeController extends Controller
 {
@@ -61,6 +62,11 @@ class WelcomeController extends Controller
         // Obtener Sticky Bar
         $stickyBar = StickyBar::first();
         
+        // Obtener noticia destacada
+        $noticiaDestacada = Noticia::where('destacada', true)
+                                  ->where('visible', true)
+                                  ->first();
+        
         return view('welcome', compact(
             'desktopImg1', 'desktopImg2', 'desktopVideo',
             'mobileImg1', 'mobileImg2', 'mobileVideo',
@@ -70,7 +76,8 @@ class WelcomeController extends Controller
             'testimonios',
             'partners',
             'video1', 'video3', 'video5', 'videosTablet', 'videosMobile',
-            'stickyBar'
+            'stickyBar',
+            'noticiaDestacada'
         ));
     }
 

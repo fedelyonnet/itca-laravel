@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* ========================================
    ITCA - CSS Público Base
    Estructura mínima para secciones
@@ -1522,12 +1526,13 @@ section h2 {
     transform: translate(-50%, -50%);
     width: clamp(130px, calc(170px + (100vw - 1920px) * 0.049), 170px);
     height: 40px;
-    background-image: url('/images/desktop/stroke.png');
+    background-image: url('../images/desktop/stroke.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
     z-index: -1;
 }
+
 
 /* Wrapper principal */
 .carreras-images-wrapper {
@@ -2293,7 +2298,7 @@ section h2 {
     transform: translate(-50%, -50%);
     width: clamp(230px, calc(230px + (100vw - 1100px) * 0.067), 285px);
     height: 40px;
-    background-image: url('/images/desktop/stroke-com.png');
+    background-image: url('../images/desktop/stroke-com.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -2542,7 +2547,7 @@ section h2 {
     transform: translate(-50%, -50%);
     width: clamp(130px, calc(245px + (100vw - 1920px) * 0.037), 245px);
     height: 40px;
-    background-image: url('/images/desktop/stroke-sedes.png');
+    background-image: url('../images/desktop/stroke-sedes.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     z-index: -1;
@@ -3142,7 +3147,7 @@ section h2 {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background-image: url('/images/desktop/stroke-com.png');
+        background-image: url('../images/desktop/stroke-com.png');
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
@@ -3483,7 +3488,7 @@ section h2 {
     transform: translate(-50%, -50%);
     width: clamp(150px, calc(150px + (100vw - 1100px) * 0.048), 190px);
     height: 40px;
-    background-image: url('/images/desktop/stroke-ea.png');
+    background-image: url('../images/desktop/stroke-ea.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -3985,7 +3990,7 @@ section h2 {
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
-    padding-top: 10px;
+    padding-top: clamp(11px, calc(11px + (100vw - 1100px) * 0.0169), 24px);
 }
 
 .en-accion-item-2-div-4-btn {
@@ -4016,7 +4021,7 @@ section h2 {
 .en-accion-item-2-div-2-title {
     font-family: 'Montserrat', sans-serif;
     font-size: clamp(20px, calc(20px + (100vw - 1100px) * 0.0061), 25px);
-    font-weight: 600; /* Semibold */
+    font-weight: 400; /* Regular */
     letter-spacing: 0.05em; /* 5% */
     color: #FFFFFF;
     line-height: 1.2;
@@ -4036,6 +4041,21 @@ section h2 {
     margin: 0;
     width: 100%;
     max-width: clamp(445px, calc(445px + (100vw - 1100px) * 0.192), 602px);
+    padding-top: 0;
+}
+
+.en-accion-item-2-text-content {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(11px, calc(11px + (100vw - 1100px) * 0.0037), 14px);
+    font-weight: 300;
+    letter-spacing: 0.03em;
+    color: #FFFFFF;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .en-accion-item-2-div-2-link {
@@ -4047,12 +4067,16 @@ section h2 {
     text-decoration: underline;
     text-decoration-color: #65E09C;
     margin-left: clamp(6px, calc(6px + (100vw - 1100px) * 0.0024), 8px);
-    vertical-align: 1px;
+    vertical-align: baseline;
 }
+
 
 .en-accion-item-2-div-3-image {
     width: clamp(470px, calc(480px + (100vw - 1366px) * 0.31), 652px);
-    height: auto;
+    height: clamp(155px, calc(160px + (100vw - 1366px) * 0.1), 215px);
+    object-fit: cover;
+    object-position: center;
+    border-radius: 14px;
 }
 
 .en-accion-item-3 {
@@ -4187,7 +4211,7 @@ section h2 {
     transform: translate(-50%, -50%);
     width: clamp(220px, calc(270px + (100vw - 1920px) * 0.0609756), 270px);
     height: 40px;
-    background-image: url('/images/desktop/stroke-sedes.png');
+    background-image: url('../images/desktop/stroke-sedes.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     z-index: -1;
@@ -4451,7 +4475,7 @@ section h2 {
     .en-accion-tablet-news-title {
         font-family: 'Montserrat', sans-serif;
         font-size: clamp(16px, 2vw, 22px);
-        font-weight: 600;
+        font-weight: 400;
         color: var(--text-white);
         margin-bottom: clamp(10px, 1.5vw, 15px);
         line-height: 1.3;
@@ -4471,6 +4495,14 @@ section h2 {
         margin: 0;
         width: 100%;
         margin-bottom: clamp(15px, 2vw, 20px);
+        
+        /* Altura para exactamente 4 líneas */
+        min-height: 78px; /* 4 líneas × 19.5px (font-size) × 1.4 (line-height) */
+        max-height: 78px;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
     }
     
     .en-accion-tablet-news-link {
@@ -4484,7 +4516,9 @@ section h2 {
     
     .en-accion-tablet-news-img {
         width: 100%;
-        height: auto;
+        height: clamp(120px, 15vw, 180px);
+        object-fit: cover;
+        object-position: center;
         border-radius: clamp(8px, 1vw, 12px);
     }
     
@@ -4646,7 +4680,7 @@ section h2 {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background-image: url('/images/desktop/stroke-ea.png');
+        background-image: url('../images/desktop/stroke-ea.png');
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
@@ -4751,7 +4785,7 @@ section h2 {
         position: absolute;
         top: 0;
         left: 0;
-        z-index: 1;
+        z-index: -1;
         filter: none;
         transform: none;
         border-radius: 0;
@@ -4927,7 +4961,7 @@ section h2 {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background-image: url('/images/mobile/stroke-com-m.png');
+        background-image: url('../images/mobile/stroke-com-m.png');
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
@@ -5968,6 +6002,11 @@ section h2 {
         font-size: clamp(13px, calc(13px + (100vw - 320px) * 0.0909), 14px);
         line-height: 1.5;
         margin-bottom: clamp(15px, calc(15px + (100vw - 320px) * 0.1364), 30px);
+        
+        /* Altura fluida: 100px en 320px, 85px en 599px */
+        min-height: clamp(85px, calc(100px + (100vw - 320px) * -0.054), 100px);
+        max-height: clamp(85px, calc(100px + (100vw - 320px) * -0.054), 100px);
+        overflow: hidden;
     }
     
     .en-accion-mobile-news-link {
@@ -5988,8 +6027,10 @@ section h2 {
     }
     
     .en-accion-mobile-news-img {
-        max-width: 100%;
-        height: auto;
+        width: 100%;
+        height: clamp(100px, 25vw, 150px);
+        object-fit: cover;
+        object-position: center;
         border-radius: 8px;
     }
     
@@ -6234,7 +6275,7 @@ section h2 {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background-image: url('/images/mobile/stroke-ea-m.png');
+        background-image: url('../images/mobile/stroke-ea-m.png');
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
@@ -6352,7 +6393,7 @@ section h2 {
         position: absolute;
         top: 0;
         left: 0;
-        z-index: 1;
+        z-index: -1;
         filter: none;
         transform: none;
         border-radius: 0;
@@ -6536,7 +6577,7 @@ section h2 {
     transform: translate(-50%, -50%);
     width: clamp(320px, calc(320px + (100vw - 1100px) * 0.0671), 375px);
     height: 40px;
-    background-image: url('/images/desktop/stroke-part.png');
+    background-image: url('../images/desktop/stroke-part.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -6597,7 +6638,7 @@ section h2 {
     transform: translate(-50%, -50%);
     width: clamp(320px, calc(320px + (100vw - 1100px) * 0.0671), 375px);
     height: 40px;
-    background-image: url('/images/desktop/stroke-part.png');
+    background-image: url('../images/desktop/stroke-part.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -7378,7 +7419,7 @@ section h2 {
     transform: translate(-50%, -50%);
     width: clamp(320px, calc(320px + (100vw - 1100px) * 0.0671), 375px);
     height: 40px;
-    background-image: url('/images/desktop/stroke-carreras.png');
+    background-image: url('../images/desktop/stroke-carreras.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;

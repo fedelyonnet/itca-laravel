@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Backoffice CSS - Estilos para la zona de administración */
 
 /* Variables CSS para el backoffice */

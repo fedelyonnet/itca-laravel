@@ -47,8 +47,8 @@ class BeneficioController extends Controller
         // Asignar mostrar_bottom automáticamente según tipo de acción
         $mostrarBottom = $request->tipo_accion !== 'none';
         
-        // Manejar checkbox - si está marcado es 'small', si no 'normal'
-        $tipoTitulo = $request->has('tipo_titulo') ? 'small' : 'normal';
+        // Siempre usar 'normal' para tipo_titulo
+        $tipoTitulo = 'normal';
 
         Beneficio::create([
             'descripcion' => $request->descripcion,
@@ -129,8 +129,8 @@ class BeneficioController extends Controller
         // Asignar mostrar_bottom automáticamente según tipo de acción
         $mostrarBottom = $request->tipo_accion !== 'none';
         
-        // Manejar checkbox - si está marcado es 'small', si no 'normal'
-        $tipoTitulo = $request->has('tipo_titulo') ? 'small' : 'normal';
+        // Siempre usar 'normal' para tipo_titulo
+        $tipoTitulo = 'normal';
 
         $data = [
             'descripcion' => $request->descripcion,

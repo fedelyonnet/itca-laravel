@@ -79,6 +79,18 @@ Route::middleware('auth')->group(function () {
         Route::put('/en-accion/{id}', [App\Http\Controllers\EnAccionController::class, 'update'])->name('admin.en-accion.update');
         Route::post('/en-accion/mover', [App\Http\Controllers\EnAccionController::class, 'mover'])->name('admin.en-accion.mover');
         Route::delete('/en-accion/{id}', [App\Http\Controllers\EnAccionController::class, 'destroy'])->name('admin.en-accion.destroy');
+        
+        // Rutas de noticias
+        Route::get('/noticias', [App\Http\Controllers\NoticiaController::class, 'index'])->name('admin.noticias');
+        Route::get('/noticias/create', [App\Http\Controllers\NoticiaController::class, 'create'])->name('admin.noticias.create');
+        Route::post('/noticias', [App\Http\Controllers\NoticiaController::class, 'store'])->name('admin.noticias.store');
+        Route::get('/noticias/{noticia}/edit', [App\Http\Controllers\NoticiaController::class, 'edit'])->name('admin.noticias.edit');
+        Route::put('/noticias/{noticia}', [App\Http\Controllers\NoticiaController::class, 'update'])->name('admin.noticias.update');
+        Route::get('/noticias/{id}/data', [App\Http\Controllers\NoticiaController::class, 'getData'])->name('admin.noticias.data');
+        Route::delete('/noticias/{id}', [App\Http\Controllers\NoticiaController::class, 'destroy'])->name('admin.noticias.destroy');
+        Route::patch('/noticias/{id}/toggle-visibility', [App\Http\Controllers\NoticiaController::class, 'toggleVisibility'])->name('admin.noticias.toggle-visibility');
+        Route::patch('/noticias/{id}/toggle-destacada', [App\Http\Controllers\NoticiaController::class, 'toggleDestacada'])->name('admin.noticias.toggle-destacada');
+        Route::post('/noticias/mover', [App\Http\Controllers\NoticiaController::class, 'moverNoticia'])->name('admin.noticias.mover');
     });
 });
 
