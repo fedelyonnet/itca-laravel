@@ -91,25 +91,25 @@
                                     <button class="carrera-btn-inscribir">¡Inscribirme ahora!</button>
                                 </div>
                             </div>
-                            <div class="carrera-right">
-                                <div class="carrera-image">
-                                    <!-- Imagen Desktop (solo visible en desktop y tablet) -->
-                                    <img src="{{ asset('storage/' . $carrera->ilustracion_desktop) }}" alt="{{ $carrera->nombre }}" class="carreras-image-desktop" style="display: block;" />
-                                    <!-- Imagen Mobile (solo visible en mobile) -->
-                                    <img src="{{ asset('storage/' . $carrera->ilustracion_mobile) }}" alt="{{ $carrera->nombre }}" class="carreras-image-mobile" style="display: none;" />
-                                    <div class="carreras-modalidad-badge carreras-modalidad-badge-desktop">
-                                        <span class="carreras-modalidad-text">Modalidad: <strong>
-                                            @if($carrera->modalidad_online && $carrera->modalidad_presencial)
-                                                Presencial / Online
-                                            @elseif($carrera->modalidad_presencial)
-                                                Presencial
-                                            @else
-                                                Online
-                                            @endif
-                                        </strong></span>
-                                    </div>
+                        <div class="carrera-right">
+                            <a href="{{ route('carreras.show', $carrera->id) }}" class="carrera-image" style="display:block;">
+                                <!-- Imagen Desktop (solo visible en desktop y tablet) -->
+                                <img src="{{ asset('storage/' . $carrera->ilustracion_desktop) }}" alt="{{ $carrera->nombre }}" class="carreras-image-desktop" style="display: block;" />
+                                <!-- Imagen Mobile (solo visible en mobile) -->
+                                <img src="{{ asset('storage/' . $carrera->ilustracion_mobile) }}" alt="{{ $carrera->nombre }}" class="carreras-image-mobile" style="display: none;" />
+                                <div class="carreras-modalidad-badge carreras-modalidad-badge-desktop">
+                                    <span class="carreras-modalidad-text">Modalidad: <strong>
+                                        @if($carrera->modalidad_online && $carrera->modalidad_presencial)
+                                            Presencial / Online
+                                        @elseif($carrera->modalidad_presencial)
+                                            Presencial
+                                        @else
+                                            Online
+                                        @endif
+                                    </strong></span>
                                 </div>
-                            </div>
+                            </a>
+                        </div>
                         </div>
                     </div>
                     @endforeach

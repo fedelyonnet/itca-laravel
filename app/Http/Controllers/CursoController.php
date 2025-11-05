@@ -269,4 +269,16 @@ class CursoController extends Controller
             'message' => 'Carrera movida correctamente'
         ]);
     }
+
+    public function show(Curso $curso)
+    {
+        $partners = \App\Models\Partner::ordered()->get();
+        $sedes = \App\Models\Sede::ordered()->get();
+        // Obtener testimonios visibles ordenados (máximo 8)
+        $testimonios = \App\Models\Testimonio::where('visible', true)
+                                ->ordered()
+                                ->limit(8)
+                                ->get();
+        return view('carreras.show', compact('curso', 'partners', 'sedes', 'testimonios'));
+    }
 }

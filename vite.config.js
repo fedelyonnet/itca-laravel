@@ -14,6 +14,25 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    // Configurar para que Vite reconozca las imágenes en public/ como recursos válidos
+    publicDir: 'public',
+    build: {
+        // Suprimir warnings sobre rutas que no se resuelven en build time
+        // Estas rutas se resuelven correctamente en runtime desde public/
+        rollupOptions: {
+            onwarn(warning, warn) {
+                // Ignorar warnings sobre imágenes en public/ que no se resuelven en build time
+                // Estos warnings son normales cuando usas rutas absolutas a archivos en public/
+                if (warning.message && warning.message.includes("didn't resolve at build time")) {
+                    if (warning.message.includes('/images/')) {
+                        return; // Suprimir estos warnings específicos
+                    }
+                }
+                // Mostrar otros warnings normalmente
+                warn(warning);
+            },
+        },
+    },
     server: {
         cors: true,
         headers: {

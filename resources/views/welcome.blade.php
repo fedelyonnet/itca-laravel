@@ -246,7 +246,7 @@
                     </div>
                                 
                                 <!-- Barra Desktop -->
-                                <a href="#" class="carreras-image-bar carreras-image-bar-button">
+                                <a href="{{ route('carreras.show', $curso->id) }}" class="carreras-image-bar carreras-image-bar-button">
                                     <div class="carreras-bar-left">
                                         <div class="carreras-bar-start">Inicia en</div>
                                         <div class="carreras-bar-year">{{ $año }}</div>
@@ -265,7 +265,7 @@
                                     <div class="carreras-modalidad-badge carreras-modalidad-badge-mobile">
                                         <span class="carreras-modalidad-text">Modalidad: <strong>{{ $modalidad }}</strong></span>
                                     </div>
-                                    <a href="#" class="carreras-title-mobile carreras-title-mobile-desktop">
+                                    <a href="{{ route('carreras.show', $curso->id) }}" class="carreras-title-mobile carreras-title-mobile-desktop">
                                         <div class="carreras-title-text">
                                             <div class="carreras-title-line1">{{ $linea1 }}</div>
                                             @if($linea2)

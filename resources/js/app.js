@@ -1221,3 +1221,259 @@ $(document).ready(function() {
     // Initialize only once when document is ready
     setTimeout(initializePartnersCarousel, 100);
 });
+
+// ========================================
+// CERTIFICACION LIST ACCORDION
+// ========================================
+document.addEventListener('DOMContentLoaded', function() {
+    const certificacionRows = document.querySelectorAll('.certificacion-list-row[data-item]');
+    
+    certificacionRows.forEach(row => {
+        row.addEventListener('click', function() {
+            const itemId = this.getAttribute('data-item');
+            const content = document.getElementById(itemId + '-content');
+            
+            // Cerrar todos los otros contenidos
+            document.querySelectorAll('.certificacion-list-content-expanded').forEach(otherContent => {
+                if (otherContent !== content) {
+                    otherContent.classList.remove('active');
+                }
+            });
+            
+            // Toggle del contenido actual
+            if (content) {
+                content.classList.toggle('active');
+            }
+        });
+    });
+});
+
+// ========================================
+// FAQS LIST ACCORDION
+// ========================================
+document.addEventListener('DOMContentLoaded', function() {
+    const faqsRows = document.querySelectorAll('.faqs-list-row[data-item]');
+    
+    faqsRows.forEach(row => {
+        row.addEventListener('click', function() {
+            const itemId = this.getAttribute('data-item');
+            const content = document.getElementById(itemId + '-content');
+            
+            // Cerrar todos los otros contenidos
+            document.querySelectorAll('.faqs-list-content-expanded').forEach(otherContent => {
+                if (otherContent !== content) {
+                    otherContent.classList.remove('active');
+                }
+            });
+            
+            // Toggle del contenido actual
+            if (content) {
+                content.classList.toggle('active');
+            }
+        });
+    });
+});
+
+// ========================================
+// FUNCIONES PARA FOTOS CAROUSEL
+// ========================================
+
+// Función para actualizar la barra de progreso de fotos
+function updateFotosProgressBar(swiper) {
+    if (!swiper || !swiper.el) return;
+    const container = swiper.el.closest('.fotos-desktop');
+    if (!container) return;
+    const progressIndicator = container.querySelector('.fotos-desktop-progress-indicator') || container.querySelector('.fotos-progress-indicator');
+    const progressBar = container.querySelector('.fotos-desktop-progress-bar') || container.querySelector('.fotos-progress-bar');
+    if (!progressIndicator || !progressBar) return;
+
+    let progress = 0;
+    if (Array.isArray(swiper.snapGrid) && typeof swiper.snapIndex === 'number') {
+        const maxSnap = Math.max(1, swiper.snapGrid.length - 1);
+        progress = Math.max(0, Math.min(1, swiper.snapIndex / maxSnap));
+    } else if (typeof swiper.progress === 'number') {
+        progress = Math.max(0, Math.min(1, swiper.progress));
+    } else if (typeof swiper.activeIndex === 'number' && swiper.slides) {
+        const maxNavigableSlide = Math.max(1, swiper.slides.length - 1);
+        progress = Math.max(0, Math.min(1, swiper.activeIndex / maxNavigableSlide));
+    }
+
+    const trackWidth = progressBar.offsetWidth;
+    const indicatorWidth = progressIndicator.offsetWidth;
+    const maxPosition = Math.max(0, trackWidth - indicatorWidth);
+    const position = progress * maxPosition;
+    progressIndicator.style.transform = 'none';
+    progressIndicator.style.left = `${position}px`;
+}
+
+// Función para actualizar el estado de los botones de navegación de fotos
+function updateFotosNavigationButtons(swiper) {
+    const nextBtn = swiper.el.closest('.fotos-carousel-section').querySelector('.fotos-carousel-btn-next');
+    const prevBtn = swiper.el.closest('.fotos-carousel-section').querySelector('.fotos-carousel-btn-prev');
+    
+    if (!nextBtn || !prevBtn) return;
+    
+    if (swiper.isBeginning) {
+        prevBtn.classList.add('swiper-button-disabled');
+    } else {
+        prevBtn.classList.remove('swiper-button-disabled');
+    }
+    
+    if (swiper.isEnd) {
+        nextBtn.classList.add('swiper-button-disabled');
+    } else {
+        nextBtn.classList.remove('swiper-button-disabled');
+    }
+}
+
+// ========================================
+// CARRUSEL DE FOTOS CON SWIPER
+// ========================================
+document.addEventListener('DOMContentLoaded', function() {
+    function initFotosSwiper(retryCount = 0) {
+        const fotosSwiperElement = document.querySelector('.fotos-desktop .fotos-carousel-section .fotos-swiper');
+        if (!fotosSwiperElement) {
+            if (retryCount < 20) {
+                return setTimeout(() => initFotosSwiper(retryCount + 1), 100);
+            }
+            return;
+        }
+        if (typeof window === 'undefined' || typeof window.Swiper === 'undefined') {
+            if (retryCount < 20) {
+                return setTimeout(() => initFotosSwiper(retryCount + 1), 100);
+            }
+            return;
+        }
+        
+        const fotosSwiper = new window.Swiper('.fotos-desktop .fotos-carousel-section .fotos-swiper', {
+        loop: false,
+        slidesPerView: 'auto',
+        slidesPerGroup: 1,
+        spaceBetween: 5,
+        speed: 600,
+        breakpoints: {
+            600: {
+                slidesPerView: 'auto',
+                slidesPerGroup: 1,
+                spaceBetween: 15,
+            },
+            1100: {
+                slidesPerView: 'auto',
+                slidesPerGroup: 2,
+                spaceBetween: 15,
+            },
+            1366: {
+                slidesPerView: 'auto',
+                slidesPerGroup: 2,
+                spaceBetween: 18,
+            },
+            1920: {
+                slidesPerView: 'auto',
+                slidesPerGroup: 2,
+                spaceBetween: 20,
+            }
+        },
+        navigation: {
+            nextEl: '.fotos-desktop .fotos-carousel-btn-next',
+            prevEl: '.fotos-desktop .fotos-carousel-btn-prev',
+            disabledClass: 'swiper-button-disabled',
+        },
+        touchRatio: 1,
+        touchAngle: 45,
+        grabCursor: true,
+        effect: 'slide',
+        watchSlidesProgress: true,
+        observer: true,
+        observeParents: true,
+        on: {
+            init: function () {
+                updateFotosProgressBar(this);
+                updateFotosNavigationButtons(this);
+                setTimeout(() => updateFotosProgressBar(this), 50);
+                const container = this.el.closest('.fotos-desktop') || this.el.closest('.fotos-carousel-section');
+                if (container) {
+                    const nextBtn = container.querySelector('.fotos-carousel-btn-next');
+                    const prevBtn = container.querySelector('.fotos-carousel-btn-prev');
+                    if (nextBtn) nextBtn.addEventListener('click', () => setTimeout(() => updateFotosProgressBar(this), 0));
+                    if (prevBtn) prevBtn.addEventListener('click', () => setTimeout(() => updateFotosProgressBar(this), 0));
+                }
+            },
+            slideChange: function () {
+                updateFotosProgressBar(this);
+                updateFotosNavigationButtons(this);
+            },
+            progress: function () {
+                updateFotosProgressBar(this);
+            },
+            setTranslate: function () {
+                updateFotosProgressBar(this);
+            },
+            transitionEnd: function () {
+                updateFotosProgressBar(this);
+            },
+            slideChangeTransitionEnd: function () {
+                updateFotosProgressBar(this);
+            },
+            resize: function () {
+                updateFotosProgressBar(this);
+                updateFotosNavigationButtons(this);
+                setTimeout(() => updateFotosProgressBar(this), 50);
+            }
+        }
+        });
+        
+        window.addEventListener('load', () => {
+            setTimeout(() => updateFotosProgressBar(fotosSwiper), 100);
+        });
+    }
+    
+    initFotosSwiper();
+});
+
+// ========================================
+// VIDEO PLAY/PAUSE TESTIMONIOS CARRERA
+// ========================================
+document.addEventListener('DOMContentLoaded', function() {
+    const testimoniosCarreraVideo = document.querySelector('.testimonios-carrera-video');
+    const testimoniosCarreraPlayButton = document.querySelector('.testimonios-carrera-play-button');
+    
+    if (testimoniosCarreraVideo && testimoniosCarreraPlayButton) {
+        // Función para toggle play/pause
+        function toggleTestimoniosCarreraVideo() {
+            if (testimoniosCarreraVideo.paused) {
+                testimoniosCarreraVideo.play().then(() => {
+                    testimoniosCarreraVideo.classList.add('playing');
+                }).catch(() => {
+                    // silencio
+                });
+            } else {
+                testimoniosCarreraVideo.pause();
+                testimoniosCarreraVideo.classList.remove('playing');
+            }
+        }
+        
+        // Click en el botón de play
+        testimoniosCarreraPlayButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleTestimoniosCarreraVideo();
+        });
+        
+        // Click en cualquier parte del video para pausar
+        testimoniosCarreraVideo.addEventListener('click', function(e) {
+            if (!testimoniosCarreraVideo.paused) {
+                testimoniosCarreraVideo.pause();
+                testimoniosCarreraVideo.classList.remove('playing');
+            }
+        });
+        
+        // Mostrar botón cuando el video se pausa
+        testimoniosCarreraVideo.addEventListener('pause', function() {
+            testimoniosCarreraVideo.classList.remove('playing');
+        });
+        
+        // Ocultar botón cuando el video se reproduce
+        testimoniosCarreraVideo.addEventListener('play', function() {
+            testimoniosCarreraVideo.classList.add('playing');
+        });
+    }
+});

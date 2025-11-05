@@ -2,9 +2,12 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CursoController;
 
 Route::get('/', [App\Http\Controllers\WelcomeController::class, 'index']);
 Route::get('/carreras', [App\Http\Controllers\WelcomeController::class, 'carreras'])->name('carreras');
+// Carrera individual (por id por ahora)
+Route::get('/carreras/{curso}', [CursoController::class, 'show'])->name('carreras.show');
 
 
 Route::middleware('auth')->group(function () {
