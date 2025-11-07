@@ -374,10 +374,10 @@
                             <div class="beneficios-controls-wrapper">
                                 <a href="#" class="beneficios-ver-todos-btn">Ver todos los beneficios</a>
                                 <button class="beneficios-carousel-btn beneficios-carousel-btn-prev">
-                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Anterior" class="beneficios-arrow-left" />
+                                    <img src="/images/desktop/arrow-b.svg" alt="Anterior" class="beneficios-arrow-left" />
                                 </button>
                                 <button class="beneficios-carousel-btn beneficios-carousel-btn-next">
-                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Siguiente" />
+                                    <img src="/images/desktop/arrow-b.svg" alt="Siguiente" />
                                 </button>
                             </div>
                         </div>
@@ -451,11 +451,11 @@
                                 <a href="#" class="beneficios-ver-todos-btn">Ver todos los beneficios</a>
                                 
                                 <button class="beneficios-carousel-btn beneficios-arrow-left" onclick="scrollBeneficiosCarousel('left')">
-                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Anterior" />
+                                    <img src="/images/desktop/arrow-b.svg" alt="Anterior" />
                                 </button>
                                 
                                 <button class="beneficios-carousel-btn beneficios-arrow-right" onclick="scrollBeneficiosCarousel('right')">
-                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Siguiente" />
+                                    <img src="/images/desktop/arrow-b.svg" alt="Siguiente" />
                                 </button>
                             </div>
                     </div>
@@ -655,10 +655,10 @@
                             <div class="comunidad-tablet-controls-wrapper">
                                 <a href="#" class="comunidad-tablet-ver-todos-btn">Ver más opiniones</a>
                                 <button class="comunidad-tablet-carousel-btn comunidad-tablet-carousel-btn-prev">
-                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Anterior" class="comunidad-tablet-arrow-left" loading="lazy" />
+                                    <img src="/images/desktop/arrow-b.svg" alt="Anterior" class="comunidad-tablet-arrow-left" loading="lazy" />
                                 </button>
                                 <button class="comunidad-tablet-carousel-btn comunidad-tablet-carousel-btn-next">
-                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Siguiente" loading="lazy" />
+                                    <img src="/images/desktop/arrow-b.svg" alt="Siguiente" loading="lazy" />
                                 </button>
                             </div>
                         </div>
@@ -712,10 +712,10 @@
                     <div class="comunidad-controls-row">
                         <a href="#" class="comunidad-ver-todos-btn">Ver más opiniones</a>
                         <button class="comunidad-carousel-btn comunidad-btn-prev" onclick="scrollComunidadCarousel(-1)">
-                            <img src="/images/desktop/beneficios/arrow-b.png" alt="Previous" class="comunidad-arrow-left">
+                            <img src="/images/desktop/arrow-b.svg" alt="Previous" class="comunidad-arrow-left">
                         </button>
                         <button class="comunidad-carousel-btn comunidad-btn-next" onclick="scrollComunidadCarousel(1)">
-                            <img src="/images/desktop/beneficios/arrow-b.png" alt="Next">
+                            <img src="/images/desktop/arrow-b.svg" alt="Next">
                         </button>
                     </div>
                 </div>
@@ -826,10 +826,10 @@
                             <!-- Botones de navegación abajo -->
                             <div class="en-accion-mobile-controls-wrapper">
                                 <button class="en-accion-mobile-prev-btn">
-                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Anterior" />
+                                    <img src="/images/desktop/arrow-b.svg" alt="Anterior" />
                                 </button>
                                 <button class="en-accion-mobile-next-btn">
-                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Siguiente" />
+                                    <img src="/images/desktop/arrow-b.svg" alt="Siguiente" />
                                 </button>
                             </div>
                         </div>

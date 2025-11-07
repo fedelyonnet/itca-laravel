@@ -506,7 +506,7 @@
    ======================================== */
    :root {
     /* Colores base ITCA */
-    --menu-bg: #02115A;           /* Azul oscuro - Menú */
+    --menu-bg: #010C42;           /* Azul oscuro - Menú */
     --section-bg-odd: #010C42;    /* Azul oscuro - Secciones impares */
     --section-bg-even: #02115A;   /* Azul medio - Secciones pares */
     --text-white: #ffffff;        /* Blanco - Texto */
@@ -7905,7 +7905,7 @@ section h2 {
 /* Individual career page adjustments */
 .lista-carreras--show {
     padding: 0; /* Eliminar padding solo para show.blade.php */
-    background-color: var(--menu-bg); /* Mismo color que el fondo del menú */
+    background-color: #02115A; /* Color específico para show.blade.php */
 }
 
 .lista-carreras--show .lista-carreras-header {
@@ -7922,7 +7922,7 @@ section h2 {
 
 /* Career show section background same as menu */
 .carrera-show-section {
-    background-color: var(--menu-bg);
+    background-color: #02115A; /* Color específico para show.blade.php */
     padding-top: 0;
 }
 
@@ -7994,25 +7994,19 @@ section h2 {
 .requisitos-card {
     border: 1px solid #FFFFFF;
     display: grid;
-    grid-template-rows: auto auto;
-    align-content: center; /* centra verticalmente el conjunto icono+texto */
-}
-
-/* Requisitos icons layout */
-.requisitos-icons {
-    display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: clamp(12px, calc(min(100vw, 1920px) * 0.0125), 24px); /* 24px @1920 */
     align-items: center;
-    justify-items: center;
-    padding: clamp(12px, 1.5vw, 16px) clamp(12px, 1.5vw, 16px) 0;
+    padding: clamp(12px, 1.5vw, 16px);
 }
 
-.requisitos-texts {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: clamp(8px, 1.5vw, 16px);
-    padding: clamp(6px, 0.8vw, 10px) clamp(12px, 1.5vw, 16px) clamp(12px, 1.5vw, 16px);
+/* Requisito item wrapper (icono + texto agrupados) */
+.requisito-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(6px, 0.8vw, 10px);
 }
 
 .requisito-icon {

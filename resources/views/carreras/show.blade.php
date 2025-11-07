@@ -116,25 +116,29 @@
                         </div>
                         <div class="requisitos-content">
                             <div class="requisitos-card">
-                                <div class="requisitos-icons">
+                                <div class="requisito-item">
                                     <img src="/images/desktop/hat.png" alt="Secundario" class="requisito-icon" />
-                                    <img src="/images/desktop/dni.png" alt="DNI" class="requisito-icon" />
-                                    <img src="/images/desktop/cruz.png" alt="Edad mínima" class="requisito-icon" />
-                                    <img src="/images/desktop/tick.png" alt="Conocimientos" class="requisito-icon" />
-                                </div>
-                                <div class="requisitos-texts">
                                     <div class="requisito-text-block">
                                         <div class="requisito-line1">Secundario</div>
                                         <div class="requisito-line2">No se requiere</div>
                                     </div>
+                                </div>
+                                <div class="requisito-item">
+                                    <img src="/images/desktop/dni.png" alt="DNI" class="requisito-icon" />
                                     <div class="requisito-text-block">
                                         <div class="requisito-line1">Presentar</div>
                                         <div class="requisito-line2">DNI</div>
                                     </div>
+                                </div>
+                                <div class="requisito-item">
+                                    <img src="/images/desktop/cruz.png" alt="Edad mínima" class="requisito-icon" />
                                     <div class="requisito-text-block">
                                         <div class="requisito-line1">Mayor de</div>
                                         <div class="requisito-line2">16 años</div>
                                     </div>
+                                </div>
+                                <div class="requisito-item">
+                                    <img src="/images/desktop/tick.png" alt="Conocimientos" class="requisito-icon" />
                                     <div class="requisito-text-block">
                                         <div class="requisito-line1">Conocimientos</div>
                                         <div class="requisito-line2">no se requieren</div>
@@ -932,10 +936,10 @@
                             </div>
                             <div class="fotos-controls-wrapper">
                                 <button class="fotos-carousel-btn fotos-carousel-btn-prev">
-                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Anterior" class="fotos-arrow-left" />
+                                    <img src="/images/desktop/arrow-b.svg" alt="Anterior" class="fotos-arrow-left" />
                                 </button>
                                 <button class="fotos-carousel-btn fotos-carousel-btn-next">
-                                    <img src="/images/desktop/beneficios/arrow-b.png" alt="Siguiente" />
+                                    <img src="/images/desktop/arrow-b.svg" alt="Siguiente" />
                                 </button>
                             </div>
                         </div>

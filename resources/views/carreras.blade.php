@@ -207,10 +207,10 @@
                         <div class="beneficios-controls-wrapper">
                             <a href="#" class="beneficios-ver-todos-btn">Ver todos los beneficios</a>
                             <button class="beneficios-carousel-btn beneficios-carousel-btn-prev">
-                                <img src="/images/desktop/beneficios/arrow-b.png" alt="Anterior" class="beneficios-arrow-left" />
+                                <img src="/images/desktop/arrow-b.svg" alt="Anterior" class="beneficios-arrow-left" />
                             </button>
                             <button class="beneficios-carousel-btn beneficios-carousel-btn-next">
-                                <img src="/images/desktop/beneficios/arrow-b.png" alt="Siguiente" />
+                                <img src="/images/desktop/arrow-b.svg" alt="Siguiente" />
                             </button>
                         </div>
                     </div>
