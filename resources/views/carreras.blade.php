@@ -85,9 +85,9 @@
                                 </div>
                                 <div class="carrera-buttons">
                                     <img src="/images/desktop/arrow.png" alt="Flecha" class="carrera-btn-arrow">
-                                    <button class="carrera-btn-info">
+                                    <a href="{{ route('carreras.show', $carrera->id) }}" class="carrera-btn-info">
                                         <span>Quiero más info sobre la carrera</span>
-                                    </button>
+                                    </a>
                                     <button class="carrera-btn-inscribir">¡Inscribirme ahora!</button>
                                 </div>
                             </div>

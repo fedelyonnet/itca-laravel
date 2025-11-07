@@ -506,7 +506,7 @@
    ======================================== */
    :root {
     /* Colores base ITCA */
-    --menu-bg: #010C42;           /* Azul oscuro - Menú */
+    --menu-bg: #02115A;           /* Azul oscuro - Menú */
     --section-bg-odd: #010C42;    /* Azul oscuro - Secciones impares */
     --section-bg-even: #02115A;   /* Azul medio - Secciones pares */
     --text-white: #ffffff;        /* Blanco - Texto */
