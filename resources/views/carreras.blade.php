@@ -347,7 +347,7 @@
                             <div class="contacto-sede-direccion">{{ $sede->direccion }}</div>
                             <div class="contacto-sede-contacto">Contacto: {{ $sede->telefono }}</div>
                             
-                            @if($sede->link_google_maps)
+                            @if(!empty($sede->link_google_maps) && trim($sede->link_google_maps) !== '')
                                 <div class="contacto-sede-link">
                                     <a href="{{ $sede->link_google_maps }}" target="_blank" class="contacto-sede-link-maps">
                                         📍 Ver en Maps
@@ -355,7 +355,7 @@
                                 </div>
                             @endif
                             
-                            @if($sede->link_whatsapp)
+                            @if(!empty($sede->link_whatsapp) && trim($sede->link_whatsapp) !== '')
                                 <div class="contacto-sede-link">
                                     <a href="{{ $sede->link_whatsapp }}" target="_blank" class="contacto-sede-link-whatsapp">
                                         💬 WhatsApp

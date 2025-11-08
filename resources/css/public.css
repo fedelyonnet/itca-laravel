@@ -314,7 +314,8 @@
 
 .modalidad-icon {
     width: clamp(24px, 2vw, 32px);
-    height: auto;
+    height: clamp(24px, 2vw, 32px); /* Mismo valor que width para mantener proporción cuadrada */
+    object-fit: contain; /* Mantiene proporciones sin distorsión */
     display: block;
 }
 
@@ -7017,8 +7018,8 @@ section h2 {
     margin-left: calc(-50vw + 50%);
     min-height: auto !important;
     height: auto !important;
-    padding-top: clamp(20px, calc(20px + (100vw - 320px) * 0.1364), 35px);
-    padding-bottom: clamp(20px, calc(20px + (100vw - 320px) * 0.1364), 35px);
+    padding-top: clamp(20px, calc(20px + (100vw - 320px) * 0.03125), 70px); /* 70px @1920, desescalable */
+    padding-bottom: clamp(20px, calc(20px + (100vw - 320px) * 0.03125), 70px); /* 70px @1920, desescalable */
 }
 
 .partners-content {
@@ -7997,7 +7998,10 @@ section h2 {
     grid-template-columns: repeat(4, 1fr);
     gap: clamp(12px, calc(min(100vw, 1920px) * 0.0125), 24px); /* 24px @1920 */
     align-items: center;
-    padding: clamp(12px, 1.5vw, 16px);
+    padding-top: clamp(12px, 1.5vw, 16px);
+    padding-bottom: clamp(12px, 1.5vw, 16px);
+    padding-left: clamp(20px, calc(min(100vw, 1920px) * 0.026), 50px); /* 50px @1920, desescalable */
+    padding-right: clamp(20px, calc(min(100vw, 1920px) * 0.026), 50px); /* 50px @1920, desescalable */
 }
 
 /* Requisito item wrapper (icono + texto agrupados) */
@@ -8011,7 +8015,8 @@ section h2 {
 
 .requisito-icon {
     width: clamp(28px, 2.2vw, 42px);
-    height: auto;
+    height: clamp(28px, 2.2vw, 42px); /* Mismo valor que width para mantener proporción cuadrada */
+    object-fit: contain; /* Mantiene proporciones sin distorsión */
     display: block;
 }
 
@@ -8020,7 +8025,6 @@ section h2 {
 .requisito-line1,
 .requisito-line2 {
     font-family: 'Montserrat', sans-serif;
-    font-size: clamp(13px, calc(13px + (18 - 13) * ((100vw - 1366px) / (1920 - 1366))), 18px);
     line-height: 1.1;
     margin: 0;
 }
@@ -8029,9 +8033,11 @@ section h2 {
     color: var(--text-white);
     font-weight: 400;
     margin-bottom: 2px;
+    font-size: clamp(13px, calc(13px + (17 - 13) * ((100vw - 1366px) / (1920 - 1366))), 17px); /* 17px @1920, desescalable */
 }
 
 .requisito-line2 {
+    font-size: clamp(12px, calc(12px + (17 - 12) * ((100vw - 1366px) / (1920 - 1366))), 17px); /* 12px @1366, 17px @1920, desescalable */
     color: var(--accent-green); /* #65E09C */
     font-weight: 700;
 }
@@ -8240,7 +8246,7 @@ section h2 {
         position: absolute;
         left: 0;
         bottom: clamp(-14px, -1vw, -8px);
-        width: clamp(160px, calc(160px + (100vw - 1110px) * 0.065), 225px);
+        width: clamp(200px, calc(200px + (100vw - 1366px) * 0.0451), 225px); /* 200px @1366, 225px @1920, desescalable */
         height: clamp(8px, 1vw, 12px);
         background-image: url('/images/desktop/submod.png');
         background-repeat: no-repeat;
@@ -9509,7 +9515,7 @@ section h2 {
     font-size: clamp(23px, calc(23px + (100vw - 320px) * 0.005), 32px);
     letter-spacing: 0.04em;
     color: var(--text-white);
-    text-align: center;
+    text-align: right;
     margin: 0;
     line-height: 1.2;
 }

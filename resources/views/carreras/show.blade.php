@@ -1179,12 +1179,12 @@
                             <div class="contacto-sede-content" id="{{ Str::slug($sede->nombre) }}-content">
                                 <div class="contacto-sede-direccion">{{ $sede->direccion }}</div>
                                 <div class="contacto-sede-contacto">Contacto: {{ $sede->telefono }}</div>
-                                @if($sede->link_google_maps)
+                                @if(!empty($sede->link_google_maps) && trim($sede->link_google_maps) !== '')
                                     <div class="contacto-sede-link">
                                         <a href="{{ $sede->link_google_maps }}" target="_blank" class="contacto-sede-link-maps">📍 Ver en Maps</a>
                                     </div>
                                 @endif
-                                @if($sede->link_whatsapp)
+                                @if(!empty($sede->link_whatsapp) && trim($sede->link_whatsapp) !== '')
                                     <div class="contacto-sede-link">
                                         <a href="{{ $sede->link_whatsapp }}" target="_blank" class="contacto-sede-link-whatsapp">💬 WhatsApp</a>
                                     </div>
@@ -1334,6 +1334,28 @@
                     }
                 });
             }
+            
+            // Contacto Sedes Expand/Collapse
+            const sedeRows = document.querySelectorAll('.contacto-sede-row[data-sede]');
+            
+            sedeRows.forEach(row => {
+                row.addEventListener('click', function() {
+                    const sedeId = this.getAttribute('data-sede');
+                    const content = document.getElementById(sedeId + '-content');
+                    
+                    // Cerrar todos los otros contenidos
+                    document.querySelectorAll('.contacto-sede-content').forEach(otherContent => {
+                        if (otherContent !== content) {
+                            otherContent.classList.remove('active');
+                        }
+                    });
+                    
+                    // Toggle del contenido actual
+                    if (content) {
+                        content.classList.toggle('active');
+                    }
+                });
+            });
             
         });
     </script>
