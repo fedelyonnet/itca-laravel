@@ -20,8 +20,21 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
 </head>
 <body>
+    <!-- Sticky Bar -->
+    @if($stickyBar && $stickyBar->visible == true)
+    <div class="sticky-bar" style="background-color: {{ $stickyBar->color }} !important;">
+        <div class="container">
+            <div class="sticky-bar-content">
+                <div class="sticky-bar-text-container">
+                    <span class="sticky-bar-text">{!! $stickyBar->getFormattedTextAttribute() !!}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
     <!-- Header -->
-    <header class="header">
+    <header class="header {{ $stickyBar && $stickyBar->visible == true ? 'header-with-sticky' : '' }}">
         <div class="container">
             <nav class="nav">
                 <!-- Logo -->
@@ -113,6 +126,20 @@
                         </div>
                     </div>
                     @endforeach
+                    
+                    <!-- Div UTN Mobile - Igual que welcome.blade.php (solo mobile/tablet) -->
+                    <div class="carreras-UTN-base carreras-UTN-home">
+                        <div class="carreras-UTN-left">
+                            <div class="carreras-UTN-text-base">
+                                <div class="carreras-UTN-line1">Nuestras <span class="carreras-UTN-bold">especializaciones</span></div>
+                                <div class="carreras-UTN-line2">están certificadas por:</div>
+                            </div>
+                        </div>
+                        <div class="carreras-UTN-right">
+                            <img src="/images/desktop/logo-utn.png" alt="Logo UTN" class="carreras-UTN-logo-base carreras-UTN-logo-desktop">
+                            <img src="/images/mobile/utn-mobile.webp" alt="Logo UTN" class="carreras-UTN-logo-base carreras-UTN-logo-mobile">
+                        </div>
+                    </div>
                     
                     <!-- Div UTN - Ancho completo (solo desktop) -->
                     <div class="carreras-UTN-carreras">

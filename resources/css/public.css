@@ -2064,14 +2064,21 @@ section h2 {
     font-size: 16px;
 }
 
+/* Ocultar UTN-base en desktop (solo mostrar en mobile/tablet) */
+@media (min-width: 1100px) {
+    .carreras-UTN-base {
+        display: none;
+    }
+}
+
 /* Modificadores de color para UTN */
 .carreras-UTN-home {
-    background-color: var(--section-bg-even); /* #02115A - Azul medio */
+    background-color: var(--menu-bg); /* #010C42 - Igual que el menú */
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .carreras-UTN-carreras {
-    background-color: var(--section-bg-odd); /* #010C42 - Azul oscuro para contraste */
+    background-color: var(--menu-bg); /* #010C42 - Igual que el menú */
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -9694,8 +9701,12 @@ section h2 {
 
 .lista-carreras-title {
     font-family: 'Montserrat', sans-serif;
-    font-size: clamp(23px, calc(23px + (100vw - 320px) * 0.005), 31px);
+    font-weight: 500; /* Medium */
+    font-size: clamp(25px, calc(25px + (100vw - 1100px) * 0.007), 31px);
+    letter-spacing: 0.02em; /* 2% */
+    color: var(--text-white);
     text-align: center;
+    margin: 0 0 clamp(40px, calc(40px + (100vw - 1100px) * 0.049), 80px) 0;
     position: relative;
     max-width: 1200px;
     padding: 0 clamp(20px, 3vw, 40px);
@@ -9705,7 +9716,7 @@ section h2 {
 
 .lista-carreras-title-text-1 {
     font-weight: 400;
-    letter-spacing: 2%;
+    letter-spacing: 0.02em; /* 2% */
     color: var(--text-white);
 }
 
@@ -9713,7 +9724,7 @@ section h2 {
     position: relative;
     display: inline-block;
     font-weight: 400;
-    letter-spacing: 1%;
+    letter-spacing: 0.02em; /* 2% */
     color: #010C42;
     z-index: 2;
     padding: 0 clamp(8px, calc(8px + (100vw - 1920px) * 0.002), 10px);
@@ -9723,11 +9734,11 @@ section h2 {
     content: '';
     position: absolute;
     top: 50%;
-    left: clamp(85px, calc(85px + (100vw - 1100px) * 0.0122), 95px);
+    left: 50%;
     transform: translate(-50%, -50%);
-    width: clamp(320px, calc(320px + (100vw - 1100px) * 0.0671), 375px);
+    width: clamp(130px, calc(170px + (100vw - 1920px) * 0.049), 170px);
     height: 40px;
-    background-image: url('../images/desktop/stroke-carreras.png');
+    background-image: url('../images/desktop/stroke.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -9736,7 +9747,7 @@ section h2 {
 
 .lista-carreras-title-text-3 {
     font-weight: 400;
-    letter-spacing: 2%;
+    letter-spacing: 0.02em; /* 2% */
     color: var(--text-white);
 }
 
@@ -9867,5 +9878,202 @@ html {
     
     .lista-carreras-title {
         width: 426px;
+    }
+}
+
+/* Mobile layout for carreras (320px - 599px) */
+@media (max-width: 599px) {
+    .lista-carreras {
+        background-color: #010C42;
+        padding: 0;
+    }
+    
+    .lista-carreras-container {
+        max-width: 100%;
+        padding: 0 clamp(15px, 4vw, 20px);
+    }
+    
+    /* Header mobile: breadcrumb arriba, título debajo */
+    .lista-carreras-header {
+        display: flex;
+        flex-direction: column;
+        gap: clamp(15px, 4vw, 25px);
+        align-items: flex-start;
+        margin-bottom: clamp(25px, 4vw, 35px);
+    }
+    
+    .lista-carreras-breadcrumb {
+        order: 1;
+        width: 100%;
+        padding: 0;
+        padding-top: clamp(10px, 2vw, 15px);
+        justify-content: flex-start;
+    }
+    
+    .lista-carreras-title {
+        order: 2;
+        width: 100%;
+        grid-column: 1;
+        justify-self: center;
+        text-align: center;
+        padding: 0;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 500; /* Medium */
+        font-size: clamp(20px, calc(20px + (100vw - 320px) * 0.036), 28px);
+        letter-spacing: 0.02em; /* 2% */
+        color: var(--text-white);
+        margin-top: 20px;
+        margin-bottom: 0;
+    }
+    
+    /* Ajustar stroke del título mobile - igual que carreras-title */
+    .lista-carreras-title-text-2::before {
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: clamp(100px, calc(130px + (100vw - 430px) * 0.18), 160px);
+        height: clamp(30px, calc(40px + (100vw - 430px) * 0.06), 50px);
+    }
+    
+    .lista-carreras-content {
+        padding: clamp(20px, 4vw, 30px) 0;
+        gap: clamp(20px, 4vw, 30px);
+    }
+    
+    .carrera-wrapper {
+        width: clamp(280px, calc(388px + (100vw - 430px) * 1.27), 388px);
+        max-width: 100%;
+        margin: 0 auto;
+        padding: clamp(15px, 4vw, 20px);
+        border-radius: 8px;
+        background-color: #02115A;
+    }
+    
+    .carrera-container {
+        flex-direction: column;
+        gap: clamp(15px, 4vw, 20px);
+        align-items: flex-start;
+        max-width: 100%;
+    }
+    
+    /* Hacer que carrera-left sea transparente para que sus hijos puedan tener order independiente */
+    .carrera-left {
+        display: contents;
+    }
+    
+    /* Título - Primero */
+    .carrera-title {
+        order: 1;
+        width: 100%;
+        margin-bottom: clamp(12px, 3vw, 18px);
+    }
+    
+    /* Solo aplicar en la página de lista de carreras */
+    .lista-carreras .carrera-title-line1,
+    .lista-carreras .carrera-title-line2 {
+        font-size: clamp(20px, calc(20px + (100vw - 320px) * 0.0455), 25px);
+        line-height: 1.2;
+    }
+    
+    /* Imagen - Segundo (327x176 en 430px, fluida hasta 599px) */
+    .carrera-right {
+        order: 2;
+        width: 100%;
+        height: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: clamp(15px, 3vw, 20px);
+    }
+    
+    .carrera-image {
+        width: clamp(280px, calc(388px + (100vw - 430px) * 1.27), 388px);
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+    
+    .carrera-image img {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 327 / 176;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+    
+    /* Mostrar imagen mobile, ocultar desktop */
+    .carreras-image-desktop {
+        display: none !important;
+    }
+    
+    .carreras-image-mobile {
+        display: block !important;
+    }
+    
+    /* Texto - Tercero */
+    .carrera-text {
+        order: 3;
+        width: 100%;
+        margin-bottom: clamp(15px, 3vw, 20px);
+    }
+    
+    .carrera-container p {
+        font-size: clamp(13px, calc(13px + (100vw - 320px) * 0.0179), 15px);
+        line-height: 1.5;
+    }
+    
+    /* Botones - Cuarto (reorganizados en 2 filas horizontales) */
+    .carrera-buttons {
+        order: 4;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: clamp(12px, 3vw, 16px);
+        margin-top: 0;
+    }
+    
+    /* Botón "Quiero más información" - Primera fila (arriba, ocupa toda la fila) */
+    .carrera-btn-info {
+        order: 1;
+        flex-basis: 100%;
+        width: 100%;
+        padding: clamp(10px, 2.5vw, 14px) clamp(16px, 4vw, 24px);
+        font-size: clamp(12px, calc(12px + (100vw - 320px) * 0.0107), 14px);
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .carrera-btn-info span {
+        display: block;
+    }
+    
+    /* Segunda fila (abajo): flecha a la izquierda y botón a la derecha */
+    .carrera-btn-arrow {
+        order: 2;
+        width: clamp(80px, calc(80px + (100vw - 320px) * 0.0714), 100px);
+        height: auto;
+        margin: 0;
+        flex-shrink: 0;
+    }
+    
+    .carrera-btn-inscribir {
+        order: 2;
+        flex: 1;
+        padding: clamp(10px, 2.5vw, 14px) clamp(16px, 4vw, 24px);
+        font-size: clamp(12px, calc(12px + (100vw - 320px) * 0.0107), 14px);
+        text-align: center;
+        min-width: 0;
+    }
+    
+    /* Ocultar badge de modalidad en mobile si existe */
+    .carreras-modalidad-badge {
+        display: none;
+    }
+    
+    /* Color de fondo de beneficios-mobile-carousel-section en mobile para página carreras */
+    body:has(.lista-carreras) .beneficios-mobile-carousel-section {
+        background-color: #02115A !important;
     }
 }

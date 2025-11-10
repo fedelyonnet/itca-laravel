@@ -98,6 +98,9 @@ class WelcomeController extends Controller
                     ->ordered()
                     ->get();
         
-        return view('carreras', compact('carreras', 'beneficios', 'partners', 'sedes'));
+        // Obtener Sticky Bar
+        $stickyBar = StickyBar::first();
+        
+        return view('carreras', compact('carreras', 'beneficios', 'partners', 'sedes', 'stickyBar'));
     }
 }
