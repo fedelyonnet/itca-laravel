@@ -1,7 +1,7 @@
 <nav class="flex items-center space-x-6">
     <a href="{{ route('admin.dashboard') }}" 
        class="inline-flex items-center text-white hover:text-gray-300 px-2 py-1">
-        Dashboard
+        Panel
     </a>
     
     <div class="relative inline-flex items-center" 
@@ -35,28 +35,28 @@
             <div class="py-1">
                 <a href="{{ route('admin.carreras') }}" 
                    @keydown.enter="window.location.href = '{{ route('admin.carreras') }}'"
-                   class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
+                   class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
                    role="menuitem">
                     Gestión de Carreras
                 </a>
                 
                 <a href="{{ route('admin.programas') }}" 
                    @keydown.enter="window.location.href = '{{ route('admin.programas') }}'"
-                   class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
+                   class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
                    role="menuitem">
                     Gestión de Programa
                 </a>
                 
                 <a href="{{ route('admin.modalidades') }}" 
                    @keydown.enter="window.location.href = '{{ route('admin.modalidades') }}'"
-                   class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
+                   class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
                    role="menuitem">
                     Gestión de Modalidades
                 </a>
                 
                 <a href="{{ route('admin.carreras.multimedia') }}" 
                    @keydown.enter="window.location.href = '{{ route('admin.carreras.multimedia') }}'"
-                   class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
+                   class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
                    role="menuitem">
                     Edición multimedia
                 </a>
@@ -95,56 +95,56 @@
             <div class="py-1">
                 <a href="{{ route('admin.edit-hero') }}" 
                    @keydown.enter="window.location.href = '{{ route('admin.edit-hero') }}'"
-                   class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
+                   class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
                    role="menuitem">
                     Edición Hero + Sticky Bar
                 </a>
                 
                 <a href="{{ route('admin.beneficios') }}" 
                    @keydown.enter="window.location.href = '{{ route('admin.beneficios') }}'"
-                   class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
+                   class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
                    role="menuitem">
                     Edición Beneficios
                 </a>
                 
                 <a href="{{ route('admin.dudas') }}" 
                    @keydown.enter="window.location.href = '{{ route('admin.dudas') }}'"
-                   class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
+                   class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
                    role="menuitem">
                     Edición FAQs
                 </a>
                 
                 <a href="{{ route('admin.sedes') }}" 
                    @keydown.enter="window.location.href = '{{ route('admin.sedes') }}'"
-                   class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
+                   class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
                    role="menuitem">
                     Edición Sedes
                 </a>
                 
                 <a href="{{ route('admin.testimonios') }}" 
                    @keydown.enter="window.location.href = '{{ route('admin.testimonios') }}'"
-                   class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
+                   class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
                    role="menuitem">
                     Edición Testimonios
                 </a>
                 
                 <a href="{{ route('admin.partners') }}" 
                    @keydown.enter="window.location.href = '{{ route('admin.partners') }}'"
-                   class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
+                   class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
                    role="menuitem">
                     Edición Partners
                 </a>
                 
                 <a href="{{ route('admin.en-accion') }}" 
                    @keydown.enter="window.location.href = '{{ route('admin.en-accion') }}'"
-                   class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
+                   class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
                    role="menuitem">
                     Edición En Acción
                 </a>
                 
                 <a href="{{ route('admin.noticias') }}" 
                    @keydown.enter="window.location.href = '{{ route('admin.noticias') }}'"
-                   class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
+                   class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
                    role="menuitem">
                     Edición Noticias
                 </a>
