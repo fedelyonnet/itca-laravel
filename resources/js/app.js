@@ -1886,35 +1886,18 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!progressIndicator || !progressBar) return;
         
         // Calcular progreso basado en la posición real de scroll
-        let scrollLeft = carousel.scrollLeft;
+        const scrollLeft = carousel.scrollLeft;
         const maxScroll = carousel.scrollWidth - carousel.offsetWidth;
         
-        // Si estamos muy cerca del principio (dentro de 5px), forzar a 0
-        if (scrollLeft <= 5) {
-            scrollLeft = 0;
-            // También forzar el scroll del carousel a 0 si está muy cerca
-            if (carousel.scrollLeft > 0 && carousel.scrollLeft <= 5) {
-                carousel.scrollLeft = 0;
-            }
-        }
-        
         // Actualizar variables de posición
-        isAtBeginningFotos = scrollLeft <= 5; // 5px de tolerancia más estricta
-        isAtEndFotos = scrollLeft >= maxScroll - 5; // 5px de tolerancia más estricta
+        isAtBeginningFotos = scrollLeft <= 10; // 10px de tolerancia
+        isAtEndFotos = scrollLeft >= maxScroll - 10; // 10px de tolerancia
         
         // Actualizar botones de navegación
         updateFotosMobileNavigationButtons();
         
-        // Si estamos al principio, forzar progreso a 0
-        let progress = 0;
-        if (isAtBeginningFotos || scrollLeft === 0) {
-            progress = 0;
-        } else if (isAtEndFotos) {
-            progress = 1;
-        } else {
-            // Evitar división por cero
-            progress = maxScroll > 0 ? Math.min(scrollLeft / maxScroll, 1) : 0;
-        }
+        // Evitar división por cero
+        const progress = maxScroll > 0 ? Math.min(scrollLeft / maxScroll, 1) : 0;
         
         // Obtener dimensiones reales del DOM
         const trackWidth = progressBar.offsetWidth;
@@ -1925,17 +1908,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const indicatorPosition = progress * maxPosition;
         
         // Solo actualizar si la posición cambió significativamente (evitar micro-movimientos)
-        // O si estamos al principio/final para asegurar que quede exactamente en 0 o máximo
-        const shouldUpdate = Math.abs(indicatorPosition - lastProgressPositionFotos) > 0.5 || 
-                           (isAtBeginningFotos && indicatorPosition !== 0) ||
-                           (isAtEndFotos && Math.abs(indicatorPosition - maxPosition) > 0.5);
-        
-        if (shouldUpdate) {
-            // Asegurar que cuando estamos al principio, la posición sea exactamente 0
-            const finalPosition = isAtBeginningFotos ? 0 : (isAtEndFotos ? maxPosition : indicatorPosition);
-            progressIndicator.style.transform = 'none';
-            progressIndicator.style.left = `${finalPosition}px`;
-            lastProgressPositionFotos = finalPosition;
+        if (Math.abs(indicatorPosition - lastProgressPositionFotos) > 0.5) {
+            progressIndicator.style.transform = `translateX(${indicatorPosition}px)`;
+            lastProgressPositionFotos = indicatorPosition;
         }
     }
     
@@ -1990,46 +1965,18 @@ document.addEventListener('DOMContentLoaded', function() {
         // Resetear flag después de usar botones
         userScrolledManuallyFotos = false;
         
-        // Usar scrollIntoView o scrollTo según el slide
+        // Usar scrollIntoView en la slide target
         const targetSlide = slides[currentFotosSlide];
         if (targetSlide) {
-            // Si es el primer slide, forzar scroll a exactamente 0
-            if (currentFotosSlide === 0) {
-                carousel.scrollTo({
-                    left: 0,
-                    behavior: 'smooth'
-                });
-            } else if (currentFotosSlide === totalSlides - 1) {
-                // Si es el último slide, calcular el scroll máximo considerando el padding
-                const maxScroll = Math.max(0, carousel.scrollWidth - carousel.offsetWidth);
-                carousel.scrollTo({
-                    left: maxScroll,
-                    behavior: 'smooth'
-                });
-            } else {
-                // Para slides intermedios, usar scrollIntoView
-                targetSlide.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'nearest',
-                    inline: 'start'
-                });
-            }
+            targetSlide.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+                inline: 'start'
+            });
         }
         
-        // Actualizar barra de progreso después de que termine el scroll
-        // Usar un timeout para asegurar que el scroll haya terminado
-        setTimeout(() => {
-            // Si estamos en el primer slide, forzar scroll a 0 por si acaso
-            if (currentFotosSlide === 0 && carousel.scrollLeft > 0) {
-                carousel.scrollLeft = 0;
-            }
-            updateFotosProgressBar();
-            updateFotosMobileNavigationButtons();
-        }, 100);
-        
-        // También actualizar inmediatamente
+        // Actualizar barra de progreso
         updateFotosProgressBar();
-        updateFotosMobileNavigationButtons();
     }
     
     // Inicializar el carrusel de fotos
@@ -2060,26 +2007,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Listener para actualizar barra de progreso
             fotosCarousel.addEventListener('scroll', function() {
-                // Si el scroll está muy cerca de 0, forzarlo a 0
-                if (fotosCarousel.scrollLeft <= 5 && fotosCarousel.scrollLeft > 0) {
-                    fotosCarousel.scrollLeft = 0;
-                }
-                // Actualizar la barra de progreso y botones
+                // Solo actualizar la barra de progreso
                 updateFotosProgressBar();
-                updateFotosMobileNavigationButtons();
-            });
-            
-            // También escuchar cuando termine el scroll para asegurar posición correcta
-            let scrollTimeout;
-            fotosCarousel.addEventListener('scroll', function() {
-                clearTimeout(scrollTimeout);
-                scrollTimeout = setTimeout(() => {
-                    if (fotosCarousel.scrollLeft <= 5 && fotosCarousel.scrollLeft > 0) {
-                        fotosCarousel.scrollLeft = 0;
-                    }
-                    updateFotosProgressBar();
-                    updateFotosMobileNavigationButtons();
-                }, 150);
             });
         } else {
             // Retry después de 100ms si los elementos no están listos
