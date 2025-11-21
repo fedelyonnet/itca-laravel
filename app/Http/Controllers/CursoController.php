@@ -474,10 +474,10 @@ class CursoController extends Controller
     {
         try {
             $request->validate([
-                'video' => 'nullable|file|mimes:mp4,webm|max:20480', // 20MB en kilobytes
+                'video' => 'nullable|file|mimes:mp4,webm|max:102400', // 100MB en kilobytes
                 'url' => 'nullable|string|max:255',
             ], [
-                'video.max' => 'El video no debe ser mayor a 20MB.',
+                'video.max' => 'El video no debe ser mayor a 100MB.',
                 'video.mimes' => 'El video debe ser un archivo MP4 o WEBM.',
             ]);
 

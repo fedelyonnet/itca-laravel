@@ -188,7 +188,7 @@
                                            class="block w-full text-sm text-gray-300 border border-gray-500 rounded-md cursor-pointer bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600 file:cursor-pointer"
                                            onchange="previewVideo(this); updateFileName(this)">
                                     <p id="fileName" class="text-xs text-gray-400 mt-1"></p>
-                                    <p class="text-xs text-gray-400 mt-1">Tamaño recomendado: 280×600px. MP4, WEBM. Máximo 20MB.</p>
+                                    <p class="text-xs text-gray-400 mt-1">Tamaño recomendado: 280×600px. MP4, WEBM. Máximo 100MB.</p>
                                 </div>
                                 
                                 <!-- URL -->
