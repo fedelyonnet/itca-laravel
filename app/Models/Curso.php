@@ -32,4 +32,29 @@ class Curso extends Model
     {
         return $query->orderBy('orden', 'asc');
     }
+
+    /**
+     * Relación muchos a muchos con Sedes
+     */
+    public function sedes()
+    {
+        return $this->belongsToMany(Sede::class, 'curso_sede', 'curso_id', 'sede_id')
+                    ->withTimestamps();
+    }
+
+    /**
+     * Relación con Años del programa
+     */
+    public function anios()
+    {
+        return $this->hasMany(CursoAnio::class)->orderBy('orden');
+    }
+
+    /**
+     * Relación con Modalidades
+     */
+    public function modalidades()
+    {
+        return $this->hasMany(Modalidad::class)->orderBy('orden');
+    }
 }

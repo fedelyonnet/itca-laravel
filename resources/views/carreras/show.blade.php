@@ -45,7 +45,19 @@
                         <span class="lista-carreras-breadcrumb-separator carrera-show-breadcrumb-separator">></span>
                         <a href="/carreras" class="lista-carreras-breadcrumb-link carrera-show-breadcrumb-link">Carreras</a>
                         <span class="lista-carreras-breadcrumb-separator carrera-show-breadcrumb-separator">></span>
-                        <span class="lista-carreras-breadcrumb-current carrera-show-breadcrumb-current">{{ $curso->nombre }}</span>
+                        <span class="lista-carreras-breadcrumb-current carrera-show-breadcrumb-current">
+                            @php
+                                $nombre = $curso->nombre;
+                                $palabras = explode(' ', $nombre);
+                                $mitad = ceil(count($palabras) / 2);
+                                $primeraParte = implode(' ', array_slice($palabras, 0, $mitad));
+                                $segundaParte = implode(' ', array_slice($palabras, $mitad));
+                            @endphp
+                            <span class="carrera-show-breadcrumb-part1">{{ $primeraParte }}</span>
+                            @if($segundaParte)
+                                <span class="carrera-show-breadcrumb-part2">{{ $segundaParte }}</span>
+                            @endif
+                        </span>
                     </div>
                 </div>
             </div>
@@ -154,25 +166,23 @@
                         <div class="requisitos-cursar">
                             <div class="requisitos-cursar-card">
                                 <div class="cursar-grid">
-                                    <div class="cursar-item">
-                                        <span class="cursar-label">SUR</span>
-                                        <div class="cursar-hover"><span>Banfield</span></div>
-                                    </div>
-                                    <div class="cursar-item">
-                                        <span class="cursar-label">NORTE</span>
-                                        <div class="cursar-hover"><span>San Isidro</span></div>
-                                    </div>
-                                    <div class="cursar-item">
-                                        <span class="cursar-label">CABA</span>
-                                        <div class="cursar-hover cursar-hover-multi">
-                                            <span>Villa Devoto</span>
-                                            <span>Villa Urquiza</span>
+                                    @if(isset($sedesPorZona) && $sedesPorZona->count() > 0)
+                                        @foreach($sedesPorZona as $zona => $sedes)
+                                            <div class="cursar-item">
+                                                <span class="cursar-label">{{ strtoupper($zona) }}</span>
+                                                <div class="cursar-hover {{ $sedes->count() > 1 ? 'cursar-hover-multi' : '' }}">
+                                                    @foreach($sedes as $sedeNombre)
+                                                        <span>{{ $sedeNombre }}</span>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    @else
+                                        <div class="cursar-item">
+                                            <span class="cursar-label">-</span>
+                                            <div class="cursar-hover"><span>No disponible</span></div>
                                         </div>
-                                    </div>
-                                    <div class="cursar-item">
-                                        <span class="cursar-label">OESTE</span>
-                                        <div class="cursar-hover"><span>Morón</span></div>
-                                    </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -185,627 +195,392 @@
         <section class="modalidades-section">
             <div class="modalidades-single">
                 <h3 class="modalidades-title"><span class="modalidades-title-text">Modalidades</span></h3>
-                <div class="modalidades-dropdown modalidades-dropdown-presencial">
-                    <div class="modalidades-dropdown-grid">
-                        <!-- Fila 1: Header -->
-                        <div class="modalidad-header-row modalidad-header-row-presencial">
-                            <div class="modalidad-left">
-                                <div class="modalidad-label">PRESENCIAL</div>
-                            </div>
-                            <div class="modalidad-icon-item">
-                                <img src="/images/desktop/clock.png" alt="Duración" class="modalidad-icon">
-                                <span class="modalidad-icon-text">Duración</span>
-                            </div>
-                            <div class="modalidad-icon-item">
-                                <img src="/images/desktop/gear.png" alt="Dedicación" class="modalidad-icon">
-                                <span class="modalidad-icon-text">Dedicación</span>
-                            </div>
-                            <div class="modalidad-icon-item">
-                                <img src="/images/desktop/student.png" alt="Clases" class="modalidad-icon">
-                                <span class="modalidad-icon-text">Clases</span>
-                            </div>
-                            <div class="modalidad-icon-item">
-                                <img src="/images/desktop/wrench.png" alt="Teoría y Práctica" class="modalidad-icon">
-                                <span class="modalidad-icon-text">Teoría y Práctica</span>
-                            </div>
-                            <div class="modalidad-icon-item">
-                                <img src="/images/desktop/calendar.png" alt="Mes de Inicio" class="modalidad-icon">
-                                <span class="modalidad-icon-text">Mes de Inicio</span>
-                            </div>
-                            <div class="modalidad-right">
-                                <img src="/images/desktop/chevron.png" alt="Chevron" class="modalidad-chevron" id="modalidad-chevron">
-                            </div>
-                        </div>
-                        <!-- Fila 2: REGULAR -->
-                        <div class="modalidad-content-row">
-                                <div class="modalidad-label-cell">
-                                    <span class="modalidad-content-text">REGULAR</span>
+                <!-- Desktop Version -->
+                @if(isset($modalidades) && $modalidades->count() > 0)
+                    @foreach($modalidades as $modalidad)
+                        @php
+                            $modalidadSlug = Str::slug(strtolower($modalidad->nombre));
+                            $tipos = $modalidad->tipos;
+                            $columnas = $modalidad->columnas;
+                            $horarios = $modalidad->horarios;
+                            $numColumnas = $columnas->count();
+                            // Determinar la clase CSS según el número de columnas
+                            $claseGrid = $numColumnas === 6 ? 'semipresencial' : 'presencial';
+                            // Determinar si es semipresencial basándose en el nombre o número de columnas
+                            $esSemipresencial = $numColumnas === 6 || stripos($modalidad->nombre, 'semi') !== false;
+                        @endphp
+                        <div class="modalidades-dropdown modalidades-dropdown-{{ $modalidadSlug }} modalidades-dropdown-{{ $claseGrid }} modalidades-desktop">
+                            <div class="modalidades-dropdown-grid">
+                                <!-- Fila 1: Header -->
+                                <div class="modalidad-header-row modalidad-header-row-{{ $claseGrid }}">
+                                    <div class="modalidad-left">
+                                        <div class="modalidad-label">
+                                            @if($modalidad->nombre_linea2)
+                                                <span class="modalidad-label-line">{{ strtoupper($modalidad->nombre_linea1) }}</span>
+                                                <span class="modalidad-label-line">{{ strtoupper($modalidad->nombre_linea2) }}</span>
+                                            @else
+                                                {{ strtoupper($modalidad->nombre_linea1 ?? $modalidad->nombre) }}
+                                            @endif
+                                        </div>
+                                    </div>
+                                    @foreach($columnas as $columna)
+                                        <div class="modalidad-icon-item">
+                                            <img src="{{ $columna->icono }}" alt="{{ $columna->nombre }}" class="modalidad-icon">
+                                            <span class="modalidad-icon-text">{{ $columna->nombre }}</span>
+                                        </div>
+                                    @endforeach
+                                    <div class="modalidad-right">
+                                        <img src="/images/desktop/chevron.png" alt="Chevron" class="modalidad-chevron">
+                                    </div>
                                 </div>
-                                <div class="modalidad-data-cell">
-                                    <span class="modalidad-left-text">10 meses</span>
+                                <!-- Filas de Tipos -->
+                                @foreach($tipos as $tipo)
+                                    <div class="modalidad-content-row modalidad-content-row-{{ $claseGrid }}">
+                                        <div class="modalidad-label-cell">
+                                            <span class="modalidad-content-text">{{ strtoupper($tipo->nombre) }}</span>
+                                        </div>
+                                        @foreach($columnas as $columna)
+                                            @php
+                                                $campoDato = $columna->campo_dato;
+                                                $valor = $tipo->$campoDato ?? '';
+                                                // Solo dividir en 2 líneas máximo: antes y después de "cada"
+                                                $esMultilinea = strpos($valor, 'cada') !== false;
+                                            @endphp
+                                            <div class="modalidad-data-cell {{ $esMultilinea ? 'modalidad-data-cell-multiline' : '' }}">
+                                                @if($valor)
+                                                    @if($esMultilinea)
+                                                        @php
+                                                            // Dividir solo en 2 partes: antes de "cada" y después
+                                                            $partes = explode(' cada ', $valor);
+                                                            if(count($partes) == 2) {
+                                                                $lineas = [$partes[0], 'cada ' . $partes[1]];
+                                                            } else {
+                                                                // Si no tiene "cada " exacto, buscar "cada"
+                                                                $posCada = strpos($valor, 'cada');
+                                                                if($posCada !== false) {
+                                                                    $lineas = [
+                                                                        trim(substr($valor, 0, $posCada)),
+                                                                        trim(substr($valor, $posCada))
+                                                                    ];
+                                                                } else {
+                                                                    $lineas = [$valor];
+                                                                }
+                                                            }
+                                                        @endphp
+                                                        @foreach($lineas as $linea)
+                                                            <span class="modalidad-left-text">{{ trim($linea) }}</span>
+                                                        @endforeach
+                                                    @else
+                                                        <span class="modalidad-left-text">{{ $valor }}</span>
+                                                    @endif
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endforeach
+                            </div>
+                            <!-- Fila 5: Información adicional - fuera del grid principal -->
+                            <div class="modalidad-special-row">
+                                @if($modalidad->texto_info)
+                                    <div class="modalidad-special-cell modalidad-special-cell-left">
+                                        @php
+                                            $textoInfo = $modalidad->texto_info;
+                                            // Si tiene HTML, mantenerlo
+                                            if (strpos($textoInfo, '<') !== false) {
+                                                echo $textoInfo;
+                                            } else {
+                                                // Dividir el texto en 2 líneas: antes y después del paréntesis
+                                                $posParentesis = strpos($textoInfo, '(');
+                                                if ($posParentesis !== false) {
+                                                    $linea1 = trim(substr($textoInfo, 0, $posParentesis));
+                                                    $linea2 = trim(substr($textoInfo, $posParentesis));
+                                                    echo '<span class="modalidad-special-text">' . e($linea1) . '</span>';
+                                                    echo '<span class="modalidad-special-text modalidad-special-text-italic">' . e($linea2) . '</span>';
+                                                } else {
+                                                    // Si no tiene paréntesis, usar nl2br
+                                                    echo nl2br(e($textoInfo));
+                                                }
+                                            }
+                                        @endphp
+                                    </div>
+                                @endif
+                                @if($horarios->count() > 0)
+                                    @foreach($horarios as $horario)
+                                        <div class="modalidad-special-cell modalidad-special-cell-right">
+                                            @if($horario->icono)
+                                                <img src="{{ $horario->icono }}" alt="{{ $horario->nombre }}" class="modalidad-special-icon">
+                                            @endif
+                                            <div class="modalidad-special-time">
+                                                <span class="modalidad-special-time-label">{{ $horario->nombre }}</span>
+                                                <span class="modalidad-special-time-hours">{{ $horario->hora_inicio }} a {{ $horario->hora_fin }}hs</span>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
+                
+                <!-- Mobile Version -->
+                @if(isset($modalidades) && $modalidades->count() > 0)
+                    @foreach($modalidades as $modalidad)
+                        @php
+                            $modalidadSlug = Str::slug(strtolower($modalidad->nombre));
+                            $tipos = $modalidad->tipos;
+                            $primerTipo = $tipos->first();
+                            $segundoTipo = $tipos->skip(1)->first();
+                            $columnas = $modalidad->columnas;
+                            $horarios = $modalidad->horarios;
+                        @endphp
+                        <div class="modalidades-mobile modalidades-mobile-{{ $modalidadSlug }}">
+                            <div class="modalidad-mobile-header">
+                                <span class="modalidad-mobile-header-text">{{ strtoupper(str_replace(['-', '/', ' / '], ' ', $modalidad->nombre)) }}</span>
+                                <img src="/images/desktop/chevron.png" alt="Chevron" class="modalidad-mobile-chevron">
+                            </div>
+                            <div class="modalidad-mobile-panel">
+                                @if($tipos->count() > 0)
+                                    <div class="modalidad-mobile-columns">
+                                        <!-- Columna Izquierda: Primer Tipo (Intensivo) -->
+                                        <div class="modalidad-mobile-column modalidad-mobile-column-left active">
+                                            <button class="modalidad-mobile-tab-btn active" data-tab="{{ Str::slug(strtolower($primerTipo->nombre)) }}">{{ $primerTipo->nombre }}</button>
+                                            <div class="modalidad-mobile-column-content">
+                                                @foreach($tipos as $tipo)
+                                                    @php $tipoSlug = Str::slug(strtolower($tipo->nombre)); @endphp
+                                                    <!-- Tab {{ $tipo->nombre }} - Iconos -->
+                                                    <div class="modalidad-mobile-tab-content {{ $loop->first ? 'active' : '' }}" data-content="{{ $tipoSlug }}">
+                                                        <div class="modalidad-mobile-icon-col">
+                                                            @foreach($columnas as $columna)
+                                                                <div class="modalidad-mobile-icon-item">
+                                                                    <img src="{{ $columna->icono }}" alt="{{ $columna->nombre }}" class="modalidad-mobile-icon">
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                        <!-- Columna Derecha: Segundo Tipo (Regular) -->
+                                        <div class="modalidad-mobile-column modalidad-mobile-column-right">
+                                            @if($segundoTipo)
+                                                <button class="modalidad-mobile-tab-btn" data-tab="{{ Str::slug(strtolower($segundoTipo->nombre)) }}">{{ $segundoTipo->nombre }}</button>
+                                            @endif
+                                            <div class="modalidad-mobile-column-content">
+                                                @foreach($tipos as $tipo)
+                                                    @php $tipoSlug = Str::slug(strtolower($tipo->nombre)); @endphp
+                                                    <!-- Tab {{ $tipo->nombre }} - Datos -->
+                                                    <div class="modalidad-mobile-tab-content {{ $loop->first ? 'active' : '' }}" data-content="{{ $tipoSlug }}">
+                                                        <div class="modalidad-mobile-data-col">
+                                                            @foreach($columnas as $columna)
+                                                                @php
+                                                                    $campoDato = $columna->campo_dato;
+                                                                    $valor = $tipo->$campoDato ?? '';
+                                                                @endphp
+                                                                <div class="modalidad-mobile-data-item">
+                                                                    @if($valor)
+                                                                        @php
+                                                                            // Solo dividir en 2 líneas máximo: antes y después de "cada"
+                                                                            $esMultilinea = strpos($valor, 'cada') !== false;
+                                                                        @endphp
+                                                                        @if($esMultilinea)
+                                                                            @php
+                                                                                // Dividir solo en 2 partes: antes de "cada" y después
+                                                                                $partes = explode(' cada ', $valor);
+                                                                                if(count($partes) == 2) {
+                                                                                    $lineas = [$partes[0], 'cada ' . $partes[1]];
+                                                                                } else {
+                                                                                    // Si no tiene "cada " exacto, buscar "cada"
+                                                                                    $posCada = strpos($valor, 'cada');
+                                                                                    if($posCada !== false) {
+                                                                                        $lineas = [
+                                                                                            trim(substr($valor, 0, $posCada)),
+                                                                                            trim(substr($valor, $posCada))
+                                                                                        ];
+                                                                                    } else {
+                                                                                        $lineas = [$valor];
+                                                                                    }
+                                                                                }
+                                                                            @endphp
+                                                                            @foreach($lineas as $linea)
+                                                                                <span class="modalidad-mobile-data-text">{{ trim($linea) }}</span>
+                                                                            @endforeach
+                                                                        @else
+                                                                            <span class="modalidad-mobile-data-text">{{ $valor }}</span>
+                                                                        @endif
+                                                                    @endif
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                                <!-- Sección especial mobile -->
+                                <div class="modalidad-mobile-special-row">
+                                    @if($modalidad->texto_info)
+                                        <div class="modalidad-mobile-special-cell modalidad-mobile-special-cell-left">
+                                            @php
+                                                $textoInfo = $modalidad->texto_info;
+                                                // Si tiene HTML, mantenerlo, sino convertir saltos de línea
+                                                if (strpos($textoInfo, '<') !== false) {
+                                                    echo $textoInfo;
+                                                } else {
+                                                    echo nl2br(e($textoInfo));
+                                                }
+                                            @endphp
+                                        </div>
+                                    @endif
+                                    @if($horarios->count() > 0)
+                                        <div class="modalidad-mobile-special-icons">
+                                            @foreach($horarios as $horario)
+                                                <div class="modalidad-mobile-special-cell modalidad-mobile-special-cell-right">
+                                                    @if($horario->icono)
+                                                        <img src="{{ $horario->icono }}" alt="{{ $horario->nombre }}" class="modalidad-mobile-special-icon">
+                                                    @endif
+                                                    <div class="modalidad-mobile-special-time">
+                                                        <span class="modalidad-mobile-special-time-label">{{ $horario->nombre }}</span>
+                                                        <span class="modalidad-mobile-special-time-hours">{{ $horario->hora_inicio }} a {{ $horario->hora_fin }}hs</span>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
                                 </div>
-                            <div class="modalidad-data-cell modalidad-data-cell-multiline">
-                                <span class="modalidad-left-text">3hs y media</span>
-                                <span class="modalidad-left-text">cada clase</span>
-                            </div>
-                            <div class="modalidad-data-cell">
-                                <span class="modalidad-left-text">1 x semana</span>
-                            </div>
-                            <div class="modalidad-data-cell modalidad-data-cell-multiline">
-                                <span class="modalidad-left-text">110hs</span>
-                                <span class="modalidad-left-text">presenciales</span>
-                            </div>
-                            <div class="modalidad-data-cell">
-                                <span class="modalidad-left-text">Marzo</span>
                             </div>
                         </div>
-                        <!-- Fila 3: INTENSIVO -->
-                        <div class="modalidad-content-row modalidad-content-row-presencial">
-                                <div class="modalidad-label-cell">
-                                    <span class="modalidad-content-text">INTENSIVO</span>
-                                </div>
-                                <div class="modalidad-data-cell">
-                                    <span class="modalidad-left-text">5 meses</span>
-                                </div>
-                            <div class="modalidad-data-cell modalidad-data-cell-multiline">
-                                <span class="modalidad-left-text">7hs</span>
-                                <span class="modalidad-left-text">cada clase</span>
-                            </div>
-                            <div class="modalidad-data-cell">
-                                <span class="modalidad-left-text">1 x semana</span>
-                            </div>
-                            <div class="modalidad-data-cell modalidad-data-cell-multiline">
-                                <span class="modalidad-left-text">110hs</span>
-                                <span class="modalidad-left-text">presenciales</span>
-                            </div>
-                            <div class="modalidad-data-cell">
-                                <span class="modalidad-left-text">Agosto</span>
-                            </div>
-                        </div>
-                        <!-- Fila 4: DESFASADO -->
-                        <div class="modalidad-content-row modalidad-content-row-presencial">
-                                <div class="modalidad-label-cell">
-                                    <span class="modalidad-content-text">DESFASADO</span>
-                                </div>
-                                <div class="modalidad-data-cell">
-                                    <span class="modalidad-left-text">9 meses</span>
-                                </div>
-                            <div class="modalidad-data-cell modalidad-data-cell-multiline">
-                                <span class="modalidad-left-text">3hs y media</span>
-                                <span class="modalidad-left-text">cada clase</span>
-                            </div>
-                            <div class="modalidad-data-cell">
-                                <span class="modalidad-left-text">1 x semana</span>
-                            </div>
-                            <div class="modalidad-data-cell modalidad-data-cell-multiline">
-                                <span class="modalidad-left-text">110hs</span>
-                                <span class="modalidad-left-text">presenciales</span>
-                            </div>
-                            <div class="modalidad-data-cell">
-                                <span class="modalidad-left-text">Mayo</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Fila 5: Información adicional - fuera del grid principal -->
-                    <div class="modalidad-special-row">
-                        <div class="modalidad-special-cell modalidad-special-cell-left">
-                            <span class="modalidad-special-text">
-                                Podes elegir un día entre <strong>martes y sábados</strong>
-                            </span>
-                            <span class="modalidad-special-text modalidad-special-text-italic">
-                                (según la disponibilidad de cada sede)
-                            </span>
-                        </div>
-                        <div class="modalidad-special-cell modalidad-special-cell-right">
-                            <img src="/images/desktop/morning.png" alt="Mañana" class="modalidad-special-icon">
-                            <div class="modalidad-special-time">
-                                <span class="modalidad-special-time-label">Mañana</span>
-                                <span class="modalidad-special-time-hours">(9 a 12.30hs)</span>
-                            </div>
-                        </div>
-                        <div class="modalidad-special-cell modalidad-special-cell-right">
-                            <img src="/images/desktop/sun.png" alt="Tarde" class="modalidad-special-icon">
-                            <div class="modalidad-special-time">
-                                <span class="modalidad-special-time-label">Tarde</span>
-                                <span class="modalidad-special-time-hours">(14 a 17.30hs)</span>
-                            </div>
-                        </div>
-                        <div class="modalidad-special-cell modalidad-special-cell-right">
-                            <img src="/images/desktop/night.png" alt="Noche" class="modalidad-special-icon">
-                            <div class="modalidad-special-time">
-                                <span class="modalidad-special-time-label">Noche</span>
-                                <span class="modalidad-special-time-hours">(19 a 22.30hs)</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Segundo dropdown: Semipresencial -->
-                <div class="modalidades-dropdown modalidades-dropdown-semipresencial">
-                    <div class="modalidades-dropdown-grid">
-                        <!-- Fila 1: Header -->
-                        <div class="modalidad-header-row modalidad-header-row-semipresencial">
-                            <div class="modalidad-left">
-                                <div class="modalidad-label">
-                                    <span class="modalidad-label-line">SEMI-</span>
-                                    <span class="modalidad-label-line">PRESENCIAL</span>
-                                </div>
-                            </div>
-                            <div class="modalidad-icon-item">
-                                <img src="/images/desktop/clock.png" alt="Duración" class="modalidad-icon">
-                                <span class="modalidad-icon-text">Duración</span>
-                            </div>
-                            <div class="modalidad-icon-item">
-                                <img src="/images/desktop/gear.png" alt="Dedicación" class="modalidad-icon">
-                                <span class="modalidad-icon-text">Dedicación</span>
-                            </div>
-                            <div class="modalidad-icon-item">
-                                <img src="/images/desktop/student.png" alt="Clases" class="modalidad-icon">
-                                <span class="modalidad-icon-text">Clases</span>
-                            </div>
-                            <div class="modalidad-icon-item">
-                                <img src="/images/desktop/video.png" alt="Teoría" class="modalidad-icon">
-                                <span class="modalidad-icon-text">Teoría</span>
-                            </div>
-                            <div class="modalidad-icon-item">
-                                <img src="/images/desktop/wrench.png" alt="Práctica" class="modalidad-icon">
-                                <span class="modalidad-icon-text">Práctica</span>
-                            </div>
-                            <div class="modalidad-icon-item">
-                                <img src="/images/desktop/calendar.png" alt="Mes de Inicio" class="modalidad-icon">
-                                <span class="modalidad-icon-text">Mes de Inicio</span>
-                            </div>
-                            <div class="modalidad-right">
-                                <img src="/images/desktop/chevron.png" alt="Chevron" class="modalidad-chevron">
-                            </div>
-                        </div>
-                        <!-- Fila 2: REGULAR -->
-                        <div class="modalidad-content-row modalidad-content-row-semipresencial">
-                            <div class="modalidad-label-cell">
-                                <span class="modalidad-content-text">REGULAR</span>
-                            </div>
-                            <div class="modalidad-data-cell">
-                                <span class="modalidad-left-text">10 meses</span>
-                            </div>
-                            <div class="modalidad-data-cell modalidad-data-cell-multiline">
-                                <span class="modalidad-left-text">3hs y media</span>
-                                <span class="modalidad-left-text">cada clase</span>
-                            </div>
-                            <div class="modalidad-data-cell">
-                                <span class="modalidad-left-text">1 x semana</span>
-                            </div>
-                            <div class="modalidad-data-cell modalidad-data-cell-multiline">
-                                <span class="modalidad-left-text">70hs</span>
-                                <span class="modalidad-left-text">virtuales</span>
-                            </div>
-                            <div class="modalidad-data-cell modalidad-data-cell-multiline">
-                                <span class="modalidad-left-text">110hs</span>
-                                <span class="modalidad-left-text">presenciales</span>
-                            </div>
-                            <div class="modalidad-data-cell">
-                                <span class="modalidad-left-text">Marzo</span>
-                            </div>
-                        </div>
-                        <!-- Fila 3: INTENSIVO -->
-                        <div class="modalidad-content-row modalidad-content-row-semipresencial">
-                            <div class="modalidad-label-cell">
-                                <span class="modalidad-content-text">INTENSIVO</span>
-                            </div>
-                            <div class="modalidad-data-cell">
-                                <span class="modalidad-left-text">5 meses</span>
-                            </div>
-                            <div class="modalidad-data-cell modalidad-data-cell-multiline">
-                                <span class="modalidad-left-text">7hs</span>
-                                <span class="modalidad-left-text">cada clase</span>
-                            </div>
-                            <div class="modalidad-data-cell">
-                                <span class="modalidad-left-text">1 x semana</span>
-                            </div>
-                            <div class="modalidad-data-cell modalidad-data-cell-multiline">
-                                <span class="modalidad-left-text">70hs</span>
-                                <span class="modalidad-left-text">virtuales</span>
-                            </div>
-                            <div class="modalidad-data-cell modalidad-data-cell-multiline">
-                                <span class="modalidad-left-text">110hs</span>
-                                <span class="modalidad-left-text">presenciales</span>
-                            </div>
-                            <div class="modalidad-data-cell">
-                                <span class="modalidad-left-text">Agosto</span>
-                            </div>
-                        </div>
-                        <!-- Fila 4: DESFASADO -->
-                        <div class="modalidad-content-row modalidad-content-row-semipresencial">
-                            <div class="modalidad-label-cell">
-                                <span class="modalidad-content-text">DESFASADO</span>
-                            </div>
-                            <div class="modalidad-data-cell">
-                                <span class="modalidad-left-text">9 meses</span>
-                            </div>
-                            <div class="modalidad-data-cell modalidad-data-cell-multiline">
-                                <span class="modalidad-left-text">3hs y media</span>
-                                <span class="modalidad-left-text">cada clase</span>
-                            </div>
-                            <div class="modalidad-data-cell">
-                                <span class="modalidad-left-text">1 x semana</span>
-                            </div>
-                            <div class="modalidad-data-cell modalidad-data-cell-multiline">
-                                <span class="modalidad-left-text">70hs</span>
-                                <span class="modalidad-left-text">virtuales</span>
-                            </div>
-                            <div class="modalidad-data-cell modalidad-data-cell-multiline">
-                                <span class="modalidad-left-text">110hs</span>
-                                <span class="modalidad-left-text">presenciales</span>
-                            </div>
-                            <div class="modalidad-data-cell">
-                                <span class="modalidad-left-text">Mayo</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Fila 5: Información adicional - fuera del grid principal -->
-                    <div class="modalidad-special-row">
-                        <div class="modalidad-special-cell modalidad-special-cell-left">
-                            <span class="modalidad-special-text">
-                                Podés elegir entre martes, jueves o viernes,
-                            </span>
-                            <span class="modalidad-special-text">
-                                según <strong>el turno:</strong> <span class="modalidad-special-turno">Mañana, Tarde o Noche</span>.
-                            </span>
-                        </div>
-                        <div class="modalidad-special-cell modalidad-special-cell-right">
-                            <img src="/images/desktop/morning.png" alt="Mañana" class="modalidad-special-icon">
-                            <div class="modalidad-special-time">
-                                <span class="modalidad-special-time-label">Martes: Mañana</span>
-                                <span class="modalidad-special-time-hours">(9 a 11.30hs)</span>
-                            </div>
-                        </div>
-                        <div class="modalidad-special-cell modalidad-special-cell-right">
-                            <img src="/images/desktop/sun.png" alt="Tarde" class="modalidad-special-icon">
-                            <div class="modalidad-special-time">
-                                <span class="modalidad-special-time-label">Jueves: Tarde</span>
-                                <span class="modalidad-special-time-hours">(14 a 16.30hs)</span>
-                            </div>
-                        </div>
-                        <div class="modalidad-special-cell modalidad-special-cell-right">
-                            <img src="/images/desktop/night.png" alt="Noche" class="modalidad-special-icon">
-                            <div class="modalidad-special-time">
-                                <span class="modalidad-special-time-label">Viernes: Noche</span>
-                                <span class="modalidad-special-time-hours">(19 a 21.30hs)</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                    @endforeach
+                @endif
             </div>
         </section>
 
         <!-- Cursada -->
+        @if(isset($anios) && $anios->count() > 0)
         <section class="cursada">
             <div class="cursada-container">
                 <h2 class="cursada-title">
-                    <span class="cursada-title-text-1">Descubrí</span>
-                    <span class="cursada-title-text-2">que vas a cursar</span>
-                    <span class="cursada-title-text-1">en cada año</span>
+                    <span class="cursada-title-line-1">
+                        <span class="cursada-title-text-1">Descubrí</span>
+                        <span class="cursada-title-text-2">qué vas a cursar</span>
+                    </span>
+                    <span class="cursada-title-line-2">
+                        <span class="cursada-title-text-1">en cada año</span>
+                    </span>
                 </h2>
                 
-                <!-- Dropdown de Año -->
-                <div class="cursada-dropdown">
-                    <div class="cursada-dropdown-grid">
-                        <!-- Header -->
-                        <div class="cursada-header-row">
-                            <div class="cursada-left">
-                                <div class="cursada-label">1° AÑO</div>
-                            </div>
-                            <div class="cursada-content">
-                                <div class="cursada-info-line">
-                                    <span class="cursada-info-label">Título:</span>
-                                    <span class="cursada-info-value">Analista técnico de motores</span>
+                @foreach($anios as $index => $anio)
+                    @php
+                        $numeroAnio = $anio->año;
+                        $claseAnio = '';
+                        if ($numeroAnio == 1) $claseAnio = '';
+                        elseif ($numeroAnio == 2) $claseAnio = 'segundo';
+                        elseif ($numeroAnio == 3) $claseAnio = 'tercero';
+                        $esUltimoAnio = $index === $anios->count() - 1;
+                    @endphp
+                    
+                    <!-- Dropdown de Año Desktop -->
+                    <div class="cursada-dropdown {{ $claseAnio }} cursada-desktop">
+                        <div class="cursada-dropdown-grid">
+                            <!-- Header -->
+                            <div class="cursada-header-row">
+                                <div class="cursada-left">
+                                    <div class="cursada-label">{{ $numeroAnio }}° AÑO</div>
+                                    @if($esUltimoAnio && $numeroAnio == 3)
+                                        <div class="cursada-subtitle">
+                                            <span class="cursada-subtitle-regular">Especialización</span>
+                                            <span class="cursada-subtitle-bold">opcional</span>
+                                        </div>
+                                    @endif
                                 </div>
-                                <div class="cursada-info-line">
-                                    <span class="cursada-info-label">Nivel:</span>
-                                    <span class="cursada-info-value">Inicial</span>
+                                <div class="cursada-content">
+                                    <div class="cursada-info-line">
+                                        <span class="cursada-info-label">Título:</span>
+                                        <span class="cursada-info-value">{{ $anio->titulo }}</span>
+                                    </div>
+                                    <div class="cursada-info-line">
+                                        <span class="cursada-info-label">Nivel:</span>
+                                        <span class="cursada-info-value">{{ $anio->nivel }}</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="cursada-right">
-                                <img src="/images/desktop/chevron.png" alt="Chevron" class="cursada-chevron">
-                            </div>
-                        </div>
-                        <!-- Fila 1: Unidad 1 -->
-                        <div class="cursada-content-row">
-                            <div class="cursada-label-cell">
-                                <span class="cursada-unidad-text">Unidad 1</span>
-                            </div>
-                            <div class="cursada-content-cell">
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-top">Introducción al Taller y sus elementos</span>
-                                </div>
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-bottom">Normas de seguridad e higiene. Herramientas e instrumental.</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Fila 2: Unidad 2 -->
-                        <div class="cursada-content-row">
-                            <div class="cursada-label-cell">
-                                <span class="cursada-unidad-text">Unidad 2</span>
-                            </div>
-                            <div class="cursada-content-cell">
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-top">Configuración del motor</span>
-                                </div>
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-bottom">Concepto de motores, clasificación y partes.</span>
+                                <div class="cursada-right">
+                                    <img src="/images/desktop/chevron.png" alt="Chevron" class="cursada-chevron">
                                 </div>
                             </div>
-                        </div>
-                        <!-- Fila 3: Unidad 3 -->
-                        <div class="cursada-content-row">
-                            <div class="cursada-label-cell">
-                                <span class="cursada-unidad-text">Unidad 3</span>
-                            </div>
-                            <div class="cursada-content-cell">
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-top">Electricidad del Automóvil</span>
+                            
+                            @foreach($anio->unidades as $unidad)
+                                <!-- Fila: Unidad -->
+                                <div class="cursada-content-row">
+                                    <div class="cursada-label-cell">
+                                        <span class="cursada-unidad-text">Unidad {{ $unidad->numero }}</span>
+                                    </div>
+                                    <div class="cursada-content-cell">
+                                        <div class="cursada-unidad-line">
+                                            <span class="cursada-unidad-top">{{ $unidad->titulo }}</span>
+                                        </div>
+                                        <div class="cursada-unidad-line">
+                                            <span class="cursada-unidad-bottom">{{ $unidad->subtitulo }}</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-bottom">Circuitos, materiales, conexiones y redes eléctricas.</span>
+                            @endforeach
+                            
+                            <!-- Fila: Botones Inscribirme y Descargar -->
+                            <div class="cursada-content-row">
+                                <div class="cursada-label-cell cursada-label-cell-with-btn">
+                                    @if($index === 0)
+                                        <button class="cursada-inscribirme-btn">¡Inscribirme ahora!</button>
+                                    @else
+                                        <button class="cursada-inscribirme-btn">Chatear con SAE</button>
+                                    @endif
                                 </div>
-                            </div>
-                        </div>
-                        <!-- Fila 4: Unidad 4 -->
-                        <div class="cursada-content-row">
-                            <div class="cursada-label-cell">
-                                <span class="cursada-unidad-text">Unidad 4</span>
-                            </div>
-                            <div class="cursada-content-cell">
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-top">Tipos de Sistemas</span>
+                                <div class="cursada-content-cell-with-btn">
+                                    <button class="cursada-descargar-btn">Descargar el programa del {{ $numeroAnio }}° Año Completo</button>
                                 </div>
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-bottom">Encendido, carburación, combustión, refrigeración, lubricación y distribución.</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Fila 5: Unidad 5 -->
-                        <div class="cursada-content-row">
-                            <div class="cursada-label-cell">
-                                <span class="cursada-unidad-text">Unidad 5</span>
-                            </div>
-                            <div class="cursada-content-cell">
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-top">Análisis y diagnóstico integral del motor</span>
-                                </div>
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-bottom">Armado y desarmado de motores.</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Fila 6: Botones Inscribirme y Descargar -->
-                        <div class="cursada-content-row">
-                            <div class="cursada-label-cell cursada-label-cell-with-btn">
-                                <button class="cursada-inscribirme-btn">¡Inscribirme ahora!</button>
-                            </div>
-                            <div class="cursada-content-cell-with-btn">
-                                <button class="cursada-descargar-btn">Descargar el programa del 1° Año Completo</button>
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <!-- Dropdown de Año Segundo -->
-                <div class="cursada-dropdown segundo">
-                    <div class="cursada-dropdown-grid">
-                        <!-- Header -->
-                        <div class="cursada-header-row">
-                            <div class="cursada-left">
-                                <div class="cursada-label">2° AÑO</div>
-                            </div>
-                            <div class="cursada-content">
-                                <div class="cursada-info-line">
-                                    <span class="cursada-info-label">Título:</span>
-                                    <span class="cursada-info-value">Analista Técnico de Sistemas Mecánicos y Electrónicos</span>
-                                </div>
-                                <div class="cursada-info-line">
-                                    <span class="cursada-info-label">Nivel:</span>
-                                    <span class="cursada-info-value">Intermedio</span>
-                                </div>
-                            </div>
-                            <div class="cursada-right">
-                                <img src="/images/desktop/chevron.png" alt="Chevron" class="cursada-chevron">
-                            </div>
+                    
+                    <!-- Versión Mobile -->
+                    <div class="cursada-mobile cursada-mobile-ano{{ $numeroAnio }}">
+                        <div class="cursada-mobile-header">
+                            <span class="cursada-mobile-header-text">{{ $numeroAnio }}° AÑO</span>
+                            <img src="/images/desktop/chevron.png" alt="Chevron" class="cursada-mobile-chevron">
                         </div>
-                        <!-- Fila 1: Unidad 1 -->
-                        <div class="cursada-content-row">
-                            <div class="cursada-label-cell">
-                                <span class="cursada-unidad-text">Unidad 1</span>
+                        <div class="cursada-mobile-panel">
+                            <div class="cursada-mobile-unidades">
+                                @foreach($anio->unidades as $unidad)
+                                    <div class="cursada-mobile-unidad">
+                                        <div class="cursada-mobile-unidad-label">Unidad {{ $unidad->numero }}</div>
+                                        <div class="cursada-mobile-unidad-content">
+                                            <div class="cursada-mobile-unidad-top">{{ $unidad->titulo }}</div>
+                                            <div class="cursada-mobile-unidad-bottom">{{ $unidad->subtitulo }}</div>
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
-                            <div class="cursada-content-cell">
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-top">Sistema de Frenos</span>
+                            <div class="cursada-mobile-buttons">
+                                <button class="cursada-mobile-descargar-btn">Descargar el programa del {{ $numeroAnio }}° Año Completo</button>
+                                <div class="cursada-mobile-inscribirme-wrapper">
+                                    <img src="/images/desktop/arrow.png" alt="Flecha" class="cursada-mobile-btn-arrow">
+                                    @if($index === 0)
+                                        <button class="cursada-mobile-inscribirme-btn">¡Inscribirme ahora!</button>
+                                    @else
+                                        <button class="cursada-mobile-inscribirme-btn">Chatear con SAE</button>
+                                    @endif
                                 </div>
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-bottom">Componentes, funciones y ubicación.</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Fila 2: Unidad 2 -->
-                        <div class="cursada-content-row">
-                            <div class="cursada-label-cell">
-                                <span class="cursada-unidad-text">Unidad 2</span>
-                            </div>
-                            <div class="cursada-content-cell">
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-top">Sistema de Suspensión, Dirección y Alineación.</span>
-                                </div>
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-bottom">Función y componentes del sistema.</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Fila 3: Unidad 3 -->
-                        <div class="cursada-content-row">
-                            <div class="cursada-label-cell">
-                                <span class="cursada-unidad-text">Unidad 3</span>
-                            </div>
-                            <div class="cursada-content-cell">
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-top">Sistema de Transmisión</span>
-                                </div>
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-bottom">Sistema de embrague y caja de velocidad/transferencia/automática.</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Fila 4: Unidad 4 -->
-                        <div class="cursada-content-row">
-                            <div class="cursada-label-cell">
-                                <span class="cursada-unidad-text">Unidad 4</span>
-                            </div>
-                            <div class="cursada-content-cell">
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-top">Tipos de Sistemas</span>
-                                </div>
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-bottom">Encendido, carburación, combustión, refrigeración, lubricación y distribución.</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Fila 5: Unidad 5 -->
-                        <div class="cursada-content-row">
-                            <div class="cursada-label-cell">
-                                <span class="cursada-unidad-text">Unidad 5</span>
-                            </div>
-                            <div class="cursada-content-cell">
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-top">Sistema de Inyección</span>
-                                </div>
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-bottom">Sensores y actuadores. Componentes y funciones de combustible.</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Fila 6: Botones Chatear con SAE y Descargar -->
-                        <div class="cursada-content-row">
-                            <div class="cursada-label-cell cursada-label-cell-with-btn">
-                                <button class="cursada-inscribirme-btn">Chatear con SAE</button>
-                            </div>
-                            <div class="cursada-content-cell-with-btn">
-                                <button class="cursada-descargar-btn">Descargar el programa del 2° Año Completo</button>
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <!-- Dropdown de Año Tercero -->
-                <div class="cursada-dropdown tercero">
-                    <div class="cursada-dropdown-grid">
-                        <!-- Header -->
-                        <div class="cursada-header-row">
-                            <div class="cursada-left">
-                                <div class="cursada-label">3° AÑO</div>
-                                <div class="cursada-subtitle">
-                                    <span class="cursada-subtitle-regular">Especialización</span>
-                                    <span class="cursada-subtitle-bold">opcional</span>
-                                </div>
-                            </div>
-                            <div class="cursada-content">
-                                <div class="cursada-info-line">
-                                    <span class="cursada-info-label">Título:</span>
-                                    <span class="cursada-info-value">Especialista en Diagnóstico Electrónico</span>
-                                </div>
-                                <div class="cursada-info-line">
-                                    <span class="cursada-info-label">Nivel:</span>
-                                    <span class="cursada-info-value">Avanzado</span>
-                                </div>
-                            </div>
-                            <div class="cursada-right">
-                                <img src="/images/desktop/chevron.png" alt="Chevron" class="cursada-chevron">
-                            </div>
-                        </div>
-                        <!-- Fila 1: Unidad 1 -->
-                        <div class="cursada-content-row">
-                            <div class="cursada-label-cell">
-                                <span class="cursada-unidad-text">Unidad 1</span>
-                            </div>
-                            <div class="cursada-content-cell">
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-top">Introducción al Taller y sus elementos</span>
-                                </div>
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-bottom">Normas de seguridad e higiene. Herramientas e instrumental.</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Fila 2: Unidad 2 -->
-                        <div class="cursada-content-row">
-                            <div class="cursada-label-cell">
-                                <span class="cursada-unidad-text">Unidad 2</span>
-                            </div>
-                            <div class="cursada-content-cell">
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-top">Configuración del motor</span>
-                                </div>
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-bottom">Concepto de motores, clasificación y partes.</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Fila 3: Unidad 3 -->
-                        <div class="cursada-content-row">
-                            <div class="cursada-label-cell">
-                                <span class="cursada-unidad-text">Unidad 3</span>
-                            </div>
-                            <div class="cursada-content-cell">
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-top">Electricidad del Automóvil</span>
-                                </div>
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-bottom">Circuitos, materiales, conexiones y redes eléctricas.</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Fila 4: Unidad 4 -->
-                        <div class="cursada-content-row">
-                            <div class="cursada-label-cell">
-                                <span class="cursada-unidad-text">Unidad 4</span>
-                            </div>
-                            <div class="cursada-content-cell">
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-top">Tipos de Sistemas</span>
-                                </div>
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-bottom">Encendido, carburación, combustión, refrigeración, lubricación y distribución.</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Fila 5: Unidad 5 -->
-                        <div class="cursada-content-row">
-                            <div class="cursada-label-cell">
-                                <span class="cursada-unidad-text">Unidad 5</span>
-                            </div>
-                            <div class="cursada-content-cell">
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-top">Análisis y diagnóstico integral del motor</span>
-                                </div>
-                                <div class="cursada-unidad-line">
-                                    <span class="cursada-unidad-bottom">Armado y desarmado de motores.</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Fila 6: Botones Chatear con SAE y Descargar -->
-                        <div class="cursada-content-row">
-                            <div class="cursada-label-cell cursada-label-cell-with-btn">
-                                <button class="cursada-inscribirme-btn">Chatear con SAE</button>
-                            </div>
-                            <div class="cursada-content-cell-with-btn">
-                                <button class="cursada-descargar-btn">Descargar el programa del 3° Año Completo</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </section>
+        @endif
 
         <!-- Certificación -->
         <section class="certificacion">
-            <div class="certificacion-container">
+            <!-- Versión Desktop -->
+            <div class="certificacion-container certificacion-desktop">
                 <div class="certificacion-titles-wrapper">
                     <h2 class="certificacion-title">
                         <span class="certificacion-title-text-1">¿Qué</span>
@@ -836,13 +611,15 @@
                     </div>
                     
                     <div class="certificacion-card certificacion-card-right">
-                        <div class="certificacion-cert-item">
-                            <img src="/images/desktop/cert-itca.png" alt="Certificado ITCA" class="certificacion-cert-img">
-                            <p class="certificacion-cert-text">Tu diploma será entregado en el <span class="certificacion-cert-highlight">Acto de Graduación</span>, donde celebraremos juntos tu logro.</p>
-                        </div>
-                        <div class="certificacion-cert-item">
-                            <img src="/images/desktop/cert-utn.png" alt="Certificado UTN" class="certificacion-cert-img">
-                            <p class="certificacion-cert-text">Tu <span class="certificacion-cert-highlight">certificación UTN</span> será entregada por correo electrónico.</p>
+                        <div class="certificacion-card-right-wrapper">
+                            <div class="certificacion-cert-item">
+                                <img src="/images/desktop/cert-itca.png" alt="Certificado ITCA" class="certificacion-cert-img">
+                                <p class="certificacion-cert-text">Tu diploma será entregado en el <span class="certificacion-cert-highlight">Acto de Graduación</span>, donde celebraremos juntos tu logro.</p>
+                            </div>
+                            <div class="certificacion-cert-item">
+                                <img src="/images/desktop/cert-utn.png" alt="Certificado UTN" class="certificacion-cert-img">
+                                <p class="certificacion-cert-text">Tu <span class="certificacion-cert-highlight">certificación UTN</span> será entregada por correo electrónico.</p>
+                            </div>
                         </div>
                     </div>
                     
@@ -894,9 +671,104 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Versión Mobile -->
+            <div class="certificacion-container certificacion-mobile">
+                <!-- 1. Título "¿Qué vas a aprender en esta carrera?" -->
+                <h2 class="certificacion-mobile-title">
+                    <div class="certificacion-mobile-title-line-1">
+                        <span class="certificacion-mobile-title-text-1">¿Qué</span>
+                        <span class="certificacion-mobile-title-text-2">vas a aprender</span>
+                    </div>
+                    <div class="certificacion-mobile-title-line-2">
+                        <span class="certificacion-mobile-title-text-1">en esta carrera?</span>
+                    </div>
+                </h2>
+
+                <!-- 2. certificacion-card-left -->
+                <div class="certificacion-mobile-card certificacion-mobile-card-left">
+                    <div class="certificacion-mobile-text-item">
+                        <img src="/images/desktop/star1.png" alt="Star" class="certificacion-mobile-star-icon">
+                        <p class="certificacion-mobile-text-item-text">Comprender <strong>desde cero el funcionamiento</strong> mecánico y electrónico de un automóvil.</p>
+                    </div>
+                    <div class="certificacion-mobile-text-item">
+                        <img src="/images/desktop/star2.png" alt="Star" class="certificacion-mobile-star-icon">
+                        <p class="certificacion-mobile-text-item-text">Reconocer y analizar los distintos <strong>sistemas que componen un vehículo.</strong></p>
+                    </div>
+                    <div class="certificacion-mobile-text-item">
+                        <img src="/images/desktop/star1.png" alt="Star" class="certificacion-mobile-star-icon">
+                        <p class="certificacion-mobile-text-item-text"><strong>Detectar y diagnosticar fallas</strong> en cada uno de esos sistemas.</p>
+                    </div>
+                    <div class="certificacion-mobile-text-item">
+                        <img src="/images/desktop/star2.png" alt="Star" class="certificacion-mobile-star-icon">
+                        <p class="certificacion-mobile-text-item-text"><strong>Aplicar procedimientos</strong> para la resolución de problemas mecánicos y electrónicos.</p>
+                    </div>
+                </div>
+
+                <!-- 3. Título "Certificación Oficial ITCA y UTN" -->
+                <h2 class="certificacion-mobile-main-title">
+                    <span class="certificacion-mobile-main-title-text-1">Certificación</span>
+                    <span class="certificacion-mobile-main-title-text-2">Oficial ITCA y UTN</span>
+                </h2>
+
+                <!-- 4. certificacion-card-right -->
+                <div class="certificacion-mobile-card certificacion-mobile-card-right">
+                    <div class="certificacion-mobile-cert-item">
+                        <img src="/images/desktop/cert-itca.png" alt="Certificado ITCA" class="certificacion-mobile-cert-img">
+                        <p class="certificacion-mobile-cert-text">Tu diploma será entregado en el <span class="certificacion-mobile-cert-highlight">Acto de Graduación</span>, donde celebraremos juntos tu logro.</p>
+                    </div>
+                    <div class="certificacion-mobile-cert-item">
+                        <img src="/images/desktop/cert-utn.png" alt="Certificado UTN" class="certificacion-mobile-cert-img">
+                        <p class="certificacion-mobile-cert-text">Tu <span class="certificacion-mobile-cert-highlight">certificación UTN</span> será entregada por correo electrónico.</p>
+                    </div>
+                </div>
+
+                <!-- 5. certificacion-card-full -->
+                <div class="certificacion-mobile-card certificacion-mobile-card-full">
+                    <div class="certificacion-mobile-list-content">
+                        <div class="certificacion-mobile-list-row" data-item="objetivo-estudio-mobile">
+                            <div class="certificacion-mobile-list-text">Objetivo de Estudio</div>
+                            <div class="certificacion-mobile-list-plus">+</div>
+                        </div>
+                        <div class="certificacion-mobile-list-content-expanded" id="objetivo-estudio-mobile-content">
+                            <div class="certificacion-mobile-list-expanded-text">
+                                Formar técnicos especializados en el diagnóstico y reparación de sistemas automotrices, con conocimientos sólidos en mecánica, electrónica y nuevas tecnologías del sector. El egresado será capaz de identificar, analizar y resolver problemas técnicos en vehículos modernos.
+                            </div>
+                        </div>
+                        <div class="certificacion-mobile-list-row" data-item="dirigido-a-mobile">
+                            <div class="certificacion-mobile-list-text">Dirigido a</div>
+                            <div class="certificacion-mobile-list-plus">+</div>
+                        </div>
+                        <div class="certificacion-mobile-list-content-expanded" id="dirigido-a-mobile-content">
+                            <div class="certificacion-mobile-list-expanded-text">
+                                Personas interesadas en el sector automotriz, técnicos que buscan actualización, emprendedores del rubro y estudiantes que quieren desarrollar una carrera profesional en mecánica y electrónica automotriz. No se requieren conocimientos previos.
+                            </div>
+                        </div>
+                        <div class="certificacion-mobile-list-row" data-item="niveles-mobile">
+                            <div class="certificacion-mobile-list-text">Niveles</div>
+                            <div class="certificacion-mobile-list-plus">+</div>
+                        </div>
+                        <div class="certificacion-mobile-list-content-expanded" id="niveles-mobile-content">
+                            <div class="certificacion-mobile-list-expanded-text">
+                                La carrera se estructura en módulos progresivos que cubren desde fundamentos de mecánica hasta sistemas avanzados de diagnóstico electrónico. Incluye práctica en talleres equipados con tecnología moderna y herramientas especializadas.
+                            </div>
+                        </div>
+                        <div class="certificacion-mobile-list-row" data-item="salida-laboral-mobile">
+                            <div class="certificacion-mobile-list-text">Salida Laboral</div>
+                            <div class="certificacion-mobile-list-plus">+</div>
+                        </div>
+                        <div class="certificacion-mobile-list-content-expanded" id="salida-laboral-mobile-content">
+                            <div class="certificacion-mobile-list-expanded-text">
+                                Talleres mecánicos, concesionarias, servicios técnicos oficiales, centros de diagnóstico automotriz, empresas de flotas, emprendimientos propios y sector industrial. Alta demanda laboral en el mercado automotriz actual.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- Fotos Section -->
+        @if($fotos->count() > 0)
         <section class="fotos-section">
             <div class="fotos-container">
                 <h2 class="fotos-title">
@@ -909,21 +781,15 @@
                     <div class="fotos-carousel-section">
                         <div class="swiper fotos-swiper">
                             <div class="swiper-wrapper">
-                                <div class="swiper-slide fotos-carousel-slide">
-                                    <img src="/images/slide-carrera/img1.png" alt="Foto clase 1" class="fotos-slide-img" />
-                                </div>
-                                <div class="swiper-slide fotos-carousel-slide">
-                                    <img src="/images/slide-carrera/img2.png" alt="Foto clase 2" class="fotos-slide-img" />
-                                </div>
-                                <div class="swiper-slide fotos-carousel-slide">
-                                    <img src="/images/slide-carrera/img3.png" alt="Foto clase 3" class="fotos-slide-img" />
-                                </div>
-                                <div class="swiper-slide fotos-carousel-slide">
-                                    <img src="/images/slide-carrera/img4.png" alt="Foto clase 4" class="fotos-slide-img" />
-                                </div>
-                                <div class="swiper-slide fotos-carousel-slide">
-                                    <img src="/images/slide-carrera/img5.png" alt="Foto clase 5" class="fotos-slide-img" />
-                                </div>
+                                @forelse($fotos as $foto)
+                                    <div class="swiper-slide fotos-carousel-slide">
+                                        <img src="{{ asset('storage/' . $foto->imagen) }}" 
+                                             alt="{{ $foto->descripcion ?: 'Foto clase ' . $loop->iteration }}" 
+                                             class="fotos-slide-img" />
+                                    </div>
+                                @empty
+                                    {{-- Si no hay fotos, no mostrar el carousel --}}
+                                @endforelse
                             </div>
                         </div>
                         
@@ -945,8 +811,56 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Versión Mobile -->
+                <div class="fotos-mobile">
+                    <h2 class="fotos-mobile-title">
+                        <div class="fotos-mobile-title-line-1">
+                            <span class="fotos-mobile-title-text-1">Algunas</span>
+                            <span class="fotos-mobile-title-text-2">fotografías</span>
+                        </div>
+                        <div class="fotos-mobile-title-line-2">
+                            <span class="fotos-mobile-title-text-1">de nuestras clases</span>
+                        </div>
+                    </h2>
+                    
+                    <!-- Carrusel Nativo de Fotos (solo mobile) -->
+                    <div class="fotos-mobile-carousel-section">
+                        <div class="fotos-mobile-carousel">
+                            <div class="fotos-carousel-track">
+                                @forelse($fotos as $foto)
+                                    <div class="fotos-carousel-slide">
+                                        <img src="{{ asset('storage/' . $foto->imagen) }}" 
+                                             alt="{{ $foto->descripcion ?: 'Foto clase ' . $loop->iteration }}" />
+                                    </div>
+                                @empty
+                                    {{-- Si no hay fotos, no mostrar el carousel --}}
+                                @endforelse
+                            </div>
+                        </div>
+                        
+                        <div class="fotos-carousel-controls">
+                            <div class="fotos-progress-bar">
+                                <div class="fotos-progress-track"></div>
+                                <div class="fotos-progress-indicator"></div>
+                            </div>
+                            
+                            <!-- Botones de navegación -->
+                            <div class="fotos-controls-row">
+                                <button class="fotos-carousel-btn fotos-arrow-left" onclick="scrollFotosCarousel('left')">
+                                    <img src="/images/mobile/arrowicon.png" alt="Anterior" />
+                                </button>
+                                
+                                <button class="fotos-carousel-btn fotos-arrow-right" onclick="scrollFotosCarousel('right')">
+                                    <img src="/images/mobile/arrowicon.png" alt="Siguiente" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
+        @endif
 
         <!-- Testimonios Carrera Section -->
         <section class="testimonios-carrera-section">
@@ -970,13 +884,17 @@
                             <div class="testimonios-carrera-grid-item testimonios-carrera-grid-item-video">
                                 <div class="testimonios-carrera-grid-video">
                                     <video class="testimonios-carrera-video" loop controlsList="nodownload nofullscreen noremoteplayback" disablePictureInPicture>
-                                        <source src="/images/mediacontent/ytmobile.mp4" type="video/mp4">
+                                        @if($videoTestimonios && !empty($videoTestimonios->video))
+                                            <source src="{{ asset('storage/' . $videoTestimonios->video) }}" type="video/mp4">
+                                        @else
+                                            <source src="/images/mediacontent/ytmobile.mp4" type="video/mp4">
+                                        @endif
                                         Tu navegador no soporta el elemento video.
                                     </video>
                                     <button class="testimonios-carrera-play-button">
                                         <img src="/images/desktop/play.png" alt="Play" class="testimonios-carrera-play-icon" />
                                     </button>
-                                    <a href="#" class="testimonios-carrera-ver-mas-btn">
+                                    <a href="{{ ($videoTestimonios && !empty($videoTestimonios->url)) ? $videoTestimonios->url : '#' }}" class="testimonios-carrera-ver-mas-btn">
                                         Ver más testimonios
                                     </a>
                                 </div>
@@ -1023,6 +941,99 @@
             </div>
         </section>
 
+        <!-- Testimonios Carrera Mobile Carousel Section -->
+        <section class="testimonios-carrera-mobile-carousel-section">
+            <div class="testimonios-carrera-mobile-container">
+                <h2 class="testimonios-carrera-mobile-title">
+                    <span class="testimonios-carrera-mobile-title-text-regular">Unite a nuestra </span>
+                    <span class="testimonios-carrera-mobile-title-text-highlight">comunidad ITCA</span>
+                </h2>
+            </div>
+            <div class="testimonios-carrera-mobile-carousel">
+                <div class="testimonios-carrera-carousel-track">
+                    @foreach($testimonios as $testimonio)
+                    <div class="testimonios-carrera-carousel-slide">
+                        <div class="testimonios-carrera-mobile-card">
+                            <div class="testimonios-carrera-card-header">
+                                <img src="{{ asset('storage/' . $testimonio->avatar) }}" alt="Avatar" class="testimonios-carrera-card-avatar" loading="lazy">
+                                <div class="testimonios-carrera-card-info">
+                                    <p class="testimonios-carrera-card-sede">{{ $testimonio->sede }}</p>
+                                    <div class="testimonios-carrera-card-wrapper">
+                                        <p class="testimonios-carrera-card-nombre">{{ $testimonio->nombre }}</p>
+                                        <p class="testimonios-carrera-card-tiempo">hace {{ $testimonio->tiempo_testimonio }} meses</p>
+                                    </div>
+                                    <p class="testimonios-carrera-card-carrera">{{ $testimonio->carrera }}</p>
+                                </div>
+                            </div>
+                            <div class="testimonios-carrera-card-main">
+                                <p class="testimonios-carrera-card-texto">{{ $testimonio->texto }}</p>
+                            </div>
+                            <div class="testimonios-carrera-card-bottom">
+                                <img src="/images/desktop/comunidad/stars.png" alt="Stars" class="testimonios-carrera-card-stars" loading="lazy">
+                                <img src="{{ asset('storage/' . $testimonio->icono) }}" alt="Icono" class="testimonios-carrera-card-google" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            
+            <!-- Controles del carrusel -->
+            <div class="testimonios-carrera-carousel-controls">
+                <div class="testimonios-carrera-progress-bar">
+                    <div class="testimonios-carrera-progress-track"></div>
+                    <div class="testimonios-carrera-progress-indicator"></div>
+                </div>
+                <div class="testimonios-carrera-controls-row">
+                    <a href="#" class="testimonios-carrera-ver-todos-btn">Ver más opiniones</a>
+                    <button class="testimonios-carrera-carousel-btn testimonios-carrera-btn-prev" onclick="scrollTestimoniosCarreraCarousel(-1)">
+                        <img src="/images/desktop/arrow-b.svg" alt="Previous" class="testimonios-carrera-arrow-left">
+                    </button>
+                    <button class="testimonios-carrera-carousel-btn testimonios-carrera-btn-next" onclick="scrollTestimoniosCarreraCarousel(1)">
+                        <img src="/images/desktop/arrow-b.svg" alt="Next">
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- En Acción Carrera Mobile Carousel Section -->
+        <section class="en-accion-carrera-mobile-carousel-section">
+            <div class="en-accion-carrera-mobile-carousel">
+                <div class="en-accion-carrera-carousel-track">
+                    @foreach($videosMobile as $video)
+                    <div class="en-accion-carrera-carousel-slide">
+                        <video class="en-accion-carrera-mobile-video" loop controlsList="nodownload nofullscreen noremoteplayback" disablePictureInPicture>
+                            <source src="{{ asset('storage/' . $video->video) }}" type="video/mp4">
+                        </video>
+                        <button class="en-accion-carrera-mobile-play-button">
+                            <img src="/images/desktop/play.png" alt="Play" class="en-accion-carrera-mobile-play-icon" />
+                        </button>
+                        <a href="{{ $video->url }}" target="_blank" class="en-accion-carrera-mobile-{{ $video->getPlatformClass() }}-btn">
+                            Ir a {{ $video->getPlatformName() }}
+                        </a>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            
+            <!-- Controles del carrusel -->
+            <div class="en-accion-carrera-mobile-carousel-controls">
+                <!-- Barra de progreso arriba -->
+                <div class="en-accion-carrera-mobile-progress-bar">
+                    <div class="en-accion-carrera-mobile-progress-indicator"></div>
+                </div>
+                <!-- Botones de navegación abajo -->
+                <div class="en-accion-carrera-mobile-controls-wrapper">
+                    <button class="en-accion-carrera-mobile-prev-btn">
+                        <img src="/images/desktop/arrow-b.svg" alt="Anterior" />
+                    </button>
+                    <button class="en-accion-carrera-mobile-next-btn">
+                        <img src="/images/desktop/arrow-b.svg" alt="Siguiente" />
+                    </button>
+                </div>
+            </div>
+        </section>
+
         <!-- Dudas Section -->
         <section class="dudas-section">
             <div class="dudas-container">
@@ -1032,106 +1043,54 @@
                     <span class="dudas-title-text-1">ya!</span>
                 </h2>
                 
-                <div class="faqs-card faqs-card-full">
-                    <div class="faqs-card-col-1">
-                        <div class="faqs-list-content">
-                            <div class="faqs-list-row" data-item="faqs-quienes-pueden">
-                                <div class="faqs-list-text">¿Quiénes pueden cursar en el Instituto?</div>
-                                <div class="faqs-list-plus">+</div>
+                <!-- Título mobile -->
+                <h2 class="dudas-mobile-title">
+                    <span class="dudas-mobile-title-text-1">¡Resolvé</span>
+                    <span class="dudas-mobile-title-text-2">algunas dudas</span>
+                    <span class="dudas-mobile-title-text-1">ya!</span>
+                </h2>
+                
+                @if($dudas->count() > 0)
+                    @php
+                        // Dividir las FAQs en dos columnas
+                        $totalDudas = $dudas->count();
+                        $mitad = ceil($totalDudas / 2);
+                        $dudasCol1 = $dudas->take($mitad);
+                        $dudasCol2 = $dudas->skip($mitad);
+                    @endphp
+                    <div class="faqs-card faqs-card-full">
+                        <div class="faqs-card-col-1">
+                            <div class="faqs-list-content">
+                                @foreach($dudasCol1 as $duda)
+                                    <div class="faqs-list-row" data-item="faqs-{{ $duda->id }}">
+                                        <div class="faqs-list-text">{{ $duda->pregunta }}</div>
+                                        <div class="faqs-list-plus">+</div>
+                                    </div>
+                                    <div class="faqs-list-content-expanded" id="faqs-{{ $duda->id }}-content">
+                                        <div class="faqs-list-expanded-text">
+                                            {{ $duda->respuesta }}
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
-                            <div class="faqs-list-content-expanded" id="faqs-quienes-pueden-content">
-                                <div class="faqs-list-expanded-text">
-                                    Pueden cursar todas las personas interesadas en el sector automotriz, sin importar su edad o nivel educativo previo. No se requieren conocimientos técnicos previos, ya que nuestras carreras están diseñadas para comenzar desde lo básico. Está dirigido a estudiantes, trabajadores del sector que buscan especialización, emprendedores que quieren iniciar su propio negocio, y cualquier persona con pasión por la mecánica automotriz.
-                                </div>
-                            </div>
-                            <div class="faqs-list-row" data-item="faqs-titulo">
-                                <div class="faqs-list-text">¿Qué título me entregan al finalizar la carrera?</div>
-                                <div class="faqs-list-plus">+</div>
-                            </div>
-                            <div class="faqs-list-content-expanded" id="faqs-titulo-content">
-                                <div class="faqs-list-expanded-text">
-                                    Al finalizar la carrera, recibirás un título técnico profesional emitido por el Instituto, reconocido y válido para ejercer en el ámbito laboral. Además, podrás acceder a la certificación oficial de la UTN (Universidad Tecnológica Nacional) que complementa tu formación y amplía tus oportunidades profesionales. El título te habilita para trabajar en talleres, concesionarias, servicios técnicos oficiales y otros espacios del sector automotriz.
-                                </div>
-                            </div>
-                            <div class="faqs-list-row" data-item="faqs-otros-niveles">
-                                <div class="faqs-list-text">¿Una vez terminada la carrera, hay otros niveles?</div>
-                                <div class="faqs-list-plus">+</div>
-                            </div>
-                            <div class="faqs-list-content-expanded" id="faqs-otros-niveles-content">
-                                <div class="faqs-list-expanded-text">
-                                    Sí, contamos con programas de especialización y cursos avanzados que te permiten profundizar en áreas específicas como diagnóstico electrónico avanzado, gestión de talleres, sistemas híbridos y eléctricos, entre otros. También ofrecemos cursos de actualización tecnológica para mantenerte al día con las últimas innovaciones del sector automotriz.
-                                </div>
-                            </div>
-                            <div class="faqs-list-row" data-item="faqs-certificacion-utn">
-                                <div class="faqs-list-text">¿Cómo se accede a la certificación de la UTN?</div>
-                                <div class="faqs-list-plus">+</div>
-                            </div>
-                            <div class="faqs-list-content-expanded" id="faqs-certificacion-utn-content">
-                                <div class="faqs-list-expanded-text">
-                                    La certificación de la UTN está disponible para todos los estudiantes que completen exitosamente la carrera. Debes cumplir con los requisitos de asistencia, aprobar todos los módulos y proyectos requeridos. Una vez finalizado, el Instituto gestiona automáticamente tu inscripción para la certificación. No requiere trámites adicionales de tu parte, solo cumplir con el programa académico.
-                                </div>
-                            </div>
-                            <div class="faqs-list-row" data-item="faqs-recuperar-clase">
-                                <div class="faqs-list-text">Si falté a una clase ¿la puedo recuperar?</div>
-                                <div class="faqs-list-plus">+</div>
-                            </div>
-                            <div class="faqs-list-content-expanded" id="faqs-recuperar-clase-content">
-                                <div class="faqs-list-expanded-text">
-                                    Sí, contamos con un sistema de recuperación de clases. Si faltaste por alguna razón justificada, puedes coordinar con el área académica para asistir a la misma clase en otro horario o grupo. También ofrecemos material complementario y sesiones de consulta para que puedas ponerte al día. Es importante comunicar tu ausencia con anticipación cuando sea posible.
-                                </div>
+                        </div>
+                        <div class="faqs-card-col-2">
+                            <div class="faqs-list-content">
+                                @foreach($dudasCol2 as $duda)
+                                    <div class="faqs-list-row" data-item="faqs-{{ $duda->id }}">
+                                        <div class="faqs-list-text">{{ $duda->pregunta }}</div>
+                                        <div class="faqs-list-plus">+</div>
+                                    </div>
+                                    <div class="faqs-list-content-expanded" id="faqs-{{ $duda->id }}-content">
+                                        <div class="faqs-list-expanded-text">
+                                            {{ $duda->respuesta }}
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
                     </div>
-                    <div class="faqs-card-col-2">
-                        <div class="faqs-list-content">
-                            <div class="faqs-list-row" data-item="faqs-cambiar-horario">
-                                <div class="faqs-list-text">¿Puedo cambiar el día y horario de cursada?</div>
-                                <div class="faqs-list-plus">+</div>
-                            </div>
-                            <div class="faqs-list-content-expanded" id="faqs-cambiar-horario-content">
-                                <div class="faqs-list-expanded-text">
-                                    Sí, es posible cambiar el día y horario de cursada si hay disponibilidad en otros grupos. Debes comunicarte con el área de administración académica con al menos una semana de anticipación para coordinar el cambio. Esto dependerá de la disponibilidad de cupos en el horario que desees. Hacemos lo posible por acomodar las necesidades de nuestros estudiantes.
-                                </div>
-                            </div>
-                            <div class="faqs-list-row" data-item="faqs-cursada-semipresencial">
-                                <div class="faqs-list-text">¿Cómo es la cursada semipresencial?</div>
-                                <div class="faqs-list-plus">+</div>
-                            </div>
-                            <div class="faqs-list-content-expanded" id="faqs-cursada-semipresencial-content">
-                                <div class="faqs-list-expanded-text">
-                                    La modalidad semipresencial combina clases teóricas online que puedes realizar desde tu casa en el horario que prefieras, con prácticas presenciales en nuestros talleres equipados. Las clases online incluyen videos, material interactivo y foros de consulta. Las prácticas presenciales son obligatorias y se realizan en horarios fijos, donde trabajas directamente con herramientas y equipos profesionales bajo la supervisión de instructores especializados.
-                                </div>
-                            </div>
-                            <div class="faqs-list-row" data-item="faqs-multiples-carreras">
-                                <div class="faqs-list-text">¿Puedo cursar más de una carrera a la vez?</div>
-                                <div class="faqs-list-plus">+</div>
-                            </div>
-                            <div class="faqs-list-content-expanded" id="faqs-multiples-carreras-content">
-                                <div class="faqs-list-expanded-text">
-                                    Sí, puedes cursar más de una carrera simultáneamente si organizas bien tus horarios y crees que puedes manejar la carga académica. Sin embargo, te recomendamos que primero completes una carrera para tener una base sólida antes de comenzar otra. Si decides hacerlo, nuestro equipo académico puede ayudarte a coordinar los horarios para que no se superpongan.
-                                </div>
-                            </div>
-                            <div class="faqs-list-row" data-item="faqs-materiales">
-                                <div class="faqs-list-text">¿Hay que pagar aparte los materiales?</div>
-                                <div class="faqs-list-plus">+</div>
-                            </div>
-                            <div class="faqs-list-content-expanded" id="faqs-materiales-content">
-                                <div class="faqs-list-expanded-text">
-                                    No, todos los materiales de práctica, herramientas y equipos necesarios para las clases están incluidos en la matrícula. El Instituto provee todo lo necesario para las prácticas en los talleres. Solo necesitarás traer elementos básicos de protección personal como guantes y gafas de seguridad, que te indicaremos al inicio del curso. Los materiales didácticos y bibliografía también están incluidos.
-                                </div>
-                            </div>
-                            <div class="faqs-list-row" data-item="faqs-donde-trabajar">
-                                <div class="faqs-list-text">¿Dónde podré trabajar al finalizar mis estudios?</div>
-                                <div class="faqs-list-plus">+</div>
-                            </div>
-                            <div class="faqs-list-content-expanded" id="faqs-donde-trabajar-content">
-                                <div class="faqs-list-expanded-text">
-                                    Con tu título podrás trabajar en una amplia variedad de lugares: talleres mecánicos independientes, concesionarias oficiales, servicios técnicos de marcas, centros de diagnóstico automotriz, empresas de flotas de vehículos, compañías de seguros (como peritos), empresas de transporte, y también podrás iniciar tu propio emprendimiento. El sector automotriz tiene una alta demanda laboral y múltiples oportunidades de crecimiento profesional.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @endif
             </div>
         </section>
 
@@ -1280,14 +1239,17 @@
                 }
             }
             
-            // Delegación de eventos para los chevrons
+            // Delegación de eventos para los headers (toda la fila es clickeable)
             if (modalidadesContainer) {
                 modalidadesContainer.addEventListener('click', function(e) {
+                    // Detectar click en el header row o en el chevron
+                    const headerRow = e.target.closest('.modalidad-header-row');
                     const chevron = e.target.closest('.modalidad-chevron');
-                    if (chevron) {
-                        const modalidadDropdown = chevron.closest('.modalidades-dropdown');
+                    
+                    if (headerRow || chevron) {
+                        const modalidadDropdown = (headerRow || chevron).closest('.modalidades-dropdown');
                         if (modalidadDropdown) {
-                    modalidadDropdown.classList.toggle('open');
+                            modalidadDropdown.classList.toggle('open');
                             
                             // Sincronizar cuando se abre
                             if (modalidadDropdown.classList.contains('open')) {
@@ -1321,13 +1283,115 @@
                 });
             });
             
-            // Toggle del dropdown de cursada
+            // Función para sincronizar alturas de iconos y textos
+            function syncModalidadRowHeights(modalidadMobile) {
+                const activeContent = modalidadMobile.querySelector('.modalidad-mobile-tab-content.active');
+                if (!activeContent) return;
+                
+                const iconCol = modalidadMobile.querySelector('.modalidad-mobile-column-left .modalidad-mobile-tab-content.active .modalidad-mobile-icon-col');
+                const dataCol = modalidadMobile.querySelector('.modalidad-mobile-column-right .modalidad-mobile-tab-content.active .modalidad-mobile-data-col');
+                
+                if (iconCol && dataCol) {
+                    const iconItems = iconCol.querySelectorAll('.modalidad-mobile-icon-item');
+                    const dataItems = dataCol.querySelectorAll('.modalidad-mobile-data-item');
+                    
+                    const maxLength = Math.max(iconItems.length, dataItems.length);
+                    for (let i = 0; i < maxLength; i++) {
+                        if (iconItems[i] && dataItems[i]) {
+                            const iconHeight = iconItems[i].offsetHeight;
+                            const dataHeight = dataItems[i].offsetHeight;
+                            const maxHeight = Math.max(iconHeight, dataHeight);
+                            
+                            iconItems[i].style.minHeight = maxHeight + 'px';
+                            dataItems[i].style.minHeight = maxHeight + 'px';
+                        }
+                    }
+                }
+            }
+            
+            // Toggle del panel mobile de modalidades
+            const modalidadesMobileHeaders = document.querySelectorAll('.modalidad-mobile-header');
+            modalidadesMobileHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const modalidadMobile = this.closest('.modalidades-mobile');
+                    if (modalidadMobile) {
+                        modalidadMobile.classList.toggle('open');
+                        // Sincronizar alturas cuando se abre el panel
+                        if (modalidadMobile.classList.contains('open')) {
+                            setTimeout(() => {
+                                syncModalidadRowHeights(modalidadMobile);
+                            }, 300);
+                        }
+                    }
+                });
+            });
+            
+            // Toggle del panel mobile de cursada
+            const cursadaMobileHeaders = document.querySelectorAll('.cursada-mobile-header');
+            cursadaMobileHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const cursadaMobile = this.closest('.cursada-mobile');
+                    if (cursadaMobile) {
+                        cursadaMobile.classList.toggle('open');
+                    }
+                });
+            });
+            
+            // Cambio de tabs en mobile
+            const modalidadesMobileTabs = document.querySelectorAll('.modalidad-mobile-tab-btn');
+            modalidadesMobileTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+                    const modalidadMobile = this.closest('.modalidades-mobile');
+                    if (modalidadMobile) {
+                        // Remover active de todos los tabs, contenidos y columnas
+                        const allTabs = modalidadMobile.querySelectorAll('.modalidad-mobile-tab-btn');
+                        const allContents = modalidadMobile.querySelectorAll('.modalidad-mobile-tab-content');
+                        const allColumns = modalidadMobile.querySelectorAll('.modalidad-mobile-column');
+                        
+                        allTabs.forEach(t => t.classList.remove('active'));
+                        allContents.forEach(c => c.classList.remove('active'));
+                        allColumns.forEach(col => col.classList.remove('active'));
+                        
+                        // Activar el tab, su columna y todos los contenidos con el mismo data-content (en ambas columnas)
+                        this.classList.add('active');
+                        const column = this.closest('.modalidad-mobile-column');
+                        if (column) {
+                            column.classList.add('active');
+                        }
+                        const targetContents = modalidadMobile.querySelectorAll(`.modalidad-mobile-tab-content[data-content="${tabName}"]`);
+                        targetContents.forEach(content => {
+                            content.classList.add('active');
+                        });
+                        
+                        // Sincronizar alturas de iconos y textos para alinearlos por fila
+                        setTimeout(() => {
+                            syncModalidadRowHeights(modalidadMobile);
+                        }, 10);
+                    }
+                });
+            });
+            
+            // Sincronizar alturas al cargar
+            document.addEventListener('DOMContentLoaded', function() {
+                const modalidadesMobile = document.querySelectorAll('.modalidades-mobile');
+                modalidadesMobile.forEach(modalidad => {
+                    if (modalidad.classList.contains('open')) {
+                        syncModalidadRowHeights(modalidad);
+                    }
+                });
+            });
+            
+            // Toggle del dropdown de cursada (toda la fila del header es clickeable)
             const cursadaContainer = document.querySelector('.cursada-container');
             if (cursadaContainer) {
                 cursadaContainer.addEventListener('click', function(e) {
+                    // Detectar click en el header row o en el chevron
+                    const headerRow = e.target.closest('.cursada-header-row');
                     const chevron = e.target.closest('.cursada-chevron');
-                    if (chevron) {
-                        const cursadaDropdown = chevron.closest('.cursada-dropdown');
+                    
+                    if (headerRow || chevron) {
+                        const cursadaDropdown = (headerRow || chevron).closest('.cursada-dropdown');
                         if (cursadaDropdown) {
                             cursadaDropdown.classList.toggle('open');
                         }

@@ -1187,6 +1187,346 @@ window.addEventListener('load', () => {
 window.scrollComunidadCarousel = scrollComunidadCarousel;
 
 // ========================================
+// TESTIMONIOS CARRERA MOBILE CAROUSEL
+// ========================================
+
+// Variables globales para testimonios-carrera
+let currentTestimoniosCarreraSlide = 0;
+let userScrolledManuallyTestimoniosCarrera = false;
+let lastProgressPositionTestimoniosCarrera = -1;
+let isAtBeginningTestimoniosCarrera = true;
+let isAtEndTestimoniosCarrera = false;
+
+// Función para actualizar la barra de progreso basada en scroll real
+function updateTestimoniosCarreraProgressBar() {
+    const carousel = document.querySelector('.testimonios-carrera-mobile-carousel');
+    if (!carousel) return;
+    
+    // Buscar elementos específicamente dentro de la sección mobile
+    const mobileSection = carousel.closest('.testimonios-carrera-mobile-carousel-section');
+    if (!mobileSection) return;
+    
+    const progressIndicator = mobileSection.querySelector('.testimonios-carrera-progress-indicator');
+    const progressBar = mobileSection.querySelector('.testimonios-carrera-progress-bar');
+    
+    if (!progressIndicator || !progressBar) return;
+    
+    // Calcular progreso basado en la posición real de scroll
+    const scrollLeft = carousel.scrollLeft;
+    const maxScroll = carousel.scrollWidth - carousel.offsetWidth;
+    
+    // Actualizar variables de posición
+    isAtBeginningTestimoniosCarrera = scrollLeft <= 10; // 10px de tolerancia
+    isAtEndTestimoniosCarrera = scrollLeft >= maxScroll - 10; // 10px de tolerancia
+    
+    // Evitar división por cero
+    const progress = maxScroll > 0 ? Math.min(scrollLeft / maxScroll, 1) : 0;
+    
+    // Obtener dimensiones reales del DOM
+    const trackWidth = progressBar.offsetWidth;
+    const indicatorWidth = progressIndicator.offsetWidth;
+    const maxPosition = trackWidth - indicatorWidth;
+    
+    // Calcular posición del indicador
+    const indicatorPosition = progress * maxPosition;
+    
+    // Solo actualizar si la posición cambió significativamente (evitar micro-movimientos)
+    if (Math.abs(indicatorPosition - lastProgressPositionTestimoniosCarrera) > 0.5) {
+        progressIndicator.style.transform = `translateX(${indicatorPosition}px)`;
+        lastProgressPositionTestimoniosCarrera = indicatorPosition;
+    }
+}
+
+// Función para mover el carrusel usando scrollIntoView
+function scrollTestimoniosCarreraCarousel(direction) {
+    const mobileSection = document.querySelector('.testimonios-carrera-mobile-carousel-section');
+    if (!mobileSection) return;
+    
+    const carousel = mobileSection.querySelector('.testimonios-carrera-mobile-carousel');
+    if (!carousel) return;
+    
+    const slides = carousel.querySelectorAll('.testimonios-carrera-carousel-slide');
+    const totalSlides = slides.length;
+    
+    // Actualizar variables de posición antes de usar la lógica
+    const scrollLeft = carousel.scrollLeft;
+    const maxScroll = carousel.scrollWidth - carousel.offsetWidth;
+    isAtBeginningTestimoniosCarrera = scrollLeft <= 10; // 10px de tolerancia
+    isAtEndTestimoniosCarrera = scrollLeft >= maxScroll - 10; // 10px de tolerancia
+    
+    // Actualizar currentTestimoniosCarreraSlide basado en la posición real del scroll
+    const slideWidth = carousel.querySelector('.testimonios-carrera-carousel-slide').offsetWidth + 15; // Incluir padding
+    const realCurrentSlide = Math.round(scrollLeft / slideWidth);
+    currentTestimoniosCarreraSlide = Math.max(0, Math.min(realCurrentSlide, totalSlides - 1));
+    
+    // Lógica según si vengo de dedo o botones
+    if (userScrolledManuallyTestimoniosCarrera) {
+        // Vengo de navegar con dedo
+        if (isAtBeginningTestimoniosCarrera && direction === 1) {
+            // Estoy al principio y presiono derecha → siguiente
+            currentTestimoniosCarreraSlide = Math.min(totalSlides - 1, currentTestimoniosCarreraSlide + 1);
+        } else if (isAtEndTestimoniosCarrera && direction === -1) {
+            // Estoy al final y presiono izquierda → anterior
+            currentTestimoniosCarreraSlide = Math.max(0, currentTestimoniosCarreraSlide - 1);
+        } else {
+            // Estoy en el medio → ir a extremos
+            if (direction === -1) {
+                currentTestimoniosCarreraSlide = 0; // Ir al principio
+            } else {
+                currentTestimoniosCarreraSlide = totalSlides - 1; // Ir al final
+            }
+        }
+    } else {
+        // Vengo de navegar con botones → siempre de a uno
+        if (direction === -1) {
+            currentTestimoniosCarreraSlide = Math.max(0, currentTestimoniosCarreraSlide - 1);
+        } else if (direction === 1) {
+            currentTestimoniosCarreraSlide = Math.min(totalSlides - 1, currentTestimoniosCarreraSlide + 1);
+        }
+    }
+    
+    // Resetear flag después de usar botones
+    userScrolledManuallyTestimoniosCarrera = false;
+    
+    // Usar scrollIntoView en la slide target
+    const targetSlide = slides[currentTestimoniosCarreraSlide];
+    if (targetSlide) {
+        targetSlide.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+            inline: 'start'
+        });
+    }
+    
+    // Actualizar barra de progreso
+    updateTestimoniosCarreraProgressBar();
+}
+
+// Inicializar el carrusel de testimonios-carrera
+function initializeTestimoniosCarreraCarousel() {
+    const mobileSection = document.querySelector('.testimonios-carrera-mobile-carousel-section');
+    if (!mobileSection) {
+        setTimeout(initializeTestimoniosCarreraCarousel, 100);
+        return;
+    }
+    
+    const testimoniosCarreraCarousel = mobileSection.querySelector('.testimonios-carrera-mobile-carousel');
+    const leftBtn = mobileSection.querySelector('.testimonios-carrera-btn-prev');
+    const rightBtn = mobileSection.querySelector('.testimonios-carrera-btn-next');
+    
+    if (testimoniosCarreraCarousel && leftBtn && rightBtn) {
+        // Asegurar que la variable esté en 0 al inicializar
+        currentTestimoniosCarreraSlide = 0;
+        
+        // Actualizar barra de progreso al cargar la página
+        updateTestimoniosCarreraProgressBar();
+        
+        // Detectar scroll manual con touch
+        testimoniosCarreraCarousel.addEventListener('touchstart', function() {
+            // Marcar que el usuario está haciendo scroll manual
+            userScrolledManuallyTestimoniosCarrera = true;
+        });
+        
+        // Listener para actualizar barra de progreso
+        testimoniosCarreraCarousel.addEventListener('scroll', function() {
+            // Solo actualizar la barra de progreso
+            updateTestimoniosCarreraProgressBar();
+        });
+    } else {
+        // Retry después de 100ms si los elementos no están listos
+        setTimeout(initializeTestimoniosCarreraCarousel, 100);
+    }
+}
+
+// Ejecutar inicialización
+// Esperar a que el DOM esté completamente cargado
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeTestimoniosCarreraCarousel);
+} else {
+    // DOM ya está listo
+    setTimeout(initializeTestimoniosCarreraCarousel, 50);
+}
+
+// Ejecutar también cuando la ventana esté completamente cargada
+window.addEventListener('load', () => {
+    setTimeout(initializeTestimoniosCarreraCarousel, 100);
+});
+
+// Hacer la función global para que funcione desde el HTML
+window.scrollTestimoniosCarreraCarousel = scrollTestimoniosCarreraCarousel;
+
+// ========================================
+// VIDEOS MOBILE EN-ACCION CARRERA
+// ========================================
+document.addEventListener('DOMContentLoaded', function() {
+    const enAccionCarreraMobileVideos = document.querySelectorAll('.en-accion-carrera-mobile-video');
+    const enAccionCarreraMobilePlayButtons = document.querySelectorAll('.en-accion-carrera-mobile-play-button');
+    
+    // Función para toggle play/pause de un video específico
+    function toggleEnAccionCarreraVideo(video) {
+        if (video.paused) {
+            video.play().then(() => {
+                video.classList.add('playing');
+            }).catch(error => {
+                // Error silencioso
+            });
+        } else {
+            video.pause();
+            video.classList.remove('playing');
+        }
+    }
+    
+    // Función para pausar todos los otros videos
+    function pauseOtherEnAccionCarreraVideos(currentVideo) {
+        enAccionCarreraMobileVideos.forEach(video => {
+            if (video !== currentVideo && !video.paused) {
+                video.pause();
+                video.classList.remove('playing');
+            }
+        });
+    }
+    
+    // Configurar cada video
+    enAccionCarreraMobileVideos.forEach((video, index) => {
+        const playButton = enAccionCarreraMobilePlayButtons[index];
+        
+        if (playButton) {
+            // Click en el botón de play
+            playButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                pauseOtherEnAccionCarreraVideos(video);
+                toggleEnAccionCarreraVideo(video);
+            });
+            
+            // Click en cualquier parte del video para pausar
+            video.addEventListener('click', function(e) {
+                if (!video.paused) {
+                    video.pause();
+                    video.classList.remove('playing');
+                }
+            });
+            
+            // Mostrar botón cuando el video se pausa
+            video.addEventListener('pause', function() {
+                video.classList.remove('playing');
+            });
+            
+            // Ocultar botón cuando el video se reproduce
+            video.addEventListener('play', function() {
+                video.classList.add('playing');
+                pauseOtherEnAccionCarreraVideos(video);
+            });
+        }
+    });
+    
+    // ========================================
+    // CARRUSEL MOBILE EN-ACCION CARRERA CONTROLS
+    // ========================================
+    const enAccionCarreraMobileCarousel = document.querySelector('.en-accion-carrera-mobile-carousel');
+    const enAccionCarreraMobilePrevBtn = document.querySelector('.en-accion-carrera-mobile-prev-btn');
+    const enAccionCarreraMobileNextBtn = document.querySelector('.en-accion-carrera-mobile-next-btn');
+    const enAccionCarreraMobileProgressIndicator = document.querySelector('.en-accion-carrera-mobile-progress-indicator');
+    
+    if (enAccionCarreraMobileCarousel && enAccionCarreraMobilePrevBtn && enAccionCarreraMobileNextBtn) {
+        const slides = enAccionCarreraMobileCarousel.querySelectorAll('.en-accion-carrera-carousel-slide');
+        const totalSlides = slides.length;
+        let currentSlide = 0;
+        
+        // Variable para evitar actualizaciones múltiples
+        let isUpdatingProgress = false;
+        
+        // Función para actualizar la barra de progreso
+        function updateEnAccionCarreraMobileProgressBar() {
+            if (isUpdatingProgress) return;
+            isUpdatingProgress = true;
+            
+            if (enAccionCarreraMobileProgressIndicator && totalSlides > 0) {
+                const progressBar = document.querySelector('.en-accion-carrera-mobile-progress-bar');
+                if (!progressBar) {
+                    isUpdatingProgress = false;
+                    return;
+                }
+                
+                // Calcular progreso (0 a 1)
+                const progress = currentSlide / (totalSlides - 1);
+                
+                // Obtener ancho de la barra y del indicador
+                const trackWidth = progressBar.offsetWidth;
+                const indicatorWidth = enAccionCarreraMobileProgressIndicator.offsetWidth;
+                const maxPosition = Math.max(0, trackWidth - indicatorWidth);
+                const position = progress * maxPosition;
+                
+                // Usar left como beneficios (más compatible)
+                enAccionCarreraMobileProgressIndicator.style.transform = 'none';
+                enAccionCarreraMobileProgressIndicator.style.left = `${position}px`;
+            }
+            
+            // Reset flag después de un pequeño delay
+            setTimeout(() => {
+                isUpdatingProgress = false;
+            }, 50);
+        }
+        
+        // Función para ir al slide anterior
+        function goToPreviousSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                const firstSlide = enAccionCarreraMobileCarousel.querySelector('.en-accion-carrera-carousel-slide');
+                if (firstSlide) {
+                    const slideWidth = firstSlide.offsetWidth + 15; // Ancho dinámico + 15px padding
+                    enAccionCarreraMobileCarousel.scrollLeft -= slideWidth;
+                    updateEnAccionCarreraMobileProgressBar();
+                }
+            }
+        }
+        
+        // Función para ir al slide siguiente
+        function goToNextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                const firstSlide = enAccionCarreraMobileCarousel.querySelector('.en-accion-carrera-carousel-slide');
+                if (firstSlide) {
+                    const slideWidth = firstSlide.offsetWidth + 15; // Ancho dinámico + 15px padding
+                    enAccionCarreraMobileCarousel.scrollLeft += slideWidth;
+                    updateEnAccionCarreraMobileProgressBar();
+                }
+            }
+        }
+        
+        // Event listeners para los botones
+        enAccionCarreraMobilePrevBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            goToPreviousSlide();
+        });
+        
+        enAccionCarreraMobileNextBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            goToNextSlide();
+        });
+        
+        // Inicializar la barra de progreso
+        updateEnAccionCarreraMobileProgressBar();
+        
+        // Sincronizar la barra con el scroll del carousel
+        enAccionCarreraMobileCarousel.addEventListener('scroll', function() {
+            const firstSlide = enAccionCarreraMobileCarousel.querySelector('.en-accion-carrera-carousel-slide');
+            if (firstSlide) {
+                const slideWidth = firstSlide.offsetWidth + 15;
+                const newSlide = Math.round(enAccionCarreraMobileCarousel.scrollLeft / slideWidth);
+                
+                if (newSlide !== currentSlide && newSlide >= 0 && newSlide < totalSlides) {
+                    currentSlide = newSlide;
+                    updateEnAccionCarreraMobileProgressBar();
+                }
+            }
+        });
+    }
+});
+
+// ========================================
 // PARTNERS SLICK CAROUSEL
 // ========================================
 let partnersCarouselInitialized = false;
@@ -1226,6 +1566,7 @@ $(document).ready(function() {
 // CERTIFICACION LIST ACCORDION
 // ========================================
 document.addEventListener('DOMContentLoaded', function() {
+    // Desktop accordion
     const certificacionRows = document.querySelectorAll('.certificacion-list-row[data-item]');
     
     certificacionRows.forEach(row => {
@@ -1233,8 +1574,30 @@ document.addEventListener('DOMContentLoaded', function() {
             const itemId = this.getAttribute('data-item');
             const content = document.getElementById(itemId + '-content');
             
-            // Cerrar todos los otros contenidos
+            // Cerrar todos los otros contenidos desktop
             document.querySelectorAll('.certificacion-list-content-expanded').forEach(otherContent => {
+                if (otherContent !== content) {
+                    otherContent.classList.remove('active');
+                }
+            });
+            
+            // Toggle del contenido actual
+            if (content) {
+                content.classList.toggle('active');
+            }
+        });
+    });
+    
+    // Mobile accordion
+    const certificacionMobileRows = document.querySelectorAll('.certificacion-mobile-list-row[data-item]');
+    
+    certificacionMobileRows.forEach(row => {
+        row.addEventListener('click', function() {
+            const itemId = this.getAttribute('data-item');
+            const content = document.getElementById(itemId + '-content');
+            
+            // Cerrar todos los otros contenidos mobile
+            document.querySelectorAll('.certificacion-mobile-list-content-expanded').forEach(otherContent => {
                 if (otherContent !== content) {
                     otherContent.classList.remove('active');
                 }
@@ -1308,17 +1671,24 @@ function updateFotosProgressBar(swiper) {
 
 // Función para actualizar el estado de los botones de navegación de fotos
 function updateFotosNavigationButtons(swiper) {
-    const nextBtn = swiper.el.closest('.fotos-carousel-section').querySelector('.fotos-carousel-btn-next');
-    const prevBtn = swiper.el.closest('.fotos-carousel-section').querySelector('.fotos-carousel-btn-prev');
+    if (!swiper || !swiper.el) return;
+    
+    const carouselSection = swiper.el.closest('.fotos-carousel-section');
+    if (!carouselSection) return;
+    
+    const nextBtn = carouselSection.querySelector('.fotos-carousel-btn-next');
+    const prevBtn = carouselSection.querySelector('.fotos-carousel-btn-prev');
     
     if (!nextBtn || !prevBtn) return;
     
+    // Deshabilitar botón anterior si está al inicio
     if (swiper.isBeginning) {
         prevBtn.classList.add('swiper-button-disabled');
     } else {
         prevBtn.classList.remove('swiper-button-disabled');
     }
     
+    // Deshabilitar botón siguiente si está al final
     if (swiper.isEnd) {
         nextBtn.classList.add('swiper-button-disabled');
     } else {
@@ -1388,14 +1758,32 @@ document.addEventListener('DOMContentLoaded', function() {
         on: {
             init: function () {
                 updateFotosProgressBar(this);
-                updateFotosNavigationButtons(this);
-                setTimeout(() => updateFotosProgressBar(this), 50);
+                // Actualizar botones después de que Swiper se inicialice completamente
+                setTimeout(() => {
+                    updateFotosNavigationButtons(this);
+                    updateFotosProgressBar(this);
+                }, 100);
+                // Vincular clics de navegación para forzar actualización inmediata
                 const container = this.el.closest('.fotos-desktop') || this.el.closest('.fotos-carousel-section');
                 if (container) {
                     const nextBtn = container.querySelector('.fotos-carousel-btn-next');
                     const prevBtn = container.querySelector('.fotos-carousel-btn-prev');
-                    if (nextBtn) nextBtn.addEventListener('click', () => setTimeout(() => updateFotosProgressBar(this), 0));
-                    if (prevBtn) prevBtn.addEventListener('click', () => setTimeout(() => updateFotosProgressBar(this), 0));
+                    if (nextBtn) {
+                        nextBtn.addEventListener('click', () => {
+                            setTimeout(() => {
+                                updateFotosProgressBar(this);
+                                updateFotosNavigationButtons(this);
+                            }, 0);
+                        });
+                    }
+                    if (prevBtn) {
+                        prevBtn.addEventListener('click', () => {
+                            setTimeout(() => {
+                                updateFotosProgressBar(this);
+                                updateFotosNavigationButtons(this);
+                            }, 0);
+                        });
+                    }
                 }
             },
             slideChange: function () {
@@ -1413,6 +1801,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             slideChangeTransitionEnd: function () {
                 updateFotosProgressBar(this);
+                updateFotosNavigationButtons(this);
             },
             resize: function () {
                 updateFotosProgressBar(this);
@@ -1476,4 +1865,277 @@ document.addEventListener('DOMContentLoaded', function() {
             testimoniosCarreraVideo.classList.add('playing');
         });
     }
+
+    // ========================================
+    // CARRUSEL DE FOTOS MOBILE
+    // ========================================
+    
+    // Variables para el carrusel de fotos (nombres únicos para evitar conflictos)
+    let currentFotosSlide = 0;
+    let isAtBeginningFotos = true;
+    let isAtEndFotos = false;
+    let userScrolledManuallyFotos = false;
+    let lastProgressPositionFotos = -1;
+    
+    // Función para actualizar el estado de los botones de navegación móvil de fotos
+    function updateFotosMobileNavigationButtons() {
+        const mobileSection = document.querySelector('.fotos-mobile-carousel-section');
+        if (!mobileSection) return;
+        
+        const leftBtn = mobileSection.querySelector('.fotos-arrow-left');
+        const rightBtn = mobileSection.querySelector('.fotos-arrow-right');
+        
+        if (!leftBtn || !rightBtn) return;
+        
+        // Deshabilitar botón izquierdo si está al inicio
+        if (isAtBeginningFotos) {
+            leftBtn.classList.add('fotos-btn-disabled');
+            leftBtn.disabled = true;
+        } else {
+            leftBtn.classList.remove('fotos-btn-disabled');
+            leftBtn.disabled = false;
+        }
+        
+        // Deshabilitar botón derecho si está al final
+        if (isAtEndFotos) {
+            rightBtn.classList.add('fotos-btn-disabled');
+            rightBtn.disabled = true;
+        } else {
+            rightBtn.classList.remove('fotos-btn-disabled');
+            rightBtn.disabled = false;
+        }
+    }
+    
+    // Función para actualizar la barra de progreso de fotos
+    function updateFotosProgressBar() {
+        const carousel = document.querySelector('.fotos-mobile-carousel');
+        if (!carousel) return;
+        
+        // Buscar elementos específicamente dentro de la sección mobile
+        const mobileSection = carousel.closest('.fotos-mobile-carousel-section');
+        if (!mobileSection) return;
+        
+        const progressIndicator = mobileSection.querySelector('.fotos-progress-indicator');
+        const progressBar = mobileSection.querySelector('.fotos-progress-bar');
+        
+        if (!progressIndicator || !progressBar) return;
+        
+        // Calcular progreso basado en la posición real de scroll
+        let scrollLeft = carousel.scrollLeft;
+        const maxScroll = carousel.scrollWidth - carousel.offsetWidth;
+        
+        // Si estamos muy cerca del principio (dentro de 5px), forzar a 0
+        if (scrollLeft <= 5) {
+            scrollLeft = 0;
+            // También forzar el scroll del carousel a 0 si está muy cerca
+            if (carousel.scrollLeft > 0 && carousel.scrollLeft <= 5) {
+                carousel.scrollLeft = 0;
+            }
+        }
+        
+        // Actualizar variables de posición
+        isAtBeginningFotos = scrollLeft <= 5; // 5px de tolerancia más estricta
+        isAtEndFotos = scrollLeft >= maxScroll - 5; // 5px de tolerancia más estricta
+        
+        // Actualizar botones de navegación
+        updateFotosMobileNavigationButtons();
+        
+        // Si estamos al principio, forzar progreso a 0
+        let progress = 0;
+        if (isAtBeginningFotos || scrollLeft === 0) {
+            progress = 0;
+        } else if (isAtEndFotos) {
+            progress = 1;
+        } else {
+            // Evitar división por cero
+            progress = maxScroll > 0 ? Math.min(scrollLeft / maxScroll, 1) : 0;
+        }
+        
+        // Obtener dimensiones reales del DOM
+        const trackWidth = progressBar.offsetWidth;
+        const indicatorWidth = progressIndicator.offsetWidth;
+        const maxPosition = trackWidth - indicatorWidth;
+        
+        // Calcular posición del indicador
+        const indicatorPosition = progress * maxPosition;
+        
+        // Solo actualizar si la posición cambió significativamente (evitar micro-movimientos)
+        // O si estamos al principio/final para asegurar que quede exactamente en 0 o máximo
+        const shouldUpdate = Math.abs(indicatorPosition - lastProgressPositionFotos) > 0.5 || 
+                           (isAtBeginningFotos && indicatorPosition !== 0) ||
+                           (isAtEndFotos && Math.abs(indicatorPosition - maxPosition) > 0.5);
+        
+        if (shouldUpdate) {
+            // Asegurar que cuando estamos al principio, la posición sea exactamente 0
+            const finalPosition = isAtBeginningFotos ? 0 : (isAtEndFotos ? maxPosition : indicatorPosition);
+            progressIndicator.style.transform = 'none';
+            progressIndicator.style.left = `${finalPosition}px`;
+            lastProgressPositionFotos = finalPosition;
+        }
+    }
+    
+    // Función para mover el carrusel usando scrollIntoView
+    function scrollFotosCarousel(direction) {
+        const mobileSection = document.querySelector('.fotos-mobile-carousel-section');
+        if (!mobileSection) return;
+        
+        const carousel = mobileSection.querySelector('.fotos-mobile-carousel');
+        if (!carousel) return;
+        
+        const slides = carousel.querySelectorAll('.fotos-carousel-slide');
+        const totalSlides = slides.length;
+        
+        // Actualizar variables de posición antes de usar la lógica
+        const scrollLeft = carousel.scrollLeft;
+        const maxScroll = carousel.scrollWidth - carousel.offsetWidth;
+        isAtBeginningFotos = scrollLeft <= 10; // 10px de tolerancia
+        isAtEndFotos = scrollLeft >= maxScroll - 10; // 10px de tolerancia
+        
+        // Actualizar currentFotosSlide basado en la posición real del scroll
+        const slideWidth = carousel.querySelector('.fotos-carousel-slide').offsetWidth + 15; // Incluir padding
+        const realCurrentSlide = Math.round(scrollLeft / slideWidth);
+        currentFotosSlide = Math.max(0, Math.min(realCurrentSlide, totalSlides - 1));
+        
+        // Lógica según si vengo de dedo o botones
+        if (userScrolledManuallyFotos) {
+            // Vengo de navegar con dedo
+            if (isAtBeginningFotos && direction === 'right') {
+                // Estoy al principio y presiono derecha → siguiente
+                currentFotosSlide = Math.min(totalSlides - 1, currentFotosSlide + 1);
+            } else if (isAtEndFotos && direction === 'left') {
+                // Estoy al final y presiono izquierda → anterior
+                currentFotosSlide = Math.max(0, currentFotosSlide - 1);
+            } else {
+                // Estoy en el medio → ir a extremos
+                if (direction === 'left') {
+                    currentFotosSlide = 0; // Ir al principio
+                } else {
+                    currentFotosSlide = totalSlides - 1; // Ir al final
+                }
+            }
+        } else {
+            // Vengo de navegar con botones → siempre de a uno
+            if (direction === 'left') {
+                currentFotosSlide = Math.max(0, currentFotosSlide - 1);
+            } else if (direction === 'right') {
+                currentFotosSlide = Math.min(totalSlides - 1, currentFotosSlide + 1);
+            }
+        }
+        
+        // Resetear flag después de usar botones
+        userScrolledManuallyFotos = false;
+        
+        // Usar scrollIntoView o scrollTo según el slide
+        const targetSlide = slides[currentFotosSlide];
+        if (targetSlide) {
+            // Si es el primer slide, forzar scroll a exactamente 0
+            if (currentFotosSlide === 0) {
+                carousel.scrollTo({
+                    left: 0,
+                    behavior: 'smooth'
+                });
+            } else if (currentFotosSlide === totalSlides - 1) {
+                // Si es el último slide, calcular el scroll máximo considerando el padding
+                const maxScroll = Math.max(0, carousel.scrollWidth - carousel.offsetWidth);
+                carousel.scrollTo({
+                    left: maxScroll,
+                    behavior: 'smooth'
+                });
+            } else {
+                // Para slides intermedios, usar scrollIntoView
+                targetSlide.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest',
+                    inline: 'start'
+                });
+            }
+        }
+        
+        // Actualizar barra de progreso después de que termine el scroll
+        // Usar un timeout para asegurar que el scroll haya terminado
+        setTimeout(() => {
+            // Si estamos en el primer slide, forzar scroll a 0 por si acaso
+            if (currentFotosSlide === 0 && carousel.scrollLeft > 0) {
+                carousel.scrollLeft = 0;
+            }
+            updateFotosProgressBar();
+            updateFotosMobileNavigationButtons();
+        }, 100);
+        
+        // También actualizar inmediatamente
+        updateFotosProgressBar();
+        updateFotosMobileNavigationButtons();
+    }
+    
+    // Inicializar el carrusel de fotos
+    function initializeFotosCarousel() {
+        const mobileSection = document.querySelector('.fotos-mobile-carousel-section');
+        if (!mobileSection) {
+            setTimeout(initializeFotosCarousel, 100);
+            return;
+        }
+        
+        const fotosCarousel = mobileSection.querySelector('.fotos-mobile-carousel');
+        const leftBtn = mobileSection.querySelector('.fotos-arrow-left');
+        const rightBtn = mobileSection.querySelector('.fotos-arrow-right');
+        
+        if (fotosCarousel && leftBtn && rightBtn) {
+            // Asegurar que la variable esté en 0 al inicializar
+            currentFotosSlide = 0;
+            
+            // Actualizar barra de progreso al cargar la página
+            updateFotosProgressBar();
+            updateFotosMobileNavigationButtons();
+            
+            // Detectar scroll manual con touch
+            fotosCarousel.addEventListener('touchstart', function() {
+                // Marcar que el usuario está haciendo scroll manual
+                userScrolledManuallyFotos = true;
+            });
+            
+            // Listener para actualizar barra de progreso
+            fotosCarousel.addEventListener('scroll', function() {
+                // Si el scroll está muy cerca de 0, forzarlo a 0
+                if (fotosCarousel.scrollLeft <= 5 && fotosCarousel.scrollLeft > 0) {
+                    fotosCarousel.scrollLeft = 0;
+                }
+                // Actualizar la barra de progreso y botones
+                updateFotosProgressBar();
+                updateFotosMobileNavigationButtons();
+            });
+            
+            // También escuchar cuando termine el scroll para asegurar posición correcta
+            let scrollTimeout;
+            fotosCarousel.addEventListener('scroll', function() {
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(() => {
+                    if (fotosCarousel.scrollLeft <= 5 && fotosCarousel.scrollLeft > 0) {
+                        fotosCarousel.scrollLeft = 0;
+                    }
+                    updateFotosProgressBar();
+                    updateFotosMobileNavigationButtons();
+                }, 150);
+            });
+        } else {
+            // Retry después de 100ms si los elementos no están listos
+            setTimeout(initializeFotosCarousel, 100);
+        }
+    }
+    
+    // Ejecutar inicialización
+    // Esperar a que el DOM esté completamente cargado
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeFotosCarousel);
+    } else {
+        // DOM ya está listo
+        setTimeout(initializeFotosCarousel, 50);
+    }
+    
+    // Ejecutar también cuando la ventana esté completamente cargada
+    window.addEventListener('load', () => {
+        setTimeout(initializeFotosCarousel, 100);
+    });
+    
+    // Hacer la función global para que funcione desde el HTML
+    window.scrollFotosCarousel = scrollFotosCarousel;
 });

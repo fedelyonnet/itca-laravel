@@ -48,6 +48,7 @@
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Mobile</th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Nombre</th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Dirección</th>
+                                        <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Zona</th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Teléfono</th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Estado</th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Acciones</th>
@@ -182,6 +183,11 @@
                                                 </div>
                                             </td>
                                             
+                                            <!-- Zona -->
+                                            <td class="px-4 py-4 text-sm text-gray-300">
+                                                {{ $sede->zona ?? '-' }}
+                                            </td>
+                                            
                                             <!-- Teléfono -->
                                             <td class="px-4 py-4 text-sm text-gray-300">
                                                 {{ $sede->telefono }}
@@ -301,7 +307,15 @@
                               placeholder="Escribí la dirección completa..."></textarea>
                 </div>
 
-                <!-- Tercera fila: Links -->
+                <!-- Tercera fila: Zona -->
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Zona</label>
+                    <input type="text" id="modalZona" name="zona" 
+                           class="w-full px-2 py-1.5 bg-gray-600 border border-gray-500 rounded text-white focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm"
+                           placeholder="Ej: Zona Norte">
+                </div>
+
+                <!-- Cuarta fila: Links -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-medium text-gray-300 mb-1">Link Google Maps</label>
@@ -317,7 +331,7 @@
                     </div>
                 </div>
 
-                <!-- Cuarta fila: Imágenes -->
+                <!-- Quinta fila: Imágenes -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-medium text-gray-300 mb-1">Imagen Desktop <span class="text-red-400" id="desktopRequired">*</span></label>
@@ -334,7 +348,7 @@
                     </div>
                 </div>
 
-                <!-- Quinta fila: Tipo de Título -->
+                <!-- Sexta fila: Tipo de Título -->
                 <div>
                     <label class="block text-xs font-medium text-gray-300 mb-1">Tipo de Título</label>
                     <select id="modalTipoTitulo" name="tipo_titulo" 
@@ -345,7 +359,7 @@
                     <p class="text-xs text-gray-400 mt-1">Si eliges "Dos líneas", el título se dividirá automáticamente en la primera palabra y el resto</p>
                 </div>
 
-                <!-- Sexta fila: Disponible -->
+                <!-- Séptima fila: Disponible -->
                 <div class="flex items-center">
                     <label class="flex items-center text-xs text-gray-300">
                         <input type="checkbox" id="modalDisponible" name="disponible" value="1" checked
@@ -412,6 +426,7 @@
                     // Llenar campos
                     document.getElementById('modalNombre').value = data.nombre;
                     document.getElementById('modalDireccion').value = data.direccion;
+                    document.getElementById('modalZona').value = data.zona || '';
                     document.getElementById('modalTelefono').value = data.telefono;
                     document.getElementById('modalLinkGoogleMaps').value = data.link_google_maps || '';
                     document.getElementById('modalLinkWhatsapp').value = data.link_whatsapp || '';

@@ -34,11 +34,25 @@ export default defineConfig({
         },
     },
     server: {
+        host: '0.0.0.0', // Permite conexiones desde cualquier IP
+        port: 5173,
+        strictPort: true,
         cors: true,
         headers: {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
             'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+        hmr: {
+            host: 'devitca.localhost',
+            protocol: 'ws',
+            clientPort: 5173,
+            overlay: false, // Desactiva el overlay de errores en desarrollo
+        },
+        watch: {
+            // Reduce la frecuencia de actualizaciones
+            usePolling: false,
+            interval: 1000,
         },
         proxy: {
             '/images': {

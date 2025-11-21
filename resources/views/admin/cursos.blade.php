@@ -48,6 +48,7 @@
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Mobile</th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Nombre</th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Modalidad</th>
+                                        <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Se cursa en</th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Fecha Inicio</th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Acciones</th>
                                     </tr>
@@ -198,6 +199,19 @@
                                                 </div>
                                             </td>
                                             
+                                            <!-- Se cursa en -->
+                                            <td class="px-4 py-4">
+                                                <div class="flex flex-wrap gap-1">
+                                                    @if($curso->sedes->count() > 0)
+                                                        @foreach($curso->sedes as $sede)
+                                                            <span class="px-2 py-1 bg-purple-600 text-white text-xs rounded">{{ $sede->nombre }}</span>
+                                                        @endforeach
+                                                    @else
+                                                        <span class="text-xs text-gray-400">-</span>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                            
                                             <!-- Fecha de inicio -->
                                             <td class="px-4 py-4">
                                                 <div class="text-sm text-gray-300">{{ $curso->fecha_inicio->format('d/m/Y') }}</div>
@@ -208,8 +222,15 @@
                                                 <div class="flex space-x-2">
                                                     <!-- Editar -->
                                                     <div class="relative group">
-                                                        <button onclick="openEditModal({{ $curso->id }}, '{{ $curso->nombre }}', '{{ addslashes($curso->descripcion) }}', {{ $curso->modalidad_online ? 'true' : 'false' }}, {{ $curso->modalidad_presencial ? 'true' : 'false' }}, '{{ $curso->fecha_inicio->format('Y-m-d') }}', '{{ $curso->ilustracion_desktop }}', '{{ $curso->ilustracion_mobile }}')" 
-                                                                class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded text-sm transition-colors">
+                                                        <button 
+                                                            class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded text-sm transition-colors edit-curso-btn"
+                                                            data-curso-id="{{ $curso->id }}"
+                                                            data-curso-nombre="{{ htmlspecialchars($curso->nombre, ENT_QUOTES, 'UTF-8') }}"
+                                                            data-curso-descripcion="{{ htmlspecialchars($curso->descripcion ?? '', ENT_QUOTES, 'UTF-8') }}"
+                                                            data-curso-online="{{ $curso->modalidad_online ? '1' : '0' }}"
+                                                            data-curso-presencial="{{ $curso->modalidad_presencial ? '1' : '0' }}"
+                                                            data-curso-fecha="{{ $curso->fecha_inicio->format('Y-m-d') }}"
+                                                            data-curso-sedes="{{ $curso->sedes->pluck('id')->implode(',') }}">
                                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                                             </svg>
@@ -360,6 +381,26 @@
                             </div>
                         </div>
                         
+                        <!-- Fila 3.5: Se cursa en (Sedes) -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Se cursa en</label>
+                            <div class="max-h-40 overflow-y-auto border border-gray-600 rounded-md p-2 bg-gray-700">
+                                @if(isset($sedes) && $sedes->count() > 0)
+                                    @foreach($sedes as $sede)
+                                        <label class="flex items-center py-1">
+                                            <input type="checkbox" name="sedes[]" value="{{ $sede->id }}" 
+                                                   class="sede-checkbox rounded border-gray-600 bg-gray-700 text-blue-600 focus:ring-blue-500"
+                                                   id="sede_{{ $sede->id }}">
+                                            <span class="ml-2 text-gray-300 text-sm">{{ $sede->nombre }}</span>
+                                        </label>
+                                    @endforeach
+                                @else
+                                    <p class="text-xs text-gray-400">No hay sedes disponibles</p>
+                                @endif
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1">Selecciona las sedes donde se cursa</p>
+                        </div>
+                        
                         <!-- Fila 4: Ilustración Desktop (izq) y Mobile (der) -->
                         <div class="grid grid-cols-2 gap-4">
                             <!-- Ilustración Desktop -->
@@ -419,7 +460,7 @@
             document.getElementById('modalAgregarCarrera').classList.remove('hidden');
         }
 
-        function openEditModal(id, nombre, descripcion, online, presencial, fecha, desktopImg, mobileImg) {
+        function openEditModal(id, nombre, descripcion, online, presencial, fecha, desktopImg, mobileImg, sedesIds = [], videoUrl = '') {
             // Fill form with course data
             document.getElementById('cursoId').value = id;
             document.getElementById('modalNombre').value = nombre;
@@ -427,6 +468,22 @@
             document.getElementById('modalOnline').checked = online;
             document.getElementById('modalPresencial').checked = presencial;
             document.getElementById('modalFecha').value = fecha;
+            
+            // Clear and set sedes checkboxes
+            const sedeCheckboxes = document.querySelectorAll('.sede-checkbox');
+            sedeCheckboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            // Check the sedes that belong to this course
+            if (sedesIds && sedesIds.length > 0) {
+                sedesIds.forEach(sedeId => {
+                    const checkbox = document.getElementById(`sede_${sedeId}`);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                    }
+                });
+            }
             
             // Clear file inputs
             document.getElementById('modalDesktop').value = '';
@@ -459,6 +516,24 @@
             document.getElementById('modalAgregarCarrera').classList.remove('hidden');
         }
 
+        // Event listeners para botones de editar usando data attributes
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.edit-curso-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.getAttribute('data-curso-id');
+                    const nombre = this.getAttribute('data-curso-nombre');
+                    const descripcion = this.getAttribute('data-curso-descripcion');
+                    const online = this.getAttribute('data-curso-online') === '1';
+                    const presencial = this.getAttribute('data-curso-presencial') === '1';
+                    const fecha = this.getAttribute('data-curso-fecha');
+                    const sedesStr = this.getAttribute('data-curso-sedes');
+                    const sedesIds = sedesStr ? sedesStr.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id)) : [];
+                    
+                    openEditModal(id, nombre, descripcion, online, presencial, fecha, '', '', sedesIds);
+                });
+            });
+        });
+
         function resetModal() {
             document.getElementById('modalNombre').value = '';
             document.getElementById('modalDescripcion').value = '';
@@ -468,6 +543,12 @@
             document.getElementById('modalDesktop').value = '';
             document.getElementById('modalMobile').value = '';
             document.getElementById('cursoId').value = '';
+            
+            // Clear sedes checkboxes
+            const sedeCheckboxes = document.querySelectorAll('.sede-checkbox');
+            sedeCheckboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
             
             // Reset modal to create mode
             document.getElementById('modalTitle').textContent = 'Agregar Carrera';

@@ -25,6 +25,62 @@ Route::middleware('auth')->group(function () {
         // Rutas de sticky bar
         Route::post('/sticky-bar', [App\Http\Controllers\StickyBarController::class, 'update'])->name('admin.sticky-bar.update');
         Route::get('/carreras', [App\Http\Controllers\CursoController::class, 'index'])->name('admin.carreras');
+        Route::get('/carreras/multimedia', [App\Http\Controllers\CursoController::class, 'multimedia'])->name('admin.carreras.multimedia');
+        Route::post('/carreras/multimedia', [App\Http\Controllers\CursoController::class, 'storeFoto'])->name('admin.carreras.multimedia.store');
+        Route::get('/carreras/multimedia/{id}/data', [App\Http\Controllers\CursoController::class, 'getFotoData'])->name('admin.carreras.multimedia.data');
+        Route::put('/carreras/multimedia/{id}', [App\Http\Controllers\CursoController::class, 'updateFoto'])->name('admin.carreras.multimedia.update');
+        Route::delete('/carreras/multimedia/{id}', [App\Http\Controllers\CursoController::class, 'destroyFoto'])->name('admin.carreras.multimedia.destroy');
+        Route::post('/carreras/multimedia/mover', [App\Http\Controllers\CursoController::class, 'moverFoto'])->name('admin.carreras.multimedia.mover');
+        Route::post('/carreras/multimedia/video', [App\Http\Controllers\CursoController::class, 'updateVideo'])->name('admin.carreras.multimedia.updateVideo');
+        
+        // Rutas de programas
+        Route::get('/programas', [App\Http\Controllers\ProgramaController::class, 'index'])->name('admin.programas');
+        
+        // Rutas de modalidades
+        Route::get('/modalidades', [App\Http\Controllers\ModalidadController::class, 'index'])->name('admin.modalidades');
+        Route::post('/modalidades', [App\Http\Controllers\ModalidadController::class, 'store'])->name('admin.modalidades.store');
+        Route::put('/modalidades/{id}', [App\Http\Controllers\ModalidadController::class, 'update'])->name('admin.modalidades.update');
+        Route::delete('/modalidades/{id}', [App\Http\Controllers\ModalidadController::class, 'destroy'])->name('admin.modalidades.destroy');
+        Route::post('/modalidades/{id}/toggle-activo', [App\Http\Controllers\ModalidadController::class, 'toggleActivo'])->name('admin.modalidades.toggle-activo');
+        Route::get('/modalidades/{id}/data', [App\Http\Controllers\ModalidadController::class, 'getData'])->name('admin.modalidades.data');
+        
+        // Rutas de columnas de modalidades
+        Route::post('/modalidades/columnas', [App\Http\Controllers\ModalidadController::class, 'storeColumna'])->name('admin.modalidades.columnas.store');
+        Route::get('/modalidades/columnas/{id}/data', [App\Http\Controllers\ModalidadController::class, 'getColumnaData'])->name('admin.modalidades.columnas.data');
+        Route::put('/modalidades/columnas/{id}', [App\Http\Controllers\ModalidadController::class, 'updateColumna'])->name('admin.modalidades.columnas.update');
+        Route::delete('/modalidades/columnas/{id}', [App\Http\Controllers\ModalidadController::class, 'destroyColumna'])->name('admin.modalidades.columnas.destroy');
+        Route::post('/modalidades/columnas/mover', [App\Http\Controllers\ModalidadController::class, 'moverColumna'])->name('admin.modalidades.columnas.mover');
+        Route::post('/modalidades/columnas/reordenar', [App\Http\Controllers\ModalidadController::class, 'reordenarColumnas'])->name('admin.modalidades.columnas.reordenar');
+        
+        // Rutas de tipos de modalidades
+        Route::post('/modalidades/tipos', [App\Http\Controllers\ModalidadController::class, 'storeTipo'])->name('admin.modalidades.tipos.store');
+        Route::get('/modalidades/tipos/{id}/data', [App\Http\Controllers\ModalidadController::class, 'getTipoData'])->name('admin.modalidades.tipos.data');
+        Route::put('/modalidades/tipos/{id}', [App\Http\Controllers\ModalidadController::class, 'updateTipo'])->name('admin.modalidades.tipos.update');
+        Route::delete('/modalidades/tipos/{id}', [App\Http\Controllers\ModalidadController::class, 'destroyTipo'])->name('admin.modalidades.tipos.destroy');
+        Route::post('/modalidades/tipos/mover', [App\Http\Controllers\ModalidadController::class, 'moverTipo'])->name('admin.modalidades.tipos.mover');
+        Route::post('/modalidades/tipos/{id}/toggle-activo', [App\Http\Controllers\ModalidadController::class, 'toggleActivoTipo'])->name('admin.modalidades.tipos.toggle-activo');
+        
+        // Rutas de horarios de modalidades
+        Route::post('/modalidades/horarios', [App\Http\Controllers\ModalidadController::class, 'storeHorario'])->name('admin.modalidades.horarios.store');
+        Route::get('/modalidades/horarios/{id}/data', [App\Http\Controllers\ModalidadController::class, 'getHorarioData'])->name('admin.modalidades.horarios.data');
+        Route::put('/modalidades/horarios/{id}', [App\Http\Controllers\ModalidadController::class, 'updateHorario'])->name('admin.modalidades.horarios.update');
+        Route::delete('/modalidades/horarios/{id}', [App\Http\Controllers\ModalidadController::class, 'destroyHorario'])->name('admin.modalidades.horarios.destroy');
+        Route::post('/modalidades/horarios/mover', [App\Http\Controllers\ModalidadController::class, 'moverHorario'])->name('admin.modalidades.horarios.mover');
+        
+        // Rutas de años
+        Route::post('/programas/anios', [App\Http\Controllers\ProgramaController::class, 'storeAnio'])->name('admin.programas.anios.store');
+        Route::get('/programas/anios/{id}/data', [App\Http\Controllers\ProgramaController::class, 'getAnioData'])->name('admin.programas.anios.data');
+        Route::put('/programas/anios/{id}', [App\Http\Controllers\ProgramaController::class, 'updateAnio'])->name('admin.programas.anios.update');
+        Route::delete('/programas/anios/{id}', [App\Http\Controllers\ProgramaController::class, 'destroyAnio'])->name('admin.programas.anios.destroy');
+        Route::post('/programas/anios/mover', [App\Http\Controllers\ProgramaController::class, 'moverAnio'])->name('admin.programas.anios.mover');
+        
+        // Rutas de unidades
+        Route::post('/programas/unidades', [App\Http\Controllers\ProgramaController::class, 'storeUnidad'])->name('admin.programas.unidades.store');
+        Route::get('/programas/unidades/{id}/data', [App\Http\Controllers\ProgramaController::class, 'getUnidadData'])->name('admin.programas.unidades.data');
+        Route::put('/programas/unidades/{id}', [App\Http\Controllers\ProgramaController::class, 'updateUnidad'])->name('admin.programas.unidades.update');
+        Route::delete('/programas/unidades/{id}', [App\Http\Controllers\ProgramaController::class, 'destroyUnidad'])->name('admin.programas.unidades.destroy');
+        Route::post('/programas/unidades/mover', [App\Http\Controllers\ProgramaController::class, 'moverUnidad'])->name('admin.programas.unidades.mover');
+        
         Route::get('/carreras/create', [App\Http\Controllers\CursoController::class, 'create'])->name('admin.carreras.create');
         Route::post('/carreras', [App\Http\Controllers\CursoController::class, 'store'])->name('admin.carreras.store');
         Route::get('/carreras/{id}/edit', [App\Http\Controllers\CursoController::class, 'edit'])->name('admin.carreras.edit');
@@ -42,6 +98,14 @@ Route::middleware('auth')->group(function () {
         Route::put('/beneficios/{id}', [App\Http\Controllers\BeneficioController::class, 'update'])->name('admin.beneficios.update');
         Route::delete('/beneficios/{id}', [App\Http\Controllers\BeneficioController::class, 'destroy'])->name('admin.beneficios.destroy');
         Route::post('/beneficios/mover', [App\Http\Controllers\BeneficioController::class, 'moverBeneficio'])->name('admin.beneficios.mover');
+        
+        // Rutas de FAQs (Dudas)
+        Route::get('/dudas', [App\Http\Controllers\DudaController::class, 'index'])->name('admin.dudas');
+        Route::post('/dudas', [App\Http\Controllers\DudaController::class, 'store'])->name('admin.dudas.store');
+        Route::get('/dudas/{id}/data', [App\Http\Controllers\DudaController::class, 'getData'])->name('admin.dudas.data');
+        Route::put('/dudas/{id}', [App\Http\Controllers\DudaController::class, 'update'])->name('admin.dudas.update');
+        Route::delete('/dudas/{id}', [App\Http\Controllers\DudaController::class, 'destroy'])->name('admin.dudas.destroy');
+        Route::post('/dudas/mover', [App\Http\Controllers\DudaController::class, 'moverDuda'])->name('admin.dudas.mover');
         
         // Rutas de sedes
         Route::get('/sedes', [App\Http\Controllers\SedeController::class, 'index'])->name('admin.sedes');

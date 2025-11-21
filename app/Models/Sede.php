@@ -17,6 +17,7 @@ class Sede extends Model
         'imagen_desktop',
         'imagen_mobile',
         'direccion',
+        'zona',
         'telefono',
         'link_google_maps',
         'link_whatsapp',
@@ -70,5 +71,14 @@ class Sede extends Model
     {
         $maxOrden = static::max('orden');
         return ($maxOrden ?? 0) + 1;
+    }
+
+    /**
+     * Relación muchos a muchos con Cursos
+     */
+    public function cursos()
+    {
+        return $this->belongsToMany(Curso::class, 'curso_sede', 'sede_id', 'curso_id')
+                    ->withTimestamps();
     }
 }

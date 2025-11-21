@@ -221,18 +221,20 @@
                             
                             <div class="carreras-image-container">
                                 <!-- Imagen Desktop -->
-                                @if($curso->ilustracion_desktop)
-                                    <img src="{{ asset('storage/' . $curso->ilustracion_desktop) }}" alt="{{ $curso->nombre }}" class="carreras-image carreras-image-desktop" />
-                                @else
-                                    <img src="/images/desktop/Moto_1.webp" alt="{{ $curso->nombre }}" class="carreras-image carreras-image-desktop" />
-                                @endif
-                                
-                                <!-- Imagen Mobile -->
-                                @if($curso->ilustracion_mobile)
-                                    <img src="{{ asset('storage/' . $curso->ilustracion_mobile) }}" alt="{{ $curso->nombre }}" class="carreras-image carreras-image-mobile" />
-                                @else
-                                    <img src="/images/mobile/moto_mobile.webp" alt="{{ $curso->nombre }}" class="carreras-image carreras-image-mobile" />
-                                @endif
+                                <a href="{{ route('carreras.show', $curso->id) }}" class="carreras-image-link">
+                                    @if($curso->ilustracion_desktop)
+                                        <img src="{{ asset('storage/' . $curso->ilustracion_desktop) }}" alt="{{ $curso->nombre }}" class="carreras-image carreras-image-desktop" />
+                                    @else
+                                        <img src="/images/desktop/Moto_1.webp" alt="{{ $curso->nombre }}" class="carreras-image carreras-image-desktop" />
+                                    @endif
+                                    
+                                    <!-- Imagen Mobile -->
+                                    @if($curso->ilustracion_mobile)
+                                        <img src="{{ asset('storage/' . $curso->ilustracion_mobile) }}" alt="{{ $curso->nombre }}" class="carreras-image carreras-image-mobile" />
+                                    @else
+                                        <img src="/images/mobile/moto_mobile.webp" alt="{{ $curso->nombre }}" class="carreras-image carreras-image-mobile" />
+                                    @endif
+                                </a>
                                 
                                 <!-- Badge Modalidad Desktop -->
                                 <div class="carreras-modalidad-badge carreras-modalidad-badge-desktop">
