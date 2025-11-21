@@ -1758,50 +1758,15 @@ document.addEventListener('DOMContentLoaded', function() {
         on: {
             init: function () {
                 updateFotosProgressBar(this);
-                // Actualizar botones después de que Swiper se inicialice completamente
-                setTimeout(() => {
-                    updateFotosNavigationButtons(this);
-                    updateFotosProgressBar(this);
-                }, 100);
-                // Vincular clics de navegación para forzar actualización inmediata
-                const container = this.el.closest('.fotos-desktop') || this.el.closest('.fotos-carousel-section');
-                if (container) {
-                    const nextBtn = container.querySelector('.fotos-carousel-btn-next');
-                    const prevBtn = container.querySelector('.fotos-carousel-btn-prev');
-                    if (nextBtn) {
-                        nextBtn.addEventListener('click', () => {
-                            setTimeout(() => {
-                                updateFotosProgressBar(this);
-                                updateFotosNavigationButtons(this);
-                            }, 0);
-                        });
-                    }
-                    if (prevBtn) {
-                        prevBtn.addEventListener('click', () => {
-                            setTimeout(() => {
-                                updateFotosProgressBar(this);
-                                updateFotosNavigationButtons(this);
-                            }, 0);
-                        });
-                    }
-                }
+                updateFotosNavigationButtons(this);
+                setTimeout(() => updateFotosProgressBar(this), 50);
             },
             slideChange: function () {
                 updateFotosProgressBar(this);
                 updateFotosNavigationButtons(this);
             },
-            progress: function () {
-                updateFotosProgressBar(this);
-            },
-            setTranslate: function () {
-                updateFotosProgressBar(this);
-            },
-            transitionEnd: function () {
-                updateFotosProgressBar(this);
-            },
             slideChangeTransitionEnd: function () {
                 updateFotosProgressBar(this);
-                updateFotosNavigationButtons(this);
             },
             resize: function () {
                 updateFotosProgressBar(this);
