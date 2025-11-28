@@ -24,7 +24,11 @@ Route::middleware('auth')->group(function () {
         
         // Rutas de sticky bar
         Route::post('/sticky-bar', [App\Http\Controllers\StickyBarController::class, 'update'])->name('admin.sticky-bar.update');
-        Route::get('/carreras', [App\Http\Controllers\CursoController::class, 'index'])->name('admin.carreras');
+        // Ruta antigua redirigida a la nueva vista unificada
+        Route::get('/carreras', function() {
+            return redirect()->route('admin.carreras.test');
+        })->name('admin.carreras');
+        Route::get('/carreras/test', [App\Http\Controllers\CursoController::class, 'test'])->name('admin.carreras.test');
         Route::get('/carreras/multimedia', [App\Http\Controllers\CursoController::class, 'multimedia'])->name('admin.carreras.multimedia');
         Route::post('/carreras/multimedia', [App\Http\Controllers\CursoController::class, 'storeFoto'])->name('admin.carreras.multimedia.store');
         Route::get('/carreras/multimedia/{id}/data', [App\Http\Controllers\CursoController::class, 'getFotoData'])->name('admin.carreras.multimedia.data');
@@ -36,21 +40,17 @@ Route::middleware('auth')->group(function () {
         // Rutas de programas
         Route::get('/programas', [App\Http\Controllers\ProgramaController::class, 'index'])->name('admin.programas');
         
-        // Rutas de modalidades
-        Route::get('/modalidades', [App\Http\Controllers\ModalidadController::class, 'index'])->name('admin.modalidades');
+        // Rutas de modalidades (API - usadas desde test.blade.php)
+        // La vista antigua fue eliminada, redirigir a gestión de carreras
+        Route::get('/modalidades', function() {
+            return redirect()->route('admin.carreras.test');
+        })->name('admin.modalidades');
         Route::post('/modalidades', [App\Http\Controllers\ModalidadController::class, 'store'])->name('admin.modalidades.store');
         Route::put('/modalidades/{id}', [App\Http\Controllers\ModalidadController::class, 'update'])->name('admin.modalidades.update');
         Route::delete('/modalidades/{id}', [App\Http\Controllers\ModalidadController::class, 'destroy'])->name('admin.modalidades.destroy');
         Route::post('/modalidades/{id}/toggle-activo', [App\Http\Controllers\ModalidadController::class, 'toggleActivo'])->name('admin.modalidades.toggle-activo');
         Route::get('/modalidades/{id}/data', [App\Http\Controllers\ModalidadController::class, 'getData'])->name('admin.modalidades.data');
         
-        // Rutas de columnas de modalidades
-        Route::post('/modalidades/columnas', [App\Http\Controllers\ModalidadController::class, 'storeColumna'])->name('admin.modalidades.columnas.store');
-        Route::get('/modalidades/columnas/{id}/data', [App\Http\Controllers\ModalidadController::class, 'getColumnaData'])->name('admin.modalidades.columnas.data');
-        Route::put('/modalidades/columnas/{id}', [App\Http\Controllers\ModalidadController::class, 'updateColumna'])->name('admin.modalidades.columnas.update');
-        Route::delete('/modalidades/columnas/{id}', [App\Http\Controllers\ModalidadController::class, 'destroyColumna'])->name('admin.modalidades.columnas.destroy');
-        Route::post('/modalidades/columnas/mover', [App\Http\Controllers\ModalidadController::class, 'moverColumna'])->name('admin.modalidades.columnas.mover');
-        Route::post('/modalidades/columnas/reordenar', [App\Http\Controllers\ModalidadController::class, 'reordenarColumnas'])->name('admin.modalidades.columnas.reordenar');
         
         // Rutas de tipos de modalidades
         Route::post('/modalidades/tipos', [App\Http\Controllers\ModalidadController::class, 'storeTipo'])->name('admin.modalidades.tipos.store');
@@ -60,12 +60,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/modalidades/tipos/mover', [App\Http\Controllers\ModalidadController::class, 'moverTipo'])->name('admin.modalidades.tipos.mover');
         Route::post('/modalidades/tipos/{id}/toggle-activo', [App\Http\Controllers\ModalidadController::class, 'toggleActivoTipo'])->name('admin.modalidades.tipos.toggle-activo');
         
-        // Rutas de horarios de modalidades
-        Route::post('/modalidades/horarios', [App\Http\Controllers\ModalidadController::class, 'storeHorario'])->name('admin.modalidades.horarios.store');
-        Route::get('/modalidades/horarios/{id}/data', [App\Http\Controllers\ModalidadController::class, 'getHorarioData'])->name('admin.modalidades.horarios.data');
-        Route::put('/modalidades/horarios/{id}', [App\Http\Controllers\ModalidadController::class, 'updateHorario'])->name('admin.modalidades.horarios.update');
-        Route::delete('/modalidades/horarios/{id}', [App\Http\Controllers\ModalidadController::class, 'destroyHorario'])->name('admin.modalidades.horarios.destroy');
-        Route::post('/modalidades/horarios/mover', [App\Http\Controllers\ModalidadController::class, 'moverHorario'])->name('admin.modalidades.horarios.mover');
         
         // Rutas de años
         Route::post('/programas/anios', [App\Http\Controllers\ProgramaController::class, 'storeAnio'])->name('admin.programas.anios.store');
@@ -81,9 +75,14 @@ Route::middleware('auth')->group(function () {
         Route::delete('/programas/unidades/{id}', [App\Http\Controllers\ProgramaController::class, 'destroyUnidad'])->name('admin.programas.unidades.destroy');
         Route::post('/programas/unidades/mover', [App\Http\Controllers\ProgramaController::class, 'moverUnidad'])->name('admin.programas.unidades.mover');
         
-        Route::get('/carreras/create', [App\Http\Controllers\CursoController::class, 'create'])->name('admin.carreras.create');
+        // Rutas antiguas redirigidas a la nueva vista unificada
+        Route::get('/carreras/create', function() {
+            return redirect()->route('admin.carreras.test');
+        })->name('admin.carreras.create');
         Route::post('/carreras', [App\Http\Controllers\CursoController::class, 'store'])->name('admin.carreras.store');
-        Route::get('/carreras/{id}/edit', [App\Http\Controllers\CursoController::class, 'edit'])->name('admin.carreras.edit');
+        Route::get('/carreras/{id}/edit', function($id) {
+            return redirect()->route('admin.carreras.test', ['curso_id' => $id]);
+        })->name('admin.carreras.edit');
         Route::put('/carreras/{id}', [App\Http\Controllers\CursoController::class, 'update'])->name('admin.carreras.update');
         Route::patch('/carreras/{id}/toggle-featured', [App\Http\Controllers\CursoController::class, 'toggleFeatured'])->name('admin.carreras.toggle-featured');
         Route::post('/carreras/mover', [App\Http\Controllers\CursoController::class, 'mover'])->name('admin.carreras.mover');

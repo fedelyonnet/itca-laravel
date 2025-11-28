@@ -907,29 +907,11 @@ body {
     padding: 0;
 }
 
-/* Q4 Left - Imagen */
+/* Q4 Left - Video */
 .q4-left {
     width: clamp(280px, 24vw, 375px);
     height: clamp(350px, 26.4vw, 418px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #02115A;
-    border-radius: clamp(10px, 0.7vw, 14px); /* Mismo corner radius que Q2 */
-    overflow: hidden;
-    position: relative; /* Para posicionar el botón flotante */
-}
-
-.q4-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* Q4 Right - Video */
-.q4-right {
-    width: clamp(280px, 24vw, 375px);
-    height: clamp(350px, 26.4vw, 418px);
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -939,10 +921,36 @@ body {
     position: relative; /* Para posicionar el botón de play */
 }
 
-.q4-video {
+.q4-image {
     width: 100%;
     height: 100%;
+    max-width: 100%;
+    max-height: 100%;
     object-fit: cover;
+    display: block;
+}
+
+/* Q4 Right - Imagen */
+.q4-right {
+    width: clamp(280px, 24vw, 375px);
+    height: clamp(350px, 26.4vw, 418px);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #02115A !important;
+    border-radius: clamp(10px, 0.7vw, 14px); /* Mismo corner radius que Q2 */
+    overflow: hidden;
+    position: relative; /* Para posicionar el botón flotante */
+}
+
+.q4-video {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: cover;
+    display: block;
 }
 
 /* Botón de play del video */
@@ -960,9 +968,12 @@ body {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
     z-index: 10;
     padding: 0;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
 }
 
 .q4-play-button:hover {
@@ -977,9 +988,11 @@ body {
 }
 
 /* Ocultar botón cuando el video está reproduciéndose */
-.q4-video.playing + .q4-play-button {
-    opacity: 0;
-    pointer-events: none;
+.q4-left:has(.q4-video.playing) .q4-play-button,
+.q4-video.playing ~ .q4-play-button {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
 }
 
 /* Botón flotante "¡Ver más promos!" */
@@ -1448,8 +1461,11 @@ section h2 {
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: background-color 0.2s ease;
+        transition: opacity 0.3s ease, visibility 0.3s ease, background-color 0.2s ease;
         z-index: 10;
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
     }
     
     .carousel-play-button:hover {
@@ -1464,8 +1480,10 @@ section h2 {
     }
     
     /* Ocultar botón cuando el video está reproduciéndose */
-    .carousel-video.playing + .carousel-play-button {
-        display: none;
+    .carousel-video.playing ~ .carousel-play-button {
+        opacity: 0 !important;
+        pointer-events: none !important;
+        visibility: hidden !important;
     }
     
     /* Botón "Ver más promos" del carrusel */

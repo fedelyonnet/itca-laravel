@@ -14,11 +14,15 @@ class Modalidad extends Model
         'nombre_linea1',
         'nombre_linea2',
         'texto_info',
+        'columnas_visibles',
+        'horarios_visibles',
         'orden',
         'activo',
     ];
 
     protected $casts = [
+        'columnas_visibles' => 'array',
+        'horarios_visibles' => 'array',
         'activo' => 'boolean',
     ];
 
@@ -38,21 +42,7 @@ class Modalidad extends Model
         return $this->hasMany(ModalidadTipo::class)->orderBy('orden');
     }
 
-    /**
-     * Relación con Horarios
-     */
-    public function horarios()
-    {
-        return $this->hasMany(ModalidadHorario::class)->orderBy('orden');
-    }
 
-    /**
-     * Relación con Columnas
-     */
-    public function columnas()
-    {
-        return $this->hasMany(ModalidadColumna::class)->orderBy('orden');
-    }
 
     /**
      * Scope para ordenar por orden

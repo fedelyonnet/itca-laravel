@@ -23,7 +23,7 @@
     </div>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-[95%] mx-auto sm:px-6 lg:px-8">
             <div class="bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-100">
                     <div class="flex justify-between items-center mb-6">
@@ -46,6 +46,8 @@
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider w-20">Orden</th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Desktop</th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Mobile</th>
+                                        <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Carrera Individual Desktop</th>
+                                        <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Carrera Individual Mobile</th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Nombre</th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Modalidad</th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Se cursa en</th>
@@ -174,6 +176,116 @@
                                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                                                     </svg>
                                                                     <div class="text-sm">Sin imagen mobile</div>
+                                                                    <div class="text-xs text-gray-400">{{ $curso->nombre }}</div>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            
+                                            <!-- Show Desktop Thumbnail -->
+                                            <td class="px-4 py-4">
+                                                <div class="relative group" 
+                                                     x-data="{ showTooltip: false }" 
+                                                     @mouseenter="showTooltip = true" 
+                                                     @mouseleave="showTooltip = false">
+                                                    <div class="w-16 h-16 bg-gray-500 rounded overflow-hidden mx-auto cursor-pointer">
+                                                        @if($curso->imagen_show_desktop)
+                                                            <img src="{{ asset('storage/' . $curso->imagen_show_desktop) }}" 
+                                                                 alt="Show Desktop" 
+                                                                 class="w-full h-full object-cover">
+                                                        @else
+                                                            <div class="flex items-center justify-center h-full text-gray-400">
+                                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                                                </svg>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    
+                                                    <!-- Tooltip con imagen -->
+                                                    <div x-show="showTooltip" 
+                                                         x-cloak
+                                                         x-transition:enter="transition ease-out duration-200"
+                                                         x-transition:enter-start="opacity-0 scale-95"
+                                                         x-transition:enter-end="opacity-100 scale-100"
+                                                         x-transition:leave="transition ease-in duration-150"
+                                                         x-transition:leave-start="opacity-100 scale-100"
+                                                         x-transition:leave-end="opacity-0 scale-95"
+                                                         class="fixed bottom-auto left-1/2 transform -translate-x-1/2 mb-2 bg-white rounded-lg shadow-2xl border border-gray-200 overflow-hidden pointer-events-none"
+                                                         style="z-index: 9999; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                                                        @if($curso->imagen_show_desktop)
+                                                            <div class="relative">
+                                                                <img src="{{ asset('storage/' . $curso->imagen_show_desktop) }}" 
+                                                                     alt="Show Desktop Preview" 
+                                                                     class="max-w-xs max-h-64 object-contain">
+                                                                <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-75 text-white p-3">
+                                                                    <div class="font-medium text-sm">Show Desktop: {{ $curso->nombre }}</div>
+                                                                </div>
+                                                            </div>
+                                                        @else
+                                                            <div class="w-64 h-40 bg-gray-100 flex items-center justify-center">
+                                                                <div class="text-center text-gray-500">
+                                                                    <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                                                    </svg>
+                                                                    <div class="text-sm">Sin imagen show desktop</div>
+                                                                    <div class="text-xs text-gray-400">{{ $curso->nombre }}</div>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            
+                                            <!-- Show Mobile Thumbnail -->
+                                            <td class="px-4 py-4">
+                                                <div class="relative group" 
+                                                     x-data="{ showTooltip: false }" 
+                                                     @mouseenter="showTooltip = true" 
+                                                     @mouseleave="showTooltip = false">
+                                                    <div class="w-16 h-16 bg-gray-500 rounded overflow-hidden mx-auto cursor-pointer">
+                                                        @if($curso->imagen_show_mobile)
+                                                            <img src="{{ asset('storage/' . $curso->imagen_show_mobile) }}" 
+                                                                 alt="Show Mobile" 
+                                                                 class="w-full h-full object-cover">
+                                                        @else
+                                                            <div class="flex items-center justify-center h-full text-gray-400">
+                                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                                                </svg>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    
+                                                    <!-- Tooltip con imagen -->
+                                                    <div x-show="showTooltip" 
+                                                         x-cloak
+                                                         x-transition:enter="transition ease-out duration-200"
+                                                         x-transition:enter-start="opacity-0 scale-95"
+                                                         x-transition:enter-end="opacity-100 scale-100"
+                                                         x-transition:leave="transition ease-in duration-150"
+                                                         x-transition:leave-start="opacity-100 scale-100"
+                                                         x-transition:leave-end="opacity-0 scale-95"
+                                                         class="fixed bottom-auto left-1/2 transform -translate-x-1/2 mb-2 bg-white rounded-lg shadow-2xl border border-gray-200 overflow-hidden pointer-events-none"
+                                                         style="z-index: 9999; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                                                        @if($curso->imagen_show_mobile)
+                                                            <div class="relative">
+                                                                <img src="{{ asset('storage/' . $curso->imagen_show_mobile) }}" 
+                                                                     alt="Show Mobile Preview" 
+                                                                     class="max-w-xs max-h-64 object-contain">
+                                                                <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-75 text-white p-3">
+                                                                    <div class="font-medium text-sm">Show Mobile: {{ $curso->nombre }}</div>
+                                                                </div>
+                                                            </div>
+                                                        @else
+                                                            <div class="w-64 h-40 bg-gray-100 flex items-center justify-center">
+                                                                <div class="text-center text-gray-500">
+                                                                    <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                                                    </svg>
+                                                                    <div class="text-sm">Sin imagen show mobile</div>
                                                                     <div class="text-xs text-gray-400">{{ $curso->nombre }}</div>
                                                                 </div>
                                                             </div>
@@ -311,7 +423,7 @@
     </div>
 
     <!-- Modal para Agregar/Editar Carrera -->
-    <div id="modalAgregarCarrera" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+    <div id="modalAgregarCarrera" class="fixed inset-0 bg-black bg-opacity-50 {{ $errors->any() ? '' : 'hidden' }} z-50">
         <div class="flex items-center justify-center min-h-screen p-2">
             <div class="bg-gray-800 rounded-lg p-4 w-full max-w-lg">
                 <div class="flex justify-between items-center mb-4">
@@ -328,20 +440,22 @@
                     <input type="hidden" id="cursoId" name="curso_id" value="">
                     
                     @if($errors->any())
-                        <div class="bg-red-600 text-white px-4 py-3 rounded mb-4">
+                        <div id="modalErrors" class="bg-red-600 text-white px-4 py-3 rounded mb-4">
                             <ul class="list-disc list-inside">
                                 @foreach($errors->all() as $error)
                                     <li>{{ $error }}</li>
                                 @endforeach
                             </ul>
                         </div>
+                    @else
+                        <div id="modalErrors" class="bg-red-600 text-white px-4 py-3 rounded mb-4 hidden"></div>
                     @endif
                     
                     <div class="space-y-4">
                         <!-- Fila 1: Nombre -->
                         <div>
                             <label class="block text-sm font-medium text-gray-300 mb-2">Nombre del Curso <span class="text-red-400">*</span></label>
-                            <input type="text" id="modalNombre" name="nombre" 
+                            <input type="text" id="modalNombre" name="nombre" value="{{ old('nombre') }}"
                                    class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                         
@@ -350,7 +464,7 @@
                             <label class="block text-sm font-medium text-gray-300 mb-2">Descripción</label>
                             <textarea id="modalDescripcion" name="descripcion" rows="2"
                                       class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                      placeholder="Descripción del curso..."></textarea>
+                                      placeholder="Descripción del curso...">{{ old('descripcion') }}</textarea>
                         </div>
                         
                         <!-- Fila 3: Modalidades (izq) y Fecha (der) -->
@@ -361,11 +475,13 @@
                                 <div class="space-y-2">
                                     <label class="flex items-center">
                                         <input type="checkbox" id="modalOnline" name="modalidad_online" value="1" 
+                                               {{ old('modalidad_online') ? 'checked' : '' }}
                                                class="rounded border-gray-600 bg-gray-700 text-blue-600 focus:ring-blue-500">
                                         <span class="ml-2 text-gray-300">Online</span>
                                     </label>
                                     <label class="flex items-center">
                                         <input type="checkbox" id="modalPresencial" name="modalidad_presencial" value="1" 
+                                               {{ old('modalidad_presencial') ? 'checked' : '' }}
                                                class="rounded border-gray-600 bg-gray-700 text-blue-600 focus:ring-blue-500">
                                         <span class="ml-2 text-gray-300">Presencial</span>
                                     </label>
@@ -376,7 +492,7 @@
                             <!-- Fecha de inicio -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-300 mb-2">Fecha de Inicio <span class="text-red-400">*</span></label>
-                                <input type="date" id="modalFecha" name="fecha_inicio" 
+                                <input type="date" id="modalFecha" name="fecha_inicio" value="{{ old('fecha_inicio') }}"
                                        class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
                         </div>
@@ -390,7 +506,8 @@
                                         <label class="flex items-center py-1">
                                             <input type="checkbox" name="sedes[]" value="{{ $sede->id }}" 
                                                    class="sede-checkbox rounded border-gray-600 bg-gray-700 text-blue-600 focus:ring-blue-500"
-                                                   id="sede_{{ $sede->id }}">
+                                                   id="sede_{{ $sede->id }}"
+                                                   {{ in_array($sede->id, old('sedes', [])) ? 'checked' : '' }}>
                                             <span class="ml-2 text-gray-300 text-sm">{{ $sede->nombre }}</span>
                                         </label>
                                     @endforeach
@@ -416,7 +533,26 @@
                                 <label class="block text-sm font-medium text-gray-300 mb-2">Ilustración Mobile <span class="text-red-400" id="mobileRequired">*</span></label>
                                 <input type="file" id="modalMobile" name="ilustracion_mobile" accept="image/*" 
                                        class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <p class="text-xs text-gray-400 mt-1" id="mobileHelp">Recomendado: 388 × 429 px</p>
+                                <p class="text-xs text-gray-400 mt-1" id="mobileHelp">Recomendado: 386 × 168 px</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Fila 5: Imagen Show Desktop (izq) y Show Mobile (der) -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <!-- Imagen Show Desktop -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Carrera Individual Desktop</label>
+                                <input type="file" id="modalShowDesktop" name="imagen_show_desktop" accept="image/*" 
+                                       class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <p class="text-xs text-gray-400 mt-1" id="showDesktopHelp">Opcional: Imagen para página individual</p>
+                            </div>
+                            
+                            <!-- Imagen Show Mobile -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Carrera Individual Mobile</label>
+                                <input type="file" id="modalShowMobile" name="imagen_show_mobile" accept="image/*" 
+                                       class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <p class="text-xs text-gray-400 mt-1" id="showMobileHelp">Opcional: Imagen para página individual</p>
                             </div>
                         </div>
                     </div>
@@ -447,20 +583,59 @@
         }
 
         function openModal() {
-            // Reset form for new course
-            resetModal();
-            document.getElementById('modalTitle').textContent = 'Agregar Nueva Carrera';
-            document.getElementById('modalForm').action = '{{ route("admin.carreras.store") }}';
-            document.getElementById('modalForm').method = 'POST';
-            document.getElementById('modalSubmitBtn').textContent = 'Agregar Carrera';
-            document.getElementById('desktopRequired').style.display = 'inline';
-            document.getElementById('mobileRequired').style.display = 'inline';
-            document.getElementById('desktopHelp').textContent = 'Recomendado: 768 × 418 px';
-            document.getElementById('mobileHelp').textContent = 'Recomendado: 388 × 429 px';
+            // Check for server-side errors and show as popup
+            const errorContainer = document.getElementById('modalErrors');
+            if (errorContainer && !errorContainer.classList.contains('hidden')) {
+                const errors = Array.from(errorContainer.querySelectorAll('li')).map(li => li.textContent);
+                if (errors.length > 0) {
+                    showValidationModal("Error de validación", errors.join('\n'));
+                    errorContainer.classList.add('hidden');
+                    errorContainer.innerHTML = '';
+                }
+            }
+            
+            // Only reset if there are no old values (no errors)
+            const hasOldValues = @json(old('nombre')) || @json(old('descripcion')) || @json(old('fecha_inicio'));
+            if (!hasOldValues) {
+                resetModal();
+            } else {
+                // Keep old values - only set modal properties
+                document.getElementById('modalTitle').textContent = 'Agregar Nueva Carrera';
+                document.getElementById('modalForm').action = '{{ route("admin.carreras.store") }}';
+                document.getElementById('modalForm').method = 'POST';
+                document.getElementById('modalSubmitBtn').textContent = 'Agregar Carrera';
+                document.getElementById('desktopRequired').style.display = 'inline';
+                document.getElementById('mobileRequired').style.display = 'inline';
+                document.getElementById('desktopHelp').textContent = 'Recomendado: 768 × 418 px';
+                document.getElementById('mobileHelp').textContent = 'Recomendado: 386 × 168 px';
+                
+                // Restore old sedes selections
+                const oldSedes = @json(old('sedes', []));
+                if (oldSedes && oldSedes.length > 0) {
+                    oldSedes.forEach(sedeId => {
+                        const checkbox = document.getElementById(`sede_${sedeId}`);
+                        if (checkbox) {
+                            checkbox.checked = true;
+                        }
+                    });
+                }
+            }
+            
             document.getElementById('modalAgregarCarrera').classList.remove('hidden');
         }
 
         function openEditModal(id, nombre, descripcion, online, presencial, fecha, desktopImg, mobileImg, sedesIds = [], videoUrl = '') {
+            // Check for server-side errors and show as popup
+            const errorContainer = document.getElementById('modalErrors');
+            if (errorContainer && !errorContainer.classList.contains('hidden')) {
+                const errors = Array.from(errorContainer.querySelectorAll('li')).map(li => li.textContent);
+                if (errors.length > 0) {
+                    showValidationModal("Error de validación", errors.join('\n'));
+                    errorContainer.classList.add('hidden');
+                    errorContainer.innerHTML = '';
+                }
+            }
+            
             // Fill form with course data
             document.getElementById('cursoId').value = id;
             document.getElementById('modalNombre').value = nombre;
@@ -488,6 +663,8 @@
             // Clear file inputs
             document.getElementById('modalDesktop').value = '';
             document.getElementById('modalMobile').value = '';
+            document.getElementById('modalShowDesktop').value = '';
+            document.getElementById('modalShowMobile').value = '';
             
             // Update modal for editing
             document.getElementById('modalTitle').textContent = 'Editar Carrera';
@@ -511,7 +688,7 @@
             document.getElementById('desktopRequired').style.display = 'none';
             document.getElementById('mobileRequired').style.display = 'none';
             document.getElementById('desktopHelp').innerHTML = 'Recomendado: 768 × 418 px<br><small class="text-gray-500">Dejar vacío para mantener la imagen actual</small>';
-            document.getElementById('mobileHelp').innerHTML = 'Recomendado: 388 × 429 px<br><small class="text-gray-500">Dejar vacío para mantener la imagen actual</small>';
+            document.getElementById('mobileHelp').innerHTML = 'Recomendado: 386 × 168 px<br><small class="text-gray-500">Dejar vacío para mantener la imagen actual</small>';
             
             document.getElementById('modalAgregarCarrera').classList.remove('hidden');
         }
@@ -535,6 +712,13 @@
         });
 
         function resetModal() {
+            // Hide errors
+            const errorContainer = document.getElementById('modalErrors');
+            if (errorContainer) {
+                errorContainer.classList.add('hidden');
+                errorContainer.innerHTML = '';
+            }
+            
             document.getElementById('modalNombre').value = '';
             document.getElementById('modalDescripcion').value = '';
             document.getElementById('modalOnline').checked = false;
@@ -542,6 +726,8 @@
             document.getElementById('modalFecha').value = '';
             document.getElementById('modalDesktop').value = '';
             document.getElementById('modalMobile').value = '';
+            document.getElementById('modalShowDesktop').value = '';
+            document.getElementById('modalShowMobile').value = '';
             document.getElementById('cursoId').value = '';
             
             // Clear sedes checkboxes
@@ -558,7 +744,7 @@
             document.getElementById('desktopRequired').style.display = 'inline';
             document.getElementById('mobileRequired').style.display = 'inline';
             document.getElementById('desktopHelp').textContent = 'Recomendado: 768 × 418 px';
-            document.getElementById('mobileHelp').textContent = 'Recomendado: 388 × 429 px';
+            document.getElementById('mobileHelp').textContent = 'Recomendado: 386 × 168 px';
             
             // Remove _method input if it exists
             const existingMethod = document.querySelector('input[name="_method"]');
@@ -568,6 +754,12 @@
         }
         
         function closeModal() {
+            // Hide errors when closing modal
+            const errorContainer = document.getElementById('modalErrors');
+            if (errorContainer) {
+                errorContainer.classList.add('hidden');
+                errorContainer.innerHTML = '';
+            }
             document.getElementById('modalAgregarCarrera').classList.add('hidden');
         }
         
@@ -575,6 +767,26 @@
         document.getElementById('modalAgregarCarrera').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeModal();
+            }
+        });
+        
+        // Show server-side errors as popup when page loads if modal has errors
+        document.addEventListener('DOMContentLoaded', function() {
+            const errorContainer = document.getElementById('modalErrors');
+            const hasOldValues = @json(old('nombre')) || @json(old('descripcion')) || @json(old('fecha_inicio'));
+            
+            if (errorContainer && !errorContainer.classList.contains('hidden')) {
+                const errors = Array.from(errorContainer.querySelectorAll('li')).map(li => li.textContent);
+                if (errors.length > 0 && typeof showValidationModal !== 'undefined') {
+                    showValidationModal("Error de validación", errors.join('\n'));
+                    errorContainer.classList.add('hidden');
+                    errorContainer.innerHTML = '';
+                }
+            }
+            
+            // Open modal automatically if there are old values (errors occurred)
+            if (hasOldValues) {
+                openModal();
             }
         });
 

@@ -71,8 +71,8 @@
             <x-responsive-nav-link :href="route('admin.edit-hero')" :active="request()->routeIs('admin.edit-hero')">
                 Editar CMS
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('admin.carreras')" :active="request()->routeIs('admin.carreras')">
-                Carreras
+            <x-responsive-nav-link :href="route('admin.carreras.test')" :active="request()->routeIs('admin.carreras.test')">
+                Gestión de Carreras
             </x-responsive-nav-link>
         </div>
 

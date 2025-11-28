@@ -33,25 +33,11 @@
              role="menu">
             
             <div class="py-1">
-                <a href="{{ route('admin.carreras') }}" 
-                   @keydown.enter="window.location.href = '{{ route('admin.carreras') }}'"
+                <a href="{{ route('admin.carreras.test') }}" 
+                   @keydown.enter="window.location.href = '{{ route('admin.carreras.test') }}'"
                    class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
                    role="menuitem">
                     Gestión de Carreras
-                </a>
-                
-                <a href="{{ route('admin.programas') }}" 
-                   @keydown.enter="window.location.href = '{{ route('admin.programas') }}'"
-                   class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
-                   role="menuitem">
-                    Gestión de Programa
-                </a>
-                
-                <a href="{{ route('admin.modalidades') }}" 
-                   @keydown.enter="window.location.href = '{{ route('admin.modalidades') }}'"
-                   class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
-                   role="menuitem">
-                    Gestión de Modalidades
                 </a>
                 
                 <a href="{{ route('admin.carreras.multimedia') }}" 

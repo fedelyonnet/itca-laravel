@@ -15,6 +15,8 @@ class Curso extends Model
         'featured',
         'ilustracion_desktop',
         'ilustracion_mobile',
+        'imagen_show_desktop',
+        'imagen_show_mobile',
         'orden'
     ];
 

@@ -125,6 +125,22 @@
                         <div class="mobile-carousel">
                             <div class="carousel-track">
                                 <div class="carousel-slide">
+                                    @if($mobileVideo && $mobileVideo->url)
+                                        <video class="carousel-video" autoplay muted loop playsinline preload="auto" disablePictureInPicture controlsList="nodownload nofullscreen noremoteplayback">
+                                            <source src="{{ asset('storage/' . $mobileVideo->url) }}" type="video/mp4">
+                                            Tu navegador no soporta el elemento video.
+                                        </video>
+                                    @else
+                                        <video class="carousel-video" autoplay muted loop playsinline preload="auto" disablePictureInPicture controlsList="nodownload nofullscreen noremoteplayback">
+                                            <source src="/images/mobile/video.mp4" type="video/mp4">
+                                            Tu navegador no soporta el elemento video.
+                                        </video>
+                                    @endif
+                                    <button class="carousel-play-button">
+                                        <img src="/images/desktop/play.png" alt="Play" class="carousel-play-icon" loading="lazy" />
+                                    </button>
+                                </div>
+                                <div class="carousel-slide">
                                     @if($mobileImg1 && $mobileImg1->url)
                                         <img src="{{ asset('storage/' . $mobileImg1->url) }}" alt="Imagen 1" loading="lazy" />
                                     @else
@@ -139,39 +155,19 @@
                                     @endif
                                     <button class="carousel-promo-button">¡Ver más promos!</button>
                                 </div>
-                                <div class="carousel-slide">
-                                    @if($mobileVideo && $mobileVideo->url)
-                                        <video class="carousel-video" muted loop disablePictureInPicture controlsList="nodownload nofullscreen noremoteplayback">
-                                            <source src="{{ asset('storage/' . $mobileVideo->url) }}" type="video/mp4">
-                                            Tu navegador no soporta el elemento video.
-                                        </video>
-                                    @else
-                                        <video class="carousel-video" muted loop disablePictureInPicture controlsList="nodownload nofullscreen noremoteplayback">
-                                            <source src="/images/mobile/video.mp4" type="video/mp4">
-                                            Tu navegador no soporta el elemento video.
-                                        </video>
-                                    @endif
-                                    <button class="carousel-play-button">
-                                        <img src="/images/desktop/play.png" alt="Play" class="carousel-play-icon" loading="lazy" />
-                                    </button>
-                                </div>
                             </div>
                         </div>
                     </div>
                     
                     <div class="hero-quadrant hero-quadrant-4">
                         <div class="q4-left">
-                            <img src="/images/desktop/llavero.png" alt="Llavero ITCA" class="q4-image" loading="lazy" />
-                            <button class="q4-promo-button">¡Ver más promos!</button>
-                        </div>
-                        <div class="q4-right">
                             @if($desktopVideo && $desktopVideo->url)
-                                <video class="q4-video" muted loop disablePictureInPicture controlsList="nodownload nofullscreen noremoteplayback">
+                                <video class="q4-video" autoplay muted loop playsinline preload="auto" disablePictureInPicture controlsList="nodownload nofullscreen noremoteplayback">
                                     <source src="{{ asset('storage/' . $desktopVideo->url) }}" type="video/mp4">
                                     Tu navegador no soporta el elemento video.
                                 </video>
                             @else
-                                <video class="q4-video" muted loop disablePictureInPicture controlsList="nodownload nofullscreen noremoteplayback">
+                                <video class="q4-video" autoplay muted loop playsinline preload="auto" disablePictureInPicture controlsList="nodownload nofullscreen noremoteplayback">
                                     <source src="/images/desktop/video.mp4" type="video/mp4">
                                     Tu navegador no soporta el elemento video.
                                 </video>
@@ -179,6 +175,10 @@
                             <button class="q4-play-button">
                                 <img src="/images/desktop/play.png" alt="Play" class="q4-play-icon" loading="lazy" />
                             </button>
+                        </div>
+                        <div class="q4-right">
+                            <img src="/images/desktop/llavero.png" alt="Llavero ITCA" class="q4-image" loading="lazy" />
+                            <button class="q4-promo-button">¡Ver más promos!</button>
                         </div>
                     </div>
             </div>

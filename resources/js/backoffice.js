@@ -49,14 +49,13 @@ function validateModalidades(event) {
     }
     
     if (errorMessage) {
-        // Show Alpine.js modal
+        // Show popup modal
         showValidationModal("Campos requeridos", errorMessage);
         return false;
     }
     
     // If all fields are OK, submit the form
     form.submit();
-    
     return false;
 }
 

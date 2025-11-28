@@ -29,6 +29,30 @@ class CursoController extends Controller
             'sedes.*' => 'exists:sedes,id',
             'ilustracion_desktop' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'ilustracion_mobile' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'imagen_show_desktop' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'imagen_show_mobile' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+        ], [
+            'nombre.required' => 'El nombre de la carrera es obligatorio.',
+            'nombre.string' => 'El nombre debe ser texto.',
+            'nombre.max' => 'El nombre no debe exceder 255 caracteres.',
+            'descripcion.string' => 'La descripción debe ser texto.',
+            'descripcion.max' => 'La descripción no debe exceder 1000 caracteres.',
+            'fecha_inicio.required' => 'La fecha de inicio es obligatoria.',
+            'fecha_inicio.date' => 'La fecha de inicio debe ser una fecha válida.',
+            'ilustracion_desktop.required' => 'La ilustración desktop es obligatoria.',
+            'ilustracion_desktop.image' => 'La ilustración desktop debe ser una imagen válida.',
+            'ilustracion_desktop.mimes' => 'La ilustración desktop debe ser de tipo: jpeg, png, jpg, gif o webp.',
+            'ilustracion_desktop.max' => 'La ilustración desktop no debe ser mayor a 2048 kilobytes (2MB).',
+            'ilustracion_mobile.required' => 'La ilustración mobile es obligatoria.',
+            'ilustracion_mobile.image' => 'La ilustración mobile debe ser una imagen válida.',
+            'ilustracion_mobile.mimes' => 'La ilustración mobile debe ser de tipo: jpeg, png, jpg, gif o webp.',
+            'ilustracion_mobile.max' => 'La ilustración mobile no debe ser mayor a 2048 kilobytes (2MB).',
+            'imagen_show_desktop.max' => 'La imagen de carrera individual desktop no debe ser mayor a 2048 kilobytes (2MB).',
+            'imagen_show_desktop.image' => 'La imagen de carrera individual desktop debe ser una imagen válida.',
+            'imagen_show_desktop.mimes' => 'La imagen de carrera individual desktop debe ser de tipo: jpeg, png, jpg, gif o webp.',
+            'imagen_show_mobile.max' => 'La imagen de carrera individual mobile no debe ser mayor a 2048 kilobytes (2MB).',
+            'imagen_show_mobile.image' => 'La imagen de carrera individual mobile debe ser una imagen válida.',
+            'imagen_show_mobile.mimes' => 'La imagen de carrera individual mobile debe ser de tipo: jpeg, png, jpg, gif o webp.',
         ]);
 
         // Validar que al menos una modalidad sea seleccionada
@@ -59,7 +83,7 @@ class CursoController extends Controller
             $curso->ilustracion_desktop = $desktopPath;
         } catch (\Exception $e) {
             \Log::error('Error subiendo imagen desktop', ['error' => $e->getMessage()]);
-            return redirect()->back()->withErrors(['ilustracion_desktop' => 'Error al subir la imagen desktop: ' . $e->getMessage()]);
+            return redirect()->back()->withErrors(['ilustracion_desktop' => 'Error al subir la imagen desktop: ' . $e->getMessage()])->withInput();
         }
 
         // Subir ilustración mobile (obligatoria)
@@ -74,7 +98,29 @@ class CursoController extends Controller
             $curso->ilustracion_mobile = $mobilePath;
         } catch (\Exception $e) {
             \Log::error('Error subiendo imagen mobile', ['error' => $e->getMessage()]);
-            return redirect()->back()->withErrors(['ilustracion_mobile' => 'Error al subir la imagen mobile: ' . $e->getMessage()]);
+            return redirect()->back()->withErrors(['ilustracion_mobile' => 'Error al subir la imagen mobile: ' . $e->getMessage()])->withInput();
+        }
+
+        // Subir imagen show desktop (opcional)
+        if ($request->hasFile('imagen_show_desktop')) {
+            try {
+                $showDesktopPath = $request->file('imagen_show_desktop')->store('cursos', 'public');
+                $curso->imagen_show_desktop = $showDesktopPath;
+            } catch (\Exception $e) {
+                \Log::error('Error subiendo imagen show desktop', ['error' => $e->getMessage()]);
+                return redirect()->back()->withErrors(['imagen_show_desktop' => 'Error al subir la imagen show desktop: ' . $e->getMessage()])->withInput();
+            }
+        }
+
+        // Subir imagen show mobile (opcional)
+        if ($request->hasFile('imagen_show_mobile')) {
+            try {
+                $showMobilePath = $request->file('imagen_show_mobile')->store('cursos', 'public');
+                $curso->imagen_show_mobile = $showMobilePath;
+            } catch (\Exception $e) {
+                \Log::error('Error subiendo imagen show mobile', ['error' => $e->getMessage()]);
+                return redirect()->back()->withErrors(['imagen_show_mobile' => 'Error al subir la imagen show mobile: ' . $e->getMessage()])->withInput();
+            }
         }
 
         $curso->save();
@@ -99,59 +145,140 @@ class CursoController extends Controller
 
     public function update(Request $request, $id)
     {
-        $curso = Curso::findOrFail($id);
-        
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'nullable|string|max:1000',
-            'fecha_inicio' => 'required|date',
-            'modalidad_online' => 'nullable',
-            'modalidad_presencial' => 'nullable',
-            'sedes' => 'nullable|array',
-            'sedes.*' => 'exists:sedes,id',
-            'ilustracion_desktop' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'ilustracion_mobile' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-        ]);
+        try {
+            $curso = Curso::findOrFail($id);
+            
+            $request->validate([
+                'nombre' => 'required|string|max:255',
+                'descripcion' => 'nullable|string|max:1000',
+                'fecha_inicio' => 'required|date',
+                'modalidad_online' => 'nullable',
+                'modalidad_presencial' => 'nullable',
+                'sedes' => 'nullable|array',
+                'sedes.*' => 'exists:sedes,id',
+                'ilustracion_desktop' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+                'ilustracion_mobile' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+                'imagen_show_desktop' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+                'imagen_show_mobile' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            ], [
+                'nombre.required' => 'El nombre de la carrera es obligatorio.',
+                'nombre.string' => 'El nombre debe ser texto.',
+                'nombre.max' => 'El nombre no debe exceder 255 caracteres.',
+                'descripcion.string' => 'La descripción debe ser texto.',
+                'descripcion.max' => 'La descripción no debe exceder 1000 caracteres.',
+                'fecha_inicio.required' => 'La fecha de inicio es obligatoria.',
+                'fecha_inicio.date' => 'La fecha de inicio debe ser una fecha válida.',
+                'ilustracion_desktop.image' => 'La ilustración desktop debe ser una imagen válida.',
+                'ilustracion_desktop.mimes' => 'La ilustración desktop debe ser de tipo: jpeg, png, jpg, gif o webp.',
+                'ilustracion_desktop.max' => 'La ilustración desktop no debe ser mayor a 2048 kilobytes (2MB).',
+                'ilustracion_mobile.image' => 'La ilustración mobile debe ser una imagen válida.',
+                'ilustracion_mobile.mimes' => 'La ilustración mobile debe ser de tipo: jpeg, png, jpg, gif o webp.',
+                'ilustracion_mobile.max' => 'La ilustración mobile no debe ser mayor a 2048 kilobytes (2MB).',
+                'imagen_show_desktop.max' => 'La imagen de carrera individual desktop no debe ser mayor a 2048 kilobytes (2MB).',
+                'imagen_show_desktop.image' => 'La imagen de carrera individual desktop debe ser una imagen válida.',
+                'imagen_show_desktop.mimes' => 'La imagen de carrera individual desktop debe ser de tipo: jpeg, png, jpg, gif o webp.',
+                'imagen_show_mobile.max' => 'La imagen de carrera individual mobile no debe ser mayor a 2048 kilobytes (2MB).',
+                'imagen_show_mobile.image' => 'La imagen de carrera individual mobile debe ser una imagen válida.',
+                'imagen_show_mobile.mimes' => 'La imagen de carrera individual mobile debe ser de tipo: jpeg, png, jpg, gif o webp.',
+            ]);
 
-        // Validar que al menos una modalidad sea seleccionada
-        if (!$request->has('modalidad_online') && !$request->has('modalidad_presencial')) {
-            return redirect()->back()->withErrors(['modalidades' => 'Debes seleccionar al menos una modalidad.'])->withInput();
-        }
-
-        $curso->nombre = $request->nombre;
-        $curso->descripcion = $request->descripcion;
-        $curso->modalidad_online = $request->has('modalidad_online');
-        $curso->modalidad_presencial = $request->has('modalidad_presencial');
-        $curso->fecha_inicio = $request->fecha_inicio;
-
-        // Actualizar ilustración desktop si se proporciona
-        if ($request->hasFile('ilustracion_desktop')) {
-            // Eliminar imagen anterior
-            if ($curso->ilustracion_desktop) {
-                Storage::disk('public')->delete($curso->ilustracion_desktop);
+            // Validar que al menos una modalidad sea seleccionada
+            if (!$request->has('modalidad_online') && !$request->has('modalidad_presencial')) {
+                return redirect()->back()->withErrors(['modalidades' => 'Debes seleccionar al menos una modalidad.'])->withInput();
             }
-            $curso->ilustracion_desktop = $request->file('ilustracion_desktop')->store('cursos', 'public');
-        }
 
-        // Actualizar ilustración mobile si se proporciona
-        if ($request->hasFile('ilustracion_mobile')) {
-            // Eliminar imagen anterior
-            if ($curso->ilustracion_mobile) {
-                Storage::disk('public')->delete($curso->ilustracion_mobile);
+            $curso->nombre = $request->nombre;
+            $curso->descripcion = $request->descripcion;
+            $curso->modalidad_online = $request->has('modalidad_online');
+            $curso->modalidad_presencial = $request->has('modalidad_presencial');
+            $curso->fecha_inicio = $request->fecha_inicio;
+            
+            // Validar featured: máximo 2 carreras destacadas
+            $wantsFeatured = $request->has('featured');
+            if ($wantsFeatured && !$curso->featured) {
+                // Está intentando marcar como destacada
+                $featuredCount = Curso::where('featured', true)->where('id', '!=', $curso->id)->count();
+                if ($featuredCount >= 2) {
+                    $errorMessage = 'Solo pueden haber máximo 2 carreras destacadas. Ya hay ' . $featuredCount . ' carreras destacadas.';
+                    if ($request->has('from_test') || str_contains($request->header('Referer') ?? '', 'carreras/test')) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => $errorMessage
+                        ], 422, ['Content-Type' => 'application/json']);
+                    }
+                    return redirect()->back()->withErrors(['featured' => $errorMessage])->withInput();
+                }
             }
-            $curso->ilustracion_mobile = $request->file('ilustracion_mobile')->store('cursos', 'public');
+            $curso->featured = $wantsFeatured;
+
+            // Actualizar ilustración desktop si se proporciona
+            if ($request->hasFile('ilustracion_desktop')) {
+                // Eliminar imagen anterior
+                if ($curso->ilustracion_desktop) {
+                    Storage::disk('public')->delete($curso->ilustracion_desktop);
+                }
+                $curso->ilustracion_desktop = $request->file('ilustracion_desktop')->store('cursos', 'public');
+            }
+
+            // Actualizar ilustración mobile si se proporciona
+            if ($request->hasFile('ilustracion_mobile')) {
+                // Eliminar imagen anterior
+                if ($curso->ilustracion_mobile) {
+                    Storage::disk('public')->delete($curso->ilustracion_mobile);
+                }
+                $curso->ilustracion_mobile = $request->file('ilustracion_mobile')->store('cursos', 'public');
+            }
+
+            // Actualizar imagen show desktop si se proporciona
+            if ($request->hasFile('imagen_show_desktop')) {
+                // Eliminar imagen anterior
+                if ($curso->imagen_show_desktop) {
+                    Storage::disk('public')->delete($curso->imagen_show_desktop);
+                }
+                $curso->imagen_show_desktop = $request->file('imagen_show_desktop')->store('cursos', 'public');
+            }
+
+            // Actualizar imagen show mobile si se proporciona
+            if ($request->hasFile('imagen_show_mobile')) {
+                // Eliminar imagen anterior
+                if ($curso->imagen_show_mobile) {
+                    Storage::disk('public')->delete($curso->imagen_show_mobile);
+                }
+                $curso->imagen_show_mobile = $request->file('imagen_show_mobile')->store('cursos', 'public');
+            }
+
+                $curso->save();
+
+            // Sincronizar sedes
+            if ($request->has('sedes')) {
+                $sedes = is_array($request->sedes) ? $request->sedes : [];
+                $curso->sedes()->sync($sedes);
+            } else {
+                // Si viene de test y no tiene sedes, significa que se deseleccionaron todas
+                if ($request->has('from_test')) {
+                    $curso->sedes()->sync([]);
+                }
+            }
+
+            // Si viene de la vista test, devolver respuesta JSON para AJAX
+            if ($request->has('from_test') || str_contains($request->header('Referer') ?? '', 'carreras/test')) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Información básica guardada correctamente',
+                    'curso_id' => $curso->id
+                ], 200, ['Content-Type' => 'application/json']);
+            }
+
+            return redirect()->route('admin.carreras')->with('success', 'Carrera actualizada correctamente');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            \Log::error('Error al actualizar carrera', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return redirect()->back()->withErrors(['error' => 'Error al actualizar la carrera: ' . $e->getMessage()])->withInput();
         }
-
-        $curso->save();
-
-        // Sincronizar sedes
-        if ($request->has('sedes')) {
-            $curso->sedes()->sync($request->sedes);
-        } else {
-            $curso->sedes()->sync([]);
-        }
-
-        return redirect()->route('admin.carreras')->with('success', 'Carrera actualizada correctamente');
     }
 
     public function toggleFeatured($id)
@@ -308,19 +435,17 @@ class CursoController extends Controller
                 return $sedes->pluck('nombre');
             });
         // Cargar años del programa con sus unidades
-        $anios = $curso->anios()->with('unidades')->orderBy('orden')->get();
-        // Cargar modalidades con sus relaciones (columnas, tipos, horarios)
+        $anios = $curso->anios()->with(['unidades' => function($query) {
+            // Ordenar por el número extraído del campo numero
+            // Extrae el último número del string (ej: "Unidad 1" -> 1, "Unidad 10" -> 10)
+            $query->orderByRaw('CAST(SUBSTRING_INDEX(numero, " ", -1) AS UNSIGNED), numero');
+        }])->orderBy('año')->get();
+        // Cargar modalidades con sus relaciones (tipos)
         $modalidades = $curso->modalidades()
             ->where('activo', true)
             ->with([
-                'columnas' => function($query) {
-                    $query->orderBy('orden');
-                },
                 'tipos' => function($query) {
                     $query->where('activo', true)->orderBy('orden');
-                },
-                'horarios' => function($query) {
-                    $query->orderBy('orden');
                 }
             ])
             ->orderBy('orden')
@@ -339,6 +464,36 @@ class CursoController extends Controller
         // Obtener el video de testimonios (si existe)
         $videoTestimonios = \App\Models\VideoTestimonioCarreraIndividual::first();
         return view('carreras.show', compact('curso', 'partners', 'sedes', 'sedesPorZona', 'anios', 'modalidades', 'testimonios', 'videosMobile', 'dudas', 'fotos', 'videoTestimonios'));
+    }
+
+    public function test()
+    {
+        $carreras = Curso::ordered()->get();
+        $sedes = \App\Models\Sede::ordered()->get();
+        $carreraSeleccionada = null;
+        
+        // Contar carreras destacadas
+        $featuredCount = Curso::where('featured', true)->count();
+        
+        // Si hay un curso_id en la request, cargar ese curso con todas sus relaciones
+        if (request()->has('curso_id') && request('curso_id')) {
+            $carreraSeleccionada = Curso::with([
+                'sedes',
+                'anios' => function($query) {
+                    $query->orderBy('año');
+                },
+                'anios.unidades' => function($query) {
+                    // Ordenar por el número extraído del campo numero
+                    // Extrae el último número del string (ej: "Unidad 1" -> 1, "Unidad 10" -> 10)
+                    $query->orderByRaw('CAST(SUBSTRING_INDEX(numero, " ", -1) AS UNSIGNED), numero');
+                },
+                'modalidades.tipos' => function($query) {
+                    $query->orderBy('orden');
+                }
+            ])->find(request('curso_id'));
+        }
+        
+        return view('admin.carreras.test', compact('carreras', 'sedes', 'carreraSeleccionada', 'featuredCount'));
     }
 
     public function multimedia()

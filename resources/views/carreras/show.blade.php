@@ -95,10 +95,14 @@
                     </div>
                     <div class="carrera-right carrera-show-right">
                         <div class="carrera-image carrera-show-image">
-                            @if($curso->ilustracion_desktop)
+                            @if($curso->imagen_show_desktop)
+                                <img src="{{ asset('storage/' . $curso->imagen_show_desktop) }}" alt="{{ $curso->nombre }}" class="carreras-image-desktop carrera-show-image-desktop" />
+                            @elseif($curso->ilustracion_desktop)
                                 <img src="{{ asset('storage/' . $curso->ilustracion_desktop) }}" alt="{{ $curso->nombre }}" class="carreras-image-desktop carrera-show-image-desktop" />
                             @endif
-                            @if($curso->ilustracion_mobile)
+                            @if($curso->imagen_show_mobile)
+                                <img src="{{ asset('storage/' . $curso->imagen_show_mobile) }}" alt="{{ $curso->nombre }}" class="carreras-image-mobile carrera-show-image-mobile" />
+                            @elseif($curso->ilustracion_mobile)
                                 <img src="{{ asset('storage/' . $curso->ilustracion_mobile) }}" alt="{{ $curso->nombre }}" class="carreras-image-mobile carrera-show-image-mobile" />
                             @endif
                             <div class="carreras-modalidad-badge carreras-modalidad-badge-desktop carrera-show-modalidad-badge">
@@ -201,9 +205,9 @@
                         @php
                             $modalidadSlug = Str::slug(strtolower($modalidad->nombre));
                             $tipos = $modalidad->tipos;
-                            $columnas = $modalidad->columnas;
-                            $horarios = $modalidad->horarios;
-                            $numColumnas = $columnas->count();
+                            $columnas = $modalidad->columnas_visibles ?? [];
+                            $horarios = $modalidad->horarios_visibles ?? [];
+                            $numColumnas = count($columnas);
                             // Determinar la clase CSS según el número de columnas
                             $claseGrid = $numColumnas === 6 ? 'semipresencial' : 'presencial';
                             // Determinar si es semipresencial basándose en el nombre o número de columnas
@@ -225,8 +229,8 @@
                                     </div>
                                     @foreach($columnas as $columna)
                                         <div class="modalidad-icon-item">
-                                            <img src="{{ $columna->icono }}" alt="{{ $columna->nombre }}" class="modalidad-icon">
-                                            <span class="modalidad-icon-text">{{ $columna->nombre }}</span>
+                                            <img src="{{ $columna['icono'] }}" alt="{{ $columna['nombre'] }}" class="modalidad-icon">
+                                            <span class="modalidad-icon-text">{{ $columna['nombre'] }}</span>
                                         </div>
                                     @endforeach
                                     <div class="modalidad-right">
@@ -241,7 +245,7 @@
                                         </div>
                                         @foreach($columnas as $columna)
                                             @php
-                                                $campoDato = $columna->campo_dato;
+                                                $campoDato = $columna['campo_dato'] ?? $columna['campo'] ?? '';
                                                 $valor = $tipo->$campoDato ?? '';
                                                 // Solo dividir en 2 líneas máximo: antes y después de "cada"
                                                 $esMultilinea = strpos($valor, 'cada') !== false;
@@ -304,15 +308,15 @@
                                         @endphp
                                     </div>
                                 @endif
-                                @if($horarios->count() > 0)
+                                @if(count($horarios) > 0)
                                     @foreach($horarios as $horario)
                                         <div class="modalidad-special-cell modalidad-special-cell-right">
-                                            @if($horario->icono)
-                                                <img src="{{ $horario->icono }}" alt="{{ $horario->nombre }}" class="modalidad-special-icon">
+                                            @if($horario['icono'] ?? null)
+                                                <img src="{{ $horario['icono'] }}" alt="{{ $horario['nombre'] }}" class="modalidad-special-icon">
                                             @endif
                                             <div class="modalidad-special-time">
-                                                <span class="modalidad-special-time-label">{{ $horario->nombre }}</span>
-                                                <span class="modalidad-special-time-hours">{{ $horario->hora_inicio }} a {{ $horario->hora_fin }}hs</span>
+                                                <span class="modalidad-special-time-label">{{ $horario['nombre'] }}</span>
+                                                <span class="modalidad-special-time-hours">{{ $horario['hora_inicio'] }} a {{ $horario['hora_fin'] }}hs</span>
                                             </div>
                                         </div>
                                     @endforeach
@@ -330,8 +334,8 @@
                             $tipos = $modalidad->tipos;
                             $primerTipo = $tipos->first();
                             $segundoTipo = $tipos->skip(1)->first();
-                            $columnas = $modalidad->columnas;
-                            $horarios = $modalidad->horarios;
+                            $columnas = $modalidad->columnas_visibles ?? [];
+                            $horarios = $modalidad->horarios_visibles ?? [];
                         @endphp
                         <div class="modalidades-mobile modalidades-mobile-{{ $modalidadSlug }}">
                             <div class="modalidad-mobile-header">
@@ -352,7 +356,7 @@
                                                         <div class="modalidad-mobile-icon-col">
                                                             @foreach($columnas as $columna)
                                                                 <div class="modalidad-mobile-icon-item">
-                                                                    <img src="{{ $columna->icono }}" alt="{{ $columna->nombre }}" class="modalidad-mobile-icon">
+                                                                    <img src="{{ $columna['icono'] }}" alt="{{ $columna['nombre'] }}" class="modalidad-mobile-icon">
                                                                 </div>
                                                             @endforeach
                                                         </div>
@@ -373,7 +377,7 @@
                                                         <div class="modalidad-mobile-data-col">
                                                             @foreach($columnas as $columna)
                                                                 @php
-                                                                    $campoDato = $columna->campo_dato;
+                                                                    $campoDato = $columna['campo_dato'] ?? $columna['campo'] ?? '';
                                                                     $valor = $tipo->$campoDato ?? '';
                                                                 @endphp
                                                                 <div class="modalidad-mobile-data-item">
@@ -432,16 +436,16 @@
                                             @endphp
                                         </div>
                                     @endif
-                                    @if($horarios->count() > 0)
+                                    @if(count($horarios) > 0)
                                         <div class="modalidad-mobile-special-icons">
                                             @foreach($horarios as $horario)
                                                 <div class="modalidad-mobile-special-cell modalidad-mobile-special-cell-right">
-                                                    @if($horario->icono)
-                                                        <img src="{{ $horario->icono }}" alt="{{ $horario->nombre }}" class="modalidad-mobile-special-icon">
+                                                    @if($horario['icono'] ?? null)
+                                                        <img src="{{ $horario['icono'] }}" alt="{{ $horario['nombre'] }}" class="modalidad-mobile-special-icon">
                                                     @endif
                                                     <div class="modalidad-mobile-special-time">
-                                                        <span class="modalidad-mobile-special-time-label">{{ $horario->nombre }}</span>
-                                                        <span class="modalidad-mobile-special-time-hours">{{ $horario->hora_inicio }} a {{ $horario->hora_fin }}hs</span>
+                                                        <span class="modalidad-mobile-special-time-label">{{ $horario['nombre'] }}</span>
+                                                        <span class="modalidad-mobile-special-time-hours">{{ $horario['hora_inicio'] }} a {{ $horario['hora_fin'] }}hs</span>
                                                     </div>
                                                 </div>
                                             @endforeach

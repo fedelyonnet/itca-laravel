@@ -27,7 +27,9 @@ class CursoAnio extends Model
      */
     public function unidades()
     {
-        return $this->hasMany(AnioUnidad::class)->orderBy('orden');
+        // Ordenar por el número extraído del campo numero
+        // Extrae el último número del string (ej: "Unidad 1" -> 1, "Unidad 10" -> 10)
+        return $this->hasMany(AnioUnidad::class)->orderByRaw('CAST(SUBSTRING_INDEX(numero, " ", -1) AS UNSIGNED), numero');
     }
 
     /**

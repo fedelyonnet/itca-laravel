@@ -102,14 +102,65 @@ document.addEventListener('DOMContentLoaded', function() {
     const q4PlayButton = document.querySelector('.q4-play-button');
     
     if (q4Video && q4PlayButton) {
+        let videoStarted = false;
+        let userPausedManually = false; // Flag para saber si el usuario pausó manualmente
+        
+        // Función para intentar reproducir el video (solo al inicio)
+        function tryPlayVideo() {
+            if (q4Video.paused && !videoStarted && !userPausedManually) {
+                q4Video.play().then(() => {
+                    q4Video.classList.add('playing');
+                    videoStarted = true;
+                }).catch(() => {
+                    // Autoplay bloqueado
+                });
+            }
+        }
+        
+        // Intentar reproducir cuando el video esté listo
+        q4Video.addEventListener('loadedmetadata', tryPlayVideo);
+        q4Video.addEventListener('canplay', tryPlayVideo);
+        q4Video.addEventListener('canplaythrough', tryPlayVideo);
+        
+        // Intentar inmediatamente si ya está listo
+        if (q4Video.readyState >= 2) {
+            tryPlayVideo();
+        }
+        
+        // Intentar reproducir cuando el usuario interactúa (solo una vez al inicio)
+        let userInteractionHandled = false;
+        function handleUserInteraction() {
+            if (!userInteractionHandled && q4Video.paused && !userPausedManually) {
+                userInteractionHandled = true;
+                q4Video.play().then(() => {
+                    q4Video.classList.add('playing');
+                    videoStarted = true;
+                }).catch(() => {
+                    // Error
+                });
+            }
+        }
+        
+        // Escuchar eventos de interacción (solo una vez al inicio)
+        window.addEventListener('scroll', handleUserInteraction, { once: true, passive: true });
+        document.addEventListener('click', handleUserInteraction, { once: true });
+        document.addEventListener('touchstart', handleUserInteraction, { once: true, passive: true });
+        document.addEventListener('mousemove', handleUserInteraction, { once: true, passive: true });
+        
         // Función para toggle play/pause
         function toggleVideo() {
             if (q4Video.paused) {
-                q4Video.play();
-                q4Video.classList.add('playing');
+                q4Video.play().then(() => {
+                    q4Video.classList.add('playing');
+                    videoStarted = true;
+                    userPausedManually = false; // Resetear el flag cuando el usuario reproduce manualmente
+                }).catch(() => {
+                    // Silenciar errores de reproducción
+                });
             } else {
                 q4Video.pause();
                 q4Video.classList.remove('playing');
+                userPausedManually = true; // Marcar que el usuario pausó manualmente
             }
         }
         
@@ -120,22 +171,41 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Click en cualquier parte del video para pausar
-        q4Video.addEventListener('click', function() {
+        q4Video.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
             if (!q4Video.paused) {
                 q4Video.pause();
                 q4Video.classList.remove('playing');
+                userPausedManually = true; // Marcar que el usuario pausó manualmente
             }
         });
         
-        // Mostrar botón cuando el video se pausa
+        // Actualizar estado cuando el video se pausa
         q4Video.addEventListener('pause', function() {
             q4Video.classList.remove('playing');
+            // No resetear videoStarted aquí para evitar que se reproduzca automáticamente
         });
         
-        // Ocultar botón cuando el video se reproduce
+        // Actualizar estado cuando el video se reproduce (incluyendo autoplay)
         q4Video.addEventListener('play', function() {
             q4Video.classList.add('playing');
+            videoStarted = true;
         });
+        
+        // Verificar si el video ya está reproduciéndose al cargar (autoplay)
+        if (!q4Video.paused) {
+            q4Video.classList.add('playing');
+            videoStarted = true;
+        }
+        
+        // También verificar después de un pequeño delay por si el autoplay tarda
+        setTimeout(function() {
+            if (!q4Video.paused) {
+                q4Video.classList.add('playing');
+                videoStarted = true;
+            }
+        }, 500);
     }
     
     // ========================================
@@ -482,14 +552,78 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Control de videos en el carrusel
     carouselVideos.forEach((video, index) => {
+        let videoStarted = false;
+        let userPausedManually = false;
+        
+        // Función para intentar reproducir el video (solo al inicio)
+        function tryPlayVideo() {
+            if (video.paused && !videoStarted && !userPausedManually) {
+                video.play().then(() => {
+                    video.classList.add('playing');
+                    videoStarted = true;
+                }).catch(() => {
+                    // Autoplay bloqueado
+                });
+            }
+        }
+        
+        // Intentar reproducir cuando el video esté listo
+        video.addEventListener('loadedmetadata', tryPlayVideo);
+        video.addEventListener('canplay', tryPlayVideo);
+        video.addEventListener('canplaythrough', tryPlayVideo);
+        
+        // Intentar inmediatamente si ya está listo
+        if (video.readyState >= 2) {
+            tryPlayVideo();
+        }
+        
+        // Intentar reproducir cuando el usuario interactúa (solo una vez al inicio)
+        let userInteractionHandled = false;
+        function handleUserInteraction() {
+            if (!userInteractionHandled && video.paused && !userPausedManually) {
+                userInteractionHandled = true;
+                video.play().then(() => {
+                    video.classList.add('playing');
+                    videoStarted = true;
+                }).catch(() => {
+                    // Error
+                });
+            }
+        }
+        
+        // Escuchar eventos de interacción (solo una vez al inicio)
+        window.addEventListener('scroll', handleUserInteraction, { once: true, passive: true });
+        document.addEventListener('click', handleUserInteraction, { once: true });
+        document.addEventListener('touchstart', handleUserInteraction, { once: true, passive: true });
+        
+        // Verificar si el video ya está reproduciéndose al cargar (autoplay)
+        if (!video.paused) {
+            video.classList.add('playing');
+            videoStarted = true;
+        }
+        
+        // También verificar después de un pequeño delay por si el autoplay tarda
+        setTimeout(function() {
+            if (!video.paused) {
+                video.classList.add('playing');
+                videoStarted = true;
+            }
+        }, 500);
+        
         // Función para toggle play/pause
         function toggleVideo() {
             if (video.paused) {
-                video.play();
-                video.classList.add('playing');
+                video.play().then(() => {
+                    video.classList.add('playing');
+                    videoStarted = true;
+                    userPausedManually = false;
+                }).catch(() => {
+                    // Silenciar errores de reproducción
+                });
             } else {
                 video.pause();
                 video.classList.remove('playing');
+                userPausedManually = true;
             }
         }
         
@@ -502,21 +636,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Click en cualquier parte del video para pausar
-        video.addEventListener('click', function() {
+        video.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
             if (!video.paused) {
                 video.pause();
                 video.classList.remove('playing');
+                userPausedManually = true;
             }
         });
         
-        // Mostrar botón cuando el video se pausa
+        // Actualizar estado cuando el video se pausa
         video.addEventListener('pause', function() {
             video.classList.remove('playing');
         });
         
-        // Ocultar botón cuando el video se reproduce
+        // Actualizar estado cuando el video se reproduce
         video.addEventListener('play', function() {
             video.classList.add('playing');
+            videoStarted = true;
             // Pausar otros videos cuando uno se reproduce
             carouselVideos.forEach((otherVideo, otherIndex) => {
                 if (otherIndex !== index && !otherVideo.paused) {

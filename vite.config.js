@@ -9,7 +9,8 @@ export default defineConfig({
                 'resources/css/backoffice.css',
                 'resources/css/public.css',
                 'resources/js/app.js',
-                'resources/js/backoffice.js'
+                'resources/js/backoffice.js',
+                'resources/js/carreras-test.js'
             ],
             refresh: true,
         }),
