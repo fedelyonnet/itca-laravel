@@ -616,14 +616,28 @@
                     
                     <div class="certificacion-card certificacion-card-right">
                         <div class="certificacion-card-right-wrapper">
-                            <div class="certificacion-cert-item">
-                                <img src="/images/desktop/cert-itca.png" alt="Certificado ITCA" class="certificacion-cert-img">
-                                <p class="certificacion-cert-text">Tu diploma será entregado en el <span class="certificacion-cert-highlight">Acto de Graduación</span>, donde celebraremos juntos tu logro.</p>
-                            </div>
-                            <div class="certificacion-cert-item">
-                                <img src="/images/desktop/cert-utn.png" alt="Certificado UTN" class="certificacion-cert-img">
-                                <p class="certificacion-cert-text">Tu <span class="certificacion-cert-highlight">certificación UTN</span> será entregada por correo electrónico.</p>
-                            </div>
+                            @if(isset($certificados) && $certificados && $certificados->certificado_1)
+                                <div class="certificacion-cert-item">
+                                    <img src="{{ asset('storage/' . $certificados->certificado_1) }}" alt="Certificado ITCA" class="certificacion-cert-img">
+                                    <p class="certificacion-cert-text">Tu diploma será entregado en el <span class="certificacion-cert-highlight">Acto de Graduación</span>, donde celebraremos juntos tu logro.</p>
+                                </div>
+                            @else
+                                <div class="certificacion-cert-item">
+                                    <img src="/images/desktop/cert-itca.png" alt="Certificado ITCA" class="certificacion-cert-img">
+                                    <p class="certificacion-cert-text">Tu diploma será entregado en el <span class="certificacion-cert-highlight">Acto de Graduación</span>, donde celebraremos juntos tu logro.</p>
+                                </div>
+                            @endif
+                            @if(isset($certificados) && $certificados && $certificados->certificado_2)
+                                <div class="certificacion-cert-item">
+                                    <img src="{{ asset('storage/' . $certificados->certificado_2) }}" alt="Certificado UTN" class="certificacion-cert-img">
+                                    <p class="certificacion-cert-text">Tu <span class="certificacion-cert-highlight">certificación UTN</span> será entregada por correo electrónico.</p>
+                                </div>
+                            @else
+                                <div class="certificacion-cert-item">
+                                    <img src="/images/desktop/cert-utn.png" alt="Certificado UTN" class="certificacion-cert-img">
+                                    <p class="certificacion-cert-text">Tu <span class="certificacion-cert-highlight">certificación UTN</span> será entregada por correo electrónico.</p>
+                                </div>
+                            @endif
                         </div>
                     </div>
                     
@@ -717,14 +731,28 @@
 
                 <!-- 4. certificacion-card-right -->
                 <div class="certificacion-mobile-card certificacion-mobile-card-right">
-                    <div class="certificacion-mobile-cert-item">
-                        <img src="/images/desktop/cert-itca.png" alt="Certificado ITCA" class="certificacion-mobile-cert-img">
-                        <p class="certificacion-mobile-cert-text">Tu diploma será entregado en el <span class="certificacion-mobile-cert-highlight">Acto de Graduación</span>, donde celebraremos juntos tu logro.</p>
-                    </div>
-                    <div class="certificacion-mobile-cert-item">
-                        <img src="/images/desktop/cert-utn.png" alt="Certificado UTN" class="certificacion-mobile-cert-img">
-                        <p class="certificacion-mobile-cert-text">Tu <span class="certificacion-mobile-cert-highlight">certificación UTN</span> será entregada por correo electrónico.</p>
-                    </div>
+                    @if(isset($certificados) && $certificados && $certificados->certificado_1)
+                        <div class="certificacion-mobile-cert-item">
+                            <img src="{{ asset('storage/' . $certificados->certificado_1) }}" alt="Certificado ITCA" class="certificacion-mobile-cert-img">
+                            <p class="certificacion-mobile-cert-text">Tu diploma será entregado en el <span class="certificacion-mobile-cert-highlight">Acto de Graduación</span>, donde celebraremos juntos tu logro.</p>
+                        </div>
+                    @else
+                        <div class="certificacion-mobile-cert-item">
+                            <img src="/images/desktop/cert-itca.png" alt="Certificado ITCA" class="certificacion-mobile-cert-img">
+                            <p class="certificacion-mobile-cert-text">Tu diploma será entregado en el <span class="certificacion-mobile-cert-highlight">Acto de Graduación</span>, donde celebraremos juntos tu logro.</p>
+                        </div>
+                    @endif
+                    @if(isset($certificados) && $certificados && $certificados->certificado_2)
+                        <div class="certificacion-mobile-cert-item">
+                            <img src="{{ asset('storage/' . $certificados->certificado_2) }}" alt="Certificado UTN" class="certificacion-mobile-cert-img">
+                            <p class="certificacion-mobile-cert-text">Tu <span class="certificacion-mobile-cert-highlight">certificación UTN</span> será entregada por correo electrónico.</p>
+                        </div>
+                    @else
+                        <div class="certificacion-mobile-cert-item">
+                            <img src="/images/desktop/cert-utn.png" alt="Certificado UTN" class="certificacion-mobile-cert-img">
+                            <p class="certificacion-mobile-cert-text">Tu <span class="certificacion-mobile-cert-highlight">certificación UTN</span> será entregada por correo electrónico.</p>
+                        </div>
+                    @endif
                 </div>
 
                 <!-- 5. certificacion-card-full -->

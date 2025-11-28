@@ -463,7 +463,9 @@ class CursoController extends Controller
         $fotos = FotosCarrera::ordered()->get();
         // Obtener el video de testimonios (si existe)
         $videoTestimonios = \App\Models\VideoTestimonioCarreraIndividual::first();
-        return view('carreras.show', compact('curso', 'partners', 'sedes', 'sedesPorZona', 'anios', 'modalidades', 'testimonios', 'videosMobile', 'dudas', 'fotos', 'videoTestimonios'));
+        // Obtener los certificados (si existen)
+        $certificados = \App\Models\CertificadoCarrera::first();
+        return view('carreras.show', compact('curso', 'partners', 'sedes', 'sedesPorZona', 'anios', 'modalidades', 'testimonios', 'videosMobile', 'dudas', 'fotos', 'videoTestimonios', 'certificados'));
     }
 
     public function test()
@@ -500,7 +502,8 @@ class CursoController extends Controller
     {
         $fotos = FotosCarrera::ordered()->get();
         $videoTestimonios = \App\Models\VideoTestimonioCarreraIndividual::first();
-        return view('admin.carreras.multimedia', compact('fotos', 'videoTestimonios'));
+        $certificados = \App\Models\CertificadoCarrera::first();
+        return view('admin.carreras.multimedia', compact('fotos', 'videoTestimonios', 'certificados'));
     }
 
     public function storeFoto(Request $request)
@@ -640,7 +643,11 @@ class CursoController extends Controller
             $videoTestimonio = \App\Models\VideoTestimonioCarreraIndividual::first();
             
             if (!$videoTestimonio) {
-                // Crear el primer registro
+                // Crear el primer registro solo si hay video o URL
+                if (!$request->hasFile('video') && (!$request->input('url') || $request->input('url') === '#')) {
+                    throw new \Exception('Debes proporcionar un video o una URL');
+                }
+                
                 $videoTestimonio = new \App\Models\VideoTestimonioCarreraIndividual();
                 $videoTestimonio->url = $request->input('url', '#');
             }
@@ -660,13 +667,95 @@ class CursoController extends Controller
                 }
             }
 
-            // Actualizar URL siempre
-            $videoTestimonio->url = $request->input('url', '#');
+            // Actualizar URL siempre (incluso si es solo para actualizar la URL)
+            $url = $request->input('url');
+            if ($url !== null) {
+                $videoTestimonio->url = $url ?: '#';
+            }
+            
             $videoTestimonio->save();
+
+            // Si viene de AJAX (modal), devolver JSON
+            if ($request->ajax() || $request->wantsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Video actualizado exitosamente.'
+                ]);
+            }
 
             return redirect()->route('admin.carreras.multimedia')->with('success', 'Video actualizado exitosamente.');
         } catch (\Exception $e) {
+            // Si viene de AJAX, devolver JSON con error
+            if ($request->ajax() || $request->wantsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error al actualizar el video: ' . $e->getMessage()
+                ], 422);
+            }
+            
             return redirect()->route('admin.carreras.multimedia')->with('error', 'Error al actualizar el video. Por favor, intenta nuevamente.');
         }
+    }
+
+    public function updateCertificados(Request $request)
+    {
+        $request->validate([
+            'certificado_1' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'certificado_2' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+        ]);
+
+        // Obtener o crear el único registro
+        $certificados = \App\Models\CertificadoCarrera::first();
+        
+        if (!$certificados) {
+            $certificados = new \App\Models\CertificadoCarrera();
+        }
+
+        // Actualizar certificado_1 si se proporciona
+        if ($request->hasFile('certificado_1')) {
+            // Eliminar imagen anterior si existe
+            if ($certificados->certificado_1 && Storage::disk('public')->exists($certificados->certificado_1)) {
+                Storage::disk('public')->delete($certificados->certificado_1);
+            }
+            
+            $imagenPath = $request->file('certificado_1')->store('certificados_carrera', 'public');
+            $certificados->certificado_1 = $imagenPath;
+        }
+
+        // Actualizar certificado_2 si se proporciona
+        if ($request->hasFile('certificado_2')) {
+            // Eliminar imagen anterior si existe
+            if ($certificados->certificado_2 && Storage::disk('public')->exists($certificados->certificado_2)) {
+                Storage::disk('public')->delete($certificados->certificado_2);
+            }
+            
+            $imagenPath = $request->file('certificado_2')->store('certificados_carrera', 'public');
+            $certificados->certificado_2 = $imagenPath;
+        }
+
+        $certificados->save();
+
+        return redirect()->route('admin.carreras.multimedia')->with('success', 'Certificados actualizados exitosamente.');
+    }
+
+    public function deleteCertificado($numero)
+    {
+        $certificados = \App\Models\CertificadoCarrera::first();
+        
+        if (!$certificados) {
+            return redirect()->route('admin.carreras.multimedia')->with('error', 'No hay certificados para eliminar.');
+        }
+
+        $campo = 'certificado_' . $numero;
+        
+        // Eliminar imagen del storage
+        if ($certificados->$campo && Storage::disk('public')->exists($certificados->$campo)) {
+            Storage::disk('public')->delete($certificados->$campo);
+        }
+        
+        $certificados->$campo = null;
+        $certificados->save();
+
+        return redirect()->route('admin.carreras.multimedia')->with('success', 'Certificado eliminado exitosamente.');
     }
 }

@@ -14167,4 +14167,37 @@ html {
     .requisitos-cursar-card .cursar-item:nth-child(4) {
         justify-self: stretch;
     }
+    
+    /* Estilos para cursar-hover en mobile */
+    .cursar-hover {
+        font-size: clamp(10px, calc(10px + (100vw - 320px) * 0.018), 14px);
+        gap: 2px;
+        padding: 4px;
+    }
+    
+    .cursar-hover span {
+        line-height: 1.2;
+        font-size: clamp(10px, calc(10px + (100vw - 320px) * 0.018), 14px);
+    }
+    
+    /* Para múltiples sedes, ajustar el tamaño de fuente */
+    .cursar-hover-multi {
+        font-size: clamp(9px, calc(9px + (100vw - 320px) * 0.015), 12px);
+    }
+    
+    .cursar-hover-multi span {
+        font-size: clamp(9px, calc(9px + (100vw - 320px) * 0.015), 12px);
+        line-height: 1.1;
+    }
+    
+    /* En mobile, usar :active en lugar de :hover para touch */
+    .requisitos-cursar-card .cursar-item:active .cursar-label,
+    .requisitos-cursar-card .cursar-item.touched .cursar-label {
+        display: none;
+    }
+    
+    .requisitos-cursar-card .cursar-item:active .cursar-hover,
+    .requisitos-cursar-card .cursar-item.touched .cursar-hover {
+        display: flex;
+    }
 }

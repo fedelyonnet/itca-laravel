@@ -36,6 +36,8 @@ Route::middleware('auth')->group(function () {
         Route::delete('/carreras/multimedia/{id}', [App\Http\Controllers\CursoController::class, 'destroyFoto'])->name('admin.carreras.multimedia.destroy');
         Route::post('/carreras/multimedia/mover', [App\Http\Controllers\CursoController::class, 'moverFoto'])->name('admin.carreras.multimedia.mover');
         Route::post('/carreras/multimedia/video', [App\Http\Controllers\CursoController::class, 'updateVideo'])->name('admin.carreras.multimedia.updateVideo');
+        Route::post('/carreras/multimedia/certificados', [App\Http\Controllers\CursoController::class, 'updateCertificados'])->name('admin.carreras.multimedia.updateCertificados');
+        Route::delete('/carreras/multimedia/certificado/{numero}', [App\Http\Controllers\CursoController::class, 'deleteCertificado'])->name('admin.carreras.multimedia.deleteCertificado');
         
         // Rutas de programas
         Route::get('/programas', [App\Http\Controllers\ProgramaController::class, 'index'])->name('admin.programas');
