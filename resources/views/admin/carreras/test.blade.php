@@ -1,6 +1,23 @@
 <x-app-layout>
     @push('head')
         @vite(['resources/js/carreras-test.js'])
+        <!-- Flatpickr CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <!-- Flatpickr JS -->
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <!-- Flatpickr Spanish Locale -->
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+        <style>
+            /* Ocultar flechas del input number readonly */
+            .orden-readonly::-webkit-inner-spin-button,
+            .orden-readonly::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+            .orden-readonly {
+                -moz-appearance: textfield;
+            }
+        </style>
     @endpush
     
     <!-- Variable global para pasar datos desde Blade a Alpine -->
@@ -97,7 +114,10 @@
                             </form>
                             <button 
                                 @click="nuevaCarrera()"
-                                class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-colors"
+                                :disabled="carreraId !== '' || modoCrear"
+                                :class="(carreraId !== '' || modoCrear) 
+                                    ? 'bg-gray-500 cursor-not-allowed text-gray-300 px-4 py-2 rounded-md transition-colors' 
+                                    : 'bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-colors'"
                             >
                                 + Nueva Carrera
                             </button>
@@ -160,7 +180,6 @@
                                             <input 
                                                 type="text" 
                                                 x-model="formData.nombre"
-                                                required
                                                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                                 placeholder="Ej: Ingeniería en Sistemas"
                                             >
@@ -178,17 +197,32 @@
                                             ></textarea>
                                         </div>
 
-                                        <div class="grid grid-cols-2 gap-4">
+                                        <div class="grid grid-cols-3 gap-4">
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-300 mb-2">
                                                     Fecha de Inicio <span class="text-red-400">*</span>
                                                 </label>
-                                                <input 
-                                                    type="date" 
-                                                    x-model="formData.fecha_inicio"
-                                                    required
-                                                    class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                                >
+                                                <div class="relative">
+                                                    <input 
+                                                        type="text" 
+                                                        id="fecha_inicio_input"
+                                                        x-model="formData.fecha_inicio"
+                                                        x-ref="fechaInput"
+                                                        x-init="initDatePicker($refs.fechaInput)"
+                                                        placeholder="dd/mm/aaaa"
+                                                        class="w-full px-3 py-2 pr-10 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                    >
+                                                    <button 
+                                                        type="button"
+                                                        x-ref="fechaIcon"
+                                                        @click="if($refs.fechaInput._flatpickr) $refs.fechaInput._flatpickr.open()"
+                                                        class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-300 cursor-pointer"
+                                                    >
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                                        </svg>
+                                                    </button>
+                                                </div>
                                             </div>
 
                                             <div>
@@ -198,9 +232,26 @@
                                                 <input 
                                                     type="number" 
                                                     x-model="formData.orden"
-                                                    min="1"
-                                                    class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                    readonly
+                                                    class="w-full px-3 py-2 bg-gray-600 border border-gray-600 rounded-md text-gray-400 cursor-not-allowed orden-readonly"
+                                                    style="cursor: not-allowed;"
                                                 >
+                                            </div>
+
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-300 mb-2">
+                                                    &nbsp;
+                                                </label>
+                                                <button 
+                                                    type="button"
+                                                    @click="abrirModalOrden()"
+                                                    :disabled="modoCrear"
+                                                    :class="modoCrear 
+                                                        ? 'w-full px-4 py-2 bg-gray-500 cursor-not-allowed text-gray-300 rounded-md transition-colors text-sm font-medium' 
+                                                        : 'w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors text-sm font-medium'"
+                                                >
+                                                    Modificar Orden
+                                                </button>
                                             </div>
                                         </div>
 
@@ -939,5 +990,42 @@
     
     @push('head')
         @vite(['resources/js/carreras-test.js'])
+        <style>
+            /* Ocultar flechas del input number readonly */
+            .orden-readonly::-webkit-inner-spin-button,
+            .orden-readonly::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+            .orden-readonly {
+                -moz-appearance: textfield;
+            }
+        </style>
     @endpush
+
+    <!-- Modal para Reordenar Carreras -->
+    <div id="modalOrdenCarreras" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col">
+            <div class="p-6 border-b border-gray-700">
+                <h3 class="text-xl font-bold text-white">Modificar Orden de Carreras</h3>
+                <p class="text-sm text-gray-400 mt-1">Reordena las carreras usando los botones ↑ y ↓</p>
+            </div>
+            
+            <div class="p-6 overflow-y-auto flex-1">
+                <div id="listaCarrerasOrden" class="space-y-2">
+                    <!-- Las carreras se cargarán aquí dinámicamente -->
+                </div>
+            </div>
+            
+            <div class="p-6 border-t border-gray-700 flex justify-end">
+                <button 
+                    type="button"
+                    onclick="cerrarModalOrden()"
+                    class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md transition-colors"
+                >
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
 </x-app-layout>

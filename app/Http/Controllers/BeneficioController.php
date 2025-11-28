@@ -71,13 +71,16 @@ class BeneficioController extends Controller
 
     public function show(Beneficio $beneficio)
     {
-        return view('admin.beneficios.show', compact('beneficio'));
+        // Redirigir a la vista principal de beneficios
+        // La funcionalidad de mostrar/editar se maneja desde la vista principal con modales
+        return redirect()->route('admin.beneficios');
     }
 
     public function edit($id)
     {
-        $beneficio = Beneficio::findOrFail($id);
-        return view('admin.beneficios.edit', compact('beneficio'));
+        // Redirigir a la vista principal de beneficios
+        // La funcionalidad de editar se maneja desde la vista principal con modales
+        return redirect()->route('admin.beneficios');
     }
 
     public function getData($id)

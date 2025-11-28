@@ -308,17 +308,21 @@
                                         @endphp
                                     </div>
                                 @endif
-                                @if(count($horarios) > 0)
-                                    @foreach($horarios as $horario)
+                                @php
+                                    // Filtrar solo horarios que tengan horas no vacías
+                                    $horariosConHoras = array_filter($horarios ?? [], function($horario) {
+                                        return isset($horario['horas']) && trim($horario['horas']) !== '';
+                                    });
+                                @endphp
+                                @if(count($horariosConHoras) > 0)
+                                    @foreach($horariosConHoras as $horario)
                                         <div class="modalidad-special-cell modalidad-special-cell-right">
                                             @if($horario['icono'] ?? null)
                                                 <img src="{{ $horario['icono'] }}" alt="{{ $horario['nombre'] }}" class="modalidad-special-icon">
                                             @endif
                                             <div class="modalidad-special-time">
                                                 <span class="modalidad-special-time-label">{{ $horario['nombre'] }}</span>
-                                                @if(isset($horario['horas']) && trim($horario['horas']) !== '')
-                                                    <span class="modalidad-special-time-hours">{{ $horario['horas'] }}</span>
-                                                @endif
+                                                <span class="modalidad-special-time-hours">{{ $horario['horas'] }}</span>
                                             </div>
                                         </div>
                                     @endforeach
@@ -438,18 +442,22 @@
                                             @endphp
                                         </div>
                                     @endif
-                                    @if(count($horarios) > 0)
+                                    @php
+                                        // Filtrar solo horarios que tengan horas no vacías (versión mobile)
+                                        $horariosConHorasMobile = array_filter($horarios ?? [], function($horario) {
+                                            return isset($horario['horas']) && trim($horario['horas']) !== '';
+                                        });
+                                    @endphp
+                                    @if(count($horariosConHorasMobile) > 0)
                                         <div class="modalidad-mobile-special-icons">
-                                            @foreach($horarios as $horario)
+                                            @foreach($horariosConHorasMobile as $horario)
                                                 <div class="modalidad-mobile-special-cell modalidad-mobile-special-cell-right">
                                                     @if($horario['icono'] ?? null)
                                                         <img src="{{ $horario['icono'] }}" alt="{{ $horario['nombre'] }}" class="modalidad-mobile-special-icon">
                                                     @endif
                                                     <div class="modalidad-mobile-special-time">
                                                         <span class="modalidad-mobile-special-time-label">{{ $horario['nombre'] }}</span>
-                                                        @if(isset($horario['horas']) && trim($horario['horas']) !== '')
-                                                            <span class="modalidad-mobile-special-time-hours">{{ $horario['horas'] }}</span>
-                                                        @endif
+                                                        <span class="modalidad-mobile-special-time-hours">{{ $horario['horas'] }}</span>
                                                     </div>
                                                 </div>
                                             @endforeach

@@ -28,8 +28,8 @@
             <div class="bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-100">
                     <div class="mb-6">
-                        <h1 class="text-2xl font-bold">Edición multimedia</h1>
-                    </div>
+                            <h1 class="text-2xl font-bold">Edición multimedia</h1>
+                        </div>
 
                     <!-- Grid de dos columnas: Fotos (izquierda) y Video + Certificados (derecha) -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
@@ -38,10 +38,10 @@
                             <div class="flex justify-between items-center mb-4">
                                 <h3 class="text-lg font-semibold text-gray-100">Fotos de Carreras</h3>
                                 <button onclick="openModal()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-md transition-colors text-sm">
-                                    Agregar Foto
-                                </button>
-                            </div>
-                            @if($fotos->count() > 0)
+                            Agregar Foto
+                        </button>
+                    </div>
+                    @if($fotos->count() > 0)
                                 <div class="overflow-x-auto w-full">
                                     <table class="w-full divide-y divide-gray-700">
                                     <thead class="bg-gray-800">
@@ -159,19 +159,19 @@
                                         </tr>
                                     @endforeach
                                 </tbody>
-                                </table>
-                            </div>
-                        @else
-                            <div class="text-center py-8">
-                                <svg class="mx-auto h-12 w-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                                <h3 class="mt-2 text-sm font-medium text-gray-200">No hay fotos</h3>
-                                <p class="mt-1 text-sm text-gray-300">Comienza agregando tu primera foto.</p>
-                            </div>
-                            @endif
+                            </table>
                         </div>
-                        
+                    @else
+                        <div class="text-center py-8">
+                            <svg class="mx-auto h-12 w-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            <h3 class="mt-2 text-sm font-medium text-gray-200">No hay fotos</h3>
+                            <p class="mt-1 text-sm text-gray-300">Comienza agregando tu primera foto.</p>
+                        </div>
+                    @endif
+                        </div>
+                    
                         <!-- Paneles Derechos: Video de Testimonios y Certificados -->
                         <div class="flex flex-col gap-6 h-full">
                             <!-- Panel de Video de Testimonios (Arriba) -->
@@ -188,7 +188,7 @@
                                 </div>
                                 
                                 @if($videoTestimonios && $videoTestimonios->video)
-                                    <div>
+                                <div>
                                         <p class="text-sm text-gray-400 mb-2">Video actual:</p>
                                         <video src="{{ asset('storage/' . $videoTestimonios->video) }}" controls class="max-w-full h-48 rounded" style="max-height: 200px;"></video>
                                         @if($videoTestimonios->url && $videoTestimonios->url !== '#')
@@ -202,7 +202,7 @@
                                         </svg>
                                         <h3 class="mt-2 text-sm font-medium text-gray-200">No hay video</h3>
                                         <p class="mt-1 text-sm text-gray-300">Comienza agregando un video de testimonios.</p>
-                                    </div>
+                                </div>
                                 @endif
                             </div>
                             
@@ -263,10 +263,10 @@
                                         @else
                                             <div class="w-full h-32 bg-gray-600 rounded flex items-center justify-center">
                                                 <p class="text-xs text-gray-400">Sin imagen</p>
-                                            </div>
-                                        @endif
-                                    </div>
-                                    
+                                </div>
+                            @endif
+                            </div>
+                            
                                     <!-- Certificado UTN -->
                                     <div class="bg-gray-800 rounded-lg p-4">
                                         <div class="flex justify-between items-center mb-2">
@@ -292,10 +292,10 @@
                                                           class="inline">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" 
+                                <button type="submit" 
                                                                 class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs transition-colors">
                                                             Eliminar
-                                                        </button>
+                                </button>
                                                     </form>
                                                 </div>
                                                 <!-- Tooltip con imagen -->
@@ -853,18 +853,18 @@
                     // Remover cualquier listener previo temporalmente
                     form.removeEventListener('submit', submitHandler);
                     
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        document.getElementById('previewVideo').src = e.target.result;
-                        document.getElementById('videoPreview').classList.remove('hidden');
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewVideo').src = e.target.result;
+                    document.getElementById('videoPreview').classList.remove('hidden');
                         document.getElementById('currentVideoDiv').classList.add('hidden');
                     };
                     reader.onerror = function() {
                         console.error('Error al leer el archivo');
-                    };
-                    reader.readAsDataURL(input.files[0]);
-                }
+                };
+                reader.readAsDataURL(input.files[0]);
             }
+        }
         }
 
         // Cerrar modal de video al hacer clic fuera (solo en el fondo, no en el contenido)
@@ -1013,7 +1013,7 @@
                 }
                 const contentType = response.headers.get('content-type');
                 if (contentType && contentType.includes('application/json')) {
-                    return response.json();
+                return response.json();
                 } else {
                     throw new Error('Respuesta inesperada del servidor');
                 }

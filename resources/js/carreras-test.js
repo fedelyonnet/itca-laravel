@@ -460,6 +460,26 @@ function deleteModalidadFromTest(id) {
 
 // ========== ALPINE.JS COMPONENTS ==========
 
+// Función helper para formatear fecha de aaaa-mm-dd a dd/mm/aaaa
+function formatearFechaParaMostrar(fechaISO) {
+    if (!fechaISO) return '';
+    const fecha = new Date(fechaISO);
+    if (isNaN(fecha.getTime())) return '';
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const año = fecha.getFullYear();
+    return `${dia}/${mes}/${año}`;
+}
+
+// Función helper para convertir fecha de dd/mm/aaaa a aaaa-mm-dd
+function convertirFechaParaBackend(fechaFormateada) {
+    if (!fechaFormateada || !fechaFormateada.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
+        return fechaFormateada; // Si no tiene el formato esperado, devolverlo tal cual
+    }
+    const [dia, mes, año] = fechaFormateada.split('/');
+    return `${año}-${mes}-${dia}`;
+}
+
 // Componente Alpine.js para gestionar carreras
 function carreraManager() {
     return {
@@ -504,7 +524,7 @@ function carreraManager() {
                 this.formData = {
                     nombre: carrera.nombre || '',
                     descripcion: carrera.descripcion || '',
-                    fecha_inicio: carrera.fecha_inicio ? new Date(carrera.fecha_inicio).toISOString().split('T')[0] : '',
+                    fecha_inicio: carrera.fecha_inicio ? formatearFechaParaMostrar(carrera.fecha_inicio) : '',
                     orden: carrera.orden || 1,
                     modalidad_online: carrera.modalidad_online || false,
                     modalidad_presencial: carrera.modalidad_presencial || false,
@@ -609,6 +629,17 @@ function carreraManager() {
         },
 
         async guardarBasico() {
+            // Validar campos obligatorios antes de enviar
+            if (!this.formData.nombre || this.formData.nombre.trim() === '') {
+                showNotify('error', 'El nombre de la carrera es obligatorio');
+                return;
+            }
+            
+            if (!this.formData.fecha_inicio || this.formData.fecha_inicio.trim() === '') {
+                showNotify('error', 'La fecha de inicio es obligatoria');
+                return;
+            }
+            
             if (!this.formData.modalidad_online && !this.formData.modalidad_presencial) {
                 showNotify('error', 'Debes seleccionar al menos una modalidad');
                 return;
@@ -630,11 +661,21 @@ function carreraManager() {
             const formData = new FormData();
             formData.append('nombre', this.formData.nombre);
             formData.append('descripcion', this.formData.descripcion);
-            formData.append('fecha_inicio', this.formData.fecha_inicio);
+            // Convertir fecha de dd/mm/aaaa a aaaa-mm-dd para el backend
+            const fechaParaBackend = convertirFechaParaBackend(this.formData.fecha_inicio);
+            
+            // Validar que la fecha convertida sea válida
+            if (!fechaParaBackend || fechaParaBackend.trim() === '' || !fechaParaBackend.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                showNotify('error', 'La fecha de inicio debe tener el formato dd/mm/aaaa');
+                return;
+            }
+            
+            formData.append('fecha_inicio', fechaParaBackend);
             formData.append('orden', this.formData.orden);
             if (this.formData.modalidad_online) formData.append('modalidad_online', '1');
             if (this.formData.modalidad_presencial) formData.append('modalidad_presencial', '1');
-            if (this.formData.featured) formData.append('featured', '1');
+            // Siempre enviar featured (incluso si es false) para que el backend sepa el estado actual
+            formData.append('featured', this.formData.featured ? '1' : '0');
             formData.append('from_test', '1'); // Indicar que viene de la vista test
 
             const url = this.carreraId 
@@ -674,9 +715,38 @@ function carreraManager() {
                         }
                     }
                 } else {
-                    const error = await response.text();
-                    console.error('Error:', error);
-                    showNotify('error', 'Error al guardar. Verifica los datos.');
+                    // Intentar leer como JSON primero (errores de validación)
+                    let errorMessage = 'Error al guardar. Verifica los datos.';
+                    try {
+                        const errorData = await response.json();
+                        if (errorData.message) {
+                            errorMessage = errorData.message;
+                        } else if (errorData.errors) {
+                            // Si hay errores de validación, mostrar todos los errores
+                            const errorMessages = [];
+                            for (const [field, messages] of Object.entries(errorData.errors)) {
+                                if (Array.isArray(messages) && messages.length > 0) {
+                                    errorMessages.push(...messages);
+                                }
+                            }
+                            if (errorMessages.length > 0) {
+                                errorMessage = errorMessages.join('. ');
+                            }
+                        }
+                    } catch (e) {
+                        // Si no es JSON, leer como texto
+                        try {
+                            const errorText = await response.text();
+                            console.error('Error:', errorText);
+                            // Intentar parsear como HTML y extraer mensajes de error
+                            if (errorText.includes('fecha_inicio')) {
+                                errorMessage = 'La fecha de inicio es obligatoria y debe ser válida';
+                            }
+                        } catch (e2) {
+                            console.error('Error al leer respuesta:', e2);
+                        }
+                    }
+                    showNotify('error', errorMessage);
                     // Restaurar la pestaña activa
                     this.tabActiva = tabActivaActual;
                 }
@@ -763,15 +833,19 @@ function carreraManager() {
             formData.append('fecha_inicio', this.formData.fecha_inicio);
             formData.append('modalidad_online', this.formData.modalidad_online ? '1' : '');
             formData.append('modalidad_presencial', this.formData.modalidad_presencial ? '1' : '');
+            // Siempre enviar featured para mantener su valor actual
+            formData.append('featured', this.formData.featured ? '1' : '0');
             formData.append('from_test', '1'); // Indicar que viene de la vista test
             
-            // Agregar sedes seleccionadas - si no hay ninguna seleccionada, enviar array vacío
+            // Agregar sedes seleccionadas - siempre enviar el campo, incluso si está vacío
             if (this.formData.sedes && this.formData.sedes.length > 0) {
                 this.formData.sedes.forEach(sedeId => {
                     formData.append('sedes[]', sedeId);
                 });
+            } else {
+                // Si no hay sedes seleccionadas, enviar array vacío explícitamente
+                formData.append('sedes[]', '');
             }
-            // Si no hay sedes seleccionadas, no enviar el campo para que el backend lo maneje como array vacío
 
             try {
                 const response = await fetch(window.routes.admin.carreras.update.replace(':id', this.carreraId), {
@@ -803,6 +877,45 @@ function carreraManager() {
                 console.error('Error guardando sedes:', error);
                 showNotify('error', 'Error al guardar sedes: ' + error.message);
             }
+        },
+
+
+        initDatePicker(inputElement) {
+            // Esperar a que Alpine.js termine de inicializar y que flatpickr esté disponible
+            this.$nextTick(() => {
+                // Esperar un poco más para asegurar que flatpickr esté cargado
+                setTimeout(() => {
+                    if (inputElement && typeof flatpickr !== 'undefined') {
+                        // Verificar si ya está inicializado
+                        if (inputElement._flatpickr) {
+                            inputElement._flatpickr.destroy();
+                        }
+                        
+                        // Obtener el valor actual del input (ya en formato dd/mm/aaaa)
+                        const valorActual = this.formData.fecha_inicio;
+                        
+                        // Inicializar flatpickr con locale español
+                        const fp = flatpickr(inputElement, {
+                            dateFormat: 'd/m/Y',
+                            defaultDate: valorActual || null,
+                            locale: 'es',
+                            onChange: (selectedDates, dateStr) => {
+                                // Mantener el formato dd/mm/aaaa en formData para mostrar
+                                this.formData.fecha_inicio = dateStr || '';
+                            }
+                        });
+                        
+                        // Si hay un valor inicial, establecerlo
+                        if (valorActual) {
+                            fp.setDate(valorActual, false);
+                        }
+                    }
+                }, 100);
+            });
+        },
+
+        abrirModalOrden() {
+            abrirModalOrdenCarreras();
         },
 
         abrirModalAnio() {
@@ -1044,14 +1157,17 @@ function modalidadManager(modalidad) {
         
         async guardarHorariosReal() {
             // Guardar el string completo de horas tal como está, sin parsear
-            const horariosParaGuardar = this.horarios.map(horario => {
-                return {
-                    nombre: horario.nombre,
-                    horas: horario.horas || '', // Guardar el string completo
-                    icono: horario.icono,
-                    orden: horario.orden
-                };
-            });
+            // SOLO guardar horarios que tengan horas no vacías
+            const horariosParaGuardar = this.horarios
+                .filter(horario => horario.horas && horario.horas.trim() !== '')
+                .map(horario => {
+                    return {
+                        nombre: horario.nombre,
+                        horas: horario.horas, // Guardar el string completo
+                        icono: horario.icono,
+                        orden: horario.orden
+                    };
+                });
             
             // Guardar en la base de datos
             const formData = new FormData();
@@ -1556,7 +1672,248 @@ function toggleModalidadActivo(modalidadId, currentActivo) {
     });
 }
 
+// ========== GESTIÓN DE ORDEN DE CARRERAS ==========
+
+let carrerasOrdenadas = [];
+
+function abrirModalOrdenCarreras() {
+    const modal = document.getElementById('modalOrdenCarreras');
+    const lista = document.getElementById('listaCarrerasOrden');
+    
+    // Obtener todas las carreras ordenadas desde el selector del formulario
+    const select = document.querySelector('select[name="curso_id"]');
+    
+    if (!select) {
+        showNotify('error', 'No se pudieron cargar las carreras');
+        return;
+    }
+    
+    // Obtener las carreras del selector (ya vienen ordenadas por orden)
+    const carrerasDelSelector = Array.from(select.options)
+        .filter(option => option.value !== '')
+        .map((option, index) => ({
+            id: option.value,
+            nombre: option.textContent.trim(),
+            orden: index + 1 // El selector ya muestra las carreras en orden
+        }));
+    
+    // Hacer fetch para obtener el orden real de cada carrera desde el backend
+    // Necesitamos obtener los datos completos de las carreras para tener el orden correcto
+    fetch(window.routes.admin.carreras.test, {
+        headers: {
+            'Accept': 'text/html',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.text())
+    .then(html => {
+        // Parsear el HTML para extraer las carreras del selector (que ya vienen ordenadas)
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const selectFromHtml = doc.querySelector('select[name="curso_id"]');
+        
+        if (selectFromHtml) {
+            carrerasOrdenadas = Array.from(selectFromHtml.options)
+                .filter(option => option.value !== '')
+                .map((option, index) => ({
+                    id: option.value,
+                    nombre: option.textContent.trim(),
+                    orden: index + 1
+                }));
+        } else {
+            // Fallback: usar las carreras del selector actual
+            carrerasOrdenadas = carrerasDelSelector;
+        }
+        
+        renderizarListaCarreras();
+        modal.classList.remove('hidden');
+    })
+    .catch(error => {
+        console.error('Error al cargar carreras:', error);
+        // Fallback: usar las carreras del selector actual
+        carrerasOrdenadas = carrerasDelSelector;
+        renderizarListaCarreras();
+        modal.classList.remove('hidden');
+    });
+}
+
+function actualizarOrdenEnFormulario() {
+    // Obtener el orden actual desde el selector de la página
+    const select = document.querySelector('select[name="curso_id"]');
+    if (!select) return;
+    
+    // Obtener el ID de la carrera seleccionada
+    const carreraIdSeleccionada = select.value;
+    if (!carreraIdSeleccionada) return;
+    
+    // Calcular el orden basado en la posición en el selector
+    const carrerasActualizadas = Array.from(select.options)
+        .filter(option => option.value !== '')
+        .map((option, index) => ({
+            id: option.value,
+            nombre: option.textContent.trim(),
+            orden: index + 1
+        }));
+    
+    const carreraActual = carrerasActualizadas.find(c => c.id == carreraIdSeleccionada);
+    if (!carreraActual) return;
+    
+    // Buscar el componente Alpine.js carreraManager
+    const carreraManagerElement = document.querySelector('[x-data*="carreraManager"]');
+    if (!carreraManagerElement) return;
+    
+    // Intentar diferentes formas de acceder al componente Alpine.js
+    let carreraManager = null;
+    if (carreraManagerElement.__x) {
+        carreraManager = carreraManagerElement.__x.$data;
+    } else if (carreraManagerElement._x_dataStack && carreraManagerElement._x_dataStack[0]) {
+        carreraManager = carreraManagerElement._x_dataStack[0];
+    }
+    
+    if (!carreraManager || carreraManager.carreraId != carreraIdSeleccionada) return;
+    
+    // Actualizar el orden en el componente Alpine.js
+    carreraManager.formData.orden = carreraActual.orden;
+    
+    // También actualizar directamente el input si existe
+    const inputOrden = document.querySelector('input[x-model="formData.orden"]');
+    if (inputOrden) {
+        inputOrden.value = carreraActual.orden;
+        // Disparar evento para que Alpine.js detecte el cambio
+        inputOrden.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+}
+
+function cerrarModalOrden() {
+    const modal = document.getElementById('modalOrdenCarreras');
+    modal.classList.add('hidden');
+    
+    // Actualizar el campo orden en el formulario
+    actualizarOrdenEnFormulario();
+}
+
+function renderizarListaCarreras() {
+    const lista = document.getElementById('listaCarrerasOrden');
+    lista.innerHTML = '';
+    
+    carrerasOrdenadas.forEach((carrera, index) => {
+        const item = document.createElement('div');
+        item.className = 'flex items-center justify-between p-3 bg-gray-700 rounded-md hover:bg-gray-600 transition-colors';
+        item.innerHTML = `
+            <div class="flex items-center space-x-3 flex-1">
+                <span class="text-sm font-semibold text-gray-400 w-8 text-center">${carrera.orden}</span>
+                <span class="text-white flex-1">${carrera.nombre}</span>
+            </div>
+            <div class="flex flex-col space-y-1 ml-4">
+                <button 
+                    onclick="moverCarreraOrden(${carrera.id}, 'up')"
+                    class="mover-orden-btn bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-xs transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed"
+                    ${index === 0 ? 'disabled' : ''}
+                    title="Mover arriba">
+                    ↑
+                </button>
+                <button 
+                    onclick="moverCarreraOrden(${carrera.id}, 'down')"
+                    class="mover-orden-btn bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-xs transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed"
+                    ${index === carrerasOrdenadas.length - 1 ? 'disabled' : ''}
+                    title="Mover abajo">
+                    ↓
+                </button>
+            </div>
+        `;
+        lista.appendChild(item);
+    });
+}
+
+function moverCarreraOrden(carreraId, direccion) {
+    // Deshabilitar todos los botones temporalmente
+    const botones = document.querySelectorAll('.mover-orden-btn');
+    botones.forEach(btn => btn.disabled = true);
+    
+    fetch('/admin/carreras/mover', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            id: carreraId,
+            direccion: direccion
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Recargar la lista desde el servidor para obtener el orden actualizado
+            // Esto asegura que tenemos el orden correcto después del cambio
+            fetch(window.routes.admin.carreras.test, {
+                headers: {
+                    'Accept': 'text/html',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const selectFromHtml = doc.querySelector('select[name="curso_id"]');
+                
+                if (selectFromHtml) {
+                    carrerasOrdenadas = Array.from(selectFromHtml.options)
+                        .filter(option => option.value !== '')
+                        .map((option, index) => ({
+                            id: option.value,
+                            nombre: option.textContent.trim(),
+                            orden: index + 1
+                        }));
+                }
+                
+                // Actualizar el selector principal si existe
+                const selectPrincipal = document.querySelector('select[name="curso_id"]');
+                if (selectPrincipal) {
+                    // Reordenar las opciones del selector según el nuevo orden
+                    carrerasOrdenadas.forEach((carrera, index) => {
+                        const option = selectPrincipal.querySelector(`option[value="${carrera.id}"]`);
+                        if (option && option.parentNode) {
+                            // Mover la opción a su nueva posición
+                            selectPrincipal.insertBefore(option, selectPrincipal.children[index + 1] || null);
+                        }
+                    });
+                }
+                
+                // Re-renderizar la lista
+                renderizarListaCarreras();
+                
+                // Actualizar el campo orden en el formulario inmediatamente
+                setTimeout(() => {
+                    actualizarOrdenEnFormulario();
+                }, 100);
+            })
+            .catch(error => {
+                console.error('Error al recargar carreras:', error);
+                // Si falla, al menos re-renderizar con los datos actuales
+                renderizarListaCarreras();
+            });
+            
+            showNotify('success', 'Orden actualizado correctamente');
+        } else {
+            showNotify('error', data.message || 'Error al mover la carrera');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotify('error', 'Error al mover la carrera');
+    })
+    .finally(() => {
+        // Rehabilitar botones
+        botones.forEach(btn => btn.disabled = false);
+    });
+}
+
 window.toggleModalidadActivo = toggleModalidadActivo;
 window.carreraManager = carreraManager;
 window.modalidadManager = modalidadManager;
+window.abrirModalOrdenCarreras = abrirModalOrdenCarreras;
+window.cerrarModalOrden = cerrarModalOrden;
+window.moverCarreraOrden = moverCarreraOrden;
 

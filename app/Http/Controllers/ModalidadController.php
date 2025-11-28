@@ -12,24 +12,9 @@ class ModalidadController extends Controller
 {
     public function index()
     {
-        $cursos = Curso::ordered()->get();
-        $cursoSeleccionado = null;
-        $modalidades = collect();
-        
-        // Si hay un curso_id en la request, cargar ese curso y sus modalidades
-        if (request()->has('curso_id')) {
-            $cursoSeleccionado = Curso::with([
-                'modalidades.tipos' => function($query) {
-                    $query->orderBy('orden');
-                }
-            ])->find(request('curso_id'));
-            
-            if ($cursoSeleccionado) {
-                $modalidades = $cursoSeleccionado->modalidades()->with(['tipos'])->orderBy('orden')->get();
-            }
-        }
-        
-        return view('admin.modalidades', compact('cursos', 'cursoSeleccionado', 'modalidades'));
+        // Redirigir a la vista unificada de gestión de carreras
+        // Las modalidades ahora se gestionan desde test.blade.php
+        return redirect()->route('admin.carreras.test');
     }
 
     public function store(Request $request)

@@ -12,26 +12,39 @@ class CursoController extends Controller
 {
     public function index()
     {
-        $cursos = Curso::with('sedes')->ordered()->get();
-        $sedes = \App\Models\Sede::ordered()->get();
-        return view('admin.cursos', compact('cursos', 'sedes'));
+        // Redirigir a la vista unificada de gestión de carreras
+        return redirect()->route('admin.carreras.test');
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'nullable|string|max:1000',
-            'fecha_inicio' => 'required|date',
-            'modalidad_online' => 'nullable',
-            'modalidad_presencial' => 'nullable',
-            'sedes' => 'nullable|array',
-            'sedes.*' => 'exists:sedes,id',
-            'ilustracion_desktop' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'ilustracion_mobile' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'imagen_show_desktop' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'imagen_show_mobile' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-        ], [
+        try {
+            // Si viene de test.blade.php, las imágenes son opcionales
+            $vieneDeTest = $request->has('from_test');
+            
+            $validationRules = [
+                'nombre' => 'required|string|max:255',
+                'descripcion' => 'nullable|string|max:1000',
+                'fecha_inicio' => 'required|date',
+                'modalidad_online' => 'nullable',
+                'modalidad_presencial' => 'nullable',
+                'sedes' => 'nullable|array',
+                'sedes.*' => 'exists:sedes,id',
+                'imagen_show_desktop' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+                'imagen_show_mobile' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            ];
+            
+            // Si NO viene de test, las imágenes son obligatorias
+            if (!$vieneDeTest) {
+                $validationRules['ilustracion_desktop'] = 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048';
+                $validationRules['ilustracion_mobile'] = 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048';
+            } else {
+                // Si viene de test, las imágenes son opcionales
+                $validationRules['ilustracion_desktop'] = 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048';
+                $validationRules['ilustracion_mobile'] = 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048';
+            }
+            
+            $request->validate($validationRules, [
             'nombre.required' => 'El nombre de la carrera es obligatorio.',
             'nombre.string' => 'El nombre debe ser texto.',
             'nombre.max' => 'El nombre no debe exceder 255 caracteres.',
@@ -57,6 +70,13 @@ class CursoController extends Controller
 
         // Validar que al menos una modalidad sea seleccionada
         if (!$request->has('modalidad_online') && !$request->has('modalidad_presencial')) {
+            if ($vieneDeTest) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Debes seleccionar al menos una modalidad.',
+                    'errors' => ['modalidades' => ['Debes seleccionar al menos una modalidad.']]
+                ], 422);
+            }
             return redirect()->back()->withErrors(['modalidades' => 'Debes seleccionar al menos una modalidad.'])->withInput();
         }
 
@@ -66,39 +86,44 @@ class CursoController extends Controller
         $curso->modalidad_online = $request->has('modalidad_online');
         $curso->modalidad_presencial = $request->has('modalidad_presencial');
         $curso->fecha_inicio = $request->fecha_inicio;
+        $curso->featured = $request->has('featured') ? ($request->featured == '1' || $request->featured === true) : false;
 
         // Asignar orden secuencial (máximo orden + 1)
         $maxOrden = Curso::max('orden') ?? 0;
         $curso->orden = $maxOrden + 1;
 
-        // Subir ilustración desktop (obligatoria)
-        \Log::info('Subiendo imagen desktop', [
-            'file_name' => $request->file('ilustracion_desktop')->getClientOriginalName(),
-            'file_size' => $request->file('ilustracion_desktop')->getSize()
-        ]);
-        
-        try {
-            $desktopPath = $request->file('ilustracion_desktop')->store('cursos', 'public');
-            \Log::info('Imagen desktop guardada exitosamente', ['path' => $desktopPath]);
-            $curso->ilustracion_desktop = $desktopPath;
-        } catch (\Exception $e) {
-            \Log::error('Error subiendo imagen desktop', ['error' => $e->getMessage()]);
-            return redirect()->back()->withErrors(['ilustracion_desktop' => 'Error al subir la imagen desktop: ' . $e->getMessage()])->withInput();
+        // Subir ilustración desktop (si se proporciona)
+        if ($request->hasFile('ilustracion_desktop')) {
+            try {
+                $desktopPath = $request->file('ilustracion_desktop')->store('cursos', 'public');
+                $curso->ilustracion_desktop = $desktopPath;
+            } catch (\Exception $e) {
+                if ($vieneDeTest) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Error al subir la imagen desktop: ' . $e->getMessage(),
+                        'errors' => ['ilustracion_desktop' => ['Error al subir la imagen desktop: ' . $e->getMessage()]]
+                    ], 422);
+                }
+                return redirect()->back()->withErrors(['ilustracion_desktop' => 'Error al subir la imagen desktop: ' . $e->getMessage()])->withInput();
+            }
         }
 
-        // Subir ilustración mobile (obligatoria)
-        \Log::info('Subiendo imagen mobile', [
-            'file_name' => $request->file('ilustracion_mobile')->getClientOriginalName(),
-            'file_size' => $request->file('ilustracion_mobile')->getSize()
-        ]);
-        
-        try {
-            $mobilePath = $request->file('ilustracion_mobile')->store('cursos', 'public');
-            \Log::info('Imagen mobile guardada exitosamente', ['path' => $mobilePath]);
-            $curso->ilustracion_mobile = $mobilePath;
-        } catch (\Exception $e) {
-            \Log::error('Error subiendo imagen mobile', ['error' => $e->getMessage()]);
-            return redirect()->back()->withErrors(['ilustracion_mobile' => 'Error al subir la imagen mobile: ' . $e->getMessage()])->withInput();
+        // Subir ilustración mobile (si se proporciona)
+        if ($request->hasFile('ilustracion_mobile')) {
+            try {
+                $mobilePath = $request->file('ilustracion_mobile')->store('cursos', 'public');
+                $curso->ilustracion_mobile = $mobilePath;
+            } catch (\Exception $e) {
+                if ($vieneDeTest) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Error al subir la imagen mobile: ' . $e->getMessage(),
+                        'errors' => ['ilustracion_mobile' => ['Error al subir la imagen mobile: ' . $e->getMessage()]]
+                    ], 422);
+                }
+                return redirect()->back()->withErrors(['ilustracion_mobile' => 'Error al subir la imagen mobile: ' . $e->getMessage()])->withInput();
+            }
         }
 
         // Subir imagen show desktop (opcional)
@@ -107,7 +132,13 @@ class CursoController extends Controller
                 $showDesktopPath = $request->file('imagen_show_desktop')->store('cursos', 'public');
                 $curso->imagen_show_desktop = $showDesktopPath;
             } catch (\Exception $e) {
-                \Log::error('Error subiendo imagen show desktop', ['error' => $e->getMessage()]);
+                if ($vieneDeTest) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Error al subir la imagen show desktop: ' . $e->getMessage(),
+                        'errors' => ['imagen_show_desktop' => ['Error al subir la imagen show desktop: ' . $e->getMessage()]]
+                    ], 422);
+                }
                 return redirect()->back()->withErrors(['imagen_show_desktop' => 'Error al subir la imagen show desktop: ' . $e->getMessage()])->withInput();
             }
         }
@@ -118,7 +149,13 @@ class CursoController extends Controller
                 $showMobilePath = $request->file('imagen_show_mobile')->store('cursos', 'public');
                 $curso->imagen_show_mobile = $showMobilePath;
             } catch (\Exception $e) {
-                \Log::error('Error subiendo imagen show mobile', ['error' => $e->getMessage()]);
+                if ($vieneDeTest) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Error al subir la imagen show mobile: ' . $e->getMessage(),
+                        'errors' => ['imagen_show_mobile' => ['Error al subir la imagen show mobile: ' . $e->getMessage()]]
+                    ], 422);
+                }
                 return redirect()->back()->withErrors(['imagen_show_mobile' => 'Error al subir la imagen show mobile: ' . $e->getMessage()])->withInput();
             }
         }
@@ -132,15 +169,46 @@ class CursoController extends Controller
             $curso->sedes()->sync([]);
         }
 
-        return redirect()->route('admin.carreras')->with('success', 'Carrera agregada correctamente');
+            // Si viene de test, devolver JSON
+            if ($vieneDeTest) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Carrera creada exitosamente',
+                    'curso_id' => $curso->id
+                ]);
+            }
+
+            return redirect()->route('admin.carreras.test')->with('success', 'Carrera agregada correctamente');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Si viene de test, devolver JSON con errores
+            if ($request->has('from_test') || str_contains($request->header('Referer') ?? '', 'carreras/test')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error de validación',
+                    'errors' => $e->errors()
+                ], 422, ['Content-Type' => 'application/json']);
+            }
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            \Log::error('Error al crear carrera', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            // Si viene de test, devolver JSON con error
+            if ($request->has('from_test') || str_contains($request->header('Referer') ?? '', 'carreras/test')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error al crear la carrera: ' . $e->getMessage()
+                ], 500, ['Content-Type' => 'application/json']);
+            }
+            return redirect()->back()->withErrors(['error' => 'Error al crear la carrera: ' . $e->getMessage()])->withInput();
+        }
     }
 
     public function edit($id)
     {
-        $curso = Curso::with('sedes')->findOrFail($id);
-        $cursos = Curso::with('sedes')->ordered()->get();
-        $sedes = \App\Models\Sede::ordered()->get();
-        return view('admin.cursos', compact('cursos', 'curso', 'sedes'));
+        // Redirigir a la vista unificada de gestión de carreras con el curso seleccionado
+        return redirect()->route('admin.carreras.test', ['curso_id' => $id]);
     }
 
     public function update(Request $request, $id)
@@ -214,22 +282,26 @@ class CursoController extends Controller
             }
             
             // Validar featured: máximo 2 carreras destacadas
-            $wantsFeatured = $request->has('featured');
-            if ($wantsFeatured && !$curso->featured) {
-                // Está intentando marcar como destacada
-                $featuredCount = Curso::where('featured', true)->where('id', '!=', $curso->id)->count();
-                if ($featuredCount >= 2) {
-                    $errorMessage = 'Solo pueden haber máximo 2 carreras destacadas. Ya hay ' . $featuredCount . ' carreras destacadas.';
-                    if ($request->has('from_test') || str_contains($request->header('Referer') ?? '', 'carreras/test')) {
-                        return response()->json([
-                            'success' => false,
-                            'message' => $errorMessage
-                        ], 422, ['Content-Type' => 'application/json']);
+            // Solo actualizar featured si se envía explícitamente en la request
+            if ($request->has('featured')) {
+                $wantsFeatured = $request->input('featured') == '1' || $request->input('featured') === true || $request->input('featured') === 'true';
+                if ($wantsFeatured && !$curso->featured) {
+                    // Está intentando marcar como destacada
+                    $featuredCount = Curso::where('featured', true)->where('id', '!=', $curso->id)->count();
+                    if ($featuredCount >= 2) {
+                        $errorMessage = 'Solo pueden haber máximo 2 carreras destacadas. Ya hay ' . $featuredCount . ' carreras destacadas.';
+                        if ($request->has('from_test') || str_contains($request->header('Referer') ?? '', 'carreras/test')) {
+                            return response()->json([
+                                'success' => false,
+                                'message' => $errorMessage
+                            ], 422, ['Content-Type' => 'application/json']);
+                        }
+                        return redirect()->back()->withErrors(['featured' => $errorMessage])->withInput();
                     }
-                    return redirect()->back()->withErrors(['featured' => $errorMessage])->withInput();
                 }
+                $curso->featured = $wantsFeatured;
             }
-            $curso->featured = $wantsFeatured;
+            // Si no se envía featured, mantener el valor actual (no hacer nada)
 
             // Actualizar ilustración desktop si se proporciona
             if ($request->hasFile('ilustracion_desktop')) {
@@ -270,14 +342,20 @@ class CursoController extends Controller
                 $curso->save();
 
             // Sincronizar sedes
+            // Solo sincronizar sedes si se envía explícitamente
+            // Si solo se están actualizando imágenes, no tocar las sedes
             if ($request->has('sedes')) {
-                $sedes = is_array($request->sedes) ? $request->sedes : [];
+                $sedes = is_array($request->sedes) ? array_filter($request->sedes, function($sede) {
+                    return !empty($sede) && $sede !== '';
+                }) : [];
                 $curso->sedes()->sync($sedes);
             } else {
-                // Si viene de test y no tiene sedes, significa que se deseleccionaron todas
-                if ($request->has('from_test')) {
+                // Si viene de test y no tiene sedes, solo sincronizar con array vacío si NO es solo actualización de imágenes
+                // Esto evita borrar sedes cuando solo se están guardando imágenes
+                if ($request->has('from_test') && !$soloImagenes) {
                     $curso->sedes()->sync([]);
                 }
+                // Si no viene de test o es solo actualización de imágenes, mantener las sedes actuales (no hacer nada)
             }
 
             // Si viene de la vista test, devolver respuesta JSON para AJAX
@@ -364,11 +442,25 @@ class CursoController extends Controller
 
         $curso->delete();
 
-        \Log::info('Carrera eliminada exitosamente', [
-            'curso_id' => $id
+        // Reordenar las carreras restantes para que no queden números vacíos ni salteados
+        // Mantener el orden relativo que tenían antes del borrado
+        $carrerasRestantes = Curso::orderBy('orden', 'asc')->get();
+        
+        $nuevoOrden = 1;
+        foreach ($carrerasRestantes as $carrera) {
+            if ($carrera->orden != $nuevoOrden) {
+                $carrera->orden = $nuevoOrden;
+                $carrera->save();
+            }
+            $nuevoOrden++;
+        }
+
+        \Log::info('Carrera eliminada exitosamente y carreras reordenadas', [
+            'curso_id' => $id,
+            'carreras_restantes' => $carrerasRestantes->count()
         ]);
 
-        return redirect()->route('admin.carreras')->with('success', 'Carrera eliminada correctamente');
+        return redirect()->route('admin.carreras.test')->with('success', 'Carrera eliminada correctamente');
     }
 
     public function mover(Request $request)
