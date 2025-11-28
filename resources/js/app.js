@@ -108,11 +108,20 @@ document.addEventListener('DOMContentLoaded', function() {
         // Función para intentar reproducir el video (solo al inicio)
         function tryPlayVideo() {
             if (q4Video.paused && !videoStarted && !userPausedManually) {
+                // Intentar activar el audio automáticamente
+                q4Video.muted = false;
                 q4Video.play().then(() => {
                     q4Video.classList.add('playing');
                     videoStarted = true;
                 }).catch(() => {
-                    // Autoplay bloqueado
+                    // Si falla, intentar con muted para permitir autoplay
+                    q4Video.muted = true;
+                    q4Video.play().then(() => {
+                        q4Video.classList.add('playing');
+                        videoStarted = true;
+                    }).catch(() => {
+                        // Autoplay bloqueado completamente
+                    });
                 });
             }
         }
@@ -132,6 +141,8 @@ document.addEventListener('DOMContentLoaded', function() {
         function handleUserInteraction() {
             if (!userInteractionHandled && q4Video.paused && !userPausedManually) {
                 userInteractionHandled = true;
+                // Activar audio cuando el usuario interactúa
+                q4Video.muted = false;
                 q4Video.play().then(() => {
                     q4Video.classList.add('playing');
                     videoStarted = true;
@@ -150,6 +161,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Función para toggle play/pause
         function toggleVideo() {
             if (q4Video.paused) {
+                // Asegurar que el video no esté silenciado cuando el usuario lo reproduce
+                q4Video.muted = false;
                 q4Video.play().then(() => {
                     q4Video.classList.add('playing');
                     videoStarted = true;
@@ -558,11 +571,20 @@ document.addEventListener('DOMContentLoaded', function() {
         // Función para intentar reproducir el video (solo al inicio)
         function tryPlayVideo() {
             if (video.paused && !videoStarted && !userPausedManually) {
+                // Intentar activar el audio automáticamente
+                video.muted = false;
                 video.play().then(() => {
                     video.classList.add('playing');
                     videoStarted = true;
                 }).catch(() => {
-                    // Autoplay bloqueado
+                    // Si falla, intentar con muted para permitir autoplay
+                    video.muted = true;
+                    video.play().then(() => {
+                        video.classList.add('playing');
+                        videoStarted = true;
+                    }).catch(() => {
+                        // Autoplay bloqueado completamente
+                    });
                 });
             }
         }
@@ -582,6 +604,8 @@ document.addEventListener('DOMContentLoaded', function() {
         function handleUserInteraction() {
             if (!userInteractionHandled && video.paused && !userPausedManually) {
                 userInteractionHandled = true;
+                // Activar audio cuando el usuario interactúa
+                video.muted = false;
                 video.play().then(() => {
                     video.classList.add('playing');
                     videoStarted = true;
@@ -613,6 +637,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Función para toggle play/pause
         function toggleVideo() {
             if (video.paused) {
+                // Asegurar que el video no esté silenciado cuando el usuario lo reproduce
+                video.muted = false;
                 video.play().then(() => {
                     video.classList.add('playing');
                     videoStarted = true;

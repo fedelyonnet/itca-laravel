@@ -126,12 +126,12 @@
                             <div class="carousel-track">
                                 <div class="carousel-slide">
                                     @if($mobileVideo && $mobileVideo->url)
-                                        <video class="carousel-video" autoplay muted loop playsinline preload="auto" disablePictureInPicture controlsList="nodownload nofullscreen noremoteplayback">
+                                        <video class="carousel-video" autoplay loop playsinline preload="auto" disablePictureInPicture controlsList="nodownload nofullscreen noremoteplayback">
                                             <source src="{{ asset('storage/' . $mobileVideo->url) }}" type="video/mp4">
                                             Tu navegador no soporta el elemento video.
                                         </video>
                                     @else
-                                        <video class="carousel-video" autoplay muted loop playsinline preload="auto" disablePictureInPicture controlsList="nodownload nofullscreen noremoteplayback">
+                                        <video class="carousel-video" autoplay loop playsinline preload="auto" disablePictureInPicture controlsList="nodownload nofullscreen noremoteplayback">
                                             <source src="/images/mobile/video.mp4" type="video/mp4">
                                             Tu navegador no soporta el elemento video.
                                         </video>
@@ -162,12 +162,12 @@
                     <div class="hero-quadrant hero-quadrant-4">
                         <div class="q4-left">
                             @if($desktopVideo && $desktopVideo->url)
-                                <video class="q4-video" autoplay muted loop playsinline preload="auto" disablePictureInPicture controlsList="nodownload nofullscreen noremoteplayback">
+                                <video class="q4-video" autoplay loop playsinline preload="auto" disablePictureInPicture controlsList="nodownload nofullscreen noremoteplayback">
                                     <source src="{{ asset('storage/' . $desktopVideo->url) }}" type="video/mp4">
                                     Tu navegador no soporta el elemento video.
                                 </video>
                             @else
-                                <video class="q4-video" autoplay muted loop playsinline preload="auto" disablePictureInPicture controlsList="nodownload nofullscreen noremoteplayback">
+                                <video class="q4-video" autoplay loop playsinline preload="auto" disablePictureInPicture controlsList="nodownload nofullscreen noremoteplayback">
                                     <source src="/images/desktop/video.mp4" type="video/mp4">
                                     Tu navegador no soporta el elemento video.
                                 </video>
