@@ -463,8 +463,12 @@ class CursoController extends Controller
         $fotos = FotosCarrera::ordered()->get();
         // Obtener el video de testimonios (si existe)
         $videoTestimonios = \App\Models\VideoTestimonioCarreraIndividual::first();
-        // Obtener los certificados (si existen)
-        $certificados = \App\Models\CertificadoCarrera::first();
+        // Obtener los certificados (si existen) - manejar error si la tabla no existe
+        try {
+            $certificados = \App\Models\CertificadoCarrera::first();
+        } catch (\Exception $e) {
+            $certificados = null;
+        }
         return view('carreras.show', compact('curso', 'partners', 'sedes', 'sedesPorZona', 'anios', 'modalidades', 'testimonios', 'videosMobile', 'dudas', 'fotos', 'videoTestimonios', 'certificados'));
     }
 
@@ -502,7 +506,14 @@ class CursoController extends Controller
     {
         $fotos = FotosCarrera::ordered()->get();
         $videoTestimonios = \App\Models\VideoTestimonioCarreraIndividual::first();
-        $certificados = \App\Models\CertificadoCarrera::first();
+        
+        // Intentar obtener certificados, si falla (tabla no existe) usar null
+        try {
+            $certificados = \App\Models\CertificadoCarrera::first();
+        } catch (\Exception $e) {
+            $certificados = null;
+        }
+        
         return view('admin.carreras.multimedia', compact('fotos', 'videoTestimonios', 'certificados'));
     }
 
@@ -704,11 +715,15 @@ class CursoController extends Controller
             'certificado_2' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
-        // Obtener o crear el único registro
-        $certificados = \App\Models\CertificadoCarrera::first();
-        
-        if (!$certificados) {
-            $certificados = new \App\Models\CertificadoCarrera();
+        // Obtener o crear el único registro - verificar que la tabla existe
+        try {
+            $certificados = \App\Models\CertificadoCarrera::first();
+            
+            if (!$certificados) {
+                $certificados = new \App\Models\CertificadoCarrera();
+            }
+        } catch (\Exception $e) {
+            return redirect()->route('admin.carreras.multimedia')->with('error', 'Error: La tabla de certificados no existe. Por favor ejecuta las migraciones: php artisan migrate');
         }
 
         // Actualizar certificado_1 si se proporciona
@@ -740,7 +755,11 @@ class CursoController extends Controller
 
     public function deleteCertificado($numero)
     {
-        $certificados = \App\Models\CertificadoCarrera::first();
+        try {
+            $certificados = \App\Models\CertificadoCarrera::first();
+        } catch (\Exception $e) {
+            return redirect()->route('admin.carreras.multimedia')->with('error', 'Error: La tabla de certificados no existe. Por favor ejecuta las migraciones: php artisan migrate');
+        }
         
         if (!$certificados) {
             return redirect()->route('admin.carreras.multimedia')->with('error', 'No hay certificados para eliminar.');
