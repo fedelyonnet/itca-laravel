@@ -1006,22 +1006,15 @@ function modalidadManager(modalidad) {
                     );
                     
                     if (horarioGuardado) {
-                        // Construir el string de horas desde hora_inicio y hora_fin
-                        const horas = horarioGuardado.hora_inicio && horarioGuardado.hora_fin
-                            ? `${horarioGuardado.hora_inicio} a ${horarioGuardado.hora_fin}hs`
-                            : '';
+                        // Usar SOLO el campo horas directamente, sin construir nada
                         return {
                             ...horarioFijo,
-                            horas: horas,
-                            hora_inicio: horarioGuardado.hora_inicio || '',
-                            hora_fin: horarioGuardado.hora_fin || ''
+                            horas: horarioGuardado.horas || ''
                         };
                     } else {
                         return {
                             ...horarioFijo,
-                            horas: '',
-                            hora_inicio: '',
-                            hora_fin: ''
+                            horas: ''
                         };
                     }
                 });
@@ -1050,31 +1043,11 @@ function modalidadManager(modalidad) {
         },
         
         async guardarHorariosReal() {
-            // Parsear el string de horas para extraer hora_inicio y hora_fin
+            // Guardar el string completo de horas tal como está, sin parsear
             const horariosParaGuardar = this.horarios.map(horario => {
-                let hora_inicio = '';
-                let hora_fin = '';
-                
-                if (horario.horas && horario.horas.trim() !== '') {
-                    // Intentar parsear el formato "9:00 a 12:30hs" o "9:00 a 12:30"
-                    const match = horario.horas.match(/(\d{1,2}:\d{2})\s*a\s*(\d{1,2}:\d{2})/i);
-                    if (match) {
-                        hora_inicio = match[1];
-                        hora_fin = match[2];
-                    } else {
-                        // Si no coincide el formato, intentar dividir por "a"
-                        const partes = horario.horas.split(/\s+a\s+/i);
-                        if (partes.length === 2) {
-                            hora_inicio = partes[0].trim();
-                            hora_fin = partes[1].replace(/hs?$/i, '').trim();
-                        }
-                    }
-                }
-                
                 return {
                     nombre: horario.nombre,
-                    hora_inicio: hora_inicio,
-                    hora_fin: hora_fin,
+                    horas: horario.horas || '', // Guardar el string completo
                     icono: horario.icono,
                     orden: horario.orden
                 };
@@ -1098,12 +1071,7 @@ function modalidadManager(modalidad) {
                 
                 if (response.ok) {
                     const result = await response.json();
-                    // Actualizar los horarios locales con los valores parseados
-                    this.horarios.forEach((horario, index) => {
-                        const guardado = horariosParaGuardar[index];
-                        horario.hora_inicio = guardado.hora_inicio;
-                        horario.hora_fin = guardado.hora_fin;
-                    });
+                    // Los horarios ya están actualizados localmente, no necesitamos actualizar nada más
                     
                     // Actualizar también en el componente padre
                     const carreraManager = this.$root;

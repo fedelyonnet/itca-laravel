@@ -342,7 +342,7 @@
                     </button>
                 </div>
 
-                <form id="fotoForm" method="POST" enctype="multipart/form-data">
+                <form id="fotoForm" method="POST" enctype="multipart/form-data" data-no-auto-submit="true" onsubmit="return handleFotoFormSubmit(event)">
                     @csrf
                     <input type="hidden" name="_method" id="formMethod" value="POST">
                     <input type="hidden" name="foto_id" id="foto_id">
@@ -356,8 +356,10 @@
                                name="imagen" 
                                id="imagen" 
                                accept="image/jpeg,image/png,image/jpg,image/gif,image/webp"
+                               data-no-auto-submit="true"
                                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                               onchange="previewImage(this)">
+                               onchange="previewImage(this)"
+                               onclick="event.stopPropagation()">
                         <p class="text-xs text-gray-400 mt-1">Tamaño recomendado: 800×600px. JPEG, PNG, JPG, GIF, WEBP. Máximo 2MB.</p>
                         <div id="imagePreview" class="mt-4 hidden">
                             <img id="previewImg" src="" alt="Preview" class="max-w-full h-48 object-contain rounded">
@@ -513,6 +515,85 @@
             getData: '{{ route("admin.carreras.multimedia.data", ":id") }}'
         };
 
+        function handleFotoFormSubmit(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            const form = event.target;
+            const formData = new FormData(form);
+            const submitButton = form.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            
+            // Validar que haya una imagen
+            const imagenInput = document.getElementById('imagen');
+            if (!imagenInput.files || imagenInput.files.length === 0) {
+                // Si es edición, puede no tener imagen nueva
+                const fotoId = document.getElementById('foto_id').value;
+                if (!fotoId) {
+                    showMessage('Por favor selecciona una imagen', 'error');
+                    return false;
+                }
+            }
+            
+            submitButton.disabled = true;
+            submitButton.textContent = 'Guardando...';
+            
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                },
+                body: formData
+            })
+            .then(async response => {
+                const contentType = response.headers.get('content-type');
+                if (!response.ok) {
+                    if (contentType && contentType.includes('application/json')) {
+                        try {
+                            const data = await response.json();
+                            throw new Error(data.message || 'Error al guardar la foto');
+                        } catch (e) {
+                            if (e instanceof Error && e.message) {
+                                throw e;
+                            }
+                            throw new Error('Error al guardar la foto');
+                        }
+                    } else {
+                        const text = await response.text();
+                        throw new Error('Error al guardar la foto: ' + (text.substring(0, 100) || response.statusText));
+                    }
+                }
+                
+                if (contentType && contentType.includes('application/json')) {
+                    return response.json();
+                } else {
+                    // Si no es JSON, probablemente es una redirección HTML
+                    throw new Error('Respuesta inesperada del servidor');
+                }
+            })
+            .then(data => {
+                if (data.success) {
+                    showMessage(data.message || 'Foto guardada correctamente', 'success');
+                    setTimeout(() => {
+                        closeModal();
+                        location.reload();
+                    }, 1000);
+                } else {
+                    throw new Error(data.message || 'Error al guardar la foto');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessage(error.message || 'Error al guardar la foto', 'error');
+                submitButton.disabled = false;
+                submitButton.textContent = originalText;
+            });
+            
+            return false;
+        }
+
         function openModal() {
             document.getElementById('fotoModal').classList.remove('hidden');
             document.getElementById('fotoModal').classList.add('flex');
@@ -632,7 +713,17 @@
 
         function editFoto(id) {
             fetch(routes.getData.replace(':id', id))
-                .then(response => response.json())
+                .then(async response => {
+                    if (!response.ok) {
+                        throw new Error('Error al cargar los datos de la foto');
+                    }
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        return response.json();
+                    } else {
+                        throw new Error('Respuesta inesperada del servidor');
+                    }
+                })
                 .then(data => {
                     document.getElementById('modalTitle').textContent = 'Editar Foto';
                     document.getElementById('fotoForm').action = routes.update.replace(':id', id);
@@ -837,15 +928,30 @@
                 },
                 body: formData
             })
-            .then(response => {
+            .then(async response => {
+                const contentType = response.headers.get('content-type');
                 if (!response.ok) {
-                    return response.json().then(data => {
-                        throw new Error(data.message || 'Error al guardar el video');
-                    }).catch(() => {
-                        throw new Error('Error al guardar el video');
-                    });
+                    if (contentType && contentType.includes('application/json')) {
+                        try {
+                            const data = await response.json();
+                            throw new Error(data.message || 'Error al guardar el video');
+                        } catch (e) {
+                            if (e instanceof Error && e.message) {
+                                throw e;
+                            }
+                            throw new Error('Error al guardar el video');
+                        }
+                    } else {
+                        const text = await response.text();
+                        throw new Error('Error al guardar el video: ' + (text.substring(0, 100) || response.statusText));
+                    }
                 }
-                return response.json();
+                
+                if (contentType && contentType.includes('application/json')) {
+                    return response.json();
+                } else {
+                    throw new Error('Respuesta inesperada del servidor');
+                }
             })
             .then(data => {
                 if (data.success) {
@@ -887,9 +993,30 @@
                 },
                 body: JSON.stringify(requestData)
             })
-            .then(response => {
+            .then(async response => {
                 console.log('Response status:', response.status);
-                return response.json();
+                if (!response.ok) {
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        try {
+                            const data = await response.json();
+                            throw new Error(data.message || 'Error al mover la foto');
+                        } catch (e) {
+                            if (e instanceof Error && e.message) {
+                                throw e;
+                            }
+                            throw new Error('Error al mover la foto');
+                        }
+                    } else {
+                        throw new Error('Error al mover la foto: ' + response.statusText);
+                    }
+                }
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    return response.json();
+                } else {
+                    throw new Error('Respuesta inesperada del servidor');
+                }
             })
             .then(data => {
                 console.log('Response data:', data);

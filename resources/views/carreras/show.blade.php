@@ -316,7 +316,9 @@
                                             @endif
                                             <div class="modalidad-special-time">
                                                 <span class="modalidad-special-time-label">{{ $horario['nombre'] }}</span>
-                                                <span class="modalidad-special-time-hours">{{ $horario['hora_inicio'] }} a {{ $horario['hora_fin'] }}hs</span>
+                                                @if(isset($horario['horas']) && trim($horario['horas']) !== '')
+                                                    <span class="modalidad-special-time-hours">{{ $horario['horas'] }}</span>
+                                                @endif
                                             </div>
                                         </div>
                                     @endforeach
@@ -445,7 +447,9 @@
                                                     @endif
                                                     <div class="modalidad-mobile-special-time">
                                                         <span class="modalidad-mobile-special-time-label">{{ $horario['nombre'] }}</span>
-                                                        <span class="modalidad-mobile-special-time-hours">{{ $horario['hora_inicio'] }} a {{ $horario['hora_fin'] }}hs</span>
+                                                        @if(isset($horario['horas']) && trim($horario['horas']) !== '')
+                                                            <span class="modalidad-mobile-special-time-hours">{{ $horario['horas'] }}</span>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             @endforeach

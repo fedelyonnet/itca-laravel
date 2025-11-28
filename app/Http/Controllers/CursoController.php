@@ -580,15 +580,34 @@ class CursoController extends Controller
         ]);
 
         if (!$request->hasFile('imagen')) {
+            if ($request->ajax() || $request->wantsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'La imagen es obligatoria'
+                ], 422, ['Content-Type' => 'application/json']);
+            }
             return back()->withErrors(['imagen' => 'La imagen es obligatoria']);
         }
         
         $imagenPath = $request->file('imagen')->store('fotos_carrera', 'public');
 
-        FotosCarrera::create([
+        $foto = FotosCarrera::create([
             'imagen' => $imagenPath,
             'descripcion' => $request->descripcion,
         ]);
+
+        // Si es una petición AJAX, devolver JSON
+        if ($request->ajax() || $request->wantsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json([
+                'success' => true,
+                'message' => 'Foto creada exitosamente.',
+                'foto' => [
+                    'id' => $foto->id,
+                    'imagen' => $foto->imagen,
+                    'descripcion' => $foto->descripcion,
+                ]
+            ], 200, ['Content-Type' => 'application/json']);
+        }
 
         return redirect()->route('admin.carreras.multimedia')->with('success', 'Foto creada exitosamente.');
     }
@@ -607,10 +626,21 @@ class CursoController extends Controller
     {
         $foto = FotosCarrera::findOrFail($id);
         
-        $request->validate([
-            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'descripcion' => 'nullable|string|max:500',
-        ]);
+        try {
+            $request->validate([
+                'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+                'descripcion' => 'nullable|string|max:500',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            if ($request->ajax() || $request->wantsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                    'errors' => $e->errors()
+                ], 422, ['Content-Type' => 'application/json']);
+            }
+            throw $e;
+        }
 
         if ($request->hasFile('imagen')) {
             // Eliminar imagen anterior
@@ -622,8 +652,24 @@ class CursoController extends Controller
             $foto->imagen = $imagenPath;
         }
 
-        $foto->descripcion = $request->descripcion;
+        if ($request->has('descripcion')) {
+            $foto->descripcion = $request->descripcion;
+        }
+        
         $foto->save();
+
+        // Si es una petición AJAX, devolver JSON
+        if ($request->ajax() || $request->wantsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json([
+                'success' => true,
+                'message' => 'Foto actualizada exitosamente.',
+                'foto' => [
+                    'id' => $foto->id,
+                    'imagen' => $foto->imagen,
+                    'descripcion' => $foto->descripcion,
+                ]
+            ], 200, ['Content-Type' => 'application/json']);
+        }
 
         return redirect()->route('admin.carreras.multimedia')->with('success', 'Foto actualizada exitosamente.');
     }
