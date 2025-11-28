@@ -349,13 +349,13 @@ class CursoController extends Controller
                     return !empty($sede) && $sede !== '';
                 }) : [];
                 $curso->sedes()->sync($sedes);
+            } elseif ($request->has('actualizando_sedes')) {
+                // Si viene el flag actualizando_sedes, significa que se está actualizando desde la pestaña de sedes
+                // Sincronizar con array vacío si no hay sedes seleccionadas
+                $curso->sedes()->sync([]);
             } else {
-                // Si viene de test y no tiene sedes, solo sincronizar con array vacío si NO es solo actualización de imágenes
-                // Esto evita borrar sedes cuando solo se están guardando imágenes
-                if ($request->has('from_test') && !$soloImagenes) {
-                    $curso->sedes()->sync([]);
-                }
                 // Si no viene de test o es solo actualización de imágenes, mantener las sedes actuales (no hacer nada)
+                // Solo sincronizar con array vacío si explícitamente se envía sedes vacío o el flag actualizando_sedes
             }
 
             // Si viene de la vista test, devolver respuesta JSON para AJAX

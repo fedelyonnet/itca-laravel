@@ -830,22 +830,27 @@ function carreraManager() {
             formData.append('_method', 'PUT');
             formData.append('nombre', this.formData.nombre); // Mantener otros campos
             formData.append('descripcion', this.formData.descripcion);
-            formData.append('fecha_inicio', this.formData.fecha_inicio);
+            // Convertir fecha de dd/mm/aaaa a aaaa-mm-dd para el backend
+            const fechaParaBackend = convertirFechaParaBackend(this.formData.fecha_inicio);
+            formData.append('fecha_inicio', fechaParaBackend);
             formData.append('modalidad_online', this.formData.modalidad_online ? '1' : '');
             formData.append('modalidad_presencial', this.formData.modalidad_presencial ? '1' : '');
             // Siempre enviar featured para mantener su valor actual
             formData.append('featured', this.formData.featured ? '1' : '0');
             formData.append('from_test', '1'); // Indicar que viene de la vista test
             
-            // Agregar sedes seleccionadas - siempre enviar el campo, incluso si está vacío
+            // Agregar sedes seleccionadas - siempre enviar el campo sedes para que el backend sepa que se está actualizando
+            // Si hay sedes seleccionadas, agregarlas
             if (this.formData.sedes && this.formData.sedes.length > 0) {
                 this.formData.sedes.forEach(sedeId => {
-                    formData.append('sedes[]', sedeId);
+                    if (sedeId && sedeId !== '') {
+                        formData.append('sedes[]', sedeId);
+                    }
                 });
-            } else {
-                // Si no hay sedes seleccionadas, enviar array vacío explícitamente
-                formData.append('sedes[]', '');
             }
+            // Si no hay sedes seleccionadas, enviar un indicador explícito de que se está actualizando desde la pestaña de sedes
+            // El backend detectará que sedes está presente (aunque vacío) y sincronizará con array vacío
+            formData.append('actualizando_sedes', '1');
 
             try {
                 const response = await fetch(window.routes.admin.carreras.update.replace(':id', this.carreraId), {
@@ -869,9 +874,30 @@ function carreraManager() {
                         showNotify('error', result.message || 'Error al guardar las sedes');
                     }
                 } else {
-                    const errorText = await response.text();
-                    console.error('Error response:', errorText);
-                    showNotify('error', 'Error al guardar las sedes. Verifica los datos.');
+                    // Intentar leer como JSON primero (errores de validación)
+                    let errorMessage = 'Error al guardar las sedes. Verifica los datos.';
+                    try {
+                        const errorData = await response.json();
+                        if (errorData.message) {
+                            errorMessage = errorData.message;
+                        } else if (errorData.errors) {
+                            // Si hay errores de validación, mostrar todos los errores
+                            const errorMessages = [];
+                            for (const [field, messages] of Object.entries(errorData.errors)) {
+                                if (Array.isArray(messages) && messages.length > 0) {
+                                    errorMessages.push(...messages);
+                                }
+                            }
+                            if (errorMessages.length > 0) {
+                                errorMessage = errorMessages.join('. ');
+                            }
+                        }
+                    } catch (e) {
+                        // Si no es JSON, leer como texto
+                        const errorText = await response.text();
+                        console.error('Error response:', errorText);
+                    }
+                    showNotify('error', errorMessage);
                 }
             } catch (error) {
                 console.error('Error guardando sedes:', error);
