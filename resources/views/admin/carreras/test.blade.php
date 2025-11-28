@@ -269,7 +269,7 @@
 
                             <!-- Pestaña: Imágenes -->
                             <div x-show="tabActiva === 'imagenes'" x-cloak>
-                                <form id="formImagenes" @submit.prevent="guardarImagenes()" enctype="multipart/form-data">
+                                <form id="formImagenes" @submit.prevent="guardarImagenes()" method="POST" action="#" enctype="multipart/form-data" data-no-auto-submit="true">
                                     @csrf
                                     <div class="grid grid-cols-2 gap-6">
                                         <!-- Ilustración Desktop -->
@@ -284,6 +284,7 @@
                                                     name="ilustracion_desktop"
                                                     @change="previewImagen($event, 'ilustracion_desktop')"
                                                     accept="image/*"
+                                                    data-no-auto-submit="true"
                                                     class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                                                 >
                                             </div>
@@ -312,6 +313,7 @@
                                                     name="ilustracion_mobile"
                                                     @change="previewImagen($event, 'ilustracion_mobile')"
                                                     accept="image/*"
+                                                    data-no-auto-submit="true"
                                                     class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                                                 >
                                             </div>
@@ -340,6 +342,7 @@
                                                     name="imagen_show_desktop"
                                                     @change="previewImagen($event, 'imagen_show_desktop')"
                                                     accept="image/*"
+                                                    data-no-auto-submit="true"
                                                     class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                                                 >
                                             </div>
@@ -368,6 +371,7 @@
                                                     name="imagen_show_mobile"
                                                     @change="previewImagen($event, 'imagen_show_mobile')"
                                                     accept="image/*"
+                                                    data-no-auto-submit="true"
                                                     class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                                                 >
                                             </div>

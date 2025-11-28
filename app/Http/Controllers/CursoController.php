@@ -148,10 +148,16 @@ class CursoController extends Controller
         try {
             $curso = Curso::findOrFail($id);
             
+            // Si solo se están actualizando imágenes (viene from_test y solo hay archivos), no validar campos obligatorios
+            $soloImagenes = $request->has('from_test') && 
+                           ($request->hasFile('ilustracion_desktop') || $request->hasFile('ilustracion_mobile') || 
+                            $request->hasFile('imagen_show_desktop') || $request->hasFile('imagen_show_mobile')) &&
+                           !$request->has('nombre') && !$request->has('fecha_inicio');
+            
             $request->validate([
-                'nombre' => 'required|string|max:255',
+                'nombre' => $soloImagenes ? 'nullable' : 'required|string|max:255',
                 'descripcion' => 'nullable|string|max:1000',
-                'fecha_inicio' => 'required|date',
+                'fecha_inicio' => $soloImagenes ? 'nullable' : 'required|date',
                 'modalidad_online' => 'nullable',
                 'modalidad_presencial' => 'nullable',
                 'sedes' => 'nullable|array',
@@ -182,16 +188,30 @@ class CursoController extends Controller
                 'imagen_show_mobile.mimes' => 'La imagen de carrera individual mobile debe ser de tipo: jpeg, png, jpg, gif o webp.',
             ]);
 
-            // Validar que al menos una modalidad sea seleccionada
-            if (!$request->has('modalidad_online') && !$request->has('modalidad_presencial')) {
-                return redirect()->back()->withErrors(['modalidades' => 'Debes seleccionar al menos una modalidad.'])->withInput();
-            }
+            // Si solo se están actualizando imágenes, saltar validación de modalidades y actualización de campos básicos
+            $soloImagenes = $request->has('from_test') && 
+                           ($request->hasFile('ilustracion_desktop') || $request->hasFile('ilustracion_mobile') || 
+                            $request->hasFile('imagen_show_desktop') || $request->hasFile('imagen_show_mobile')) &&
+                           !$request->has('nombre') && !$request->has('fecha_inicio');
+            
+            if (!$soloImagenes) {
+                // Validar que al menos una modalidad sea seleccionada
+                if (!$request->has('modalidad_online') && !$request->has('modalidad_presencial')) {
+                    if ($request->has('from_test') || str_contains($request->header('Referer') ?? '', 'carreras/test')) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Debes seleccionar al menos una modalidad.'
+                        ], 422, ['Content-Type' => 'application/json']);
+                    }
+                    return redirect()->back()->withErrors(['modalidades' => 'Debes seleccionar al menos una modalidad.'])->withInput();
+                }
 
-            $curso->nombre = $request->nombre;
-            $curso->descripcion = $request->descripcion;
-            $curso->modalidad_online = $request->has('modalidad_online');
-            $curso->modalidad_presencial = $request->has('modalidad_presencial');
-            $curso->fecha_inicio = $request->fecha_inicio;
+                $curso->nombre = $request->nombre;
+                $curso->descripcion = $request->descripcion;
+                $curso->modalidad_online = $request->has('modalidad_online');
+                $curso->modalidad_presencial = $request->has('modalidad_presencial');
+                $curso->fecha_inicio = $request->fecha_inicio;
+            }
             
             // Validar featured: máximo 2 carreras destacadas
             $wantsFeatured = $request->has('featured');
@@ -271,12 +291,27 @@ class CursoController extends Controller
 
             return redirect()->route('admin.carreras')->with('success', 'Carrera actualizada correctamente');
         } catch (\Illuminate\Validation\ValidationException $e) {
+            // Si viene de test, devolver JSON con errores
+            if ($request->has('from_test') || str_contains($request->header('Referer') ?? '', 'carreras/test')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error de validación',
+                    'errors' => $e->errors()
+                ], 422, ['Content-Type' => 'application/json']);
+            }
             return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
             \Log::error('Error al actualizar carrera', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
+            // Si viene de test, devolver JSON con error
+            if ($request->has('from_test') || str_contains($request->header('Referer') ?? '', 'carreras/test')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error al actualizar la carrera: ' . $e->getMessage()
+                ], 500, ['Content-Type' => 'application/json']);
+            }
             return redirect()->back()->withErrors(['error' => 'Error al actualizar la carrera: ' . $e->getMessage()])->withInput();
         }
     }

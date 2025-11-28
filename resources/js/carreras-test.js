@@ -697,6 +697,7 @@ function carreraManager() {
             const form = document.getElementById('formImagenes');
             const formData = new FormData(form);
             formData.append('_method', 'PUT');
+            formData.append('from_test', '1'); // Indicar que viene de la vista test
 
             // Agregar las imágenes seleccionadas
             const inputs = form.querySelectorAll('input[type="file"]');
@@ -705,6 +706,9 @@ function carreraManager() {
                     formData.append(input.name || input.id, input.files[0]);
                 }
             });
+
+            // Mantener la pestaña activa
+            const tabActivaActual = this.tabActiva;
 
             try {
                 const response = await fetch(window.routes.admin.carreras.update.replace(':id', this.carreraId), {
@@ -715,10 +719,29 @@ function carreraManager() {
                     body: formData
                 });
 
-                if (response.ok || response.redirected) {
-                    showNotify('success', 'Imágenes guardadas exitosamente');
-                    setTimeout(() => window.location.reload(), 1000);
+                if (response.ok) {
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        const result = await response.json();
+                        if (result.success) {
+                            showNotify('success', 'Imágenes guardadas exitosamente');
+                            // Recargar manteniendo el curso_id y la pestaña activa usando GET
+                            setTimeout(() => {
+                                window.location.href = window.routes.admin.carreras.test + '?curso_id=' + this.carreraId + '&tab=' + tabActivaActual;
+                            }, 1500);
+                        } else {
+                            showNotify('error', result.message || 'Error al guardar las imágenes');
+                        }
+                    } else {
+                        // Si no es JSON, probablemente es un redirect, recargar manteniendo parámetros usando GET
+                        showNotify('success', 'Imágenes guardadas exitosamente');
+                        setTimeout(() => {
+                            window.location.href = window.routes.admin.carreras.test + '?curso_id=' + this.carreraId + '&tab=' + tabActivaActual;
+                        }, 1500);
+                    }
                 } else {
+                    const error = await response.text();
+                    console.error('Error:', error);
                     showNotify('error', 'Error al guardar las imágenes');
                 }
             } catch (error) {
