@@ -493,6 +493,7 @@ function carreraManager() {
                 return true;
             }
             // Si no está marcada, solo puede marcarla si hay menos de 2 destacadas
+            // featuredCount representa cuántas otras carreras están destacadas (excluyendo esta)
             return this.featuredCount < 2;
         },
 
@@ -518,11 +519,8 @@ function carreraManager() {
                     anios: carrera.anios || [],
                     modalidades: carrera.modalidades || []
                 };
-                // Actualizar el conteo: si esta carrera ya está destacada, restar 1 del conteo total
-                if (carrera.featured) {
-                    this.featuredCount = Math.max(0, this.featuredCount - 1);
-                }
             }
+            // featuredCount ya viene calculado del servidor (excluyendo la carrera actual si está destacada)
             
             // Restaurar pestaña activa desde URL si existe
             const urlParams = new URLSearchParams(window.location.search);
@@ -594,18 +592,19 @@ function carreraManager() {
         validarFeatured(event) {
             // Si está intentando marcar como destacada
             if (event.target.checked) {
-                // Si ya hay 2 destacadas y esta no estaba destacada, no permitir
+                // featuredCount = cuántas otras carreras están destacadas
+                // Si esta se marca, el total sería featuredCount + 1
+                // Solo permitir si featuredCount < 2
                 if (this.featuredCount >= 2) {
                     event.target.checked = false;
                     this.formData.featured = false;
-                    showNotify('error', 'Solo pueden haber máximo 2 carreras destacadas. Ya hay ' + this.featuredCount + ' carreras destacadas.');
+                    showNotify('error', 'Solo pueden haber máximo 2 carreras destacadas. Ya hay ' + this.featuredCount + ' otras carreras destacadas.');
                     return;
                 }
-                // Incrementar el conteo
-                this.featuredCount++;
+                // No incrementar el conteo aquí, porque featuredCount representa otras carreras
+                // Esta carrera aún no está guardada como destacada
             } else {
-                // Si está desmarcando, decrementar el conteo
-                this.featuredCount = Math.max(0, this.featuredCount - 1);
+                // Si está desmarcando, no cambiar el conteo porque featuredCount ya excluye esta carrera
             }
         },
 
@@ -616,8 +615,11 @@ function carreraManager() {
             }
             
             // Validar featured antes de enviar
+            // featuredCount = cuántas otras carreras están destacadas (excluyendo esta)
+            // Si esta carrera se marca como destacada, el total sería featuredCount + 1
+            // Solo permitir si featuredCount + 1 <= 2, es decir, featuredCount < 2
             if (this.formData.featured && this.featuredCount >= 2) {
-                showNotify('error', 'Solo pueden haber máximo 2 carreras destacadas. Ya hay ' + this.featuredCount + ' carreras destacadas.');
+                showNotify('error', 'Solo pueden haber máximo 2 carreras destacadas. Ya hay ' + this.featuredCount + ' otras carreras destacadas.');
                 this.formData.featured = false;
                 return;
             }

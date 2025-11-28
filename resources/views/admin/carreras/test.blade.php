@@ -1,4 +1,8 @@
 <x-app-layout>
+    @push('head')
+        @vite(['resources/js/carreras-test.js'])
+    @endpush
+    
     <!-- Variable global para pasar datos desde Blade a Alpine -->
     <script>
         window.carreraSeleccionadaData = @json($carreraSeleccionada);
@@ -929,7 +933,7 @@
         </div>
     </div>
     
-    @push('scripts')
-        <script src="{{ Vite::asset('resources/js/carreras-test.js') }}"></script>
+    @push('head')
+        @vite(['resources/js/carreras-test.js'])
     @endpush
 </x-app-layout>

@@ -474,32 +474,52 @@ class CursoController extends Controller
 
     public function test()
     {
-        $carreras = Curso::ordered()->get();
-        $sedes = \App\Models\Sede::ordered()->get();
-        $carreraSeleccionada = null;
-        
-        // Contar carreras destacadas
-        $featuredCount = Curso::where('featured', true)->count();
-        
-        // Si hay un curso_id en la request, cargar ese curso con todas sus relaciones
-        if (request()->has('curso_id') && request('curso_id')) {
-            $carreraSeleccionada = Curso::with([
-                'sedes',
-                'anios' => function($query) {
-                    $query->orderBy('año');
-                },
-                'anios.unidades' => function($query) {
-                    // Ordenar por el número extraído del campo numero
-                    // Extrae el último número del string (ej: "Unidad 1" -> 1, "Unidad 10" -> 10)
-                    $query->orderByRaw('CAST(SUBSTRING_INDEX(numero, " ", -1) AS UNSIGNED), numero');
-                },
-                'modalidades.tipos' => function($query) {
-                    $query->orderBy('orden');
+        try {
+            $carreras = Curso::ordered()->get();
+            $sedes = \App\Models\Sede::ordered()->get();
+            $carreraSeleccionada = null;
+            
+            // Si hay un curso_id en la request, cargar ese curso con todas sus relaciones
+            if (request()->has('curso_id') && request('curso_id')) {
+                try {
+                    $carreraSeleccionada = Curso::with([
+                        'sedes',
+                        'anios' => function($query) {
+                            $query->orderBy('año');
+                        },
+                        'anios.unidades' => function($query) {
+                            $query->orderByRaw('CAST(SUBSTRING_INDEX(numero, " ", -1) AS UNSIGNED), numero');
+                        },
+                        'modalidades.tipos' => function($query) {
+                            $query->orderBy('orden');
+                        }
+                    ])->find(request('curso_id'));
+                } catch (\Exception $e) {
+                    $carreraSeleccionada = null;
                 }
-            ])->find(request('curso_id'));
+            }
+            
+            // Contar cuántas otras carreras están destacadas (excluyendo la carrera seleccionada)
+            // Esto representa cuántas "plazas" quedan disponibles para destacar
+            if ($carreraSeleccionada) {
+                // Si hay una carrera seleccionada, contar las destacadas excluyendo esa
+                $featuredCount = Curso::where('featured', true)
+                    ->where('id', '!=', $carreraSeleccionada->id)
+                    ->count();
+            } else {
+                // Si no hay carrera seleccionada, contar todas las destacadas
+                $featuredCount = Curso::where('featured', true)->count();
+            }
+            
+            return view('admin.carreras.test', compact('carreras', 'sedes', 'carreraSeleccionada', 'featuredCount'));
+        } catch (\Exception $e) {
+            return view('admin.carreras.test', [
+                'carreras' => collect([]),
+                'sedes' => collect([]),
+                'carreraSeleccionada' => null,
+                'featuredCount' => 0
+            ])->with('error', 'Error al cargar la página');
         }
-        
-        return view('admin.carreras.test', compact('carreras', 'sedes', 'carreraSeleccionada', 'featuredCount'));
     }
 
     public function multimedia()
