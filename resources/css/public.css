@@ -13558,12 +13558,56 @@ body:has(.lista-carreras) .beneficios-section {
     color: #010C42; /* texto azul menú */
     font-family: 'Montserrat', sans-serif;
     font-weight: 500; /* medium */
-    font-size: 18px;
+    /* Tamaño de fuente responsive: 18px @1920, 16px @1366, 14px @1100 */
+    font-size: clamp(14px, calc(14px + (100vw - 1100px) * ((18 - 14) / (1920 - 1100))), 18px);
     text-align: center;
     gap: 4px;
 }
 
-.cursar-hover span { line-height: 1.2; }
+/* Ajuste específico para el breakpoint de 1366px */
+@media (min-width: 1100px) and (max-width: 1366px) {
+    .cursar-hover {
+        font-size: clamp(14px, calc(14px + (100vw - 1100px) * ((16 - 14) / (1366 - 1100))), 16px);
+    }
+}
+
+/* Ajuste para pantallas mayores a 1366px hasta 1920px */
+@media (min-width: 1366px) and (max-width: 1920px) {
+    .cursar-hover {
+        font-size: clamp(16px, calc(16px + (100vw - 1366px) * ((18 - 16) / (1920 - 1366))), 18px);
+    }
+}
+
+/* Para pantallas mayores a 1920px, mantener 18px */
+@media (min-width: 1920px) {
+    .cursar-hover {
+        font-size: 18px;
+    }
+}
+
+.cursar-hover span { 
+    line-height: 1.2;
+    /* Tamaño de fuente responsive: 18px @1920, 16px @1366, 14px @1100 */
+    font-size: clamp(14px, calc(14px + (100vw - 1100px) * ((18 - 14) / (1920 - 1100))), 18px);
+}
+
+@media (min-width: 1100px) and (max-width: 1366px) {
+    .cursar-hover span {
+        font-size: clamp(14px, calc(14px + (100vw - 1100px) * ((16 - 14) / (1366 - 1100))), 16px);
+    }
+}
+
+@media (min-width: 1366px) and (max-width: 1920px) {
+    .cursar-hover span {
+        font-size: clamp(16px, calc(16px + (100vw - 1366px) * ((18 - 16) / (1920 - 1366))), 18px);
+    }
+}
+
+@media (min-width: 1920px) {
+    .cursar-hover span {
+        font-size: 18px;
+    }
+}
 
 .requisitos-cursar-card .cursar-item:hover .cursar-label { display: none; }
 .requisitos-cursar-card .cursar-item:hover .cursar-hover { display: flex; }
