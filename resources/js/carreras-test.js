@@ -87,7 +87,12 @@ function editAnio(anioId) {
     resetAnioModal();
     
     fetch(window.routes.admin.programas.anios.data.replace(':id', anioId))
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al cargar los datos del año');
+            }
+            return response.json();
+        })
         .then(data => {
             document.getElementById('anioModalTitle').textContent = 'Editar Año';
             document.getElementById('anioSubmitBtn').textContent = 'Actualizar Año';
@@ -95,14 +100,18 @@ function editAnio(anioId) {
             document.getElementById('anioId').value = data.id;
             document.getElementById('anioCursoId').value = data.curso_id;
             document.getElementById('anioForm').action = window.routes.admin.programas.anios.update.replace(':id', data.id);
-            document.getElementById('anioNumero').value = data.año || '';
+            
+            // Llenar los campos del formulario
+            document.getElementById('anioAnio').value = data.año || '';
+            document.getElementById('anioTitulo').value = data.titulo || '';
+            document.getElementById('anioNivel').value = data.nivel || '';
             
             document.getElementById('anioErrors').classList.add('hidden');
             document.getElementById('anioModal').classList.remove('hidden');
         })
         .catch(error => {
             console.error('Error al cargar los datos del año:', error);
-            showNotify('error', 'Error al cargar los datos del año');
+            showNotify('error', 'Error al cargar los datos del año: ' + error.message);
         });
 }
 
@@ -203,7 +212,12 @@ function editUnidad(unidadId) {
     resetUnidadModal();
     
     fetch(window.routes.admin.programas.unidades.data.replace(':id', unidadId))
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al cargar los datos de la unidad');
+            }
+            return response.json();
+        })
         .then(data => {
             document.getElementById('unidadModalTitle').textContent = 'Editar Unidad';
             document.getElementById('unidadSubmitBtn').textContent = 'Actualizar Unidad';
@@ -211,6 +225,8 @@ function editUnidad(unidadId) {
             document.getElementById('unidadId').value = data.id;
             document.getElementById('unidadCursoAnioId').value = data.curso_anio_id;
             document.getElementById('unidadForm').action = window.routes.admin.programas.unidades.update.replace(':id', data.id);
+            
+            // Llenar los campos del formulario
             document.getElementById('unidadNumero').value = data.numero || '';
             document.getElementById('unidadTitulo').value = data.titulo || '';
             document.getElementById('unidadSubtitulo').value = data.subtitulo || '';
@@ -220,7 +236,7 @@ function editUnidad(unidadId) {
         })
         .catch(error => {
             console.error('Error al cargar los datos de la unidad:', error);
-            showNotify('error', 'Error al cargar los datos de la unidad');
+            showNotify('error', 'Error al cargar los datos de la unidad: ' + error.message);
         });
 }
 
@@ -321,7 +337,12 @@ function editModalidad(modalidadId) {
     resetModalidadModal();
     
     fetch(window.routes.admin.modalidades.data.replace(':id', modalidadId))
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al cargar los datos de la modalidad');
+            }
+            return response.json();
+        })
         .then(data => {
             document.getElementById('modalidadModalTitle').textContent = 'Editar Modalidad';
             document.getElementById('modalidadSubmitBtn').textContent = 'Actualizar Modalidad';
@@ -332,6 +353,7 @@ function editModalidad(modalidadId) {
             document.getElementById('modalidadCursoId').value = data.curso_id || carreraId;
             document.getElementById('modalidadForm').action = window.routes.admin.modalidades.update.replace(':id', data.id);
             
+            // Llenar los campos del formulario
             document.getElementById('modalidadNombreLinea1').value = data.nombre_linea1 || '';
             document.getElementById('modalidadNombreLinea2').value = data.nombre_linea2 || '';
             document.getElementById('modalidadTextoInfo').value = data.texto_info || '';
@@ -341,7 +363,7 @@ function editModalidad(modalidadId) {
         })
         .catch(error => {
             console.error('Error al cargar los datos de la modalidad:', error);
-            showNotify('error', 'Error al cargar los datos de la modalidad');
+            showNotify('error', 'Error al cargar los datos de la modalidad: ' + error.message);
         });
 }
 

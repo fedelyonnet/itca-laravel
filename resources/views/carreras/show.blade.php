@@ -1168,6 +1168,103 @@
             </div>
         </section>
 
+        <!-- Sedes Section -->
+        <section class="sedes-section">
+            <div class="sedes-container">
+                <h2 class="sedes-title">
+                    <span class="sedes-text-regular">Conocé todas </span>
+                    <span class="sedes-text-highlight">nuestras sedes</span>
+                </h2>
+                
+                <div class="sedes-grid">
+                    @foreach($sedes as $index => $sede)
+                        @if($sede->disponible)
+                            <!-- Sede disponible - con flipping -->
+                            <div class="sedes-grid-item" 
+                                 id="sede-{{ $sede->id }}-card"
+                                 data-direccion="{{ $sede->direccion }}"
+                                 data-contacto="{{ $sede->telefono }}"
+                                 data-link-google-maps="{{ $sede->link_google_maps }}"
+                                 data-link-whatsapp="{{ $sede->link_whatsapp }}">
+                                <img src="{{ asset('storage/' . $sede->imagen_desktop) }}" 
+                                     alt="{{ $sede->nombre }}" 
+                                     class="sedes-grid-image" loading="lazy">
+                                <div class="sedes-grid-title {{ $sede->tipo_titulo === 'dos_lineas' ? 'dos-lineas' : '' }}">
+                                    @if($sede->tipo_titulo === 'dos_lineas')
+                                        @php
+                                            $partes = explode(' ', $sede->nombre, 2);
+                                            $primeraLinea = $partes[0];
+                                            $segundaLinea = isset($partes[1]) ? $partes[1] : '';
+                                        @endphp
+                                        <div class="sedes-title-line">{{ $primeraLinea }}</div>
+                                        <div class="sedes-title-line">{{ $segundaLinea }}</div>
+                                    @else
+                                        <div class="sedes-title-line">{{ $sede->nombre }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        @else
+                            <!-- Sede no disponible - card "Próximamente" -->
+                            <div class="sedes-grid-item proximamente">
+                                <img src="{{ asset('storage/' . $sede->imagen_desktop) }}" 
+                                     alt="{{ $sede->nombre }}" 
+                                     class="sedes-grid-image" loading="lazy">
+                                <div class="sedes-grid-title proximamente">
+                                    <div class="sedes-title-line">PROXIMAMENTE</div>
+                                </div>
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+                
+                <!-- Versión Mobile - Acordeón -->
+                <div class="sedes-accordion-mobile">
+                    @foreach($sedes->where('disponible', true) as $sede)
+                        <div class="sedes-accordion-item" data-sede="{{ $sede->id }}">
+                            <div class="sedes-accordion-header">
+                                <img src="{{ asset('storage/' . $sede->imagen_mobile) }}" 
+                                     alt="{{ $sede->nombre }}" 
+                                     class="sedes-accordion-image" loading="lazy">
+                                <div class="sedes-accordion-title {{ $sede->tipo_titulo === 'dos_lineas' ? 'dos-lineas' : '' }}">
+                                    @if($sede->tipo_titulo === 'dos_lineas')
+                                        @php
+                                            $partes = explode(' ', $sede->nombre, 2);
+                                            $primeraLinea = $partes[0];
+                                            $segundaLinea = isset($partes[1]) ? $partes[1] : '';
+                                        @endphp
+                                        <div class="sedes-accordion-line">{{ $primeraLinea }}</div>
+                                        <div class="sedes-accordion-line">{{ $segundaLinea }}</div>
+                                    @else
+                                        <div class="sedes-accordion-line">{{ $sede->nombre }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="sedes-accordion-content">
+                                <div class="sedes-accordion-direccion">{{ $sede->direccion }}</div>
+                                <div class="sedes-accordion-contacto">Contacto: {{ $sede->telefono }}</div>
+                                
+                                @if($sede->link_google_maps)
+                                    <div class="sedes-accordion-link">
+                                        <a href="{{ $sede->link_google_maps }}" target="_blank" class="sedes-link sedes-link-maps">
+                                            📍 Ver en Maps
+                                        </a>
+                                    </div>
+                                @endif
+                                
+                                @if($sede->link_whatsapp)
+                                    <div class="sedes-accordion-link">
+                                        <a href="{{ $sede->link_whatsapp }}" target="_blank" class="sedes-link sedes-link-whatsapp">
+                                            💬 WhatsApp
+                                        </a>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+
         <!-- Contacto Section (reutilizada) -->
         <section class="contacto-section" id="contacto">
             <div class="contacto-content">
