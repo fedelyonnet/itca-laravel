@@ -171,11 +171,11 @@
                             <div class="requisitos-cursar-card">
                                 <div class="cursar-grid">
                                     @if(isset($sedesPorZona) && $sedesPorZona->count() > 0)
-                                        @foreach($sedesPorZona as $zona => $sedes)
+                                        @foreach($sedesPorZona as $zona => $sedesNombres)
                                             <div class="cursar-item">
                                                 <span class="cursar-label">{{ strtoupper($zona) }}</span>
-                                                <div class="cursar-hover {{ $sedes->count() > 1 ? 'cursar-hover-multi' : '' }}">
-                                                    @foreach($sedes as $sedeNombre)
+                                                <div class="cursar-hover {{ $sedesNombres->count() > 1 ? 'cursar-hover-multi' : '' }}">
+                                                    @foreach($sedesNombres as $sedeNombre)
                                                         <span>{{ $sedeNombre }}</span>
                                                     @endforeach
                                                 </div>
@@ -1178,36 +1178,37 @@
                 
                 <div class="sedes-grid">
                     @foreach($sedes as $index => $sede)
-                        @if($sede->disponible)
+                        @if($sede->disponible && !empty($sede->imagen_desktop))
                             <!-- Sede disponible - con flipping -->
                             <div class="sedes-grid-item" 
                                  id="sede-{{ $sede->id }}-card"
-                                 data-direccion="{{ $sede->direccion }}"
-                                 data-contacto="{{ $sede->telefono }}"
-                                 data-link-google-maps="{{ $sede->link_google_maps }}"
-                                 data-link-whatsapp="{{ $sede->link_whatsapp }}">
+                                 data-direccion="{{ $sede->direccion ?? '' }}"
+                                 data-contacto="{{ $sede->telefono ?? '' }}"
+                                 data-link-google-maps="{{ $sede->link_google_maps ?? '' }}"
+                                 data-link-whatsapp="{{ $sede->link_whatsapp ?? '' }}">
                                 <img src="{{ asset('storage/' . $sede->imagen_desktop) }}" 
-                                     alt="{{ $sede->nombre }}" 
+                                     alt="{{ $sede->nombre ?? 'Sede' }}" 
                                      class="sedes-grid-image" loading="lazy">
-                                <div class="sedes-grid-title {{ $sede->tipo_titulo === 'dos_lineas' ? 'dos-lineas' : '' }}">
-                                    @if($sede->tipo_titulo === 'dos_lineas')
+                                <div class="sedes-grid-title {{ ($sede->tipo_titulo ?? '') === 'dos_lineas' ? 'dos-lineas' : '' }}">
+                                    @if(($sede->tipo_titulo ?? '') === 'dos_lineas')
                                         @php
-                                            $partes = explode(' ', $sede->nombre, 2);
-                                            $primeraLinea = $partes[0];
+                                            $nombre = $sede->nombre ?? '';
+                                            $partes = explode(' ', $nombre, 2);
+                                            $primeraLinea = $partes[0] ?? '';
                                             $segundaLinea = isset($partes[1]) ? $partes[1] : '';
                                         @endphp
                                         <div class="sedes-title-line">{{ $primeraLinea }}</div>
                                         <div class="sedes-title-line">{{ $segundaLinea }}</div>
                                     @else
-                                        <div class="sedes-title-line">{{ $sede->nombre }}</div>
+                                        <div class="sedes-title-line">{{ $sede->nombre ?? 'Sede' }}</div>
                                     @endif
                                 </div>
                             </div>
-                        @else
+                        @elseif($sede->imagen_desktop)
                             <!-- Sede no disponible - card "Próximamente" -->
                             <div class="sedes-grid-item proximamente">
                                 <img src="{{ asset('storage/' . $sede->imagen_desktop) }}" 
-                                     alt="{{ $sede->nombre }}" 
+                                     alt="{{ $sede->nombre ?? 'Sede' }}" 
                                      class="sedes-grid-image" loading="lazy">
                                 <div class="sedes-grid-title proximamente">
                                     <div class="sedes-title-line">PROXIMAMENTE</div>
@@ -1219,31 +1220,38 @@
                 
                 <!-- Versión Mobile - Acordeón -->
                 <div class="sedes-accordion-mobile">
-                    @foreach($sedes->where('disponible', true) as $sede)
+                    @foreach($sedes->where('disponible', true)->where('imagen_mobile', '!=', null) as $sede)
                         <div class="sedes-accordion-item" data-sede="{{ $sede->id }}">
                             <div class="sedes-accordion-header">
-                                <img src="{{ asset('storage/' . $sede->imagen_mobile) }}" 
-                                     alt="{{ $sede->nombre }}" 
-                                     class="sedes-accordion-image" loading="lazy">
-                                <div class="sedes-accordion-title {{ $sede->tipo_titulo === 'dos_lineas' ? 'dos-lineas' : '' }}">
-                                    @if($sede->tipo_titulo === 'dos_lineas')
+                                @if($sede->imagen_mobile)
+                                    <img src="{{ asset('storage/' . $sede->imagen_mobile) }}" 
+                                         alt="{{ $sede->nombre ?? 'Sede' }}" 
+                                         class="sedes-accordion-image" loading="lazy">
+                                @endif
+                                <div class="sedes-accordion-title {{ ($sede->tipo_titulo ?? '') === 'dos_lineas' ? 'dos-lineas' : '' }}">
+                                    @if(($sede->tipo_titulo ?? '') === 'dos_lineas')
                                         @php
-                                            $partes = explode(' ', $sede->nombre, 2);
-                                            $primeraLinea = $partes[0];
+                                            $nombre = $sede->nombre ?? '';
+                                            $partes = explode(' ', $nombre, 2);
+                                            $primeraLinea = $partes[0] ?? '';
                                             $segundaLinea = isset($partes[1]) ? $partes[1] : '';
                                         @endphp
                                         <div class="sedes-accordion-line">{{ $primeraLinea }}</div>
                                         <div class="sedes-accordion-line">{{ $segundaLinea }}</div>
                                     @else
-                                        <div class="sedes-accordion-line">{{ $sede->nombre }}</div>
+                                        <div class="sedes-accordion-line">{{ $sede->nombre ?? 'Sede' }}</div>
                                     @endif
                                 </div>
                             </div>
                             <div class="sedes-accordion-content">
-                                <div class="sedes-accordion-direccion">{{ $sede->direccion }}</div>
-                                <div class="sedes-accordion-contacto">Contacto: {{ $sede->telefono }}</div>
+                                @if($sede->direccion)
+                                    <div class="sedes-accordion-direccion">{{ $sede->direccion }}</div>
+                                @endif
+                                @if($sede->telefono)
+                                    <div class="sedes-accordion-contacto">Contacto: {{ $sede->telefono }}</div>
+                                @endif
                                 
-                                @if($sede->link_google_maps)
+                                @if(!empty($sede->link_google_maps))
                                     <div class="sedes-accordion-link">
                                         <a href="{{ $sede->link_google_maps }}" target="_blank" class="sedes-link sedes-link-maps">
                                             📍 Ver en Maps
@@ -1251,7 +1259,7 @@
                                     </div>
                                 @endif
                                 
-                                @if($sede->link_whatsapp)
+                                @if(!empty($sede->link_whatsapp))
                                     <div class="sedes-accordion-link">
                                         <a href="{{ $sede->link_whatsapp }}" target="_blank" class="sedes-link sedes-link-whatsapp">
                                             💬 WhatsApp
