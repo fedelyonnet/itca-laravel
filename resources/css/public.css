@@ -11722,6 +11722,16 @@ section h2 {
         padding: clamp(12px, calc(12px + (100vw - 600px) * ((16 - 12) / (1099 - 600))), 16px);
     }
     
+    /* Cuando hay solo 1 zona: ancho completo y alineado arriba en tablet */
+    .requisitos-cursar-card .cursar-grid.cursar-grid-single {
+        grid-template-columns: 1fr; /* 1 columna en lugar de 2 */
+        align-content: start; /* alineado arriba en lugar de centrado */
+    }
+    
+    .requisitos-cursar-card .cursar-grid.cursar-grid-single .cursar-item {
+        width: 100%; /* ancho completo cuando hay solo 1 zona */
+    }
+    
     .cursar-item {
         width: clamp(150px, calc(150px + (100vw - 600px) * ((220 - 150) / (1099 - 600))), 220px);
         height: clamp(70px, calc(70px + (100vw - 600px) * ((96 - 70) / (1099 - 600))), 96px);
@@ -13524,6 +13534,14 @@ body:has(.lista-carreras) .beneficios-section {
     justify-items: stretch; /* que ocupen toda la celda, se alinea por item */
 }
 
+/* Cuando hay solo 1 zona: ancho completo y alineado arriba en desktop y tablet */
+@media (min-width: 1100px) {
+    .requisitos-cursar-card .cursar-grid.cursar-grid-single {
+        grid-template-columns: 1fr; /* 1 columna en lugar de 2 */
+        align-content: start; /* alineado arriba en lugar de centrado */
+    }
+}
+
 .requisitos-cursar-card .cursar-item {
     width: 100%; /* ancho automático dentro de su columna */
     height: clamp(70px, 5vw, 96px);
@@ -14187,6 +14205,12 @@ html {
         margin: 0;
         width: 100%;
         justify-items: center; /* Centrar items en el grid */
+    }
+    
+    /* Cuando hay solo 1 zona: ancho completo y alineado arriba en mobile */
+    .requisitos-cursar-card .cursar-grid.cursar-grid-single {
+        grid-template-columns: 1fr; /* 1 columna en lugar de 2 */
+        align-content: start; /* alineado arriba en lugar de centrado */
     }
     
     .requisitos-cursar-card .cursar-item {

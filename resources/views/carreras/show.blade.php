@@ -169,7 +169,7 @@
                         </div>
                         <div class="requisitos-cursar">
                             <div class="requisitos-cursar-card">
-                                <div class="cursar-grid">
+                                <div class="cursar-grid {{ isset($sedesPorZona) && $sedesPorZona->count() === 1 ? 'cursar-grid-single' : '' }}">
                                     @if(isset($sedesPorZona) && $sedesPorZona->count() > 0)
                                         @foreach($sedesPorZona as $zona => $sedesNombres)
                                             <div class="cursar-item">
