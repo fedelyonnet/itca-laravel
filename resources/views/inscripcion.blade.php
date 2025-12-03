@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="Inscripción - {{ $curso->nombre }} - ITCA">
     <title>Inscripción - {{ $curso->nombre }} - ITCA</title>
     <!-- Fonts -->
@@ -100,11 +101,15 @@
                 <div class="inscripcion-content">
                     <!-- Línea horizontal superior: Filtra por, Borrar todo, Resultados, Chips -->
                     <div class="inscripcion-filtros-bar">
-                        <span class="inscripcion-filtros-bar-texto">Filtra por:</span>
-                        <a href="#" id="borrar-todo-filtros" class="inscripcion-filtros-borrar-todo">Borrar todo</a>
-                        <span class="inscripcion-filtros-resultados">Resultados: <span id="contador-resultados">0</span></span>
-                        <div id="filtros-aplicados" class="inscripcion-filtros-chips">
-                            <!-- Los chips se agregarán dinámicamente con JavaScript -->
+                        <div class="inscripcion-filtros-bar-columna-izq">
+                            <span class="inscripcion-filtros-bar-texto">Filtra por:</span>
+                            <a href="#" id="borrar-todo-filtros" class="inscripcion-filtros-borrar-todo">Borrar todo</a>
+                        </div>
+                        <div class="inscripcion-filtros-bar-columna-der">
+                            <span class="inscripcion-filtros-resultados">Resultados: <span id="contador-resultados">0</span></span>
+                            <div id="filtros-aplicados" class="inscripcion-filtros-chips">
+                                <!-- Los chips se agregarán dinámicamente con JavaScript -->
+                            </div>
                         </div>
                     </div>
                     
@@ -223,7 +228,10 @@
                         <div class="inscripcion-listado-panel">
                             @if($cursadas->count() > 0)
                                 <div id="cursadas-container">
-                                    @foreach($cursadas as $cursada)
+                                    @foreach($cursadas as $index => $cursada)
+                                        @php
+                                            $cursadaId = 'cursada-' . ($cursada->id ?? $index);
+                                        @endphp
                                         <div class="cursada-item" 
                                              data-carrera="{{ $cursada->nombre_curso }}"
                                              data-sede="{{ $cursada->sede ?? '' }}"
@@ -300,7 +308,7 @@
                                                 <!-- Columna 2: Lugares disponibles y badge -->
                                                 <div class="cursada-item-columna-medio">
                                                     <div class="cursada-lugares-texto">
-                                                        ¡ Quedan <strong>{{ $cursada->vacantes ?? 0 }}</strong> lugares!
+                                                        ¡Quedan <strong>{{ $cursada->vacantes ?? 0 }}</strong> lugares!
                                                     </div>
                                                     <div class="cursada-badge-descuento">
                                                         20%off
@@ -309,8 +317,97 @@
                                                 
                                                 <!-- Columna 3: Botón ver valores -->
                                                 <div class="cursada-item-columna-der">
-                                                    <button class="cursada-btn-ver-valores">Ver valores</button>
+                                                    <button class="cursada-btn-ver-valores" data-cursada-id="{{ $cursadaId }}">Ver valores</button>
                                                 </div>
+                                            </div>
+                                            
+                                            <!-- Panel de valores (oculto por defecto) -->
+                                            <div class="cursada-valores-panel panel-hidden" id="panel-{{ $cursadaId }}">
+                                                <div class="cursada-valores-grid">
+                                                    <div class="cursada-valores-columna-izq">
+                                                        <div class="cursada-valores-info-wrapper">
+                                                            <div class="cursada-valores-renglon-1">
+                                                                <p class="cursada-valores-content">
+                                                                    El valor de la cuota por mes te saldrá: 
+                                                                    <span class="cursada-valor-cuota">${{ number_format($cursada->valor_cuota ?? 0, 0, ',', '.') }}</span>
+                                                                </p>
+                                                            </div>
+                                                            <div class="cursada-valores-renglon-2">
+                                                                <span class="cursada-descuento-texto">¡Descuento del 20% Aplicado!</span> - <span class="cursada-cuotas-texto">Cantidad de cuotas: <span class="cursada-cantidad-cuotas">{{ $cursada->cantidad_cuotas ?? 0 }}</span></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="cursada-formulario-container">
+                                                            <div class="cursada-formulario-titulo">
+                                                                <img src="/images/desktop/student-v.png" alt="Student" class="cursada-formulario-icono">
+                                                                <span class="cursada-formulario-texto">Completá tus datos para poder continuar:</span>
+                                                            </div>
+                                                            <form class="cursada-formulario" id="formulario-{{ $cursadaId }}">
+                                                                <div class="cursada-formulario-grid">
+                                                                    <div class="cursada-formulario-columna-izq">
+                                                                        <div class="cursada-formulario-campo">
+                                                                            <input type="text" name="nombre" id="nombre-{{ $cursadaId }}" placeholder="Nombre *" class="cursada-formulario-input" tabindex="1">
+                                                                            <span class="cursada-formulario-error" id="error-nombre-{{ $cursadaId }}"></span>
+                                                                        </div>
+                                                                        <div class="cursada-formulario-campo">
+                                                                            <input type="text" name="dni" id="dni-{{ $cursadaId }}" placeholder="DNI *" class="cursada-formulario-input" maxlength="8" pattern="[0-9]{7,8}" tabindex="3">
+                                                                            <span class="cursada-formulario-error" id="error-dni-{{ $cursadaId }}"></span>
+                                                                        </div>
+                                                                        <div class="cursada-formulario-campo">
+                                                                            <input type="tel" name="telefono" id="telefono-{{ $cursadaId }}" placeholder="Tel. (sin 0 ni guiones) *" class="cursada-formulario-input" maxlength="12" pattern="[0-9]{12}" tabindex="5">
+                                                                            <span class="cursada-formulario-error" id="error-telefono-{{ $cursadaId }}"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="cursada-formulario-columna-der">
+                                                                        <div class="cursada-formulario-campo">
+                                                                            <input type="text" name="apellido" id="apellido-{{ $cursadaId }}" placeholder="Apellido *" class="cursada-formulario-input" tabindex="2">
+                                                                            <span class="cursada-formulario-error" id="error-apellido-{{ $cursadaId }}"></span>
+                                                                        </div>
+                                                                        <div class="cursada-formulario-campo">
+                                                                            <input type="email" name="correo" id="correo-{{ $cursadaId }}" placeholder="Correo Electrónico *" class="cursada-formulario-input" tabindex="4">
+                                                                            <span class="cursada-formulario-error" id="error-correo-{{ $cursadaId }}"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                    <div class="cursada-valores-columna-der">
+                                                        <p class="cursada-valores-matricula">
+                                                            Valor de Matrícula: 
+                                                            <span class="cursada-valor-matricula">${{ number_format($cursada->matricula_base ?? 0, 0, ',', '.') }}</span>
+                                                        </p>
+                                                        <p class="cursada-codigo-descuento-texto">
+                                                            ¡Tengo un código de descuento!
+                                                        </p>
+                                                        <div class="cursada-descuento-titulo">
+                                                            <span class="cursada-descuento-label">Descuento: $</span>
+                                                            <span class="cursada-descuento-valor">-$57.400</span>
+                                                        </div>
+                                                        <div class="cursada-total-matricula">
+                                                            <span class="cursada-total-label">Total: $</span>
+                                                            <span class="cursada-total-valor">{{ number_format(($cursada->matricula_base ?? 0) - 57400, 0, ',', '.') }}</span>
+                                                        </div>
+                                                        <p class="cursada-reserva-texto">
+                                                            <span class="cursada-reserva-bold">Ahora solo debés pagar la matrícula</span><br>
+                                                            <span class="cursada-reserva-regular">para poder reservar tu vacante</span>
+                                                        </p>
+                                                        <div class="cursada-checkbox-container">
+                                                            <input type="checkbox" name="acepto_terminos" id="acepto-terminos-{{ $cursadaId }}" class="cursada-checkbox-input">
+                                                            <label for="acepto-terminos-{{ $cursadaId }}" class="cursada-checkbox-label">
+                                                                <span class="cursada-checkbox-custom"></span>
+                                                                <span class="cursada-checkbox-texto">Acepto Términos y Condiciones</span>
+                                                            </label>
+                                                        </div>
+                                                        <button type="button" class="cursada-btn-reservar" data-cursada-id="{{ $cursadaId }}" disabled>Ir a pagar la matrícula</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Texto informativo entre panel y línea del item -->
+                                            <div class="cursada-info-texto panel-hidden" id="info-{{ $cursadaId }}">
+                                                <p class="cursada-info-texto-content">
+                                                    <span class="cursada-info-texto-destacado">*Valor de cuota actual, vigente hasta el fin del presente mes.</span> Los valores de cuotas se ajustan y actualizan mes a mes según IPC publicado por el INDEC. Cuotas totales a abonar en el 1er año: {{ $cursada->cantidad_cuotas ?? 0 }}. Consultar por promociones y descuentos aplicables sobre adelantamientos de cuotas.
+                                                </p>
                                             </div>
                                         </div>
                                     @endforeach
@@ -522,8 +619,9 @@
                     return valor.replace(/Sempresencial/gi, 'Semipresencial');
                 }
                 
-                // Fallback: corregir sede si es necesario
+                // Fallback: corregir y simplificar sede si es necesario
                 if (tipo === 'sede') {
+                    // Primero corregir el nombre (convertir a formato completo)
                     const conversiones = {
                         'constituyentes': 'Villa Urquiza - Av. Constituyentes 4631',
                         'congreso': 'Villa Urquiza - Av. Congreso 5672',
@@ -535,14 +633,41 @@
                         'beiro': 'Villa Devoto - Bermudez 3192'
                     };
                     const valorLower = valor.toLowerCase().trim();
+                    let nombreCompleto = valor;
+                    
                     if (conversiones[valorLower]) {
-                        return conversiones[valorLower];
-                    }
-                    for (const [key, value] of Object.entries(conversiones)) {
-                        if (valorLower.includes(key)) {
-                            return value;
+                        nombreCompleto = conversiones[valorLower];
+                    } else {
+                        for (const [key, value] of Object.entries(conversiones)) {
+                            if (valorLower.includes(key)) {
+                                nombreCompleto = value;
+                                break;
+                            }
                         }
                     }
+                    
+                    // Luego simplificar el nombre (igual que en el panel filtrado)
+                    const nombreLower = nombreCompleto.toLowerCase().trim();
+                    if (nombreLower.includes('congreso') && nombreLower.includes('urquiza')) {
+                        return 'Urquiza Congreso';
+                    }
+                    if (nombreLower.includes('constituyentes') && nombreLower.includes('urquiza')) {
+                        return 'Urquiza Constituyentes';
+                    }
+                    if (nombreLower.includes('banfield')) {
+                        return 'Banfield';
+                    }
+                    if (nombreLower.includes('devoto') || nombreLower.includes('beiró') || nombreLower.includes('beiro') || nombreLower.includes('bermudez')) {
+                        return 'Devoto';
+                    }
+                    if (nombreLower.includes('moron') || nombreLower.includes('morón')) {
+                        return 'Morón';
+                    }
+                    if (nombreLower.includes('san isidro')) {
+                        return 'San Isidro';
+                    }
+                    
+                    return nombreCompleto;
                 }
                 
                 return valor;
@@ -703,6 +828,414 @@
             // Inicializar colores y filtros al cargar la página
             actualizarColoresFiltros();
             filtrarCursadas();
+            
+            // Función para cerrar todos los paneles excepto uno
+            function cerrarTodosLosPaneles(excluirCursadaId = null) {
+                document.querySelectorAll('.cursada-valores-panel').forEach(panel => {
+                    const panelId = panel.getAttribute('id');
+                    const cursadaId = panelId.replace('panel-', '');
+                    
+                    if (cursadaId !== excluirCursadaId) {
+                        panel.classList.remove('panel-visible');
+                        panel.classList.add('panel-hidden');
+                        
+                        // Remover estado desplegado del botón
+                        const botonVerValores = document.querySelector('.cursada-btn-ver-valores[data-cursada-id="' + cursadaId + '"]');
+                        if (botonVerValores) {
+                            botonVerValores.classList.remove('panel-desplegado');
+                        }
+                        
+                        const infoTexto = document.getElementById('info-' + cursadaId);
+                        if (infoTexto) {
+                            infoTexto.classList.remove('panel-visible');
+                            infoTexto.classList.add('panel-hidden');
+                        }
+                        
+                        const formulario = document.getElementById('formulario-' + cursadaId);
+                        if (formulario) {
+                            const inputs = formulario.querySelectorAll('.cursada-formulario-input');
+                            inputs.forEach(input => {
+                                input.setAttribute('tabindex', '-1');
+                                input.value = ''; // Borrar el valor del input
+                            });
+                        }
+                        
+                        // Desactivar checkbox y botón de reservar
+                        const checkbox = document.getElementById('acepto-terminos-' + cursadaId);
+                        if (checkbox) {
+                            checkbox.checked = false;
+                        }
+                        const botonReservar = document.querySelector('.cursada-btn-reservar[data-cursada-id="' + cursadaId + '"]');
+                        if (botonReservar) {
+                            botonReservar.disabled = true;
+                        }
+                        
+                        // Limpiar errores de validación
+                        const errorElements = document.querySelectorAll('#formulario-' + cursadaId + ' .cursada-formulario-error');
+                        const inputElements = document.querySelectorAll('#formulario-' + cursadaId + ' .cursada-formulario-input');
+                        errorElements.forEach(error => {
+                            error.classList.remove('show');
+                            error.textContent = '';
+                        });
+                        inputElements.forEach(input => {
+                            input.classList.remove('error');
+                        });
+                    }
+                });
+            }
+            
+            // Función para limpiar inputs de un panel específico
+            function limpiarInputsPanel(cursadaId) {
+                const formulario = document.getElementById('formulario-' + cursadaId);
+                if (formulario) {
+                    const inputs = formulario.querySelectorAll('.cursada-formulario-input');
+                    inputs.forEach(input => {
+                        input.value = ''; // Borrar el valor del input
+                    });
+                }
+            }
+            
+            // Funcionalidad para mostrar/ocultar panel de valores
+            const botonesVerValores = document.querySelectorAll('.cursada-btn-ver-valores');
+            botonesVerValores.forEach(boton => {
+                boton.addEventListener('click', function() {
+                    const cursadaId = this.getAttribute('data-cursada-id');
+                    const panel = document.getElementById('panel-' + cursadaId);
+                    const infoTexto = document.getElementById('info-' + cursadaId);
+                    const formulario = document.getElementById('formulario-' + cursadaId);
+                    
+                    if (panel) {
+                        // Toggle del panel con animación
+                        if (panel.classList.contains('panel-visible')) {
+                            // Cerrar este panel
+                            panel.classList.remove('panel-visible');
+                            panel.classList.add('panel-hidden');
+                            this.classList.remove('panel-desplegado');
+                            if (infoTexto) {
+                                infoTexto.classList.remove('panel-visible');
+                                infoTexto.classList.add('panel-hidden');
+                            }
+                            // Deshabilitar tabindex y limpiar inputs cuando el panel se oculta
+                            if (formulario) {
+                                const inputs = formulario.querySelectorAll('.cursada-formulario-input');
+                                inputs.forEach(input => {
+                                    input.setAttribute('tabindex', '-1');
+                                    input.value = ''; // Borrar el valor del input
+                                });
+                            }
+                            
+                            // Desactivar checkbox y botón de reservar
+                            const checkbox = document.getElementById('acepto-terminos-' + cursadaId);
+                            if (checkbox) {
+                                checkbox.checked = false;
+                            }
+                            const botonReservar = document.querySelector('.cursada-btn-reservar[data-cursada-id="' + cursadaId + '"]');
+                            if (botonReservar) {
+                                botonReservar.disabled = true;
+                            }
+                            
+                            // Limpiar errores de validación
+                            const errorElements = document.querySelectorAll('#formulario-' + cursadaId + ' .cursada-formulario-error');
+                            const inputElements = document.querySelectorAll('#formulario-' + cursadaId + ' .cursada-formulario-input');
+                            errorElements.forEach(error => {
+                                error.classList.remove('show');
+                                error.textContent = '';
+                            });
+                            inputElements.forEach(input => {
+                                input.classList.remove('error');
+                            });
+                        } else {
+                            // Cerrar todos los demás paneles antes de abrir este
+                            cerrarTodosLosPaneles(cursadaId);
+                            
+                            // Abrir este panel
+                            panel.classList.remove('panel-hidden');
+                            panel.classList.add('panel-visible');
+                            this.classList.add('panel-desplegado');
+                            if (infoTexto) {
+                                infoTexto.classList.remove('panel-hidden');
+                                infoTexto.classList.add('panel-visible');
+                            }
+                            // Habilitar tabindex de los inputs cuando el panel se muestra
+                            if (formulario) {
+                                const nombre = formulario.querySelector('#nombre-' + cursadaId);
+                                const apellido = formulario.querySelector('#apellido-' + cursadaId);
+                                const dni = formulario.querySelector('#dni-' + cursadaId);
+                                const correo = formulario.querySelector('#correo-' + cursadaId);
+                                const telefono = formulario.querySelector('#telefono-' + cursadaId);
+                                
+                                if (nombre) nombre.setAttribute('tabindex', '1');
+                                if (apellido) apellido.setAttribute('tabindex', '2');
+                                if (dni) dni.setAttribute('tabindex', '3');
+                                if (correo) correo.setAttribute('tabindex', '4');
+                                if (telefono) telefono.setAttribute('tabindex', '5');
+                            }
+                        }
+                    }
+                });
+            });
+            
+            // Funcionalidad para habilitar/deshabilitar botón de reservar según checkbox y validar formulario
+            document.querySelectorAll('.cursada-checkbox-input').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const cursadaId = this.id.replace('acepto-terminos-', '');
+                    const botonReservar = document.querySelector('.cursada-btn-reservar[data-cursada-id="' + cursadaId + '"]');
+                    const formulario = document.getElementById('formulario-' + cursadaId);
+                    
+                    if (this.checked) {
+                        // Validar formulario
+                        if (formulario) {
+                            const nombre = formulario.querySelector('#nombre-' + cursadaId);
+                            const apellido = formulario.querySelector('#apellido-' + cursadaId);
+                            const dni = formulario.querySelector('#dni-' + cursadaId);
+                            const correo = formulario.querySelector('#correo-' + cursadaId);
+                            const telefono = formulario.querySelector('#telefono-' + cursadaId);
+                            
+                            const errorNombre = document.getElementById('error-nombre-' + cursadaId);
+                            const errorApellido = document.getElementById('error-apellido-' + cursadaId);
+                            const errorDni = document.getElementById('error-dni-' + cursadaId);
+                            const errorCorreo = document.getElementById('error-correo-' + cursadaId);
+                            const errorTelefono = document.getElementById('error-telefono-' + cursadaId);
+                            
+                            // Función para mostrar error
+                            function mostrarError(input, errorElement, mensaje) {
+                                input.classList.add('error');
+                                errorElement.textContent = mensaje;
+                                errorElement.classList.add('show');
+                            }
+                            
+                            // Función para ocultar error
+                            function ocultarError(input, errorElement) {
+                                input.classList.remove('error');
+                                errorElement.classList.remove('show');
+                                errorElement.textContent = '';
+                            }
+                            
+                            // Limpiar errores previos
+                            ocultarError(nombre, errorNombre);
+                            ocultarError(apellido, errorApellido);
+                            ocultarError(dni, errorDni);
+                            ocultarError(correo, errorCorreo);
+                            ocultarError(telefono, errorTelefono);
+                            
+                            // Validar que todos los campos estén completos
+                            let esValido = true;
+                            
+                            if (!nombre || !nombre.value.trim()) {
+                                esValido = false;
+                                mostrarError(nombre, errorNombre, 'Este campo es obligatorio');
+                            }
+                            
+                            if (!apellido || !apellido.value.trim()) {
+                                esValido = false;
+                                mostrarError(apellido, errorApellido, 'Este campo es obligatorio');
+                            }
+                            
+                            if (!dni || !dni.value.trim() || dni.value.length < 7 || dni.value.length > 8) {
+                                esValido = false;
+                                mostrarError(dni, errorDni, 'El DNI debe tener entre 7 y 8 dígitos');
+                            }
+                            
+                            if (!correo || !correo.value.trim()) {
+                                esValido = false;
+                                mostrarError(correo, errorCorreo, 'Este campo es obligatorio');
+                            } else {
+                                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                if (!emailRegex.test(correo.value.trim())) {
+                                    esValido = false;
+                                    mostrarError(correo, errorCorreo, 'Por favor ingrese un correo electrónico válido');
+                                }
+                            }
+                            
+                            if (!telefono || !telefono.value.trim() || telefono.value.length !== 12) {
+                                esValido = false;
+                                mostrarError(telefono, errorTelefono, 'Formato ejemplo: 541149990000');
+                            }
+                            
+                            if (esValido) {
+                                // Guardar lead
+                                fetch('{{ route("leads.store") }}', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                                    },
+                                    body: JSON.stringify({
+                                        nombre: nombre.value.trim(),
+                                        apellido: apellido.value.trim(),
+                                        dni: dni.value.trim(),
+                                        correo: correo.value.trim(),
+                                        telefono: telefono.value.trim()
+                                    })
+                                })
+                                .then(response => {
+                                    if (!response.ok) {
+                                        return response.json().then(data => {
+                                            throw new Error(data.message || 'Error al guardar los datos');
+                                        });
+                                    }
+                                    return response.json();
+                                })
+                                .then(data => {
+                                    if (data.success) {
+                                        botonReservar.disabled = false;
+                                    } else {
+                                        alert('Error al guardar los datos. Por favor, intente nuevamente.');
+                                        this.checked = false;
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    alert(error.message || 'Error al guardar los datos. Por favor, intente nuevamente.');
+                                    this.checked = false;
+                                });
+                            } else {
+                                // Si no es válido, desmarcar el checkbox
+                                this.checked = false;
+                            }
+                        }
+                    } else {
+                        if (botonReservar) {
+                            botonReservar.disabled = true;
+                        }
+                        // Limpiar errores cuando se desmarca
+                        const formulario = document.getElementById('formulario-' + cursadaId);
+                        if (formulario) {
+                            const errorElements = formulario.querySelectorAll('.cursada-formulario-error');
+                            const inputElements = formulario.querySelectorAll('.cursada-formulario-input');
+                            errorElements.forEach(error => {
+                                error.classList.remove('show');
+                                error.textContent = '';
+                            });
+                            inputElements.forEach(input => {
+                                input.classList.remove('error');
+                            });
+                        }
+                    }
+                });
+            });
+            
+            // Inicializar estado de botones de reservar (todos deshabilitados al inicio)
+            document.querySelectorAll('.cursada-btn-reservar').forEach(boton => {
+                boton.disabled = true;
+            });
+            
+            // Inicializar: deshabilitar tabindex de todos los inputs en paneles ocultos
+            document.querySelectorAll('.cursada-valores-panel.panel-hidden').forEach(panel => {
+                const panelId = panel.getAttribute('id');
+                const cursadaId = panelId.replace('panel-', '');
+                const formulario = document.getElementById('formulario-' + cursadaId);
+                if (formulario) {
+                    const inputs = formulario.querySelectorAll('.cursada-formulario-input');
+                    inputs.forEach(input => {
+                        input.setAttribute('tabindex', '-1');
+                    });
+                }
+            });
+            
+            // Validaciones de formularios
+            document.querySelectorAll('.cursada-formulario-input').forEach(input => {
+                // Función para obtener el elemento de error
+                function getErrorElement(input) {
+                    // El ID del input es como "nombre-123" o "dni-123"
+                    const parts = input.id.split('-');
+                    const fieldName = parts[0];
+                    const cursadaId = parts.slice(1).join('-');
+                    return document.getElementById('error-' + fieldName + '-' + cursadaId);
+                }
+                
+                // Función para mostrar error
+                function mostrarError(input, mensaje) {
+                    const errorElement = getErrorElement(input);
+                    if (errorElement) {
+                        input.classList.add('error');
+                        errorElement.textContent = mensaje;
+                        errorElement.classList.add('show');
+                    }
+                }
+                
+                // Función para ocultar error
+                function ocultarError(input) {
+                    const errorElement = getErrorElement(input);
+                    if (errorElement) {
+                        input.classList.remove('error');
+                        errorElement.classList.remove('show');
+                        errorElement.textContent = '';
+                    }
+                }
+                
+                // Validación de DNI: solo números, máximo 8 dígitos, sin puntos
+                if (input.name === 'dni') {
+                    input.addEventListener('input', function(e) {
+                        // Remover cualquier carácter que no sea número
+                        let valor = e.target.value.replace(/[^0-9]/g, '');
+                        // Limitar a 8 dígitos
+                        if (valor.length > 8) {
+                            valor = valor.substring(0, 8);
+                        }
+                        e.target.value = valor;
+                        // Limpiar error mientras escribe
+                        ocultarError(e.target);
+                    });
+                    
+                    input.addEventListener('blur', function(e) {
+                        const valor = e.target.value.trim();
+                        if (valor && (valor.length < 7 || valor.length > 8)) {
+                            mostrarError(e.target, 'El DNI debe tener entre 7 y 8 dígitos');
+                        } else {
+                            ocultarError(e.target);
+                        }
+                    });
+                }
+                
+                // Validación de teléfono: solo números, exactamente 12 dígitos, sin 0 ni guiones
+                if (input.name === 'telefono') {
+                    input.addEventListener('input', function(e) {
+                        // Remover cualquier carácter que no sea número
+                        let valor = e.target.value.replace(/[^0-9]/g, '');
+                        // Limitar a 12 dígitos
+                        if (valor.length > 12) {
+                            valor = valor.substring(0, 12);
+                        }
+                        e.target.value = valor;
+                        // Limpiar error mientras escribe
+                        ocultarError(e.target);
+                    });
+                    
+                    input.addEventListener('blur', function(e) {
+                        const valor = e.target.value.trim();
+                        if (valor && valor.length !== 12) {
+                            mostrarError(e.target, 'Formato ejemplo: 541149990000');
+                        } else {
+                            ocultarError(e.target);
+                        }
+                    });
+                }
+                
+                // Validación de email
+                if (input.type === 'email') {
+                    input.addEventListener('blur', function(e) {
+                        const valor = e.target.value.trim();
+                        if (valor) {
+                            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                            if (!emailRegex.test(valor)) {
+                                mostrarError(e.target, 'Por favor ingrese un correo electrónico válido');
+                            } else {
+                                ocultarError(e.target);
+                            }
+                        } else {
+                            ocultarError(e.target);
+                        }
+                    });
+                }
+                
+                // Limpiar errores cuando el usuario empieza a escribir
+                input.addEventListener('input', function(e) {
+                    if (e.target.name !== 'dni' && e.target.name !== 'telefono') {
+                        ocultarError(e.target);
+                    }
+                });
+            });
         });
     </script>
 </body>

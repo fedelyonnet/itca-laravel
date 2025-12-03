@@ -14214,7 +14214,8 @@ body.inscripcion-page {
 
 .inscripcion-section {
     min-height: 60vh;
-    padding: 4rem 0;
+    padding-top: 0;
+    padding-bottom: clamp(3rem, calc(3rem + (100vw - 1100px) * 0.0122), 4rem);
     background-color: var(--menu-bg);
 }
 
@@ -14326,12 +14327,28 @@ body.inscripcion-page {
 /* Panel de filtros de inscripción */
 .inscripcion-filtros-bar {
     display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex-wrap: nowrap;
-    margin-bottom: 2rem;
+    flex-direction: row;
+    gap: clamp(1.5rem, calc(1.5rem + (100vw - 1100px) * 0.0061), 2rem);
+    margin-bottom: clamp(1.5rem, calc(1.5rem + (100vw - 1100px) * 0.0061), 2rem);
     width: 100%;
-    overflow-x: auto;
+    align-items: center;
+}
+
+.inscripcion-filtros-bar-columna-izq {
+    width: clamp(280px, calc(280px + (100vw - 1100px) * 0.134), 390px);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem);
+}
+
+.inscripcion-filtros-bar-columna-der {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem);
+    flex-wrap: wrap;
 }
 
 .inscripcion-filtros-bar-texto {
@@ -14354,7 +14371,6 @@ body.inscripcion-page {
 .inscripcion-filtros-resultados {
     color: var(--text-white);
     font-family: 'Montserrat', sans-serif;
-    margin-left: auto;
 }
 
 .inscripcion-filtros-resultados span {
@@ -14367,12 +14383,13 @@ body.inscripcion-page {
     gap: 0.5rem;
     flex: 1;
     min-height: 30px;
+    min-width: 0;
 }
 
 .inscripcion-paneles-container {
     display: flex;
     flex-direction: row;
-    gap: 2rem;
+    gap: clamp(1.5rem, calc(1.5rem + (100vw - 1100px) * 0.0061), 2rem);
     width: 100%;
     align-items: flex-start;
 }
@@ -14494,7 +14511,8 @@ body.inscripcion-page {
     max-height: clamp(900px, calc(900px + (100vw - 1100px) * 0.4634), 1280px);
     overflow-y: auto;
     overflow-x: hidden;
-    padding-right: clamp(8px, calc(8px + (100vw - 1100px) * 0.0024), 12px);
+    padding-right: clamp(20px, calc(20px + (100vw - 1100px) * 0.0122), 30px);
+    margin-right: clamp(10px, calc(10px + (100vw - 1100px) * 0.0122), 20px);
     /* Firefox */
     scrollbar-width: thin;
     scrollbar-color: #60D697 rgba(217, 217, 217, 0.2);
@@ -14522,17 +14540,19 @@ body.inscripcion-page {
 }
 
 .cursada-item {
-    width: clamp(900px, calc(900px + (100vw - 1100px) * 0.268), 1120px);
+    width: 100%;
+    max-width: clamp(900px, calc(900px + (100vw - 1100px) * 0.268), 1120px);
     border: 1px solid #FFFFFF;
     border-radius: 8px;
-    padding: 1rem;
+    padding: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem);
     background-color: transparent;
+    box-sizing: border-box;
 }
 
 .cursada-item-grid {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
-    gap: 2rem;
+    gap: clamp(1.5rem, calc(1.5rem + (100vw - 1100px) * 0.0061), 2rem);
     align-items: center;
 }
 
@@ -14628,18 +14648,486 @@ body.inscripcion-page {
     opacity: 0.9;
 }
 
+.cursada-btn-ver-valores.panel-desplegado {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #aeaeae;
+}
+
+.cursada-btn-ver-valores.panel-desplegado:hover {
+    opacity: 1;
+    cursor: default;
+}
+
+.cursada-valores-panel {
+    margin-top: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem);
+    margin-left: calc(-1 * clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem));
+    margin-right: calc(-1 * clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem));
+    padding: 0;
+    padding-top: clamp(30px, calc(30px + (100vw - 1100px) * 0.0244), 50px);
+    padding-bottom: clamp(30px, calc(30px + (100vw - 1100px) * 0.0244), 50px);
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    width: calc(100% + 2 * clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem));
+    position: relative;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+                opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+                transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                padding 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                margin 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cursada-valores-panel.panel-hidden {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-10px);
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+}
+
+.cursada-valores-panel.panel-visible {
+    max-height: 500px;
+    opacity: 1;
+    transform: translateY(0);
+    padding-top: clamp(30px, calc(30px + (100vw - 1100px) * 0.0244), 50px);
+    padding-bottom: clamp(30px, calc(30px + (100vw - 1100px) * 0.0244), 50px);
+    margin-top: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem);
+}
+
+.cursada-valores-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: #FFFFFF;
+    opacity: 0;
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
+}
+
+.cursada-valores-panel::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: #FFFFFF;
+    opacity: 0;
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
+}
+
+.cursada-valores-panel.panel-visible::before,
+.cursada-valores-panel.panel-visible::after {
+    opacity: 1;
+}
+
+.cursada-info-texto {
+    margin-top: 0;
+    margin-left: calc(-1 * clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem));
+    margin-right: calc(-1 * clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem));
+    padding: 0;
+    padding-top: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem);
+    padding-bottom: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem);
+    background-color: transparent;
+    width: calc(100% + 2 * clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem));
+    position: relative;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+                opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+                transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                padding 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                margin 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cursada-info-texto.panel-hidden {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-10px);
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+}
+
+.cursada-info-texto.panel-visible {
+    max-height: 300px;
+    opacity: 1;
+    transform: translateY(0);
+    padding-top: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem);
+    padding-bottom: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem);
+    margin-top: 0;
+}
+
+.cursada-info-texto-content {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(12px, calc(12px + (100vw - 1100px) * 0.0024), 14px);
+    color: #FFFFFF;
+    line-height: 1.6;
+    margin: 0;
+    padding-left: clamp(20px, calc(20px + (100vw - 1100px) * 0.0122), 30px);
+    padding-right: clamp(20px, calc(20px + (100vw - 1100px) * 0.0122), 30px);
+}
+
+.cursada-info-texto-destacado {
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(12px, calc(12px + (100vw - 1100px) * 0.0024), 14px);
+}
+
+.cursada-valores-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: clamp(1.5rem, calc(1.5rem + (100vw - 1100px) * 0.0061), 2rem);
+    align-items: flex-start;
+    padding-left: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem);
+    padding-right: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem);
+}
+
+.cursada-valores-columna-izq {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.cursada-valores-info-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    padding-left: clamp(30px, calc(30px + (100vw - 1100px) * 0.0244), 50px);
+    padding-bottom: clamp(20px, calc(20px + (100vw - 1100px) * 0.0183), 35px);
+}
+
+.cursada-valores-renglon-1 {
+    width: 100%;
+    text-align: left;
+}
+
+.cursada-valores-renglon-2 {
+    width: 100%;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.cursada-descuento-texto {
+    font-weight: 600;
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(13px, calc(13px + max(0px, min(100vw, 1640px) - 1365px) * 0.0024 + max(0px, 100vw - 1640px) * 0.0005), 18px);
+    line-height: 1.6;
+}
+
+.cursada-cuotas-texto {
+    font-weight: 400;
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(13px, calc(13px + max(0px, min(100vw, 1640px) - 1365px) * 0.0024 + max(0px, 100vw - 1640px) * 0.0005), 18px);
+    line-height: 1.6;
+}
+
+.cursada-valores-columna-der {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.cursada-valores-content {
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: clamp(13px, calc(13px + max(0px, min(100vw, 1640px) - 1365px) * 0.0024 + max(0px, 100vw - 1640px) * 0.0005), 18px);
+    line-height: 1.6;
+    margin: 0;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.cursada-valor-cuota {
+    font-weight: 600;
+}
+
+.cursada-valores-matricula {
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: clamp(13px, calc(13px + max(0px, min(100vw, 1640px) - 1365px) * 0.0024 + max(0px, 100vw - 1640px) * 0.0005), 18px);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.cursada-valor-matricula {
+    font-weight: 600;
+}
+
+.cursada-codigo-descuento-texto {
+    color: #60D697;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: clamp(11px, calc(11px + max(0px, min(100vw, 1640px) - 1365px) * 0.0024 + max(0px, 100vw - 1640px) * 0.0005), 15px);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.cursada-descuento-titulo {
+    margin-top: clamp(1rem, calc(1rem + (100vw - 1100px) * 0.0024), 1.5rem);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.cursada-descuento-label {
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: clamp(17px, calc(17px + max(0px, min(100vw, 1640px) - 1365px) * 0.0024 + max(0px, 100vw - 1640px) * 0.0005), 19px);
+    line-height: 1.6;
+}
+
+.cursada-descuento-valor {
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: clamp(17px, calc(17px + max(0px, min(100vw, 1640px) - 1365px) * 0.0024 + max(0px, 100vw - 1640px) * 0.0005), 19px);
+    line-height: 1.6;
+}
+
+.cursada-total-matricula {
+    margin-top: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.0012), 1rem);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.cursada-total-label {
+    color: #60D697;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: clamp(28px, calc(28px + max(0px, min(100vw, 1640px) - 1365px) * 0.0024 + max(0px, 100vw - 1640px) * 0.0005), 32px);
+    line-height: 1.6;
+}
+
+.cursada-total-valor {
+    color: #60D697;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: clamp(28px, calc(28px + max(0px, min(100vw, 1640px) - 1365px) * 0.0024 + max(0px, 100vw - 1640px) * 0.0005), 32px);
+    line-height: 1.6;
+}
+
+.cursada-reserva-texto {
+    margin-top: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.0012), 1rem);
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(14px, calc(14px + max(0px, min(100vw, 1640px) - 1365px) * 0.0024 + max(0px, 100vw - 1640px) * 0.0005), 16px);
+    line-height: 1.6;
+    margin-bottom: 0;
+}
+
+.cursada-reserva-bold {
+    font-weight: 700;
+}
+
+.cursada-reserva-regular {
+    font-weight: 400;
+}
+
+.cursada-checkbox-container {
+    margin-top: clamp(1rem, calc(1rem + (100vw - 1100px) * 0.0024), 1.5rem);
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.0012), 1rem);
+}
+
+.cursada-checkbox-input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.cursada-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.0012), 1rem);
+    cursor: pointer;
+}
+
+.cursada-checkbox-custom {
+    width: clamp(24px, calc(24px + (100vw - 1100px) * 0.0049), 28px);
+    height: clamp(24px, calc(24px + (100vw - 1100px) * 0.0049), 28px);
+    border: 1px solid #FFFFFF;
+    background-color: rgba(217, 217, 217, 0.1);
+    border-radius: clamp(6px, calc(6px + (100vw - 1100px) * 0.0051), 8px);
+    display: inline-block;
+    position: relative;
+    transition: background-color 0.3s ease;
+    flex-shrink: 0;
+}
+
+.cursada-checkbox-input:checked + .cursada-checkbox-label .cursada-checkbox-custom {
+    background-color: #65E09C;
+}
+
+.cursada-checkbox-texto {
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: clamp(13px, calc(13px + max(0px, min(100vw, 1640px) - 1365px) * 0.0024 + max(0px, 100vw - 1640px) * 0.0005), 15px);
+    line-height: 1.6;
+    text-decoration: underline;
+}
+
+.cursada-btn-reservar {
+    margin-top: clamp(1rem, calc(1rem + (100vw - 1100px) * 0.0024), 1.5rem);
+    background-color: #65E09C;
+    color: #010C42;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: clamp(18px, calc(18px + (100vw - 1100px) * 0.0085), 25px);
+    border: none;
+    border-radius: 48px;
+    width: clamp(300px, calc(300px + (100vw - 1100px) * 0.1037), 385px);
+    height: clamp(50px, calc(50px + (100vw - 1100px) * 0.0122), 60px);
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.3s ease, color 0.3s ease, opacity 0.3s ease;
+}
+
+.cursada-btn-reservar:hover:not(:disabled) {
+    opacity: 0.9;
+}
+
+.cursada-btn-reservar:disabled {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #aeaeae;
+    cursor: not-allowed;
+    opacity: 1;
+}
+
+.cursada-descuento-texto {
+    font-weight: 600;
+}
+
+.cursada-cuotas-texto {
+    font-weight: 400;
+}
+
+.cursada-cantidad-cuotas {
+    font-weight: 600;
+}
+
+.cursada-formulario-container {
+    margin-top: clamp(1rem, calc(1rem + (100vw - 1100px) * 0.0024), 1.5rem);
+}
+
+.cursada-formulario-titulo {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.0012), 1rem);
+    margin-bottom: clamp(1rem, calc(1rem + (100vw - 1100px) * 0.0024), 1.5rem);
+}
+
+.cursada-formulario-icono {
+    width: clamp(24px, calc(24px + (100vw - 1100px) * 0.0073), 30px);
+    height: clamp(26px, calc(26px + (100vw - 1100px) * 0.0085), 33px);
+    object-fit: contain;
+}
+
+.cursada-formulario-texto {
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: clamp(15px, calc(15px + max(0px, min(100vw, 1640px) - 1365px) * 0.0024 + max(0px, 100vw - 1640px) * 0.0005), 18px);
+    line-height: 1.6;
+}
+
+.cursada-formulario {
+    width: 100%;
+}
+
+.cursada-formulario-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(1rem, calc(1rem + (100vw - 1100px) * 0.0024), 1.5rem);
+}
+
+.cursada-formulario-columna-izq,
+.cursada-formulario-columna-der {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.0012), 1rem);
+}
+
+.cursada-formulario-campo {
+    width: 100%;
+}
+
+.cursada-formulario-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #FFFFFF;
+    padding: clamp(0.5rem, calc(0.5rem + (100vw - 1100px) * 0.0012), 0.75rem) 0;
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(14px, calc(14px + max(0px, min(100vw, 1640px) - 1365px) * 0.0024 + max(0px, 100vw - 1640px) * 0.0005), 16px);
+    outline: none;
+}
+
+.cursada-formulario-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.cursada-formulario-input:focus {
+    border-bottom-color: #60D697;
+}
+
+.cursada-formulario-input.error {
+    border-bottom-color: #ff4444;
+}
+
+.cursada-formulario-error {
+    color: #ff4444;
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(12px, calc(12px + max(0px, min(100vw, 1640px) - 1365px) * 0.0024 + max(0px, 100vw - 1640px) * 0.0005), 14px);
+    margin-top: clamp(0.25rem, calc(0.25rem + (100vw - 1100px) * 0.0006), 0.5rem);
+    display: none;
+}
+
+.cursada-formulario-error.show {
+    display: block;
+}
+
 .cursada-item-label {
     color: #FFFFFF;
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
-    font-size: clamp(18px, calc(18px + (100vw - 1100px) * 0.00366), 21px);
+    font-size: clamp(16px, calc(16px + (100vw - 1320px) * 0.005), 19px);
 }
 
 .cursada-item-value {
     color: #FFFFFF;
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
-    font-size: clamp(18px, calc(18px + (100vw - 1100px) * 0.00366), 21px);
+    font-size: clamp(16px, calc(16px + (100vw - 1320px) * 0.005), 19px);
     display: inline-block;
 }
 
@@ -14663,6 +15151,9 @@ body.inscripcion-page {
     border-radius: 20px;
     color: #65E09C;
     font-size: 0.9rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-style: italic;
 }
 
 .filtro-chip-eliminar {

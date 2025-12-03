@@ -13,6 +13,7 @@ use App\Models\EnAccion;
 use App\Models\StickyBar;
 use App\Models\Noticia;
 use App\Models\Cursada;
+use App\Models\Lead;
 
 class WelcomeController extends Controller
 {
@@ -166,5 +167,32 @@ class WelcomeController extends Controller
             ->get();
         
         return view('inscripcion', compact('curso', 'sedes', 'stickyBar', 'carreras', 'sedesFiltro', 'modalidades', 'turnos', 'dias', 'cursadas'));
+    }
+
+    public function storeLead(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'nombre' => 'required|string|max:255',
+                'apellido' => 'required|string|max:255',
+                'dni' => 'required|string|max:8|regex:/^[0-9]{7,8}$/',
+                'correo' => 'required|email|max:255',
+                'telefono' => 'required|string|max:12|regex:/^[0-9]{12}$/',
+            ]);
+
+            Lead::create($validated);
+
+            return response()->json(['success' => true, 'message' => 'Lead guardado correctamente']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de validación: ' . implode(', ', $e->errors())
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al guardar los datos: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

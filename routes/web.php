@@ -10,6 +10,7 @@ Route::get('/carreras', [App\Http\Controllers\WelcomeController::class, 'carrera
 Route::get('/carreras/{curso}', [CursoController::class, 'show'])->name('carreras.show');
 // Inscripción/Compra
 Route::get('/inscripcion/{curso}', [App\Http\Controllers\WelcomeController::class, 'inscripcion'])->name('inscripcion');
+Route::post('/leads', [App\Http\Controllers\WelcomeController::class, 'storeLead'])->name('leads.store');
 
 
 Route::middleware('auth')->group(function () {
