@@ -8,6 +8,8 @@ Route::get('/', [App\Http\Controllers\WelcomeController::class, 'index']);
 Route::get('/carreras', [App\Http\Controllers\WelcomeController::class, 'carreras'])->name('carreras');
 // Carrera individual (por id por ahora)
 Route::get('/carreras/{curso}', [CursoController::class, 'show'])->name('carreras.show');
+// Inscripción/Compra
+Route::get('/inscripcion/{curso}', [App\Http\Controllers\WelcomeController::class, 'inscripcion'])->name('inscripcion');
 
 
 Route::middleware('auth')->group(function () {
@@ -30,6 +32,8 @@ Route::middleware('auth')->group(function () {
         })->name('admin.carreras');
         Route::get('/carreras/test', [App\Http\Controllers\CursoController::class, 'test'])->name('admin.carreras.test');
         Route::get('/carreras/multimedia', [App\Http\Controllers\CursoController::class, 'multimedia'])->name('admin.carreras.multimedia');
+        Route::get('/carreras/importacion', [App\Http\Controllers\CursoController::class, 'importacionCursos'])->name('admin.carreras.importacion');
+        Route::post('/carreras/importacion', [App\Http\Controllers\CursoController::class, 'storeImportacion'])->name('admin.carreras.importacion.store');
         Route::post('/carreras/multimedia', [App\Http\Controllers\CursoController::class, 'storeFoto'])->name('admin.carreras.multimedia.store');
         Route::get('/carreras/multimedia/{id}/data', [App\Http\Controllers\CursoController::class, 'getFotoData'])->name('admin.carreras.multimedia.data');
         Route::put('/carreras/multimedia/{id}', [App\Http\Controllers\CursoController::class, 'updateFoto'])->name('admin.carreras.multimedia.update');

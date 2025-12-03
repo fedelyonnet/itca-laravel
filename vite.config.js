@@ -10,7 +10,8 @@ export default defineConfig({
                 'resources/css/public.css',
                 'resources/js/app.js',
                 'resources/js/backoffice.js',
-                'resources/js/carreras-test.js'
+                'resources/js/carreras-test.js',
+                'resources/js/importacion-cursos.js'
             ],
             refresh: true,
         }),

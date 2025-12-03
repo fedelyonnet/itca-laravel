@@ -12,6 +12,7 @@ use App\Models\Partner;
 use App\Models\EnAccion;
 use App\Models\StickyBar;
 use App\Models\Noticia;
+use App\Models\Cursada;
 
 class WelcomeController extends Controller
 {
@@ -102,5 +103,68 @@ class WelcomeController extends Controller
         $stickyBar = StickyBar::first();
         
         return view('carreras', compact('carreras', 'beneficios', 'partners', 'sedes', 'stickyBar'));
+    }
+
+    public function inscripcion(Curso $curso)
+    {
+        // Obtener sedes disponibles para el footer
+        $sedes = Sede::where('disponible', true)
+                    ->whereNotIn('nombre', ['online', 'Online', 'ONLINE', 'próximamente', 'Proximamente', 'PROXIMAMENTE'])
+                    ->ordered()
+                    ->get();
+        
+        // Obtener Sticky Bar
+        $stickyBar = StickyBar::first();
+        
+        // Obtener datos únicos de cursadas para los filtros
+        // Agrupar por nombre_curso para mostrar una sola instancia de cada carrera
+        $carreras = Cursada::select('nombre_curso')
+            ->selectRaw('MIN(id_curso) as id_curso')
+            ->groupBy('nombre_curso')
+            ->orderBy('nombre_curso')
+            ->get();
+        
+        $sedesFiltro = Cursada::select('sede')
+            ->distinct()
+            ->whereNotNull('sede')
+            ->where('sede', '!=', '')
+            ->orderBy('sede')
+            ->pluck('sede')
+            ->unique()
+            ->values();
+        
+        $modalidades = Cursada::select('x_modalidad')
+            ->distinct()
+            ->whereNotNull('x_modalidad')
+            ->where('x_modalidad', '!=', '')
+            ->orderBy('x_modalidad')
+            ->pluck('x_modalidad')
+            ->unique()
+            ->values();
+        
+        $turnos = Cursada::select('x_turno')
+            ->distinct()
+            ->whereNotNull('x_turno')
+            ->where('x_turno', '!=', '')
+            ->orderBy('x_turno')
+            ->pluck('x_turno')
+            ->unique()
+            ->values();
+        
+        $dias = Cursada::select('dias')
+            ->distinct()
+            ->whereNotNull('dias')
+            ->where('dias', '!=', '')
+            ->orderBy('dias')
+            ->pluck('dias')
+            ->unique()
+            ->values();
+        
+        // Obtener TODAS las cursadas (no filtrar por carrera, el filtrado se hace en el frontend)
+        $cursadas = Cursada::orderBy('fecha_inicio')
+            ->orderBy('hora_inicio')
+            ->get();
+        
+        return view('inscripcion', compact('curso', 'sedes', 'stickyBar', 'carreras', 'sedesFiltro', 'modalidades', 'turnos', 'dias', 'cursadas'));
     }
 }

@@ -90,7 +90,7 @@
                                 <span class="carrera-show-cta-line1">Aprovechá esta oportunidad</span>
                                 <span class="carrera-show-cta-line2">y asegurá tu lugar</span>
                             </a>
-                            <button class="carrera-btn-inscribir carrera-show-btn-inscribir">¡Inscribirme ahora!</button>
+                            <a href="{{ route('inscripcion', $curso->id) }}" class="carrera-btn-inscribir carrera-show-btn-inscribir">¡Inscribirme ahora!</a>
                         </div>
                     </div>
                     <div class="carrera-right carrera-show-right">
@@ -545,7 +545,7 @@
                             <div class="cursada-content-row">
                                 <div class="cursada-label-cell cursada-label-cell-with-btn">
                                     @if($index === 0)
-                                        <button class="cursada-inscribirme-btn">¡Inscribirme ahora!</button>
+                                        <a href="{{ route('inscripcion', $curso->id) }}" class="cursada-inscribirme-btn">¡Inscribirme ahora!</a>
                                     @else
                                         <button class="cursada-inscribirme-btn">Chatear con SAE</button>
                                     @endif
@@ -580,7 +580,7 @@
                                 <div class="cursada-mobile-inscribirme-wrapper">
                                     <img src="/images/desktop/arrow.png" alt="Flecha" class="cursada-mobile-btn-arrow">
                                     @if($index === 0)
-                                        <button class="cursada-mobile-inscribirme-btn">¡Inscribirme ahora!</button>
+                                        <a href="{{ route('inscripcion', $curso->id) }}" class="cursada-mobile-inscribirme-btn">¡Inscribirme ahora!</a>
                                     @else
                                         <button class="cursada-mobile-inscribirme-btn">Chatear con SAE</button>
                                     @endif

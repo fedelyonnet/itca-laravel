@@ -8535,12 +8535,16 @@ section h2 {
     background-color: rgba(255, 255, 255, 0.25);
 }
 
-.carrera-btn-inscribir {
+.carrera-btn-inscribir,
+a.carrera-btn-inscribir {
     padding: clamp(8px, 1.5vw, 12px) clamp(16px, calc(16px + (100vw - 1100px) * 0.0171), 30px);
     background-color: #65E09C;
     border: none;
     border-radius: 40px;
     font-family: 'Montserrat', sans-serif;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
     font-weight: 600;
     font-size: clamp(10px, calc(10px + (100vw - 1100px) * 0.0038), 15px);
     color: #010C42;
@@ -12689,12 +12693,16 @@ section h2 {
     margin-top: 4px;
 }
 
-.cursada-inscribirme-btn {
+.cursada-inscribirme-btn,
+a.cursada-inscribirme-btn {
     font-family: 'Montserrat', sans-serif;
     font-weight: 600; /* Semibold */
     font-size: clamp(14px, calc(14px + (100vw - 1366px) * (2 / 554)), 16px);
     letter-spacing: 0.04em; /* 4% */
     color: #010C42;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
     background-color: rgba(101, 207, 156, 0.95); /* #65E09C al 95% */
     border-radius: 42px;
     width: clamp(200px, calc(200px + (100vw - 1366px) * (38 / 554)), 238px);
@@ -13468,15 +13476,17 @@ section h2 {
 }
 
 .lista-carreras-title-text-1 {
-    font-weight: 400;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
     letter-spacing: 0.02em; /* 2% */
     color: var(--text-white);
 }
 
 .lista-carreras-title-text-2 {
+    font-family: 'Montserrat', sans-serif;
     position: relative;
     display: inline-block;
-    font-weight: 400;
+    font-weight: 500;
     letter-spacing: 0.02em; /* 2% */
     color: #010C42;
     z-index: 2;
@@ -13499,7 +13509,8 @@ section h2 {
 }
 
 .lista-carreras-title-text-3 {
-    font-weight: 400;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
     letter-spacing: 0.02em; /* 2% */
     color: var(--text-white);
 }
@@ -13714,6 +13725,33 @@ html {
         padding-top: clamp(10px, 2vw, 15px);
         justify-content: flex-start;
         align-items: flex-start; /* Alinear todo al top */
+    }
+    
+    /* Asegurar que el breadcrumb de inscripción también sea fluido en mobile */
+    .inscripcion-page .lista-carreras-breadcrumb {
+        order: 1;
+        width: 100%;
+        padding: 0;
+        padding-top: clamp(30px, 6vw, 45px);
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+    
+    /* Título de inscripción en mobile */
+    .inscripcion-page .lista-carreras-title {
+        order: 2;
+        width: 100%;
+        grid-column: 1;
+        justify-self: center;
+        text-align: center;
+        padding: 0;
+        margin-top: clamp(45px, 12vw, 75px);
+        margin-bottom: clamp(30px, 4vw, 40px);
+    }
+    
+    .inscripcion-page .lista-carreras-title-text-2::before {
+        width: clamp(280px, calc(280px + (100vw - 600px) * 0.2), 320px);
+        height: clamp(30px, calc(40px + (100vw - 430px) * 0.06), 50px);
     }
     
     /* Asegurar que todos los elementos del breadcrumb estén alineados al top */
@@ -14158,114 +14196,479 @@ html {
         padding: clamp(30px, calc(30px + 30 * ((100vw - 320px) / 110)), 60px) clamp(15px, 4vw, 20px); /* 30px @320px, 60px @430px */
         width: 100%;
         display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .requisitos-subtitle-wrapper {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-    }
-    
-    .requisitos-subtitle {
-        text-align: center;
-        margin: 0 auto clamp(20px, 2vw, 30px);
-        margin-bottom: clamp(30px, calc(30px + (100vw - 320px) * 0.109), 40px); /* Separar más del contenido de abajo */
-        position: relative;
-    }
-    
-    .requisitos-subtitle::after {
-        left: 50%;
-        transform: translateX(-50%);
-        background-position: center bottom;
-    }
-    
-    .requisitos-cursar {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-        padding-top: clamp(10px, 2vw, 15px); /* Agregar padding-top para separar del subrayado */
-    }
-    
-    .requisitos-cursar-card {
-        width: 100%;
-        max-width: 100%;
-        height: auto;
-        border: none;
-        background: transparent;
-    }
-    
-    .requisitos-cursar-card .cursar-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(2, auto);
-        gap: clamp(12px, 3vw, 20px); /* Separación entre items */
-        padding: 0;
-        margin: 0;
-        width: 100%;
-        justify-items: center; /* Centrar items en el grid */
-    }
-    
-    /* Cuando hay solo 1 zona: ancho completo y alineado arriba en mobile */
-    .requisitos-cursar-card .cursar-grid.cursar-grid-single {
-        grid-template-columns: 1fr; /* 1 columna en lugar de 2 */
-        align-content: start; /* alineado arriba en lugar de centrado */
-    }
-    
-    .requisitos-cursar-card .cursar-item {
-        width: 100%;
-        max-width: 100%;
-        height: clamp(60px, calc(60px + (100vw - 320px) * 0.107), 80px); /* Altura fluida: 60px en 320px, 80px en 430px */
-        border: 1px solid #FFFFFF;
-        border-radius: 8px;
-        background: transparent;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        overflow: hidden;
-        justify-self: stretch; /* Que ocupen todo el ancho de su celda */
-    }
-    
-    /* Eliminar las alineaciones específicas de desktop en mobile */
-    .requisitos-cursar-card .cursar-item:nth-child(1),
-    .requisitos-cursar-card .cursar-item:nth-child(2),
-    .requisitos-cursar-card .cursar-item:nth-child(3),
-    .requisitos-cursar-card .cursar-item:nth-child(4) {
-        justify-self: stretch;
-    }
-    
-    /* Estilos para cursar-hover en mobile */
-    .cursar-hover {
-        font-size: clamp(10px, calc(10px + (100vw - 320px) * 0.018), 14px);
-        gap: 2px;
-        padding: 4px;
-    }
-    
-    .cursar-hover span {
-        line-height: 1.2;
-        font-size: clamp(10px, calc(10px + (100vw - 320px) * 0.018), 14px);
-    }
-    
-    /* Para múltiples sedes, ajustar el tamaño de fuente */
-    .cursar-hover-multi {
-        font-size: clamp(9px, calc(9px + (100vw - 320px) * 0.015), 12px);
-    }
-    
-    .cursar-hover-multi span {
-        font-size: clamp(9px, calc(9px + (100vw - 320px) * 0.015), 12px);
-        line-height: 1.1;
-    }
-    
-    /* En mobile, usar :active en lugar de :hover para touch */
-    .requisitos-cursar-card .cursar-item:active .cursar-label,
-    .requisitos-cursar-card .cursar-item.touched .cursar-label {
-        display: none;
-    }
-    
-    .requisitos-cursar-card .cursar-item:active .cursar-hover,
-    .requisitos-cursar-card .cursar-item.touched .cursar-hover {
-        display: flex;
     }
 }
+
+/* ========================================
+   INSCRIPCIÓN PAGE
+   ======================================== */
+
+body.inscripcion-page {
+    background-color: var(--menu-bg);
+    font-family: 'Montserrat', sans-serif;
+}
+
+.inscripcion-page main {
+    background-color: var(--menu-bg);
+}
+
+.inscripcion-section {
+    min-height: 60vh;
+    padding: 4rem 0;
+    background-color: var(--menu-bg);
+}
+
+.inscripcion-container {
+    max-width: clamp(1070px, 85vw, 1557px);
+    margin: 0 auto;
+    padding: 0;
+}
+
+.inscripcion-content {
+    text-align: center;
+}
+
+/* Estilos para los filtros de inscripción */
+.inscripcion-content select {
+    color: var(--text-white);
+    background-color: var(--menu-bg);
+    border: 1px solid var(--accent-green);
+    border-radius: 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+}
+
+.inscripcion-content select option {
+    color: var(--text-white);
+    background-color: var(--menu-bg);
+    padding: 0.5rem;
+}
+
+.inscripcion-content label {
+    color: var(--text-white);
+    font-family: 'Inter', sans-serif;
+}
+
+.inscripcion-content h3 {
+    color: var(--text-white);
+    font-family: 'Montserrat', sans-serif;
+    margin-bottom: 1.5rem;
+}
+
+.inscripcion-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #ffffff;
+}
+
+.inscripcion-carrera {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.2rem;
+    color: #ffffff;
+    margin-bottom: 2rem;
+}
+
+.inscripcion-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    color: #cccccc;
+}
+
+/* Breadcrumb de inscripción - mismo fondo que el menú y estilos fluidos */
+.inscripcion-page .lista-carreras--show {
+    background-color: var(--menu-bg);
+    padding: 0;
+}
+
+.inscripcion-page .carrera-show-header {
+    background-color: var(--menu-bg);
+}
+
+.inscripcion-page .lista-carreras--show .lista-carreras-header {
+    grid-template-columns: 1fr;
+    margin-bottom: 0;
+    padding-bottom: clamp(30px, 4vw, 50px);
+}
+
+.inscripcion-page .lista-carreras--show .lista-carreras-breadcrumb {
+    grid-column: 1;
+    justify-self: start;
+    white-space: nowrap;
+    padding-top: clamp(45px, calc(45px + (100vw - 1100px) * 0.0183), 60px);
+    padding-left: clamp(20px, calc(20px + (100vw - 1100px) * 0.169), 70px);
+}
+
+/* Título de inscripción con stroke-pasion.png */
+.inscripcion-page .lista-carreras-title {
+    grid-column: 1;
+    justify-self: center;
+    margin-top: clamp(60px, calc(60px + (100vw - 1100px) * 0.0732), 120px);
+    margin-bottom: clamp(40px, calc(40px + (100vw - 1100px) * 0.049), 80px);
+}
+
+.inscripcion-page .lista-carreras-title-text-2::before {
+    background-image: url('/images/desktop/stroke-pasion.png');
+    width: clamp(320px, calc(320px + (100vw - 1100px) * 0.0854), 390px);
+    height: 40px;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* Ajuste específico para 1366px */
+@media (min-width: 1366px) and (max-width: 1366px) {
+    .inscripcion-page .lista-carreras-title-text-2::before {
+        width: 340px;
+    }
+}
+
+/* Panel de filtros de inscripción */
+.inscripcion-filtros-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: nowrap;
+    margin-bottom: 2rem;
+    width: 100%;
+    overflow-x: auto;
+}
+
+.inscripcion-filtros-bar-texto {
+    color: var(--text-white);
+    font-family: 'Montserrat', sans-serif;
+}
+
+.inscripcion-filtros-borrar-todo {
+    color: #65E09C;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 500;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.inscripcion-filtros-borrar-todo:hover {
+    text-decoration: underline;
+}
+
+.inscripcion-filtros-resultados {
+    color: var(--text-white);
+    font-family: 'Montserrat', sans-serif;
+    margin-left: auto;
+}
+
+.inscripcion-filtros-resultados span {
+    color: #65E09C;
+}
+
+.inscripcion-filtros-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    flex: 1;
+    min-height: 30px;
+}
+
+.inscripcion-paneles-container {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    width: 100%;
+    align-items: flex-start;
+}
+
+.inscripcion-filtros-panel {
+    width: clamp(280px, calc(280px + (100vw - 1100px) * 0.134), 390px);
+    flex-shrink: 0;
+}
+
+.inscripcion-listado-panel {
+    flex: 1;
+}
+
+.inscripcion-filtros-recuadro {
+    background-color: transparent;
+    border: 1px solid #FFFFFF;
+    border-radius: 12px;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: clamp(20px, calc(20px + (100vw - 1100px) * 0.0122), 30px);
+    padding-right: clamp(20px, calc(20px + (100vw - 1100px) * 0.0122), 30px);
+}
+
+.inscripcion-filtros-titulo {
+    color: var(--text-white);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: clamp(18px, calc(18px + (100vw - 1100px) * 0.0122), 22px);
+    margin-bottom: clamp(20px, calc(20px + (100vw - 1100px) * 0.0122), 30px);
+}
+
+.inscripcion-filtro-seccion {
+    padding: 0;
+    margin: 0;
+    position: relative;
+}
+
+.inscripcion-filtro-seccion:not(:first-child)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: calc(-1 * clamp(20px, calc(20px + (100vw - 1100px) * 0.0122), 30px));
+    right: calc(-1 * clamp(20px, calc(20px + (100vw - 1100px) * 0.0122), 30px));
+    height: 1px;
+    background-color: #FFFFFF;
+}
+
+/* Panel de filtros - Subtítulos con iconos */
+.inscripcion-filtro-subtitulo {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, calc(8px + (100vw - 1100px) * 0.0122), 12px);
+    margin: 0;
+    padding: clamp(10px, calc(10px + (100vw - 1100px) * 0.0122), 20px) 0;
+    padding-left: 0;
+    padding-right: 0;
+    color: var(--text-white);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: clamp(24px, calc(24px + (100vw - 1100px) * 0.0854), 31px);
+    position: relative;
+}
+
+/* Línea debajo de todos los subtítulos */
+.inscripcion-filtro-subtitulo::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: calc(-1 * clamp(20px, calc(20px + (100vw - 1100px) * 0.0122), 30px));
+    right: calc(-1 * clamp(20px, calc(20px + (100vw - 1100px) * 0.0122), 30px));
+    height: 1px;
+    background-color: #FFFFFF;
+}
+
+.inscripcion-filtro-icono {
+    width: clamp(20px, calc(20px + (100vw - 1100px) * 0.0244), 28px);
+    height: clamp(20px, calc(20px + (100vw - 1100px) * 0.0244), 28px);
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+#filtro-carrera-opciones,
+#filtro-sede-opciones,
+#filtro-modalidad-opciones,
+#filtro-turno-opciones,
+#filtro-dia-opciones {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    align-items: flex-start;
+    margin: 0;
+    padding: clamp(10px, calc(10px + (100vw - 1100px) * 0.0122), 20px) 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.filtro-opcion {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: clamp(12px, calc(12px + (100vw - 1100px) * 0.0037), 15px);
+    text-align: left;
+    width: 100%;
+    display: block;
+    color: var(--text-white);
+    cursor: pointer;
+    padding: 0.25rem 0;
+    transition: color 0.2s;
+}
+
+.filtro-opcion[data-seleccionado="true"] {
+    color: #65E09C;
+}
+
+#cursadas-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 0;
+    max-height: clamp(900px, calc(900px + (100vw - 1100px) * 0.4634), 1280px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: clamp(8px, calc(8px + (100vw - 1100px) * 0.0024), 12px);
+    /* Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: #60D697 rgba(217, 217, 217, 0.2);
+}
+
+/* WebKit browsers (Chrome, Safari, Edge) */
+#cursadas-container::-webkit-scrollbar {
+    width: 24px;
+}
+
+#cursadas-container::-webkit-scrollbar-track {
+    background: rgba(217, 217, 217, 0.2);
+    border-radius: 200px;
+    border: 1px solid #60D697;
+}
+
+#cursadas-container::-webkit-scrollbar-thumb {
+    background-color: #60D697;
+    border-radius: 200px;
+    border: 1px solid #60D697;
+}
+
+#cursadas-container::-webkit-scrollbar-thumb:hover {
+    background-color: #60D697;
+}
+
+.cursada-item {
+    width: clamp(900px, calc(900px + (100vw - 1100px) * 0.268), 1120px);
+    border: 1px solid #FFFFFF;
+    border-radius: 8px;
+    padding: 1rem;
+    background-color: transparent;
+}
+
+.cursada-item-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+    align-items: center;
+}
+
+.cursada-item-columna-izq {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    align-items: flex-start;
+    justify-self: start;
+    width: 100%;
+}
+
+.cursada-item-columna-izq > div {
+    padding-left: clamp(30px, calc(30px + (100vw - 1100px) * 0.0244), 50px);
+    width: 100%;
+    text-align: left;
+}
+
+.cursada-item-columna-izq .cursada-item-label,
+.cursada-item-columna-izq .cursada-item-value {
+    display: inline;
+    text-align: left;
+}
+
+.cursada-item-columna-medio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    justify-self: center;
+}
+
+.cursada-lugares-texto {
+    font-family: 'Montserrat', sans-serif;
+    font-style: italic;
+    font-size: clamp(13px, calc(13px + (100vw - 1100px) * 0.00244), 15px);
+    color: #FFFFFF;
+    text-align: center;
+}
+
+.cursada-lugares-texto strong {
+    font-weight: 700;
+    font-style: italic;
+}
+
+.cursada-badge-descuento {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-style: italic;
+    font-size: clamp(16px, calc(16px + (100vw - 1100px) * 0.00244), 18px);
+    color: #65E09C;
+    border: 1px solid #65E09C;
+    border-radius: 18px;
+    padding: 0.15rem 0;
+    width: clamp(120px, calc(120px + (100vw - 1100px) * 0.0366), 150px);
+    white-space: nowrap;
+    background-color: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.cursada-item-columna-der {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    justify-self: end;
+    padding-right: clamp(30px, calc(30px + (100vw - 1100px) * 0.0244), 50px);
+}
+
+.cursada-btn-ver-valores {
+    background-color: #65E09C;
+    color: #010C42;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: clamp(18px, calc(18px + (100vw - 1100px) * 0.0085), 25px);
+    border: none;
+    border-radius: 48px;
+    width: clamp(240px, calc(240px + (100vw - 1100px) * 0.0805), 306px);
+    height: clamp(50px, calc(50px + (100vw - 1100px) * 0.0122), 60px);
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+}
+
+.cursada-btn-ver-valores:hover {
+    opacity: 0.9;
+}
+
+.cursada-item-label {
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: clamp(18px, calc(18px + (100vw - 1100px) * 0.00366), 21px);
+}
+
+.cursada-item-value {
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: clamp(18px, calc(18px + (100vw - 1100px) * 0.00366), 21px);
+    display: inline-block;
+}
+
+.cursada-item-value-linea2 {
+    display: block;
+    margin-top: 0.25rem;
+}
+
+#mensaje-no-resultados {
+    color: var(--text-white);
+    margin-top: 1.5rem;
+}
+
+.filtro-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    background-color: rgba(101, 224, 156, 0.1);
+    border: 1px solid #65E09C;
+    border-radius: 20px;
+    color: #65E09C;
+    font-size: 0.9rem;
+}
+
+.filtro-chip-eliminar {
+    cursor: pointer;
+    font-weight: bold;
+    margin-left: 0.3rem;
+    font-size: 1rem;
+}
+

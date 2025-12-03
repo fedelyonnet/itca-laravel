@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\Curso;
 use App\Models\EnAccion;
 use App\Models\FotosCarrera;
+use App\Models\Cursada;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 class CursoController extends Controller
@@ -662,6 +666,321 @@ class CursoController extends Controller
         }
         
         return view('admin.carreras.multimedia', compact('fotos', 'videoTestimonios', 'certificados'));
+    }
+
+    public function importacionCursos()
+    {
+        $cursadas = Cursada::orderBy('id', 'desc')->get();
+        return view('admin.carreras.importacion', compact('cursadas'));
+    }
+
+
+    public function storeImportacion(Request $request)
+    {
+        try {
+            \Log::info('storeImportacion llamado', [
+                'has_file' => $request->hasFile('archivo_excel'),
+                'is_ajax' => $request->ajax(),
+                'wants_json' => $request->wantsJson()
+            ]);
+
+            $request->validate([
+                'archivo_excel' => 'required|mimes:xlsx,xls|max:10240', // 10MB máximo
+            ]);
+
+            $file = $request->file('archivo_excel');
+            
+            \Log::info('Archivo recibido', [
+                'name' => $file->getClientOriginalName(),
+                'size' => $file->getSize(),
+                'mime' => $file->getMimeType()
+            ]);
+            
+            // Cargar el archivo Excel
+            $spreadsheet = IOFactory::load($file->getRealPath());
+            $worksheet = $spreadsheet->getActiveSheet();
+            $rows = $worksheet->toArray();
+
+            if (count($rows) < 2) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'El archivo Excel debe tener al menos una fila de datos además del encabezado.'
+                ], 400, ['Content-Type' => 'application/json']);
+            }
+
+            // Obtener los headers de la primera fila
+            $headers = array_map('trim', $rows[0]);
+            
+            // Mapeo de headers del Excel a campos de la base de datos
+            $headerMap = [
+                'ID_Curso' => 'id_curso',
+                'Nombre del curso' => 'nombre_curso',
+                'Vacantes' => 'vacantes',
+                'sede' => 'sede',
+                'xModalidad' => 'x_modalidad',
+                'Dias' => 'dias',
+                'xTurno' => 'x_turno',
+                'MATRICULA BASE' => 'matricula_base',
+                'MATRICULA CON 50% DE DCTO' => 'matricula_con_50_dcto',
+                'cantidad de cuotas' => 'cantidad_cuotas',
+                'VALOR CUOTA' => 'valor_cuota',
+                'Descr' => 'descr',
+                'Cod1' => 'cod1',
+                'Cod2' => 'cod2',
+                'Duracion' => 'duracion',
+                'Fecha Inicio' => 'fecha_inicio',
+                'Fecha Fin' => 'fecha_fin',
+                'Mes_Inicio' => 'mes_inicio',
+                'Mes_Fin' => 'mes_fin',
+                'Horario' => 'horario',
+                'Hora_Inicio' => 'hora_inicio',
+                'Hora_Fin' => 'hora_fin',
+                'ID_Aula' => 'id_aula',
+                'xTipo' => 'x_tipo',
+                'xNivel' => 'x_nivel',
+                'xCod1' => 'x_cod1',
+            ];
+
+            // Crear un índice de columnas basado en los headers
+            $columnIndex = [];
+            foreach ($headerMap as $excelHeader => $dbField) {
+                $index = array_search($excelHeader, $headers);
+                if ($index !== false) {
+                    $columnIndex[$dbField] = $index;
+                }
+            }
+
+            // Verificar que se encontraron los headers esenciales
+            $requiredFields = ['id_curso', 'nombre_curso'];
+            $missingFields = [];
+            foreach ($requiredFields as $field) {
+                if (!isset($columnIndex[$field])) {
+                    $missingFields[] = $field;
+                }
+            }
+
+            if (!empty($missingFields)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Faltan columnas requeridas en el Excel: ' . implode(', ', $missingFields)
+                ], 400, ['Content-Type' => 'application/json']);
+            }
+
+            // Borrar todos los registros existentes antes de importar
+            $deletedCount = Cursada::count();
+            Cursada::truncate();
+            
+            \Log::info("Se eliminaron {$deletedCount} registros existentes antes de la importación");
+
+            $imported = 0;
+            $errors = [];
+
+            // Procesar cada fila de datos (empezando desde la fila 2, índice 1)
+            for ($i = 1; $i < count($rows); $i++) {
+                $row = $rows[$i];
+                
+                // Saltar filas vacías
+                if (empty(array_filter($row))) {
+                    continue;
+                }
+
+                try {
+                    $data = [];
+                    
+                    // Mapear cada campo
+                    foreach ($columnIndex as $dbField => $colIndex) {
+                        $value = isset($row[$colIndex]) ? trim($row[$colIndex]) : '';
+                        
+                        // Conversiones específicas por tipo de campo
+                        switch ($dbField) {
+                            case 'vacantes':
+                            case 'cantidad_cuotas':
+                                $data[$dbField] = !empty($value) ? (int)$value : 0;
+                                break;
+                                
+                            case 'matricula_base':
+                            case 'matricula_con_50_dcto':
+                                // Para matrículas: si tiene coma, es separador de miles (281,700 → 281700)
+                                // Guardar como entero (sin decimales)
+                                if (!empty($value)) {
+                                    $value = trim($value);
+                                    
+                                    // Si tiene coma, es separador de miles en formato español
+                                    if (strpos($value, ',') !== false) {
+                                        // Eliminar coma (separador de miles): 281,700 → 281700
+                                        $value = str_replace(',', '', $value);
+                                    }
+                                    
+                                    // Eliminar puntos si los hay (por si acaso)
+                                    $value = str_replace('.', '', $value);
+                                    
+                                    // Convertir a entero
+                                    $data[$dbField] = (int)$value;
+                                } else {
+                                    $data[$dbField] = 0;
+                                }
+                                break;
+                                
+                            case 'valor_cuota':
+                                // Para valor cuota: sin decimales, igual que matrículas
+                                if (!empty($value)) {
+                                    $value = trim($value);
+                                    
+                                    // Si tiene coma, es separador de miles en formato español
+                                    if (strpos($value, ',') !== false) {
+                                        // Eliminar coma (separador de miles): 50,000 → 50000
+                                        $value = str_replace(',', '', $value);
+                                    }
+                                    
+                                    // Eliminar puntos si los hay (por si acaso)
+                                    $value = str_replace('.', '', $value);
+                                    
+                                    // Convertir a entero
+                                    $data[$dbField] = (int)$value;
+                                } else {
+                                    $data[$dbField] = 0;
+                                }
+                                break;
+                                
+                            case 'fecha_inicio':
+                            case 'fecha_fin':
+                                if (!empty($value)) {
+                                    // Intentar parsear la fecha (puede venir en varios formatos)
+                                    try {
+                                        if (is_numeric($value)) {
+                                            // Si es un número de Excel (días desde 1900)
+                                            $data[$dbField] = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($value)->format('Y-m-d');
+                                        } else {
+                                            // Intentar parsear como fecha string
+                                            $value = trim($value);
+                                            
+                                            // Intentar formato dd/mm/yyyy primero (formato español)
+                                            if (preg_match('/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/', $value, $matches)) {
+                                                $day = str_pad($matches[1], 2, '0', STR_PAD_LEFT);
+                                                $month = str_pad($matches[2], 2, '0', STR_PAD_LEFT);
+                                                $year = $matches[3];
+                                                $data[$dbField] = "{$year}-{$month}-{$day}";
+                                            } else {
+                                                // Intentar otros formatos con Carbon
+                                                $data[$dbField] = Carbon::createFromFormat('d/m/Y', $value)->format('Y-m-d');
+                                            }
+                                        }
+                                    } catch (\Exception $e) {
+                                        // Si falla, intentar parsear con Carbon de forma más flexible
+                                        try {
+                                            // Intentar formato dd/mm/yyyy manualmente
+                                            if (preg_match('/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/', $value, $matches)) {
+                                                $day = str_pad($matches[1], 2, '0', STR_PAD_LEFT);
+                                                $month = str_pad($matches[2], 2, '0', STR_PAD_LEFT);
+                                                $year = $matches[3];
+                                                $data[$dbField] = "{$year}-{$month}-{$day}";
+                                            } else {
+                                                throw $e;
+                                            }
+                                        } catch (\Exception $e2) {
+                                            $data[$dbField] = $value; // Guardar como string si no se puede parsear
+                                        }
+                                    }
+                                } else {
+                                    $data[$dbField] = null;
+                                }
+                                break;
+                                
+                            case 'hora_inicio':
+                            case 'hora_fin':
+                                if (!empty($value)) {
+                                    try {
+                                        $value = trim($value);
+                                        
+                                        if (is_numeric($value)) {
+                                            // Si es un número de Excel (fracción del día)
+                                            $time = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($value);
+                                            $data[$dbField] = $time->format('H:i:s');
+                                        } else {
+                                            // Intentar parsear como hora string
+                                            // Si ya viene en formato HH:mm o HH:mm:ss, extraer solo la hora
+                                            if (preg_match('/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/', $value, $matches)) {
+                                                $hour = str_pad($matches[1], 2, '0', STR_PAD_LEFT);
+                                                $minute = str_pad($matches[2], 2, '0', STR_PAD_LEFT);
+                                                $second = isset($matches[3]) ? str_pad($matches[3], 2, '0', STR_PAD_LEFT) : '00';
+                                                $data[$dbField] = "{$hour}:{$minute}:{$second}";
+                                            } else {
+                                                // Intentar parsear con Carbon y extraer solo la hora
+                                                $parsed = Carbon::parse($value);
+                                                $data[$dbField] = $parsed->format('H:i:s');
+                                            }
+                                        }
+                                    } catch (\Exception $e) {
+                                        // Si falla, intentar extraer hora de formato datetime
+                                        if (preg_match('/(\d{1,2}):(\d{2})(?::(\d{2}))?/', $value, $matches)) {
+                                            $hour = str_pad($matches[1], 2, '0', STR_PAD_LEFT);
+                                            $minute = str_pad($matches[2], 2, '0', STR_PAD_LEFT);
+                                            $second = isset($matches[3]) ? str_pad($matches[3], 2, '0', STR_PAD_LEFT) : '00';
+                                            $data[$dbField] = "{$hour}:{$minute}:{$second}";
+                                        } else {
+                                            $data[$dbField] = '00:00:00';
+                                        }
+                                    }
+                                } else {
+                                    $data[$dbField] = '00:00:00';
+                                }
+                                break;
+                                
+                            case 'nombre_curso':
+                                // Corregir nombres de carreras automáticamente
+                                $data[$dbField] = corregirNombreCarrera($value);
+                                break;
+                                
+                            default:
+                                $data[$dbField] = $value;
+                                break;
+                        }
+                    }
+
+                    // Validar que los campos requeridos no estén vacíos
+                    if (empty($data['id_curso']) || empty($data['nombre_curso'])) {
+                        $errors[] = "Fila " . ($i + 1) . ": ID Curso y Nombre del curso son requeridos";
+                        continue;
+                    }
+
+                    // Crear el registro (ya no usamos updateOrCreate porque borramos todo antes)
+                    Cursada::create($data);
+                    
+                    $imported++;
+                } catch (\Exception $e) {
+                    $errors[] = "Fila " . ($i + 1) . ": " . $e->getMessage();
+                }
+            }
+
+            $message = "Se reemplazó el contenido de la base de datos. Se importaron {$imported} cursadas correctamente.";
+            if ($deletedCount > 0) {
+                $message .= " Se eliminaron {$deletedCount} registros anteriores.";
+            }
+            if (!empty($errors)) {
+                $message .= " Errores: " . count($errors) . " filas con problemas.";
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'imported' => $imported,
+                'errors' => $errors
+            ], 200, ['Content-Type' => 'application/json']);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de validación: ' . implode(', ', $e->errors()['archivo_excel'] ?? ['Archivo inválido'])
+            ], 422, ['Content-Type' => 'application/json']);
+        } catch (\Exception $e) {
+            \Log::error('Error en storeImportacion: ' . $e->getMessage());
+            \Log::error($e->getTraceAsString());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al procesar el archivo: ' . $e->getMessage()
+            ], 500, ['Content-Type' => 'application/json']);
+        }
     }
 
     public function storeFoto(Request $request)

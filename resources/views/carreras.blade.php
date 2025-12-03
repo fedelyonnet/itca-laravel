@@ -101,15 +101,15 @@
                                     <a href="{{ route('carreras.show', $carrera->id) }}" class="carrera-btn-info">
                                         <span>Quiero más info sobre la carrera</span>
                                     </a>
-                                    <button class="carrera-btn-inscribir">¡Inscribirme ahora!</button>
+                                    <a href="{{ route('inscripcion', $carrera->id) }}" class="carrera-btn-inscribir">¡Inscribirme ahora!</a>
                                 </div>
                             </div>
                         <div class="carrera-right">
-                            <a href="{{ route('carreras.show', $carrera->id) }}" class="carrera-image" style="display:block;">
+                            <a href="{{ route('carreras.show', $carrera->id) }}" class="carrera-image">
                                 <!-- Imagen Desktop (solo visible en desktop y tablet) -->
-                                <img src="{{ asset('storage/' . $carrera->ilustracion_desktop) }}" alt="{{ $carrera->nombre }}" class="carreras-image-desktop" style="display: block;" />
+                                <img src="{{ asset('storage/' . $carrera->ilustracion_desktop) }}" alt="{{ $carrera->nombre }}" class="carreras-image-desktop" />
                                 <!-- Imagen Mobile (solo visible en mobile) -->
-                                <img src="{{ asset('storage/' . $carrera->ilustracion_mobile) }}" alt="{{ $carrera->nombre }}" class="carreras-image-mobile" style="display: none;" />
+                                <img src="{{ asset('storage/' . $carrera->ilustracion_mobile) }}" alt="{{ $carrera->nombre }}" class="carreras-image-mobile" />
                                 <div class="carreras-modalidad-badge carreras-modalidad-badge-desktop">
                                     <span class="carreras-modalidad-text">Modalidad: <strong>
                                         @if($carrera->modalidad_online && $carrera->modalidad_presencial)
