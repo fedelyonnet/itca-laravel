@@ -144,4 +144,9 @@
             </div>
         </div>
     </div>
+    
+    <a href="{{ route('admin.leads') }}" 
+       class="inline-flex items-center text-white hover:text-gray-300 px-2 py-1">
+        Leads
+    </a>
 </nav>

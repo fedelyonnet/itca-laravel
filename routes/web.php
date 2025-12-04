@@ -164,6 +164,9 @@ Route::middleware('auth')->group(function () {
         Route::patch('/noticias/{id}/toggle-visibility', [App\Http\Controllers\NoticiaController::class, 'toggleVisibility'])->name('admin.noticias.toggle-visibility');
         Route::patch('/noticias/{id}/toggle-destacada', [App\Http\Controllers\NoticiaController::class, 'toggleDestacada'])->name('admin.noticias.toggle-destacada');
         Route::post('/noticias/mover', [App\Http\Controllers\NoticiaController::class, 'moverNoticia'])->name('admin.noticias.mover');
+        
+        // Rutas de leads
+        Route::get('/leads', [App\Http\Controllers\LeadController::class, 'index'])->name('admin.leads');
     });
 });
 
