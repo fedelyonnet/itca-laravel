@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasColumn('cursadas', 'casilla_Promo')) {
+        // Solo agregar la columna si la tabla existe y no tiene la columna
+        if (Schema::hasTable('cursadas') && !Schema::hasColumn('cursadas', 'casilla_Promo')) {
             \DB::statement('ALTER TABLE `cursadas` ADD COLUMN `casilla_Promo` BOOLEAN DEFAULT FALSE AFTER `sede`');
         }
     }
