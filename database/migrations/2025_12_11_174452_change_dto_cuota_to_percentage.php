@@ -22,26 +22,17 @@ return new class extends Migration
             try {
                 \DB::statement('ALTER TABLE `cursadas` MODIFY `Dto_Cuota` DECIMAL(5,2) NULL');
             } catch (\Exception $e) {
-                // Si falla al modificar, la columna puede no existir realmente
-                // Intentar crearla
-                if (Schema::hasColumn('cursadas', 'Cta_Web')) {
-                    \DB::statement('ALTER TABLE `cursadas` ADD COLUMN `Dto_Cuota` DECIMAL(5,2) NULL AFTER `Cta_Web`');
-                } else {
-                    \DB::statement('ALTER TABLE `cursadas` ADD COLUMN `Dto_Cuota` DECIMAL(5,2) NULL');
-                }
+                // Si falla al modificar, ignorar el error
+                \Log::warning('No se pudo modificar Dto_Cuota: ' . $e->getMessage());
             }
         } else {
             // Si no existe, crearla directamente con el tipo correcto
-            // Intentar después de Cta_Web si existe, sino al final
+            // NO usar AFTER si Cta_Web no existe
             try {
-                if (Schema::hasColumn('cursadas', 'Cta_Web')) {
-                    \DB::statement('ALTER TABLE `cursadas` ADD COLUMN `Dto_Cuota` DECIMAL(5,2) NULL AFTER `Cta_Web`');
-                } else {
-                    \DB::statement('ALTER TABLE `cursadas` ADD COLUMN `Dto_Cuota` DECIMAL(5,2) NULL');
-                }
-            } catch (\Exception $e) {
-                // Si falla, intentar sin especificar posición
                 \DB::statement('ALTER TABLE `cursadas` ADD COLUMN `Dto_Cuota` DECIMAL(5,2) NULL');
+            } catch (\Exception $e) {
+                // Si falla, la columna puede ya existir con otro nombre o hay otro problema
+                \Log::warning('No se pudo crear Dto_Cuota: ' . $e->getMessage());
             }
         }
     }
