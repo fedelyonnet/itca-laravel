@@ -11,13 +11,38 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Verificar si la tabla existe
+        if (!Schema::hasTable('cursadas')) {
+            return;
+        }
+        
         // Verificar si la columna existe antes de modificarla
         if (Schema::hasColumn('cursadas', 'Dto_Cuota')) {
             // Cambiar Dto_Cuota de DECIMAL(10,2) a DECIMAL(5,2) para porcentajes
-            \DB::statement('ALTER TABLE `cursadas` MODIFY `Dto_Cuota` DECIMAL(5,2) NULL');
+            try {
+                \DB::statement('ALTER TABLE `cursadas` MODIFY `Dto_Cuota` DECIMAL(5,2) NULL');
+            } catch (\Exception $e) {
+                // Si falla al modificar, la columna puede no existir realmente
+                // Intentar crearla
+                if (Schema::hasColumn('cursadas', 'Cta_Web')) {
+                    \DB::statement('ALTER TABLE `cursadas` ADD COLUMN `Dto_Cuota` DECIMAL(5,2) NULL AFTER `Cta_Web`');
+                } else {
+                    \DB::statement('ALTER TABLE `cursadas` ADD COLUMN `Dto_Cuota` DECIMAL(5,2) NULL');
+                }
+            }
         } else {
             // Si no existe, crearla directamente con el tipo correcto
-            \DB::statement('ALTER TABLE `cursadas` ADD COLUMN `Dto_Cuota` DECIMAL(5,2) NULL AFTER `Cta_Web`');
+            // Intentar después de Cta_Web si existe, sino al final
+            try {
+                if (Schema::hasColumn('cursadas', 'Cta_Web')) {
+                    \DB::statement('ALTER TABLE `cursadas` ADD COLUMN `Dto_Cuota` DECIMAL(5,2) NULL AFTER `Cta_Web`');
+                } else {
+                    \DB::statement('ALTER TABLE `cursadas` ADD COLUMN `Dto_Cuota` DECIMAL(5,2) NULL');
+                }
+            } catch (\Exception $e) {
+                // Si falla, intentar sin especificar posición
+                \DB::statement('ALTER TABLE `cursadas` ADD COLUMN `Dto_Cuota` DECIMAL(5,2) NULL');
+            }
         }
     }
 
