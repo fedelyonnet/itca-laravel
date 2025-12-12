@@ -99,16 +99,27 @@
         <section class="inscripcion-section">
             <div class="inscripcion-container">
                 <div class="inscripcion-content">
-                    <!-- Línea horizontal superior: Filtra por, Borrar todo, Resultados, Chips -->
+                    <!-- Línea horizontal superior: Aplicá los filtros, Borrar todo, Resultados, Chips -->
                     <div class="inscripcion-filtros-bar">
                         <div class="inscripcion-filtros-bar-columna-izq">
-                            <span class="inscripcion-filtros-bar-texto">Filtra por:</span>
-                            <a href="#" id="borrar-todo-filtros" class="inscripcion-filtros-borrar-todo">Borrar todo</a>
+                            <div class="inscripcion-filtros-bar-texto-wrapper">
+                                <div class="inscripcion-filtros-bar-texto-linea-1">
+                                    <span class="inscripcion-filtros-bar-texto-highlight">Aplicá los filtros</span> para descubrir
+                                </div>
+                                <div class="inscripcion-filtros-bar-texto-linea-2">
+                                    la cursada ideal para vos:
+                                </div>
+                            </div>
                         </div>
                         <div class="inscripcion-filtros-bar-columna-der">
-                            <span class="inscripcion-filtros-resultados">Resultados: <span id="contador-resultados">0</span></span>
-                            <div id="filtros-aplicados" class="inscripcion-filtros-chips">
-                                <!-- Los chips se agregarán dinámicamente con JavaScript -->
+                            <div class="inscripcion-filtros-bar-der-wrapper">
+                                <div class="inscripcion-filtros-borrar-resultados-grupo">
+                                    <a href="#" id="borrar-todo-filtros" class="inscripcion-filtros-borrar-todo">Borrar todo</a>
+                                    <span class="inscripcion-filtros-resultados">Resultados: <span id="contador-resultados">0</span></span>
+                                </div>
+                                <div id="filtros-aplicados" class="inscripcion-filtros-chips">
+                                    <!-- Los chips se agregarán dinámicamente con JavaScript -->
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -125,14 +136,16 @@
                                         <span>Carrera</span>
                                     </h4>
                                     <div id="filtro-carrera-opciones">
-                                        @foreach($carreras as $carrera)
+                                        @foreach($carreras as $carreraItem)
                                             @php
-                                                $nombreCorregido = corregirNombreCarrera($carrera->nombre_curso);
-                                                $esSeleccionado = $carrera->nombre_curso == $curso->nombre;
+                                                $nombreCarrera = $carreraItem->carrera ?? 'N/A';
+                                                $nombreCorregido = corregirNombreCarrera($nombreCarrera);
+                                                // Comparar con la carrera seleccionada encontrada en el controlador
+                                                $esSeleccionado = isset($carreraSeleccionada) && $nombreCarrera === $carreraSeleccionada;
                                             @endphp
                                             <span class="filtro-opcion" 
                                                   data-tipo="carrera" 
-                                                  data-valor="{{ $carrera->nombre_curso }}"
+                                                  data-valor="{{ $nombreCarrera }}"
                                                   data-seleccionado="{{ $esSeleccionado ? 'true' : 'false' }}">
                                                 {{ $nombreCorregido }}
                                             </span>
@@ -168,17 +181,40 @@
                                         <span>Modalidad</span>
                                     </h4>
                                     <div id="filtro-modalidad-opciones">
-                                        @foreach($modalidades as $modalidad)
+                                        @foreach($modalidades as $modalidadItem)
                                             @php
-                                                $modalidadDisplay = $modalidad;
+                                                $modalidadDisplay = $modalidadItem['combinacion'] ?? $modalidadItem;
                                                 // Corregir "Sempresencial" a "Semipresencial" en el display
-                                                if (stripos($modalidadDisplay, 'Sempresencial') !== false) {
+                                                if (is_string($modalidadDisplay) && stripos($modalidadDisplay, 'Sempresencial') !== false) {
                                                     $modalidadDisplay = str_ireplace('Sempresencial', 'Semipresencial', $modalidadDisplay);
+                                                } elseif (isset($modalidadItem['combinacion'])) {
+                                                    $modalidadDisplay = str_ireplace('Sempresencial', 'Semipresencial', $modalidadItem['combinacion']);
                                                 }
+                                                
+                                                // Agregar duración según modalidad y régimen
+                                                $modalidad = $modalidadItem['modalidad'] ?? '';
+                                                $regimen = $modalidadItem['regimen'] ?? '';
+                                                $duracion = '';
+                                                if (stripos($modalidad, 'Presencial') !== false || stripos($modalidad, 'Semipresencial') !== false) {
+                                                    if (stripos($regimen, 'Regular') !== false) {
+                                                        $duracion = '10 Meses';
+                                                    } elseif (stripos($regimen, 'Intensivo') !== false) {
+                                                        $duracion = '5 Meses';
+                                                    }
+                                                }
+                                                
+                                                // Construir el texto completo con duración
+                                                if ($duracion) {
+                                                    $modalidadDisplay = $modalidadDisplay . ' : ' . $duracion;
+                                                }
+                                                
+                                                $valorModalidad = isset($modalidadItem['valor']) ? $modalidadItem['valor'] : $modalidadItem;
                                             @endphp
                                             <span class="filtro-opcion" 
                                                   data-tipo="modalidad" 
-                                                  data-valor="{{ $modalidad }}"
+                                                  data-valor="{{ $valorModalidad }}"
+                                                  data-modalidad="{{ $modalidadItem['modalidad'] ?? '' }}"
+                                                  data-regimen="{{ $modalidadItem['regimen'] ?? '' }}"
                                                   data-seleccionado="false">
                                                 {{ $modalidadDisplay }}
                                             </span>
@@ -212,13 +248,33 @@
                                     </h4>
                                     <div id="filtro-dia-opciones">
                                         @foreach($dias as $dia)
+                                            @php
+                                                // Convertir a nombres completos usando la función helper
+                                                $diaDisplay = convertirDiasCompletos($dia);
+                                            @endphp
                                             <span class="filtro-opcion" 
                                                   data-tipo="dia" 
                                                   data-valor="{{ $dia }}"
                                                   data-seleccionado="false">
-                                                {{ $dia }}
+                                                {{ $diaDisplay }}
                                             </span>
                                         @endforeach
+                                    </div>
+                                </div>
+                                
+                                <!-- Filtro: Promociones -->
+                                <div class="inscripcion-filtro-seccion">
+                                    <h4 class="inscripcion-filtro-subtitulo">
+                                        <img src="/images/desktop/fire.png" alt="Promociones" class="inscripcion-filtro-icono">
+                                        <span>Promociones</span>
+                                    </h4>
+                                    <div id="filtro-promocion-opciones">
+                                        <span class="filtro-opcion" 
+                                              data-tipo="promocion" 
+                                              data-valor="con_descuento"
+                                              data-seleccionado="false">
+                                            Cuotas con descuento
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -231,64 +287,121 @@
                                     @foreach($cursadas as $index => $cursada)
                                         @php
                                             $cursadaId = 'cursada-' . ($cursada->id ?? $index);
+                                            // Verificar si tiene descuento: Dto_Cuota puede ser negativo (-20.00) o positivo
+                                            $tieneDescuento = false;
+                                            if (!empty($cursada->Dto_Cuota) && $cursada->Dto_Cuota !== null) {
+                                                $dtoCuotaValue = floatval($cursada->Dto_Cuota);
+                                                $tieneDescuento = (abs($dtoCuotaValue) > 0.01); // Usar abs() para manejar valores negativos y positivos
+                                            }
                                         @endphp
                                         <div class="cursada-item" 
-                                             data-carrera="{{ $cursada->nombre_curso }}"
+                                             data-carrera="{{ $cursada->carrera ?? '' }}"
                                              data-sede="{{ $cursada->sede ?? '' }}"
-                                             data-modalidad="{{ $cursada->x_modalidad ?? '' }}"
-                                             data-turno="{{ $cursada->x_turno ?? '' }}"
-                                             data-dia="{{ $cursada->dias ?? '' }}">
+                                             data-modalidad="{{ $cursada->xModalidad ?? '' }}"
+                                             data-regimen="{{ $cursada->Régimen ?? '' }}"
+                                             data-turno="{{ $cursada->xTurno ?? '' }}"
+                                             data-dia="{{ $cursada->xDias ?? '' }}"
+                                             data-promocion="{{ $tieneDescuento ? 'con_descuento' : 'sin_descuento' }}">
                                             <div class="cursada-item-grid">
                                                 <!-- Columna 1: Información de la cursada -->
                                                 <div class="cursada-item-columna-izq">
+                                                    <!-- Nuevo Item 0: DIA | TURNO x (horario) -->
+                                                    <div class="cursada-item-dia-turno">
+                                                        @php
+                                                            // Obtener día completo
+                                                            $diaCompleto = convertirDiasCompletos($cursada->xDias ?? '');
+                                                            $diaMayusculas = mb_strtoupper($diaCompleto, 'UTF-8');
+                                                            
+                                                            // Obtener turno
+                                                            $turno = $cursada->xTurno ?? '';
+                                                            $turnoMayusculas = mb_strtoupper($turno, 'UTF-8');
+                                                            
+                                                            // Obtener y formatear horario
+                                                            $horario = $cursada->Horario ?? '';
+                                                            $horarioFormateado = '';
+                                                            if (!empty($horario)) {
+                                                                $horario = trim($horario);
+                                                                // Si ya tiene formato "9 a 11:30" o similar, mantenerlo
+                                                                // Si tiene "9-11:30" o "9 11:30", convertir a "9 a 11:30"
+                                                                // Si tiene "9hs a 11:30hs", limpiar y reformatear
+                                                                $horario = preg_replace('/\s*hs?\s*/i', '', $horario); // Quitar "hs" existentes
+                                                                $horario = preg_replace('/\s*-\s*/', ' a ', $horario); // Convertir "-" a " a "
+                                                                $horario = preg_replace('/\s+/', ' ', $horario); // Normalizar espacios
+                                                                // Agregar "hs" al final si no está
+                                                                if (!preg_match('/hs?$/i', $horario)) {
+                                                                    $horarioFormateado = $horario . 'hs';
+                                                                } else {
+                                                                    $horarioFormateado = $horario;
+                                                                }
+                                                            }
+                                                        @endphp
+                                                        <span class="cursada-dia-turno-texto">
+                                                            @if(!empty($diaMayusculas))
+                                                                {{ $diaMayusculas }}
+                                                            @else
+                                                                N/A
+                                                            @endif
+                                                        </span>
+                                                        <span class="cursada-dia-turno-separador">|</span>
+                                                        <span class="cursada-dia-turno-texto">
+                                                            TURNO 
+                                                            @if(!empty($turnoMayusculas))
+                                                                {{ $turnoMayusculas }}
+                                                            @else
+                                                                N/A
+                                                            @endif
+                                                        </span>
+                                                        @if(!empty($horarioFormateado))
+                                                            <span class="cursada-dia-turno-horario"> ({{ $horarioFormateado }})</span>
+                                                        @endif
+                                                    </div>
+                                                    
                                                     <!-- Item 1: Inicio (mes año) -->
                                                     <div>
                                                         <strong class="cursada-item-label">Inicia:</strong>
                                                         <span class="cursada-item-value">
-                                                            @if($cursada->mes_inicio && $cursada->fecha_inicio)
+                                                            @if($cursada->Fecha_Inicio)
                                                                 @php
+                                                                    $fecha = \Carbon\Carbon::parse($cursada->Fecha_Inicio);
                                                                     $meses = [
-                                                                        '1' => 'enero', '2' => 'febrero', '3' => 'marzo', '4' => 'abril',
-                                                                        '5' => 'mayo', '6' => 'junio', '7' => 'julio', '8' => 'agosto',
-                                                                        '9' => 'septiembre', '10' => 'octubre', '11' => 'noviembre', '12' => 'diciembre'
+                                                                        1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
+                                                                        5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
+                                                                        9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre'
                                                                     ];
-                                                                    $mesTexto = $meses[$cursada->mes_inicio] ?? $cursada->mes_inicio;
+                                                                    $mesNombre = $meses[$fecha->month] ?? $fecha->format('F');
                                                                 @endphp
-                                                                {{ ucfirst($mesTexto) }} {{ $cursada->fecha_inicio->format('Y') }}
-                                                            @elseif($cursada->fecha_inicio)
-                                                                {{ $cursada->fecha_inicio->format('F Y') }}
+                                                                {{ $mesNombre }} {{ $fecha->year }}
                                                             @else
                                                                 N/A
                                                             @endif
                                                         </span>
                                                     </div>
                                                     
-                                                    <!-- Item 2: Horario -->
-                                                    <div>
-                                                        <strong class="cursada-item-label">Horario:</strong>
-                                                        <span class="cursada-item-value">
-                                                            @if($cursada->hora_inicio && $cursada->hora_fin)
-                                                                {{ \Carbon\Carbon::parse($cursada->hora_inicio)->format('H:i') }} - {{ \Carbon\Carbon::parse($cursada->hora_fin)->format('H:i') }}
-                                                            @elseif($cursada->horario)
-                                                                {{ $cursada->horario }}
-                                                            @else
-                                                                N/A
-                                                            @endif
-                                                        </span>
-                                                    </div>
-                                                    
-                                                    <!-- Item 3: Modalidad -->
+                                                    <!-- Item 2: Modalidad -->
                                                     <div>
                                                         <strong class="cursada-item-label">Modalidad:</strong>
                                                         <span class="cursada-item-value">
                                                             @php
-                                                                $modalidad = $cursada->x_modalidad ?? 'N/A';
+                                                                $modalidad = $cursada->xModalidad ?? '';
+                                                                $regimen = $cursada->Régimen ?? '';
+                                                                
                                                                 // Corregir "Sempresencial" a "Semipresencial"
                                                                 if (stripos($modalidad, 'Sempresencial') !== false) {
                                                                     $modalidad = str_ireplace('Sempresencial', 'Semipresencial', $modalidad);
                                                                 }
+                                                                
+                                                                // Combinar modalidad y régimen como en el filtro
+                                                                if (!empty($modalidad) && !empty($regimen)) {
+                                                                    $modalidadCompleta = $modalidad . ' - ' . $regimen;
+                                                                } elseif (!empty($modalidad)) {
+                                                                    $modalidadCompleta = $modalidad;
+                                                                } elseif (!empty($regimen)) {
+                                                                    $modalidadCompleta = $regimen;
+                                                                } else {
+                                                                    $modalidadCompleta = 'N/A';
+                                                                }
                                                             @endphp
-                                                            {{ $modalidad }}
+                                                            {{ $modalidadCompleta }}
                                                         </span>
                                                     </div>
                                                     
@@ -308,11 +421,26 @@
                                                 <!-- Columna 2: Lugares disponibles y badge -->
                                                 <div class="cursada-item-columna-medio">
                                                     <div class="cursada-lugares-texto">
-                                                        ¡Quedan <strong>{{ $cursada->vacantes ?? 0 }}</strong> lugares!
+                                                        ¡Quedan <strong>{{ $cursada->Vacantes ?? 0 }}</strong> lugares!
                                                     </div>
-                                                    <div class="cursada-badge-descuento">
-                                                        20%off
-                                                    </div>
+                                                    @php
+                                                        // Obtener descuento de Dto_Cuota
+                                                        $descuento = 0;
+                                                        if (!empty($cursada->Dto_Cuota) && $cursada->Dto_Cuota !== null) {
+                                                            $dtoCuotaValue = floatval($cursada->Dto_Cuota);
+                                                            $descuento = abs($dtoCuotaValue); // Usar valor absoluto para manejar negativos
+                                                        }
+                                                    @endphp
+                                                    @if($descuento > 0.01)
+                                                        <div class="cursada-descuento-wrapper">
+                                                            <div class="cursada-badge-descuento">
+                                                                {{ number_format($descuento, 0) }}% OFF
+                                                            </div>
+                                                            <div class="cursada-texto-cuotas">
+                                                                en todas las cuotas
+                                                            </div>
+                                                        </div>
+                                                    @endif
                                                 </div>
                                                 
                                                 <!-- Columna 3: Botón ver valores -->
@@ -329,11 +457,11 @@
                                                             <div class="cursada-valores-renglon-1">
                                                                 <p class="cursada-valores-content">
                                                                     El valor de la cuota por mes te saldrá: 
-                                                                    <span class="cursada-valor-cuota">${{ number_format($cursada->valor_cuota ?? 0, 0, ',', '.') }}</span>
+                                                                    <span class="cursada-valor-cuota">${{ number_format($cursada->Cta_Web ?? 0, 0, ',', '.') }}</span>
                                                                 </p>
                                                             </div>
                                                             <div class="cursada-valores-renglon-2">
-                                                                <span class="cursada-descuento-texto">¡Descuento del 20% Aplicado!</span> - <span class="cursada-cuotas-texto">Cantidad de cuotas: <span class="cursada-cantidad-cuotas">{{ $cursada->cantidad_cuotas ?? 0 }}</span></span>
+                                                                <span class="cursada-descuento-texto">¡Descuento del 20% Aplicado!</span> - <span class="cursada-cuotas-texto">Cantidad de cuotas: <span class="cursada-cantidad-cuotas">12</span></span>
                                                             </div>
                                                         </div>
                                                         <div class="cursada-formulario-container">
@@ -374,7 +502,7 @@
                                                     <div class="cursada-valores-columna-der">
                                                         <p class="cursada-valores-matricula">
                                                             Valor de Matrícula: 
-                                                            <span class="cursada-valor-matricula">${{ number_format($cursada->matricula_base ?? 0, 0, ',', '.') }}</span>
+                                                            <span class="cursada-valor-matricula">${{ number_format($cursada->Matric_Base ?? 0, 0, ',', '.') }}</span>
                                                         </p>
                                                         <p class="cursada-codigo-descuento-texto">
                                                             ¡Tengo un código de descuento!
@@ -385,7 +513,7 @@
                                                         </div>
                                                         <div class="cursada-total-matricula">
                                                             <span class="cursada-total-label">Total: $</span>
-                                                            <span class="cursada-total-valor">{{ number_format(($cursada->matricula_base ?? 0) - 57400, 0, ',', '.') }}</span>
+                                                            <span class="cursada-total-valor">{{ number_format(($cursada->Matric_Base ?? 0) - 57400, 0, ',', '.') }}</span>
                                                         </div>
                                                         <p class="cursada-reserva-texto">
                                                             <span class="cursada-reserva-bold">Ahora solo debés pagar la matrícula</span><br>
@@ -406,7 +534,7 @@
                                             <!-- Texto informativo entre panel y línea del item -->
                                             <div class="cursada-info-texto panel-hidden" id="info-{{ $cursadaId }}">
                                                 <p class="cursada-info-texto-content">
-                                                    <span class="cursada-info-texto-destacado">*Valor de cuota actual, vigente hasta el fin del presente mes.</span> Los valores de cuotas se ajustan y actualizan mes a mes según IPC publicado por el INDEC. Cuotas totales a abonar en el 1er año: {{ $cursada->cantidad_cuotas ?? 0 }}. Consultar por promociones y descuentos aplicables sobre adelantamientos de cuotas.
+                                                    <span class="cursada-info-texto-destacado">*Valor de cuota actual, vigente hasta el fin del presente mes.</span> Los valores de cuotas se ajustan y actualizan mes a mes según IPC publicado por el INDEC. Cuotas totales a abonar en el 1er año: 12. Consultar por promociones y descuentos aplicables sobre adelantamientos de cuotas.
                                                 </p>
                                             </div>
                                         </div>
@@ -583,13 +711,17 @@
                 sede: '',
                 modalidad: '',
                 turno: '',
-                dia: ''
+                dia: '',
+                promocion: ''
             };
             
             // Inicializar filtro de carrera si hay uno pre-seleccionado
             const carreraPreSeleccionada = document.querySelector('.filtro-opcion[data-tipo="carrera"][data-seleccionado="true"]');
             if (carreraPreSeleccionada) {
-                filtrosSeleccionados.carrera = carreraPreSeleccionada.getAttribute('data-valor');
+                const valorCarrera = carreraPreSeleccionada.getAttribute('data-valor');
+                if (valorCarrera) {
+                    filtrosSeleccionados.carrera = valorCarrera;
+                }
             }
             
             // Función para actualizar los colores de las opciones de filtro
@@ -611,12 +743,96 @@
                 // Buscar la opción correspondiente para obtener su texto
                 const opcion = document.querySelector(`.filtro-opcion[data-tipo="${tipo}"][data-valor="${valor}"]`);
                 if (opcion) {
-                    return opcion.textContent.trim();
+                    let texto = opcion.textContent.trim();
+                    // Si es modalidad, quitar la parte de los meses ( : X Meses) y los guiones
+                    if (tipo === 'modalidad') {
+                        texto = texto.replace(/\s*:\s*\d+\s*Meses?/gi, ''); // Quitar ": 10 Meses"
+                        texto = texto.replace(/\s*-\s*/g, ' '); // Reemplazar " - " con un espacio
+                        texto = texto.trim();
+                    }
+                    return texto;
+                }
+                
+                // Fallback: corregir nombres de carrera
+                if (tipo === 'carrera') {
+                    const mapeos = {
+                        'MECÁNICA Y TECNOLOGÍAS DEL AUTÓMOVIL 1': 'Mecánica y Tecnologías del Automóvil',
+                        'ELECTRICIDAD Y ELECTRÓNICA DEL AUTOMÓVIL': 'Electricidad y Electrónica del Automóvil',
+                        'MECÁNICA Y ELECTRÓNICA DE MOTOS 1': 'Mecánica y Electrónica de la Motocicleta'
+                    };
+                    const valorUpper = valor.toUpperCase().trim();
+                    if (mapeos[valorUpper]) {
+                        return mapeos[valorUpper];
+                    }
+                    // Búsqueda parcial
+                    if (valorUpper.includes('MECÁNICA Y TECNOLOGÍAS DEL AUTÓMOVIL')) {
+                        return 'Mecánica y Tecnologías del Automóvil';
+                    }
+                    if (valorUpper.includes('ELECTRICIDAD Y ELECTRÓNICA DEL AUTOMÓVIL')) {
+                        return 'Electricidad y Electrónica del Automóvil';
+                    }
+                    if (valorUpper.includes('MECÁNICA Y ELECTRÓNICA DE MOTOS')) {
+                        return 'Mecánica y Electrónica de la Motocicleta';
+                    }
                 }
                 
                 // Fallback: corregir modalidad si es necesario
                 if (tipo === 'modalidad') {
+                    // Si el valor contiene "|", es una combinación modalidad|regimen
+                    if (valor.includes('|')) {
+                        const [modalidad, regimen] = valor.split('|');
+                        let modalidadDisplay = modalidad.replace(/Sempresencial/gi, 'Semipresencial');
+                        // NO agregar duración en los badges, solo mostrar modalidad - régimen
+                        const combinacion = modalidadDisplay + ' - ' + regimen;
+                        return combinacion;
+                    }
                     return valor.replace(/Sempresencial/gi, 'Semipresencial');
+                }
+                
+                // Fallback: para promociones
+                if (tipo === 'promocion') {
+                    if (valor === 'con_descuento') {
+                        return 'Cuotas con descuento';
+                    }
+                    return valor;
+                }
+                
+                // Fallback: convertir días a nombres completos
+                if (tipo === 'dia') {
+                    const mapeoDias = {
+                        'lun': 'Lunes', 'lunes': 'Lunes',
+                        'mar': 'Martes', 'martes': 'Martes',
+                        'mie': 'Miércoles', 'mié': 'Miércoles', 'miercoles': 'Miércoles', 'miércoles': 'Miércoles',
+                        'jue': 'Jueves', 'jueves': 'Jueves',
+                        'vie': 'Viernes', 'viernes': 'Viernes',
+                        'sab': 'Sábado', 'sáb': 'Sábado', 'sabado': 'Sábado', 'sábado': 'Sábado',
+                        'dom': 'Domingo', 'domingo': 'Domingo'
+                    };
+                    
+                    const valorLower = valor.toLowerCase();
+                    const partes = valorLower.split(/[\s\-]+/);
+                    const diasCompletos = [];
+                    
+                    partes.forEach(function(parte) {
+                        parte = parte.trim();
+                        if (!parte) return;
+                        
+                        let diaCompleto = null;
+                        for (const abrev in mapeoDias) {
+                            if (parte === abrev || parte.indexOf(abrev) === 0) {
+                                diaCompleto = mapeoDias[abrev];
+                                break;
+                            }
+                        }
+                        
+                        if (diaCompleto) {
+                            diasCompletos.push(diaCompleto);
+                        } else {
+                            diasCompletos.push(parte.charAt(0).toUpperCase() + parte.slice(1));
+                        }
+                    });
+                    
+                    return diasCompletos.join(' y ');
                 }
                 
                 // Fallback: corregir y simplificar sede si es necesario
@@ -720,7 +936,8 @@
                     sede: '',
                     modalidad: '',
                     turno: '',
-                    dia: ''
+                    dia: '',
+                    promocion: ''
                 };
                 actualizarColoresFiltros();
                 filtrarCursadas();
@@ -732,6 +949,7 @@
                 const modalidadSeleccionada = filtrosSeleccionados.modalidad;
                 const turnoSeleccionado = filtrosSeleccionados.turno;
                 const diaSeleccionado = filtrosSeleccionados.dia;
+                const promocionSeleccionada = filtrosSeleccionados.promocion;
                 
                 // Re-obtener todas las cursadas del DOM (por si hay cambios)
                 const todasLasCursadas = document.querySelectorAll('.cursada-item');
@@ -742,18 +960,34 @@
                     const carrera = item.getAttribute('data-carrera') || '';
                     const sede = item.getAttribute('data-sede') || '';
                     const modalidad = item.getAttribute('data-modalidad') || '';
+                    const regimen = item.getAttribute('data-regimen') || '';
                     const turno = item.getAttribute('data-turno') || '';
                     const dia = item.getAttribute('data-dia') || '';
+                    const promocion = item.getAttribute('data-promocion') || '';
                     
                     // Verificar si coincide con los filtros
                     // Si el filtro está vacío (''), mostrar todas las opciones
                     const coincideCarrera = carreraSeleccionada === '' || carrera === carreraSeleccionada;
                     const coincideSede = sedeSeleccionada === '' || sede === sedeSeleccionada;
-                    const coincideModalidad = modalidadSeleccionada === '' || modalidad === modalidadSeleccionada;
+                    
+                    // Para modalidad: el valor puede ser "modalidad|regimen" o solo "modalidad"
+                    let coincideModalidad = true;
+                    if (modalidadSeleccionada !== '') {
+                        if (modalidadSeleccionada.includes('|')) {
+                            // Es una combinación modalidad|regimen
+                            const [modalidadFiltro, regimenFiltro] = modalidadSeleccionada.split('|');
+                            coincideModalidad = modalidad === modalidadFiltro && regimen === regimenFiltro;
+                        } else {
+                            // Solo modalidad (compatibilidad con formato anterior)
+                            coincideModalidad = modalidad === modalidadSeleccionada;
+                        }
+                    }
+                    
                     const coincideTurno = turnoSeleccionado === '' || turno === turnoSeleccionado;
                     const coincideDia = diaSeleccionado === '' || dia === diaSeleccionado;
+                    const coincidePromocion = promocionSeleccionada === '' || promocion === promocionSeleccionada;
                     
-                    if (coincideCarrera && coincideSede && coincideModalidad && coincideTurno && coincideDia) {
+                    if (coincideCarrera && coincideSede && coincideModalidad && coincideTurno && coincideDia && coincidePromocion) {
                         item.style.display = 'block';
                         visibleCount++;
                     } else {
@@ -826,8 +1060,9 @@
             }
             
             // Inicializar colores y filtros al cargar la página
+            // IMPORTANTE: Primero actualizar colores, luego filtrar, luego mostrar chips
             actualizarColoresFiltros();
-            filtrarCursadas();
+            filtrarCursadas(); // Esto ya llama a actualizarChipsFiltros() internamente
             
             // Función para cerrar todos los paneles excepto uno
             function cerrarTodosLosPaneles(excluirCursadaId = null) {

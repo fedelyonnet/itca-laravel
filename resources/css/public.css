@@ -14217,16 +14217,20 @@ body.inscripcion-page {
     padding-top: 0;
     padding-bottom: clamp(3rem, calc(3rem + (100vw - 1100px) * 0.0122), 4rem);
     background-color: var(--menu-bg);
+    overflow: visible;
 }
 
 .inscripcion-container {
     max-width: clamp(1070px, 85vw, 1557px);
     margin: 0 auto;
     padding: 0;
+    overflow: visible;
 }
 
 .inscripcion-content {
     text-align: center;
+    position: relative;
+    overflow: visible;
 }
 
 /* Estilos para los filtros de inscripción */
@@ -14304,8 +14308,8 @@ body.inscripcion-page {
 .inscripcion-page .lista-carreras-title {
     grid-column: 1;
     justify-self: center;
-    margin-top: clamp(60px, calc(60px + (100vw - 1100px) * 0.0732), 120px);
-    margin-bottom: clamp(40px, calc(40px + (100vw - 1100px) * 0.049), 80px);
+    margin-top: clamp(30px, calc(30px + (100vw - 1100px) * 0.0183), 45px);
+    margin-bottom: clamp(-20px, calc(-20px + (100vw - 1100px) * 0.0085), -13px);
 }
 
 .inscripcion-page .lista-carreras-title-text-2::before {
@@ -14332,6 +14336,7 @@ body.inscripcion-page {
     margin-bottom: clamp(1.5rem, calc(1.5rem + (100vw - 1100px) * 0.0061), 2rem);
     width: 100%;
     align-items: center;
+    justify-content: flex-start;
 }
 
 .inscripcion-filtros-bar-columna-izq {
@@ -14339,21 +14344,89 @@ body.inscripcion-page {
     flex-shrink: 0;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem);
 }
 
 .inscripcion-filtros-bar-columna-der {
     flex: 1;
     display: flex;
-    align-items: center;
-    gap: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem);
-    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: flex-start;
 }
 
-.inscripcion-filtros-bar-texto {
+.inscripcion-filtros-bar-der-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem);
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.inscripcion-filtros-borrar-resultados-grupo {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    flex-shrink: 0;
+}
+
+.inscripcion-filtros-borrar-resultados-grupo > * {
+    display: block !important;
+    width: auto;
+    flex-shrink: 0;
+}
+
+.inscripcion-filtros-bar-texto-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.inscripcion-filtros-bar-texto-linea-1 {
     color: var(--text-white);
     font-family: 'Montserrat', sans-serif;
+    font-size: clamp(16px, calc(16px + (100vw - 1100px) * 0.00376), 17px);
+    text-align: left;
+    line-height: 1.4;
+    margin: 0;
+    padding: 0;
+}
+
+.inscripcion-filtros-bar-texto-linea-2 {
+    color: var(--text-white);
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(16px, calc(16px + (100vw - 1100px) * 0.00376), 17px);
+    text-align: left;
+    line-height: 1.4;
+    margin: 0;
+    padding: 0;
+    padding-left: clamp(10px, calc(10px + (100vw - 1100px) * 0.0061), 15px);
+}
+
+.inscripcion-filtros-bar-texto-highlight {
+    position: relative;
+    display: inline-block;
+    font-weight: 600; /* Semibold */
+    color: #010C42;
+    z-index: 2;
+    padding: 0 clamp(8px, calc(8px + (100vw - 1100px) * 0.00244), 10px);
+}
+
+.inscripcion-filtros-bar-texto-highlight::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: clamp(140px, calc(140px + (100vw - 1100px) * 0.0564), 155px);
+    height: clamp(32px, calc(32px + (100vw - 1100px) * 0.0113), 35px);
+    background-image: url('/images/desktop/stroke.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: left center;
+    z-index: -1;
 }
 
 .inscripcion-filtros-borrar-todo {
@@ -14362,6 +14435,11 @@ body.inscripcion-page {
     cursor: pointer;
     font-weight: 500;
     font-family: 'Montserrat', sans-serif;
+    display: block !important;
+    white-space: nowrap;
+    order: 1;
+    width: auto !important;
+    flex: none !important;
 }
 
 .inscripcion-filtros-borrar-todo:hover {
@@ -14371,6 +14449,11 @@ body.inscripcion-page {
 .inscripcion-filtros-resultados {
     color: var(--text-white);
     font-family: 'Montserrat', sans-serif;
+    display: block !important;
+    white-space: nowrap;
+    order: 2;
+    width: auto !important;
+    flex: none !important;
 }
 
 .inscripcion-filtros-resultados span {
@@ -14381,9 +14464,10 @@ body.inscripcion-page {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    flex: 1;
     min-height: 30px;
-    min-width: 0;
+    justify-content: flex-start;
+    align-items: center;
+    flex: 1;
 }
 
 .inscripcion-paneles-container {
@@ -14392,25 +14476,40 @@ body.inscripcion-page {
     gap: clamp(1.5rem, calc(1.5rem + (100vw - 1100px) * 0.0061), 2rem);
     width: 100%;
     align-items: flex-start;
+    overflow: visible;
 }
 
 .inscripcion-filtros-panel {
-    width: clamp(280px, calc(280px + (100vw - 1100px) * 0.134), 390px);
-    flex-shrink: 0;
+  width: clamp(280px, calc(280px + (100vw - 1100px) * 0.134), 390px);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  max-height: clamp(456px, calc(456px + (100vw - 1100px) * 0.5415), 900px);
 }
 
 .inscripcion-listado-panel {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-height: clamp(900px, calc(900px + (100vw - 1100px) * 0.4634), 1280px);
 }
 
 .inscripcion-filtros-recuadro {
     background-color: transparent;
-    border: 1px solid #FFFFFF;
+    border: none;
     border-radius: 12px;
     padding-top: 0;
     padding-bottom: 0;
-    padding-left: clamp(20px, calc(20px + (100vw - 1100px) * 0.0122), 30px);
-    padding-right: clamp(20px, calc(20px + (100vw - 1100px) * 0.0122), 30px);
+    padding-left: 0;
+    padding-right: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: #60D697 rgba(217, 217, 217, 0.2);
+    max-height: clamp(900px, calc(900px + (100vw - 1100px) * 0.4634), 1280px);
+    display: flex;
+    flex-direction: column;
 }
 
 .inscripcion-filtros-titulo {
@@ -14434,7 +14533,7 @@ body.inscripcion-page {
     left: calc(-1 * clamp(20px, calc(20px + (100vw - 1100px) * 0.0122), 30px));
     right: calc(-1 * clamp(20px, calc(20px + (100vw - 1100px) * 0.0122), 30px));
     height: 1px;
-    background-color: #FFFFFF;
+    background-color: transparent;
 }
 
 /* Panel de filtros - Subtítulos con iconos */
@@ -14443,13 +14542,11 @@ body.inscripcion-page {
     align-items: center;
     gap: clamp(8px, calc(8px + (100vw - 1100px) * 0.0122), 12px);
     margin: 0;
-    padding: clamp(10px, calc(10px + (100vw - 1100px) * 0.0122), 20px) 0;
-    padding-left: 0;
-    padding-right: 0;
+    padding: 0;
     color: var(--text-white);
     font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
-    font-size: clamp(24px, calc(24px + (100vw - 1100px) * 0.0854), 31px);
+    font-weight: 700;
+    font-size: clamp(15px, calc(15px + (100vw - 1100px) * 0.0049), 17px);
     position: relative;
 }
 
@@ -14461,7 +14558,7 @@ body.inscripcion-page {
     left: calc(-1 * clamp(20px, calc(20px + (100vw - 1100px) * 0.0122), 30px));
     right: calc(-1 * clamp(20px, calc(20px + (100vw - 1100px) * 0.0122), 30px));
     height: 1px;
-    background-color: #FFFFFF;
+    background-color: transparent;
 }
 
 .inscripcion-filtro-icono {
@@ -14475,14 +14572,16 @@ body.inscripcion-page {
 #filtro-sede-opciones,
 #filtro-modalidad-opciones,
 #filtro-turno-opciones,
-#filtro-dia-opciones {
+#filtro-dia-opciones,
+#filtro-promocion-opciones {
     display: flex;
     flex-direction: column;
     gap: 0;
     align-items: flex-start;
     margin: 0;
-    padding: clamp(10px, calc(10px + (100vw - 1100px) * 0.0122), 20px) 0;
-    padding-left: 0;
+    padding-top: 0;
+    padding-bottom: clamp(10px, calc(10px + (100vw - 1100px) * 0.0122), 20px);
+    padding-left: clamp(28px, calc(28px + (100vw - 1100px) * 0.0366), 40px);
     padding-right: 0;
 }
 
@@ -14495,12 +14594,14 @@ body.inscripcion-page {
     display: block;
     color: var(--text-white);
     cursor: pointer;
-    padding: 0.25rem 0;
+    padding: 0;
     transition: color 0.2s;
 }
 
 .filtro-opcion[data-seleccionado="true"] {
-    color: #65E09C;
+    color: #14E79C;
+    font-weight: 700;
+    text-decoration: underline;
 }
 
 #cursadas-container {
@@ -14518,24 +14619,32 @@ body.inscripcion-page {
     scrollbar-color: #60D697 rgba(217, 217, 217, 0.2);
 }
 
-/* WebKit browsers (Chrome, Safari, Edge) */
-#cursadas-container::-webkit-scrollbar {
-    width: 24px;
+/* WebKit browsers (Chrome, Safari, Edge) - Scrollbars unificados - Ancho fijo para consistencia en TODOS los tamaños */
+#cursadas-container::-webkit-scrollbar,
+.inscripcion-filtros-recuadro::-webkit-scrollbar {
+    width: 24px !important;
+    min-width: 24px;
+    max-width: 24px;
 }
 
-#cursadas-container::-webkit-scrollbar-track {
+#cursadas-container::-webkit-scrollbar-track,
+.inscripcion-filtros-recuadro::-webkit-scrollbar-track {
     background: rgba(217, 217, 217, 0.2);
     border-radius: 200px;
     border: 1px solid #60D697;
 }
 
-#cursadas-container::-webkit-scrollbar-thumb {
+#cursadas-container::-webkit-scrollbar-thumb,
+.inscripcion-filtros-recuadro::-webkit-scrollbar-thumb {
     background-color: #60D697;
     border-radius: 200px;
     border: 1px solid #60D697;
+    box-sizing: border-box;
+    min-width: 8px;
 }
 
-#cursadas-container::-webkit-scrollbar-thumb:hover {
+#cursadas-container::-webkit-scrollbar-thumb:hover,
+.inscripcion-filtros-recuadro::-webkit-scrollbar-thumb:hover {
     background-color: #60D697;
 }
 
@@ -14551,7 +14660,7 @@ body.inscripcion-page {
 
 .cursada-item-grid {
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: 2fr auto 1fr;
     gap: clamp(1.5rem, calc(1.5rem + (100vw - 1100px) * 0.0061), 2rem);
     align-items: center;
 }
@@ -14566,7 +14675,7 @@ body.inscripcion-page {
 }
 
 .cursada-item-columna-izq > div {
-    padding-left: clamp(30px, calc(30px + (100vw - 1100px) * 0.0244), 50px);
+    padding-left: clamp(10px, calc(10px + (100vw - 1100px) * 0.0122), 20px);
     width: 100%;
     text-align: left;
 }
@@ -14575,6 +14684,37 @@ body.inscripcion-page {
 .cursada-item-columna-izq .cursada-item-value {
     display: inline;
     text-align: left;
+}
+
+/* Nuevo elemento: DIA | TURNO x (horario) */
+.cursada-item-dia-turno {
+    /* padding-left ya se aplica desde .cursada-item-columna-izq > div */
+    width: 100%;
+    text-align: left;
+}
+
+.cursada-dia-turno-texto {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600; /* Semibold */
+    font-size: 21px;
+    color: #14E79C;
+    line-height: 1.2;
+}
+
+.cursada-dia-turno-separador {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600; /* Semibold */
+    font-size: 21px;
+    color: #14E79C;
+    margin: 0 clamp(6px, calc(6px + (100vw - 1100px) * 0.0012), 8px);
+}
+
+.cursada-dia-turno-horario {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500; /* Medium */
+    font-size: 21px;
+    color: #14E79C;
+    line-height: 1.2;
 }
 
 .cursada-item-columna-medio {
@@ -14599,6 +14739,13 @@ body.inscripcion-page {
     font-style: italic;
 }
 
+.cursada-descuento-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+}
+
 .cursada-badge-descuento {
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
@@ -14617,12 +14764,21 @@ body.inscripcion-page {
     text-align: center;
 }
 
+.cursada-texto-cuotas {
+    font-family: 'Montserrat', sans-serif;
+    font-style: italic;
+    font-size: 13px;
+    color: #14E79C;
+    text-align: center;
+    padding-top: 2px;
+    margin-top: 0;
+}
+
 .cursada-item-columna-der {
     display: flex;
     align-items: center;
     justify-content: center;
     justify-self: end;
-    padding-right: clamp(30px, calc(30px + (100vw - 1100px) * 0.0244), 50px);
 }
 
 .cursada-btn-ver-valores {
@@ -14630,11 +14786,11 @@ body.inscripcion-page {
     color: #010C42;
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
-    font-size: clamp(18px, calc(18px + (100vw - 1100px) * 0.0085), 25px);
+    font-size: clamp(19px, calc(19px + (100vw - 1100px) * 0.00244), 21px);
     border: none;
     border-radius: 48px;
-    width: clamp(240px, calc(240px + (100vw - 1100px) * 0.0805), 306px);
-    height: clamp(50px, calc(50px + (100vw - 1100px) * 0.0122), 60px);
+    width: clamp(240px, calc(240px + (100vw - 1100px) * 0.02927), 264px);
+    height: clamp(50px, calc(50px + (100vw - 1100px) * 0.00122), 51px);
     padding: 0;
     display: flex;
     align-items: center;
@@ -15120,14 +15276,14 @@ body.inscripcion-page {
     color: #FFFFFF;
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
-    font-size: clamp(16px, calc(16px + (100vw - 1320px) * 0.005), 19px);
+    font-size: clamp(15px, calc(15px + (100vw - 1320px) * 0.005), 19px);
 }
 
 .cursada-item-value {
     color: #FFFFFF;
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
-    font-size: clamp(16px, calc(16px + (100vw - 1320px) * 0.005), 19px);
+    font-size: clamp(15px, calc(15px + (100vw - 1320px) * 0.005), 19px);
     display: inline-block;
 }
 

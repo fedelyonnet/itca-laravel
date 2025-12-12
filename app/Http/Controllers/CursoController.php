@@ -674,6 +674,190 @@ class CursoController extends Controller
         return view('admin.carreras.importacion', compact('cursadas'));
     }
 
+    public function ordenarFiltros()
+    {
+        return view('admin.carreras.ordenar-filtros');
+    }
+
+    public function getFiltrosPorCategoria(Request $request)
+    {
+        $categoria = $request->input('categoria');
+        
+        if (!in_array($categoria, ['carrera', 'sede', 'modalidad', 'turno', 'dia'])) {
+            return response()->json(['error' => 'Categoría inválida'], 400);
+        }
+
+        $filtros = [];
+        
+        switch ($categoria) {
+            case 'carrera':
+                $filtros = Cursada::select('carrera')
+                    ->whereNotNull('carrera')
+                    ->where('carrera', '!=', '')
+                    ->distinct()
+                    ->orderBy('carrera')
+                    ->pluck('carrera')
+                    ->unique()
+                    ->values()
+                    ->map(function($valor) {
+                        return [
+                            'valor' => $valor,
+                            'display' => corregirNombreCarrera($valor)
+                        ];
+                    });
+                break;
+                
+            case 'sede':
+                $filtros = Cursada::select('sede')
+                    ->whereNotNull('sede')
+                    ->where('sede', '!=', '')
+                    ->distinct()
+                    ->orderBy('sede')
+                    ->pluck('sede')
+                    ->unique()
+                    ->values()
+                    ->map(function($valor) {
+                        return [
+                            'valor' => $valor,
+                            'display' => corregirNombreSede($valor)
+                        ];
+                    });
+                break;
+                
+            case 'modalidad':
+                $filtros = Cursada::select('xModalidad', 'Régimen')
+                    ->whereNotNull('xModalidad')
+                    ->where('xModalidad', '!=', '')
+                    ->whereNotNull('Régimen')
+                    ->where('Régimen', '!=', '')
+                    ->distinct()
+                    ->orderBy('xModalidad')
+                    ->orderBy('Régimen')
+                    ->get()
+                    ->map(function($item) {
+                        $modalidad = $item->xModalidad;
+                        if (stripos($modalidad, 'Sempresencial') !== false) {
+                            $modalidad = str_ireplace('Sempresencial', 'Semipresencial', $modalidad);
+                        }
+                        $combinacion = $modalidad . ' - ' . $item->Régimen;
+                        return [
+                            'valor' => $item->xModalidad . '|' . $item->Régimen,
+                            'display' => $combinacion
+                        ];
+                    })
+                    ->unique(function($item) {
+                        return $item['valor'];
+                    })
+                    ->values();
+                break;
+                
+            case 'turno':
+                $filtros = Cursada::select('xTurno')
+                    ->whereNotNull('xTurno')
+                    ->where('xTurno', '!=', '')
+                    ->distinct()
+                    ->orderBy('xTurno')
+                    ->pluck('xTurno')
+                    ->unique()
+                    ->values()
+                    ->map(function($valor) {
+                        return [
+                            'valor' => $valor,
+                            'display' => $valor
+                        ];
+                    });
+                break;
+                
+            case 'dia':
+                $filtros = Cursada::select('xDias')
+                    ->whereNotNull('xDias')
+                    ->where('xDias', '!=', '')
+                    ->distinct()
+                    ->orderBy('xDias')
+                    ->pluck('xDias')
+                    ->unique()
+                    ->values()
+                    ->map(function($valor) {
+                        return [
+                            'valor' => $valor,
+                            'display' => convertirDiasCompletos($valor)
+                        ];
+                    });
+                break;
+        }
+
+        // Obtener el orden guardado desde la base de datos
+        $ordenGuardado = \DB::table('filtro_orden')
+            ->where('categoria', $categoria)
+            ->orderBy('orden')
+            ->pluck('valor')
+            ->toArray();
+
+        // Aplicar el orden guardado si existe
+        if (!empty($ordenGuardado)) {
+            // Separar filtros ordenados y nuevos
+            $filtrosOrdenados = collect();
+            $filtrosNuevos = collect();
+            
+            foreach ($filtros as $filtro) {
+                $posicion = array_search($filtro['valor'], $ordenGuardado);
+                if ($posicion !== false) {
+                    // Filtro con orden guardado
+                    $filtrosOrdenados->push([
+                        'filtro' => $filtro,
+                        'orden' => $posicion
+                    ]);
+                } else {
+                    // Filtro nuevo (no está en el orden guardado)
+                    $filtrosNuevos->push($filtro);
+                }
+            }
+            
+            // Ordenar los filtros con orden guardado
+            $filtrosOrdenados = $filtrosOrdenados->sortBy('orden')->pluck('filtro');
+            
+            // Combinar: primero los ordenados, luego los nuevos (ordenados por display)
+            $filtros = $filtrosOrdenados->merge(
+                $filtrosNuevos->sortBy('display')->values()
+            )->values();
+        }
+
+        return response()->json([
+            'filtros' => $filtros,
+            'categoria' => $categoria
+        ]);
+    }
+
+    public function guardarOrdenFiltros(Request $request)
+    {
+        $categoria = $request->input('categoria');
+        $orden = $request->input('orden'); // Array de valores en el orden deseado
+
+        if (!in_array($categoria, ['carrera', 'sede', 'modalidad', 'turno', 'dia'])) {
+            return response()->json(['error' => 'Categoría inválida'], 400);
+        }
+
+        if (!is_array($orden)) {
+            return response()->json(['error' => 'El orden debe ser un array'], 400);
+        }
+
+        // Eliminar el orden anterior de esta categoría
+        \DB::table('filtro_orden')->where('categoria', $categoria)->delete();
+
+        // Insertar el nuevo orden
+        foreach ($orden as $index => $valor) {
+            \DB::table('filtro_orden')->insert([
+                'categoria' => $categoria,
+                'valor' => $valor,
+                'orden' => $index,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Orden guardado correctamente']);
+    }
+
 
     public function storeImportacion(Request $request)
     {
@@ -711,47 +895,56 @@ class CursoController extends Controller
             // Obtener los headers de la primera fila
             $headers = array_map('trim', $rows[0]);
             
+            // Log para debug: mostrar todos los headers encontrados
+            \Log::info('Headers encontrados en Excel: ' . json_encode($headers));
+            
             // Mapeo de headers del Excel a campos de la base de datos
+            // Headers del Excel (con espacios/puntos) → Nombres de BD (con guiones bajos)
             $headerMap = [
-                'ID_Curso' => 'id_curso',
-                'Nombre del curso' => 'nombre_curso',
-                'Vacantes' => 'vacantes',
+                'ID_Curso' => 'ID_Curso',
+                'carrera' => 'carrera',
+                'Cod1' => 'Cod1',
+                'Fecha Inicio' => 'Fecha_Inicio',
+                'xDias' => 'xDias',
+                'xModalidad' => 'xModalidad',
+                'Régimen' => 'Régimen',
+                'xTurno' => 'xTurno',
+                'Horario' => 'Horario',
+                'Vacantes' => 'Vacantes',
+                'Matric Base' => 'Matric_Base',
+                'Cta.Web' => 'Cta_Web',
+                'Dto.Cuota' => 'Dto_Cuota',
+                'Sin IVA' => 'Sin_IVA',
                 'sede' => 'sede',
-                'xModalidad' => 'x_modalidad',
-                'Dias' => 'dias',
-                'xTurno' => 'x_turno',
-                'MATRICULA BASE' => 'matricula_base',
-                'MATRICULA CON 50% DE DCTO' => 'matricula_con_50_dcto',
-                'cantidad de cuotas' => 'cantidad_cuotas',
-                'VALOR CUOTA' => 'valor_cuota',
-                'Descr' => 'descr',
-                'Cod1' => 'cod1',
-                'Cod2' => 'cod2',
-                'Duracion' => 'duracion',
-                'Fecha Inicio' => 'fecha_inicio',
-                'Fecha Fin' => 'fecha_fin',
-                'Mes_Inicio' => 'mes_inicio',
-                'Mes_Fin' => 'mes_fin',
-                'Horario' => 'horario',
-                'Hora_Inicio' => 'hora_inicio',
-                'Hora_Fin' => 'hora_fin',
-                'ID_Aula' => 'id_aula',
-                'xTipo' => 'x_tipo',
-                'xNivel' => 'x_nivel',
-                'xCod1' => 'x_cod1',
+                'casilla Promo' => 'casilla_Promo',
             ];
 
             // Crear un índice de columnas basado en los headers
             $columnIndex = [];
             foreach ($headerMap as $excelHeader => $dbField) {
-                $index = array_search($excelHeader, $headers);
+                // Buscar el header de forma case-insensitive y sin espacios extra
+                $index = false;
+                foreach ($headers as $idx => $header) {
+                    $headerNormalized = trim($header);
+                    $excelHeaderNormalized = trim($excelHeader);
+                    if (strcasecmp($headerNormalized, $excelHeaderNormalized) === 0) {
+                        $index = $idx;
+                        break;
+                    }
+                }
                 if ($index !== false) {
                     $columnIndex[$dbField] = $index;
+                } else {
+                    // Log para debug si no se encuentra el header (solo para campos opcionales)
+                    if ($dbField !== 'casilla_Promo') {
+                        \Log::warning("Header no encontrado en Excel: '{$excelHeader}' (buscando en: " . implode(', ', $headers) . ")");
+                    }
                 }
             }
 
             // Verificar que se encontraron los headers esenciales
-            $requiredFields = ['id_curso', 'nombre_curso'];
+            // En el nuevo formato, solo ID_Curso es requerido
+            $requiredFields = ['ID_Curso'];
             $missingFields = [];
             foreach ($requiredFields as $field) {
                 if (!isset($columnIndex[$field])) {
@@ -787,71 +980,83 @@ class CursoController extends Controller
                 try {
                     $data = [];
                     
+                    // Inicializar campos con valores por defecto
+                    $data['casilla_Promo'] = false; // Valor por defecto para el campo booleano
+                    
                     // Mapear cada campo
                     foreach ($columnIndex as $dbField => $colIndex) {
                         $value = isset($row[$colIndex]) ? trim($row[$colIndex]) : '';
                         
                         // Conversiones específicas por tipo de campo
                         switch ($dbField) {
-                            case 'vacantes':
-                            case 'cantidad_cuotas':
+                            case 'Vacantes':
                                 $data[$dbField] = !empty($value) ? (int)$value : 0;
                                 break;
                                 
-                            case 'matricula_base':
-                            case 'matricula_con_50_dcto':
-                                // Para matrículas: si tiene coma, es separador de miles (281,700 → 281700)
-                                // Guardar como entero (sin decimales)
+                            case 'Matric_Base':
+                            case 'Cta_Web':
+                            case 'Sin_IVA':
+                                // Para campos monetarios: convertir a decimal
                                 if (!empty($value)) {
                                     $value = trim($value);
                                     
-                                    // Si tiene coma, es separador de miles en formato español
-                                    if (strpos($value, ',') !== false) {
-                                        // Eliminar coma (separador de miles): 281,700 → 281700
-                                        $value = str_replace(',', '', $value);
+                                    // Si tiene coma, puede ser separador de miles o decimal
+                                    if (strpos($value, ',') !== false && strpos($value, '.') === false) {
+                                        $parts = explode(',', $value);
+                                        if (strlen($parts[0]) > 3) {
+                                            // Separador de miles: eliminar coma
+                                            $value = str_replace(',', '', $value);
+                                        } else {
+                                            // Decimal: cambiar coma por punto
+                                            $value = str_replace(',', '.', $value);
+                                        }
+                                    } elseif (strpos($value, ',') !== false && strpos($value, '.') !== false) {
+                                        // Tiene ambos: coma es decimal, punto es miles
+                                        $value = str_replace('.', '', $value);
+                                        $value = str_replace(',', '.', $value);
                                     }
                                     
-                                    // Eliminar puntos si los hay (por si acaso)
-                                    $value = str_replace('.', '', $value);
+                                    // Eliminar cualquier punto restante si no hay coma (separador de miles)
+                                    if (strpos($value, '.') !== false && strpos($value, ',') === false) {
+                                        $parts = explode('.', $value);
+                                        if (count($parts) == 2 && strlen($parts[1]) <= 2) {
+                                            // Es decimal, mantener
+                                        } else {
+                                            // Es separador de miles, eliminar
+                                            $value = str_replace('.', '', $value);
+                                        }
+                                    }
                                     
-                                    // Convertir a entero
-                                    $data[$dbField] = (int)$value;
+                                    $data[$dbField] = (float)$value;
                                 } else {
                                     $data[$dbField] = 0;
                                 }
                                 break;
                                 
-                            case 'valor_cuota':
-                                // Para valor cuota: sin decimales, igual que matrículas
+                            case 'Dto_Cuota':
+                                // Para porcentaje: convertir a decimal (ej: 10.5 para 10.5%)
                                 if (!empty($value)) {
                                     $value = trim($value);
                                     
-                                    // Si tiene coma, es separador de miles en formato español
-                                    if (strpos($value, ',') !== false) {
-                                        // Eliminar coma (separador de miles): 50,000 → 50000
-                                        $value = str_replace(',', '', $value);
-                                    }
+                                    // Si tiene el símbolo %, eliminarlo
+                                    $value = str_replace('%', '', $value);
                                     
-                                    // Eliminar puntos si los hay (por si acaso)
-                                    $value = str_replace('.', '', $value);
+                                    // Si tiene coma, cambiar por punto (formato decimal)
+                                    $value = str_replace(',', '.', $value);
                                     
-                                    // Convertir a entero
-                                    $data[$dbField] = (int)$value;
+                                    $data[$dbField] = (float)$value;
                                 } else {
                                     $data[$dbField] = 0;
                                 }
                                 break;
                                 
-                            case 'fecha_inicio':
-                            case 'fecha_fin':
+                            case 'Fecha_Inicio':
                                 if (!empty($value)) {
-                                    // Intentar parsear la fecha (puede venir en varios formatos)
                                     try {
                                         if (is_numeric($value)) {
                                             // Si es un número de Excel (días desde 1900)
                                             $data[$dbField] = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($value)->format('Y-m-d');
                                         } else {
-                                            // Intentar parsear como fecha string
                                             $value = trim($value);
                                             
                                             // Intentar formato dd/mm/yyyy primero (formato español)
@@ -866,9 +1071,7 @@ class CursoController extends Controller
                                             }
                                         }
                                     } catch (\Exception $e) {
-                                        // Si falla, intentar parsear con Carbon de forma más flexible
                                         try {
-                                            // Intentar formato dd/mm/yyyy manualmente
                                             if (preg_match('/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/', $value, $matches)) {
                                                 $day = str_pad($matches[1], 2, '0', STR_PAD_LEFT);
                                                 $month = str_pad($matches[2], 2, '0', STR_PAD_LEFT);
@@ -878,7 +1081,7 @@ class CursoController extends Controller
                                                 throw $e;
                                             }
                                         } catch (\Exception $e2) {
-                                            $data[$dbField] = $value; // Guardar como string si no se puede parsear
+                                            $data[$dbField] = null;
                                         }
                                     }
                                 } else {
@@ -886,49 +1089,25 @@ class CursoController extends Controller
                                 }
                                 break;
                                 
-                            case 'hora_inicio':
-                            case 'hora_fin':
-                                if (!empty($value)) {
-                                    try {
-                                        $value = trim($value);
-                                        
-                                        if (is_numeric($value)) {
-                                            // Si es un número de Excel (fracción del día)
-                                            $time = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($value);
-                                            $data[$dbField] = $time->format('H:i:s');
-                                        } else {
-                                            // Intentar parsear como hora string
-                                            // Si ya viene en formato HH:mm o HH:mm:ss, extraer solo la hora
-                                            if (preg_match('/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/', $value, $matches)) {
-                                                $hour = str_pad($matches[1], 2, '0', STR_PAD_LEFT);
-                                                $minute = str_pad($matches[2], 2, '0', STR_PAD_LEFT);
-                                                $second = isset($matches[3]) ? str_pad($matches[3], 2, '0', STR_PAD_LEFT) : '00';
-                                                $data[$dbField] = "{$hour}:{$minute}:{$second}";
-                                            } else {
-                                                // Intentar parsear con Carbon y extraer solo la hora
-                                                $parsed = Carbon::parse($value);
-                                                $data[$dbField] = $parsed->format('H:i:s');
-                                            }
-                                        }
-                                    } catch (\Exception $e) {
-                                        // Si falla, intentar extraer hora de formato datetime
-                                        if (preg_match('/(\d{1,2}):(\d{2})(?::(\d{2}))?/', $value, $matches)) {
-                                            $hour = str_pad($matches[1], 2, '0', STR_PAD_LEFT);
-                                            $minute = str_pad($matches[2], 2, '0', STR_PAD_LEFT);
-                                            $second = isset($matches[3]) ? str_pad($matches[3], 2, '0', STR_PAD_LEFT) : '00';
-                                            $data[$dbField] = "{$hour}:{$minute}:{$second}";
-                                        } else {
-                                            $data[$dbField] = '00:00:00';
-                                        }
-                                    }
-                                } else {
-                                    $data[$dbField] = '00:00:00';
-                                }
+                            case 'Régimen':
+                                // Régimen es texto
+                                $data[$dbField] = !empty($value) ? trim($value) : null;
                                 break;
                                 
-                            case 'nombre_curso':
-                                // Corregir nombres de carreras automáticamente
-                                $data[$dbField] = corregirNombreCarrera($value);
+                            case 'casilla_Promo':
+                                // Campo booleano: convertir a boolean
+                                $value = trim($value);
+                                if (!empty($value)) {
+                                    $valueLower = strtolower($value);
+                                    // Aceptar: true, 1, "si", "sí", "yes", "y", "x", "✓", "verdadero", "s", "t", "sí"
+                                    $data[$dbField] = in_array($valueLower, ['true', '1', 'si', 'sí', 'yes', 'y', 'x', '✓', 'verdadero', 's', 't', 's']);
+                                    // Log para debug
+                                    if ($i <= 3) {
+                                        \Log::info("casilla_Promo - Fila {$i}: valor original='{$value}', valor lower='{$valueLower}', resultado=" . var_export($data[$dbField], true));
+                                    }
+                                } else {
+                                    $data[$dbField] = false;
+                                }
                                 break;
                                 
                             default:
@@ -938,8 +1117,8 @@ class CursoController extends Controller
                     }
 
                     // Validar que los campos requeridos no estén vacíos
-                    if (empty($data['id_curso']) || empty($data['nombre_curso'])) {
-                        $errors[] = "Fila " . ($i + 1) . ": ID Curso y Nombre del curso son requeridos";
+                    if (empty($data['ID_Curso'])) {
+                        $errors[] = "Fila " . ($i + 1) . ": ID_Curso es requerido";
                         continue;
                     }
 

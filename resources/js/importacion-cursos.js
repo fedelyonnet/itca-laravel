@@ -414,17 +414,38 @@ function sortTable(field, direction) {
     
     const rows = Array.from(tbody.querySelectorAll('tr'));
     
-    // Mapeo de campos a índices de columna
+    // Mapeo de campos a índices de columna (orden exacto de la tabla)
     const fieldIndexMap = {
-        'id_curso': 0,
-        'nombre_curso': 1,
-        'vacantes': 2,
-        'sede': 3,
-        'x_modalidad': 4
+        'ID_Curso': 0,
+        'carrera': 1,
+        'Cod1': 2,
+        'Fecha_Inicio': 3,
+        'xDias': 4,
+        'xModalidad': 5,
+        'Régimen': 6,
+        'xTurno': 7,
+        'Horario': 8,
+        'Vacantes': 9,
+        'Matric_Base': 10,
+        'Cta_Web': 11,
+        'Dto_Cuota': 12,
+        'Sin_IVA': 13,
+        'sede': 14,
+        'casilla_Promo': 15
     };
     
     const columnIndex = fieldIndexMap[field];
-    if (columnIndex === undefined) return;
+    if (columnIndex === undefined) {
+        console.warn('Campo de ordenamiento no encontrado:', field);
+        return;
+    }
+    
+    // Campos numéricos
+    const numericFields = ['ID_Curso', 'Vacantes', 'Matric_Base', 'Cta_Web', 'Dto_Cuota', 'Sin_IVA'];
+    // Campos de fecha
+    const dateFields = ['Fecha_Inicio'];
+    // Campos booleanos
+    const booleanFields = ['casilla_Promo'];
     
     rows.sort((a, b) => {
         const aCell = a.cells[columnIndex];
@@ -435,15 +456,61 @@ function sortTable(field, direction) {
         let aValue = aCell.textContent.trim();
         let bValue = bCell.textContent.trim();
         
-        // Convertir a número si es campo numérico
-        if (field === 'vacantes') {
-            aValue = parseInt(aValue) || 0;
-            bValue = parseInt(bValue) || 0;
-        } else {
-            // Comparación de texto (case insensitive)
-            aValue = aValue.toLowerCase();
-            bValue = bValue.toLowerCase();
+        // Manejar campos vacíos
+        if (!aValue && !bValue) return 0;
+        if (!aValue) return 1; // Los vacíos van al final
+        if (!bValue) return -1;
+        
+        // Ordenar por fecha
+        if (dateFields.includes(field)) {
+            // Formato esperado: dd/mm/yyyy
+            const parseDate = (dateStr) => {
+                const parts = dateStr.split('/');
+                if (parts.length === 3) {
+                    return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+                }
+                return new Date(0); // Fecha inválida va al final
+            };
+            
+            const aDate = parseDate(aValue);
+            const bDate = parseDate(bValue);
+            
+            if (aDate.getTime() === bDate.getTime()) return 0;
+            return direction === 'asc' 
+                ? (aDate.getTime() - bDate.getTime())
+                : (bDate.getTime() - aDate.getTime());
         }
+        
+        // Ordenar por booleano
+        if (booleanFields.includes(field)) {
+            // Convertir ✓ a true, - o vacío a false
+            const aBool = aValue === '✓' || aValue.toLowerCase() === 'true' || aValue === '1';
+            const bBool = bValue === '✓' || bValue.toLowerCase() === 'true' || bValue === '1';
+            
+            if (aBool === bBool) return 0;
+            return direction === 'asc' 
+                ? (aBool ? 1 : -1) - (bBool ? 1 : -1)
+                : (bBool ? 1 : -1) - (aBool ? 1 : -1);
+        }
+        
+        // Ordenar por número
+        if (numericFields.includes(field)) {
+            // Para campos monetarios, remover símbolos y separadores
+            if (field === 'Matric_Base' || field === 'Cta_Web' || field === 'Dto_Cuota' || field === 'Sin_IVA') {
+                aValue = aValue.replace(/[$,.\s%]/g, '');
+                bValue = bValue.replace(/[$,.\s%]/g, '');
+            }
+            
+            const aNum = parseFloat(aValue) || 0;
+            const bNum = parseFloat(bValue) || 0;
+            
+            if (aNum === bNum) return 0;
+            return direction === 'asc' ? (aNum - bNum) : (bNum - aNum);
+        }
+        
+        // Ordenar por texto (case insensitive)
+        aValue = aValue.toLowerCase();
+        bValue = bValue.toLowerCase();
         
         if (aValue < bValue) {
             return direction === 'asc' ? -1 : 1;

@@ -53,6 +53,13 @@
                    role="menuitem">
                     Importación cursos
                 </a>
+                
+                <a href="{{ route('admin.carreras.ordenar-filtros') }}" 
+                   @keydown.enter="window.location.href = '{{ route('admin.carreras.ordenar-filtros') }}'"
+                   class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
+                   role="menuitem">
+                    Ordenar filtros
+                </a>
             </div>
         </div>
     </div>

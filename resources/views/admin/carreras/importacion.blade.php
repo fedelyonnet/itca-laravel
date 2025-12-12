@@ -43,25 +43,88 @@
                         <table id="tablaCursadas" class="min-w-full border-collapse bg-gray-700">
                             <thead class="bg-gray-600 sticky top-0 z-10">
                                 <tr>
-                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header sortable-header" style="min-width: 100px; width: 120px;" data-sort="id_curso">
+                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header sortable-header" style="min-width: 100px; width: 120px;" data-sort="ID_Curso">
                                         <div class="flex items-center justify-between">
                                             <span class="flex items-center gap-1">
-                                                ID Curso
+                                                ID_Curso
                                                 <span class="sort-indicator"></span>
                                             </span>
                                             <div class="resizer"></div>
                                         </div>
                                     </th>
-                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header sortable-header" style="min-width: 150px; width: 200px;" data-sort="nombre_curso">
+                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header sortable-header" style="min-width: 150px; width: 200px;" data-sort="carrera">
                                         <div class="flex items-center justify-between">
                                             <span class="flex items-center gap-1">
-                                                Nombre Curso
+                                                carrera
                                                 <span class="sort-indicator"></span>
                                             </span>
                                             <div class="resizer"></div>
                                         </div>
                                     </th>
-                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header sortable-header" style="min-width: 80px; width: 100px;" data-sort="vacantes">
+                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header sortable-header" style="min-width: 80px; width: 100px;" data-sort="Cod1">
+                                        <div class="flex items-center justify-between">
+                                            <span class="flex items-center gap-1">
+                                                Cod1
+                                                <span class="sort-indicator"></span>
+                                            </span>
+                                            <div class="resizer"></div>
+                                        </div>
+                                    </th>
+                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header sortable-header" style="min-width: 100px; width: 120px;" data-sort="Fecha_Inicio">
+                                        <div class="flex items-center justify-between">
+                                            <span class="flex items-center gap-1">
+                                                Fecha Inicio
+                                                <span class="sort-indicator"></span>
+                                            </span>
+                                            <div class="resizer"></div>
+                                        </div>
+                                    </th>
+                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header sortable-header" style="min-width: 100px; width: 120px;" data-sort="xDias">
+                                        <div class="flex items-center justify-between">
+                                            <span class="flex items-center gap-1">
+                                                xDias
+                                                <span class="sort-indicator"></span>
+                                            </span>
+                                            <div class="resizer"></div>
+                                        </div>
+                                    </th>
+                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header sortable-header" style="min-width: 100px; width: 120px;" data-sort="xModalidad">
+                                        <div class="flex items-center justify-between">
+                                            <span class="flex items-center gap-1">
+                                                xModalidad
+                                                <span class="sort-indicator"></span>
+                                            </span>
+                                            <div class="resizer"></div>
+                                        </div>
+                                    </th>
+                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header sortable-header" style="min-width: 100px; width: 120px;" data-sort="Régimen">
+                                        <div class="flex items-center justify-between">
+                                            <span class="flex items-center gap-1">
+                                                Régimen
+                                                <span class="sort-indicator"></span>
+                                            </span>
+                                            <div class="resizer"></div>
+                                        </div>
+                                    </th>
+                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header sortable-header" style="min-width: 100px; width: 120px;" data-sort="xTurno">
+                                        <div class="flex items-center justify-between">
+                                            <span class="flex items-center gap-1">
+                                                xTurno
+                                                <span class="sort-indicator"></span>
+                                            </span>
+                                            <div class="resizer"></div>
+                                        </div>
+                                    </th>
+                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header sortable-header" style="min-width: 120px; width: 150px;" data-sort="Horario">
+                                        <div class="flex items-center justify-between">
+                                            <span class="flex items-center gap-1">
+                                                Horario
+                                                <span class="sort-indicator"></span>
+                                            </span>
+                                            <div class="resizer"></div>
+                                        </div>
+                                    </th>
+                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header sortable-header" style="min-width: 80px; width: 100px;" data-sort="Vacantes">
                                         <div class="flex items-center justify-between">
                                             <span class="flex items-center gap-1">
                                                 Vacantes
@@ -70,147 +133,57 @@
                                             <div class="resizer"></div>
                                         </div>
                                     </th>
+                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header sortable-header" style="min-width: 120px; width: 140px;" data-sort="Matric_Base">
+                                        <div class="flex items-center justify-between">
+                                            <span class="flex items-center gap-1">
+                                                Matric Base
+                                                <span class="sort-indicator"></span>
+                                            </span>
+                                            <div class="resizer"></div>
+                                        </div>
+                                    </th>
+                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header sortable-header" style="min-width: 100px; width: 120px;" data-sort="Cta_Web">
+                                        <div class="flex items-center justify-between">
+                                            <span class="flex items-center gap-1">
+                                                Cta.Web
+                                                <span class="sort-indicator"></span>
+                                            </span>
+                                            <div class="resizer"></div>
+                                        </div>
+                                    </th>
+                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header sortable-header" style="min-width: 100px; width: 120px;" data-sort="Dto_Cuota">
+                                        <div class="flex items-center justify-between">
+                                            <span class="flex items-center gap-1">
+                                                Dto.Cuota
+                                                <span class="sort-indicator"></span>
+                                            </span>
+                                            <div class="resizer"></div>
+                                        </div>
+                                    </th>
+                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header sortable-header" style="min-width: 100px; width: 120px;" data-sort="Sin_IVA">
+                                        <div class="flex items-center justify-between">
+                                            <span class="flex items-center gap-1">
+                                                Sin IVA
+                                                <span class="sort-indicator"></span>
+                                            </span>
+                                            <div class="resizer"></div>
+                                        </div>
+                                    </th>
                                     <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header sortable-header" style="min-width: 100px; width: 120px;" data-sort="sede">
                                         <div class="flex items-center justify-between">
                                             <span class="flex items-center gap-1">
-                                                Sede
+                                                sede
                                                 <span class="sort-indicator"></span>
                                             </span>
                                             <div class="resizer"></div>
                                         </div>
                                     </th>
-                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header sortable-header" style="min-width: 100px; width: 120px;" data-sort="x_modalidad">
+                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header sortable-header" style="min-width: 100px; width: 120px;" data-sort="casilla_Promo">
                                         <div class="flex items-center justify-between">
                                             <span class="flex items-center gap-1">
-                                                Modalidad
+                                                casilla Promo
                                                 <span class="sort-indicator"></span>
                                             </span>
-                                            <div class="resizer"></div>
-                                        </div>
-                                    </th>
-                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header" style="min-width: 100px; width: 120px;">
-                                        <div class="flex items-center justify-between">
-                                            <span>Días</span>
-                                            <div class="resizer"></div>
-                                        </div>
-                                    </th>
-                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header" style="min-width: 100px; width: 120px;">
-                                        <div class="flex items-center justify-between">
-                                            <span>Turno</span>
-                                            <div class="resizer"></div>
-                                        </div>
-                                    </th>
-                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header" style="min-width: 120px; width: 140px;">
-                                        <div class="flex items-center justify-between">
-                                            <span>Matrícula Base</span>
-                                            <div class="resizer"></div>
-                                        </div>
-                                    </th>
-                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header" style="min-width: 120px; width: 160px;">
-                                        <div class="flex items-center justify-between">
-                                            <span>Matrícula 50% Dcto</span>
-                                            <div class="resizer"></div>
-                                        </div>
-                                    </th>
-                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header" style="min-width: 100px; width: 120px;">
-                                        <div class="flex items-center justify-between">
-                                            <span>Cant. Cuotas</span>
-                                            <div class="resizer"></div>
-                                        </div>
-                                    </th>
-                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header" style="min-width: 100px; width: 120px;">
-                                        <div class="flex items-center justify-between">
-                                            <span>Valor Cuota</span>
-                                            <div class="resizer"></div>
-                                        </div>
-                                    </th>
-                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header" style="min-width: 150px; width: 200px;">
-                                        <div class="flex items-center justify-between">
-                                            <span>Descripción</span>
-                                            <div class="resizer"></div>
-                                        </div>
-                                    </th>
-                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header" style="min-width: 80px; width: 100px;">
-                                        <div class="flex items-center justify-between">
-                                            <span>Cod1</span>
-                                            <div class="resizer"></div>
-                                        </div>
-                                    </th>
-                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header" style="min-width: 80px; width: 100px;">
-                                        <div class="flex items-center justify-between">
-                                            <span>Cod2</span>
-                                            <div class="resizer"></div>
-                                        </div>
-                                    </th>
-                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header" style="min-width: 100px; width: 120px;">
-                                        <div class="flex items-center justify-between">
-                                            <span>Duración</span>
-                                            <div class="resizer"></div>
-                                        </div>
-                                    </th>
-                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header" style="min-width: 100px; width: 120px;">
-                                        <div class="flex items-center justify-between">
-                                            <span>Fecha Inicio</span>
-                                            <div class="resizer"></div>
-                                        </div>
-                                    </th>
-                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header" style="min-width: 100px; width: 120px;">
-                                        <div class="flex items-center justify-between">
-                                            <span>Fecha Fin</span>
-                                            <div class="resizer"></div>
-                                        </div>
-                                    </th>
-                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header" style="min-width: 100px; width: 120px;">
-                                        <div class="flex items-center justify-between">
-                                            <span>Mes Inicio</span>
-                                            <div class="resizer"></div>
-                                        </div>
-                                    </th>
-                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header" style="min-width: 100px; width: 120px;">
-                                        <div class="flex items-center justify-between">
-                                            <span>Mes Fin</span>
-                                            <div class="resizer"></div>
-                                        </div>
-                                    </th>
-                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header" style="min-width: 120px; width: 150px;">
-                                        <div class="flex items-center justify-between">
-                                            <span>Horario</span>
-                                            <div class="resizer"></div>
-                                        </div>
-                                    </th>
-                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header" style="min-width: 100px; width: 120px;">
-                                        <div class="flex items-center justify-between">
-                                            <span>Hora Inicio</span>
-                                            <div class="resizer"></div>
-                                        </div>
-                                    </th>
-                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header" style="min-width: 100px; width: 120px;">
-                                        <div class="flex items-center justify-between">
-                                            <span>Hora Fin</span>
-                                            <div class="resizer"></div>
-                                        </div>
-                                    </th>
-                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header" style="min-width: 80px; width: 100px;">
-                                        <div class="flex items-center justify-between">
-                                            <span>ID Aula</span>
-                                            <div class="resizer"></div>
-                                        </div>
-                                    </th>
-                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header" style="min-width: 100px; width: 120px;">
-                                        <div class="flex items-center justify-between">
-                                            <span>Tipo</span>
-                                            <div class="resizer"></div>
-                                        </div>
-                                    </th>
-                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header" style="min-width: 100px; width: 120px;">
-                                        <div class="flex items-center justify-between">
-                                            <span>Nivel</span>
-                                            <div class="resizer"></div>
-                                        </div>
-                                    </th>
-                                    <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header" style="min-width: 80px; width: 100px;">
-                                        <div class="flex items-center justify-between">
-                                            <span>xCod1</span>
                                             <div class="resizer"></div>
                                         </div>
                                     </th>
@@ -219,13 +192,14 @@
                             <tbody id="tablaCursadasBody" class="bg-gray-700 text-gray-200">
                                 @forelse($cursadas as $cursada)
                                     <tr class="hover:bg-gray-600">
-                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ $cursada->id_curso }}</td>
-                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ corregirNombreCarrera($cursada->nombre_curso) }}</td>
-                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ $cursada->vacantes }}</td>
-                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ $cursada->sede }}</td>
+                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ $cursada->ID_Curso }}</td>
+                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ $cursada->carrera }}</td>
+                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ $cursada->Cod1 }}</td>
+                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ $cursada->Fecha_Inicio ? \Carbon\Carbon::parse($cursada->Fecha_Inicio)->format('d/m/Y') : '' }}</td>
+                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ convertirDiasCompletos($cursada->xDias) }}</td>
                                         <td class="border border-gray-500 px-3 py-2 text-sm">
                                             @php
-                                                $modalidad = $cursada->x_modalidad ?? 'N/A';
+                                                $modalidad = $cursada->xModalidad ?? 'N/A';
                                                 // Corregir "Sempresencial" a "Semipresencial"
                                                 if (stripos($modalidad, 'Sempresencial') !== false) {
                                                     $modalidad = str_ireplace('Sempresencial', 'Semipresencial', $modalidad);
@@ -233,54 +207,26 @@
                                             @endphp
                                             {{ $modalidad }}
                                         </td>
-                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ $cursada->dias }}</td>
-                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ $cursada->x_turno }}</td>
-                                        <td class="border border-gray-500 px-3 py-2 text-sm">${{ number_format($cursada->matricula_base, 0, ',', '.') }}</td>
-                                        <td class="border border-gray-500 px-3 py-2 text-sm">${{ number_format($cursada->matricula_con_50_dcto, 0, ',', '.') }}</td>
-                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ $cursada->cantidad_cuotas }}</td>
-                                        <td class="border border-gray-500 px-3 py-2 text-sm">${{ number_format($cursada->valor_cuota, 0, ',', '.') }}</td>
-                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ Str::limit($cursada->descr, 50) }}</td>
-                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ $cursada->cod1 }}</td>
-                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ $cursada->cod2 }}</td>
-                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ $cursada->duracion }}</td>
-                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ $cursada->fecha_inicio ? \Carbon\Carbon::parse($cursada->fecha_inicio)->format('d/m/Y') : '' }}</td>
-                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ $cursada->fecha_fin ? \Carbon\Carbon::parse($cursada->fecha_fin)->format('d/m/Y') : '' }}</td>
-                                        <td class="border border-gray-500 px-3 py-2 text-sm">
-                                            @php
-                                                $meses = [
-                                                    '1' => 'enero', '2' => 'febrero', '3' => 'marzo', '4' => 'abril',
-                                                    '5' => 'mayo', '6' => 'junio', '7' => 'julio', '8' => 'agosto',
-                                                    '9' => 'septiembre', '10' => 'octubre', '11' => 'noviembre', '12' => 'diciembre'
-                                                ];
-                                                $mesTexto = $meses[$cursada->mes_inicio] ?? $cursada->mes_inicio;
-                                            @endphp
-                                            {{ ucfirst($mesTexto) }}
-                                        </td>
-                                        <td class="border border-gray-500 px-3 py-2 text-sm">
-                                            @php
-                                                $mesTextoFin = $meses[$cursada->mes_fin] ?? $cursada->mes_fin;
-                                            @endphp
-                                            {{ ucfirst($mesTextoFin) }}
-                                        </td>
-                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ $cursada->horario }}</td>
-                                        <td class="border border-gray-500 px-3 py-2 text-sm">
-                                            @if($cursada->hora_inicio)
-                                                {{ \Carbon\Carbon::parse($cursada->hora_inicio)->format('H:i') }}
+                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ $cursada->Régimen }}</td>
+                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ $cursada->xTurno }}</td>
+                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ $cursada->Horario }}</td>
+                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ $cursada->Vacantes }}</td>
+                                        <td class="border border-gray-500 px-3 py-2 text-sm">${{ number_format($cursada->Matric_Base ?? 0, 2, ',', '.') }}</td>
+                                        <td class="border border-gray-500 px-3 py-2 text-sm">${{ number_format($cursada->Cta_Web ?? 0, 2, ',', '.') }}</td>
+                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ number_format($cursada->Dto_Cuota ?? 0, 2, ',', '.') }}%</td>
+                                        <td class="border border-gray-500 px-3 py-2 text-sm">${{ number_format($cursada->Sin_IVA ?? 0, 2, ',', '.') }}</td>
+                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ $cursada->sede }}</td>
+                                        <td class="border border-gray-500 px-3 py-2 text-sm text-center">
+                                            @if($cursada->casilla_Promo)
+                                                <span class="text-green-400 font-semibold">true</span>
+                                            @else
+                                                <span class="text-gray-500">false</span>
                                             @endif
                                         </td>
-                                        <td class="border border-gray-500 px-3 py-2 text-sm">
-                                            @if($cursada->hora_fin)
-                                                {{ \Carbon\Carbon::parse($cursada->hora_fin)->format('H:i') }}
-                                            @endif
-                                        </td>
-                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ $cursada->id_aula }}</td>
-                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ $cursada->x_tipo }}</td>
-                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ $cursada->x_nivel }}</td>
-                                        <td class="border border-gray-500 px-3 py-2 text-sm">{{ $cursada->x_cod1 }}</td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="26" class="border border-gray-500 px-3 py-8 text-center text-gray-400">
+                                        <td colspan="16" class="border border-gray-500 px-3 py-8 text-center text-gray-400">
                                             No hay cursadas importadas. Haz clic en "Importar" para cargar datos desde un archivo Excel.
                                         </td>
                                     </tr>

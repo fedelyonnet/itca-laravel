@@ -117,13 +117,96 @@ class WelcomeController extends Controller
         // Obtener Sticky Bar
         $stickyBar = StickyBar::first();
         
+        // Buscar la carrera en cursadas que coincida con el nombre del curso
+        $carreraSeleccionada = null;
+        $carrerasDisponibles = Cursada::select('carrera')
+            ->whereNotNull('carrera')
+            ->where('carrera', '!=', '')
+            ->distinct()
+            ->orderBy('carrera')
+            ->pluck('carrera')
+            ->unique()
+            ->values();
+        
+        // Buscar coincidencia flexible entre el nombre del curso y las carreras disponibles
+        $nombreCurso = strtolower(trim($curso->nombre ?? ''));
+        foreach ($carrerasDisponibles as $carrera) {
+            $nombreCarrera = strtolower(trim($carrera));
+            // Comparación flexible: si el nombre del curso contiene palabras clave de la carrera o viceversa
+            if ($nombreCarrera === $nombreCurso || 
+                strpos($nombreCarrera, $nombreCurso) !== false || 
+                strpos($nombreCurso, $nombreCarrera) !== false) {
+                $carreraSeleccionada = $carrera;
+                break;
+            }
+        }
+        
+        // Si no hay coincidencia exacta, buscar por palabras clave comunes
+        if (!$carreraSeleccionada) {
+            $palabrasCurso = explode(' ', $nombreCurso);
+            foreach ($carrerasDisponibles as $carrera) {
+                $nombreCarrera = strtolower(trim($carrera));
+                foreach ($palabrasCurso as $palabra) {
+                    if (strlen($palabra) > 3 && strpos($nombreCarrera, $palabra) !== false) {
+                        $carreraSeleccionada = $carrera;
+                        break 2;
+                    }
+                }
+            }
+        }
+        
+        // Función helper para aplicar orden guardado
+        $aplicarOrden = function($items, $categoria, $campoValor = null) {
+            $ordenGuardado = \DB::table('filtro_orden')
+                ->where('categoria', $categoria)
+                ->orderBy('orden')
+                ->pluck('valor')
+                ->toArray();
+            
+            if (empty($ordenGuardado)) {
+                return $items;
+            }
+            
+            // Separar items ordenados y nuevos
+            $itemsOrdenados = collect();
+            $itemsNuevos = collect();
+            
+            foreach ($items as $item) {
+                // Obtener el valor según el tipo de item
+                if (is_object($item) && $campoValor) {
+                    $valor = $item->{$campoValor} ?? null;
+                } elseif (is_array($item) && $campoValor) {
+                    $valor = $item[$campoValor] ?? null;
+                } else {
+                    $valor = $item; // Para strings directos
+                }
+                
+                $posicion = array_search($valor, $ordenGuardado);
+                if ($posicion !== false) {
+                    // Item con orden guardado
+                    $itemsOrdenados->push([
+                        'item' => $item,
+                        'orden' => $posicion
+                    ]);
+                } else {
+                    // Item nuevo (no está en el orden guardado)
+                    $itemsNuevos->push($item);
+                }
+            }
+            
+            // Ordenar los items con orden guardado
+            $itemsOrdenados = $itemsOrdenados->sortBy('orden')->pluck('item');
+            
+            // Combinar: primero los ordenados, luego los nuevos (ordenados alfabéticamente)
+            return $itemsOrdenados->merge($itemsNuevos->sort()->values())->values();
+        };
+        
         // Obtener datos únicos de cursadas para los filtros
-        // Agrupar por nombre_curso para mostrar una sola instancia de cada carrera
-        $carreras = Cursada::select('nombre_curso')
-            ->selectRaw('MIN(id_curso) as id_curso')
-            ->groupBy('nombre_curso')
-            ->orderBy('nombre_curso')
-            ->get();
+        $carreras = $carrerasDisponibles->map(function($carrera) {
+            return (object)['carrera' => $carrera];
+        });
+        // Aplicar orden guardado a carreras
+        $carreras = $aplicarOrden($carreras, 'carrera', 'carrera');
         
         $sedesFiltro = Cursada::select('sede')
             ->distinct()
@@ -133,40 +216,61 @@ class WelcomeController extends Controller
             ->pluck('sede')
             ->unique()
             ->values();
+        // Aplicar orden guardado a sedes
+        $sedesFiltro = $aplicarOrden($sedesFiltro, 'sede');
         
-        $modalidades = Cursada::select('x_modalidad')
+        // Obtener combinaciones únicas de modalidad + régimen
+        $modalidades = Cursada::select('xModalidad', 'Régimen')
+            ->whereNotNull('xModalidad')
+            ->where('xModalidad', '!=', '')
+            ->whereNotNull('Régimen')
+            ->where('Régimen', '!=', '')
             ->distinct()
-            ->whereNotNull('x_modalidad')
-            ->where('x_modalidad', '!=', '')
-            ->orderBy('x_modalidad')
-            ->pluck('x_modalidad')
+            ->orderBy('xModalidad')
+            ->orderBy('Régimen')
+            ->get()
+            ->map(function($item) {
+                return [
+                    'modalidad' => $item->xModalidad,
+                    'regimen' => $item->Régimen,
+                    'combinacion' => $item->xModalidad . ' - ' . $item->Régimen,
+                    'valor' => $item->xModalidad . '|' . $item->Régimen // Separador para el filtrado
+                ];
+            })
+            ->unique(function($item) {
+                return $item['modalidad'] . '|' . $item['regimen'];
+            })
+            ->values();
+        // Aplicar orden guardado a modalidades
+        $modalidades = $aplicarOrden($modalidades, 'modalidad', 'valor');
+        
+        $turnos = Cursada::select('xTurno')
+            ->distinct()
+            ->whereNotNull('xTurno')
+            ->where('xTurno', '!=', '')
+            ->orderBy('xTurno')
+            ->pluck('xTurno')
             ->unique()
             ->values();
+        // Aplicar orden guardado a turnos
+        $turnos = $aplicarOrden($turnos, 'turno');
         
-        $turnos = Cursada::select('x_turno')
+        $dias = Cursada::select('xDias')
             ->distinct()
-            ->whereNotNull('x_turno')
-            ->where('x_turno', '!=', '')
-            ->orderBy('x_turno')
-            ->pluck('x_turno')
+            ->whereNotNull('xDias')
+            ->where('xDias', '!=', '')
+            ->orderBy('xDias')
+            ->pluck('xDias')
             ->unique()
             ->values();
-        
-        $dias = Cursada::select('dias')
-            ->distinct()
-            ->whereNotNull('dias')
-            ->where('dias', '!=', '')
-            ->orderBy('dias')
-            ->pluck('dias')
-            ->unique()
-            ->values();
+        // Aplicar orden guardado a días
+        $dias = $aplicarOrden($dias, 'dia');
         
         // Obtener TODAS las cursadas (no filtrar por carrera, el filtrado se hace en el frontend)
-        $cursadas = Cursada::orderBy('fecha_inicio')
-            ->orderBy('hora_inicio')
+        $cursadas = Cursada::orderBy('Fecha_Inicio')
             ->get();
         
-        return view('inscripcion', compact('curso', 'sedes', 'stickyBar', 'carreras', 'sedesFiltro', 'modalidades', 'turnos', 'dias', 'cursadas'));
+        return view('inscripcion', compact('curso', 'sedes', 'stickyBar', 'carreras', 'sedesFiltro', 'modalidades', 'turnos', 'dias', 'cursadas', 'carreraSeleccionada'));
     }
 
     public function storeLead(Request $request)

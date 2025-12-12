@@ -13,34 +13,28 @@ return new class extends Migration
     {
         Schema::create('cursadas', function (Blueprint $table) {
             $table->id();
-            $table->string('id_curso', 50);
-            $table->string('nombre_curso', 255);
-            $table->integer('vacantes');
-            $table->string('sede', 255);
-            $table->string('x_modalidad', 255);
-            $table->string('dias', 255);
-            $table->string('x_turno', 255);
-            $table->decimal('matricula_base', 10, 2);
-            $table->decimal('matricula_con_50_dcto', 10, 2);
-            $table->integer('cantidad_cuotas');
-            $table->decimal('valor_cuota', 10, 2);
-            $table->text('descr');
-            $table->string('cod1', 100);
-            $table->string('cod2', 100);
-            $table->string('duracion', 255);
-            $table->date('fecha_inicio');
-            $table->date('fecha_fin');
-            $table->string('mes_inicio', 50);
-            $table->string('mes_fin', 50);
-            $table->string('horario', 255);
-            $table->time('hora_inicio');
-            $table->time('hora_fin');
-            $table->string('id_aula', 50);
-            $table->string('x_tipo', 255);
-            $table->string('x_nivel', 255);
-            $table->string('x_cod1', 100);
             $table->timestamps();
         });
+        
+        // Crear columnas exactamente como aparecen en carreras.xlsx
+        // Orden: ID_Curso, carrera, Cod1, Fecha Inicio, xDias, xModalidad, Régimen, xTurno, Horario, Vacantes, Matric Base, Cta.Web, Dto.Cuota, Sin IVA, sede
+        \DB::statement("ALTER TABLE `cursadas` 
+            ADD COLUMN `ID_Curso` VARCHAR(50) NULL AFTER `id`,
+            ADD COLUMN `carrera` VARCHAR(255) NULL AFTER `ID_Curso`,
+            ADD COLUMN `Cod1` VARCHAR(100) NULL AFTER `carrera`,
+            ADD COLUMN `Fecha_Inicio` DATE NULL AFTER `Cod1`,
+            ADD COLUMN `xDias` VARCHAR(255) NULL AFTER `Fecha_Inicio`,
+            ADD COLUMN `xModalidad` VARCHAR(255) NULL AFTER `xDias`,
+            ADD COLUMN `Régimen` VARCHAR(255) NULL AFTER `xModalidad`,
+            ADD COLUMN `xTurno` VARCHAR(255) NULL AFTER `Régimen`,
+            ADD COLUMN `Horario` VARCHAR(255) NULL AFTER `xTurno`,
+            ADD COLUMN `Vacantes` INT NULL AFTER `Horario`,
+            ADD COLUMN `Matric_Base` DECIMAL(10,2) NULL AFTER `Vacantes`,
+            ADD COLUMN `Cta_Web` DECIMAL(10,2) NULL AFTER `Matric_Base`,
+            ADD COLUMN `Dto_Cuota` DECIMAL(10,2) NULL AFTER `Cta_Web`,
+            ADD COLUMN `Sin_IVA` DECIMAL(10,2) NULL AFTER `Dto_Cuota`,
+            ADD COLUMN `sede` VARCHAR(255) NULL AFTER `Sin_IVA`
+        ");
     }
 
     /**
