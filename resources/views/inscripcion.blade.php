@@ -140,8 +140,13 @@
                                             @php
                                                 $nombreCarrera = $carreraItem->carrera ?? 'N/A';
                                                 $nombreCorregido = corregirNombreCarrera($nombreCarrera);
-                                                // Comparar con la carrera seleccionada encontrada en el controlador
-                                                $esSeleccionado = isset($carreraSeleccionada) && $nombreCarrera === $carreraSeleccionada;
+                                                // Comparar con la carrera seleccionada encontrada en el controlador (comparación flexible)
+                                                $esSeleccionado = false;
+                                                if (isset($carreraSeleccionada) && $carreraSeleccionada) {
+                                                    $nombreCarreraNormalizado = strtolower(trim($nombreCarrera));
+                                                    $carreraSeleccionadaNormalizada = strtolower(trim($carreraSeleccionada));
+                                                    $esSeleccionado = $nombreCarreraNormalizado === $carreraSeleccionadaNormalizada;
+                                                }
                                             @endphp
                                             <span class="filtro-opcion" 
                                                   data-tipo="carrera" 
