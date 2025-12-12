@@ -142,9 +142,9 @@
                                                 $nombreCorregido = corregirNombreCarrera($nombreCarrera);
                                                 // Comparar con la carrera seleccionada encontrada en el controlador (comparación flexible)
                                                 $esSeleccionado = false;
-                                                if (isset($carreraSeleccionada) && $carreraSeleccionada) {
-                                                    $nombreCarreraNormalizado = strtolower(trim($nombreCarrera));
-                                                    $carreraSeleccionadaNormalizada = strtolower(trim($carreraSeleccionada));
+                                                if (isset($carreraSeleccionada) && $carreraSeleccionada && $nombreCarrera) {
+                                                    $nombreCarreraNormalizado = mb_strtolower(trim($nombreCarrera), 'UTF-8');
+                                                    $carreraSeleccionadaNormalizada = mb_strtolower(trim($carreraSeleccionada), 'UTF-8');
                                                     $esSeleccionado = $nombreCarreraNormalizado === $carreraSeleccionadaNormalizada;
                                                 }
                                             @endphp
@@ -726,7 +726,10 @@
                 const valorCarrera = carreraPreSeleccionada.getAttribute('data-valor');
                 if (valorCarrera) {
                     filtrosSeleccionados.carrera = valorCarrera;
+                    console.log('Carrera pre-seleccionada encontrada:', valorCarrera);
                 }
+            } else {
+                console.log('No se encontró carrera pre-seleccionada');
             }
             
             // Función para actualizar los colores de las opciones de filtro
