@@ -129,14 +129,18 @@ class WelcomeController extends Controller
             ->values();
         
         // Buscar coincidencia flexible entre el nombre del curso y las carreras disponibles
-        $nombreCurso = strtolower(trim($curso->nombre ?? ''));
+        // Usar la función corregirNombreCarrera para comparar con los nombres convertidos
+        $nombreCurso = mb_strtolower(trim($curso->nombre ?? ''), 'UTF-8');
         foreach ($carrerasDisponibles as $carrera) {
-            $nombreCarrera = strtolower(trim($carrera));
-            // Comparación flexible: si el nombre del curso contiene palabras clave de la carrera o viceversa
-            if ($nombreCarrera === $nombreCurso || 
-                strpos($nombreCarrera, $nombreCurso) !== false || 
-                strpos($nombreCurso, $nombreCarrera) !== false) {
-                $carreraSeleccionada = $carrera;
+            // Convertir el nombre de la carrera usando la misma función que se usa en la vista
+            $carreraConvertida = corregirNombreCarrera($carrera);
+            $nombreCarreraConvertido = mb_strtolower(trim($carreraConvertida), 'UTF-8');
+            
+            // Comparación flexible: si el nombre del curso coincide con el nombre convertido de la carrera
+            if ($nombreCarreraConvertido === $nombreCurso || 
+                strpos($nombreCarreraConvertido, $nombreCurso) !== false || 
+                strpos($nombreCurso, $nombreCarreraConvertido) !== false) {
+                $carreraSeleccionada = $carrera; // Guardar el valor original de la BD
                 break;
             }
         }
@@ -145,10 +149,11 @@ class WelcomeController extends Controller
         if (!$carreraSeleccionada) {
             $palabrasCurso = explode(' ', $nombreCurso);
             foreach ($carrerasDisponibles as $carrera) {
-                $nombreCarrera = strtolower(trim($carrera));
+                $carreraConvertida = corregirNombreCarrera($carrera);
+                $nombreCarreraConvertido = mb_strtolower(trim($carreraConvertida), 'UTF-8');
                 foreach ($palabrasCurso as $palabra) {
-                    if (strlen($palabra) > 3 && strpos($nombreCarrera, $palabra) !== false) {
-                        $carreraSeleccionada = $carrera;
+                    if (strlen($palabra) > 3 && strpos($nombreCarreraConvertido, $palabra) !== false) {
+                        $carreraSeleccionada = $carrera; // Guardar el valor original de la BD
                         break 2;
                     }
                 }
