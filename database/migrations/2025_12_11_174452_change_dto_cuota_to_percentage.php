@@ -16,25 +16,20 @@ return new class extends Migration
             return;
         }
         
-        // Verificar si la columna existe antes de modificarla
+        // Solo modificar si la columna existe y es DECIMAL(10,2)
         if (Schema::hasColumn('cursadas', 'Dto_Cuota')) {
-            // Cambiar Dto_Cuota de DECIMAL(10,2) a DECIMAL(5,2) para porcentajes
-            try {
-                \DB::statement('ALTER TABLE `cursadas` MODIFY `Dto_Cuota` DECIMAL(5,2) NULL');
-            } catch (\Exception $e) {
-                // Si falla al modificar, ignorar el error
-                \Log::warning('No se pudo modificar Dto_Cuota: ' . $e->getMessage());
-            }
-        } else {
-            // Si no existe, crearla directamente con el tipo correcto
-            // NO usar AFTER si Cta_Web no existe
-            try {
-                \DB::statement('ALTER TABLE `cursadas` ADD COLUMN `Dto_Cuota` DECIMAL(5,2) NULL');
-            } catch (\Exception $e) {
-                // Si falla, la columna puede ya existir con otro nombre o hay otro problema
-                \Log::warning('No se pudo crear Dto_Cuota: ' . $e->getMessage());
+            // Verificar el tipo actual de la columna
+            $columnInfo = \DB::select("SHOW COLUMNS FROM `cursadas` WHERE Field = 'Dto_Cuota'");
+            if (!empty($columnInfo) && strpos($columnInfo[0]->Type, 'decimal(10,2)') !== false) {
+                // Solo modificar si es DECIMAL(10,2), si ya es DECIMAL(5,2) no hacer nada
+                try {
+                    \DB::statement('ALTER TABLE `cursadas` MODIFY `Dto_Cuota` DECIMAL(5,2) NULL');
+                } catch (\Exception $e) {
+                    // Si falla, ignorar (puede que ya esté en el formato correcto)
+                }
             }
         }
+        // Si no existe, la migración inicial la creará con el tipo correcto
     }
 
     /**
