@@ -11,8 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Cambiar Dto_Cuota de DECIMAL(10,2) a DECIMAL(5,2) para porcentajes
-        \DB::statement('ALTER TABLE `cursadas` MODIFY `Dto_Cuota` DECIMAL(5,2) NULL');
+        // Verificar si la columna existe antes de modificarla
+        if (Schema::hasColumn('cursadas', 'Dto_Cuota')) {
+            // Cambiar Dto_Cuota de DECIMAL(10,2) a DECIMAL(5,2) para porcentajes
+            \DB::statement('ALTER TABLE `cursadas` MODIFY `Dto_Cuota` DECIMAL(5,2) NULL');
+        } else {
+            // Si no existe, crearla directamente con el tipo correcto
+            \DB::statement('ALTER TABLE `cursadas` ADD COLUMN `Dto_Cuota` DECIMAL(5,2) NULL AFTER `Cta_Web`');
+        }
     }
 
     /**
