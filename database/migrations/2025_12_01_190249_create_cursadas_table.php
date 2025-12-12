@@ -11,36 +11,54 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cursadas', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-        
-        // Crear columnas exactamente como aparecen en carreras.xlsx
-        // Verificar y crear cada columna solo si no existe
-        $columnas = [
-            ['ID_Curso', 'VARCHAR(50)', 'id'],
-            ['carrera', 'VARCHAR(255)', 'ID_Curso'],
-            ['Cod1', 'VARCHAR(100)', 'carrera'],
-            ['Fecha_Inicio', 'DATE', 'Cod1'],
-            ['xDias', 'VARCHAR(255)', 'Fecha_Inicio'],
-            ['xModalidad', 'VARCHAR(255)', 'xDias'],
-            ['Régimen', 'VARCHAR(255)', 'xModalidad'],
-            ['xTurno', 'VARCHAR(255)', 'Régimen'],
-            ['Horario', 'VARCHAR(255)', 'xTurno'],
-            ['Vacantes', 'INT', 'Horario'],
-            ['Matric_Base', 'DECIMAL(10,2)', 'Vacantes'],
-            ['Cta_Web', 'DECIMAL(10,2)', 'Matric_Base'],
-            ['Dto_Cuota', 'DECIMAL(5,2)', 'Cta_Web'],
-            ['Sin_IVA', 'DECIMAL(10,2)', 'Dto_Cuota'],
-            ['sede', 'VARCHAR(255)', 'Sin_IVA'],
-            ['casilla_Promo', 'TINYINT(1) DEFAULT 0', 'sede'],
-        ];
-        
-        foreach ($columnas as $columna) {
-            if (!Schema::hasColumn('cursadas', $columna[0])) {
-                $after = $columna[2] === 'id' ? 'AFTER `id`' : "AFTER `{$columna[2]}`";
-                \DB::statement("ALTER TABLE `cursadas` ADD COLUMN `{$columna[0]}` {$columna[1]} NULL {$after}");
+        if (!Schema::hasTable('cursadas')) {
+            // Si la tabla no existe, crearla con todas las columnas
+            Schema::create('cursadas', function (Blueprint $table) {
+                $table->id();
+                $table->string('ID_Curso', 50)->nullable();
+                $table->string('carrera', 255)->nullable();
+                $table->string('Cod1', 100)->nullable();
+                $table->date('Fecha_Inicio')->nullable();
+                $table->string('xDias', 255)->nullable();
+                $table->string('xModalidad', 255)->nullable();
+                $table->string('Régimen', 255)->nullable();
+                $table->string('xTurno', 255)->nullable();
+                $table->string('Horario', 255)->nullable();
+                $table->integer('Vacantes')->nullable();
+                $table->decimal('Matric_Base', 10, 2)->nullable();
+                $table->decimal('Cta_Web', 10, 2)->nullable();
+                $table->decimal('Dto_Cuota', 5, 2)->nullable();
+                $table->decimal('Sin_IVA', 10, 2)->nullable();
+                $table->string('sede', 255)->nullable();
+                $table->boolean('casilla_Promo')->default(false);
+                $table->timestamps();
+            });
+        } else {
+            // Si la tabla ya existe, agregar solo las columnas que faltan
+            $columnas = [
+                ['ID_Curso', 'VARCHAR(50)', 'id'],
+                ['carrera', 'VARCHAR(255)', 'ID_Curso'],
+                ['Cod1', 'VARCHAR(100)', 'carrera'],
+                ['Fecha_Inicio', 'DATE', 'Cod1'],
+                ['xDias', 'VARCHAR(255)', 'Fecha_Inicio'],
+                ['xModalidad', 'VARCHAR(255)', 'xDias'],
+                ['Régimen', 'VARCHAR(255)', 'xModalidad'],
+                ['xTurno', 'VARCHAR(255)', 'Régimen'],
+                ['Horario', 'VARCHAR(255)', 'xTurno'],
+                ['Vacantes', 'INT', 'Horario'],
+                ['Matric_Base', 'DECIMAL(10,2)', 'Vacantes'],
+                ['Cta_Web', 'DECIMAL(10,2)', 'Matric_Base'],
+                ['Dto_Cuota', 'DECIMAL(5,2)', 'Cta_Web'],
+                ['Sin_IVA', 'DECIMAL(10,2)', 'Dto_Cuota'],
+                ['sede', 'VARCHAR(255)', 'Sin_IVA'],
+                ['casilla_Promo', 'TINYINT(1) DEFAULT 0', 'sede'],
+            ];
+            
+            foreach ($columnas as $columna) {
+                if (!Schema::hasColumn('cursadas', $columna[0])) {
+                    $after = $columna[2] === 'id' ? 'AFTER `id`' : "AFTER `{$columna[2]}`";
+                    \DB::statement("ALTER TABLE `cursadas` ADD COLUMN `{$columna[0]}` {$columna[1]} NULL {$after}");
+                }
             }
         }
     }
