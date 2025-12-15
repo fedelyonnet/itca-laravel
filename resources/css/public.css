@@ -14196,6 +14196,7 @@ html {
         padding: clamp(30px, calc(30px + 30 * ((100vw - 320px) / 110)), 60px) clamp(15px, 4vw, 20px); /* 30px @320px, 60px @430px */
         width: 100%;
         display: flex;
+        flex-direction: column; /* Apilar elementos verticalmente */
     }
 }
 
