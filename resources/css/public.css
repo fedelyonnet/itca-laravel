@@ -13454,11 +13454,6 @@ a.cursada-inscribirme-btn {
 }
 
 
-@media (max-width: 899px) {
-    .requisitos-row {
-        grid-template-columns: 1fr;
-    }
-}
 
 .lista-carreras-title {
     font-family: 'Montserrat', sans-serif;
