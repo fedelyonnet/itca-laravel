@@ -14197,6 +14197,7 @@ html {
         width: 100%;
         display: flex;
         flex-direction: column; /* Apilar elementos verticalmente */
+        align-items: center; /* Centrar contenido horizontalmente */
     }
 }
 
