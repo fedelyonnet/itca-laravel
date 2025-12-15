@@ -8893,7 +8893,7 @@ a.carrera-btn-inscribir {
     position: absolute;
     left: 0;
     bottom: clamp(-14px, -1vw, -8px);
-    width: clamp(250px, calc(250px + (100vw - 320px) * ((270 - 250) / (430 - 320)) + (max(100vw - 430px, 0px)) * ((290 - 270) / (600 - 430))), 400px);
+    width: clamp(250px, calc(250px + (100vw - 320px) * ((270 - 250) / (430 - 320)) + max(0px, min(100vw - 430px, 170px)) * ((290 - 270) / (600 - 430))), 400px);
     height: clamp(8px, 1vw, 12px);
     background-image: url('/images/desktop/subpodes.png');
     background-repeat: no-repeat;
