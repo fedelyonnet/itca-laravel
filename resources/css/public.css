@@ -8740,8 +8740,8 @@ a.carrera-btn-inscribir {
     font-weight: 700;
 }
 
-/* Desktop range scaffolding for requisitos block (1110px–1920px) */
-@media (min-width: 1110px) and (max-width: 1920px) {
+/* Desktop range scaffolding for requisitos block (1100px–1920px) */
+@media (min-width: 1100px) and (max-width: 1920px) {
     .requisitos-section {
         background-color: #02115A;
         padding: clamp(30px, 4vw, 50px) 0;
