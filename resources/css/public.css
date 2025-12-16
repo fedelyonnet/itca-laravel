@@ -7896,7 +7896,7 @@ section h2 {
     }
     
     .contacto-tercio.contacto-info {
-        background-color: #02115A;
+        background-color: var(--menu-bg);
         width: 100vw;
         max-width: 100vw;
         margin-left: calc(50% - 50vw);
@@ -8341,11 +8341,11 @@ section h2 {
 
 /* Partners section - Mobile (320px-599px) */
 @media (max-width: 599px) {
-    .partners-section {
-        background-color: #02115A;
-        padding-top: clamp(40px, calc(40px + (100vw - 320px) * 0.2273), 65px);
-        padding-bottom: clamp(40px, calc(40px + (100vw - 320px) * 0.2273), 65px);
-    }
+  .partners-section {
+    background-color: var(--section-bg-even);
+    padding-top: clamp(40px, calc(40px + (100vw - 320px) * 0.2273), 65px);
+    padding-bottom: clamp(40px, calc(40px + (100vw - 320px) * 0.2273), 65px);
+  }
 }
 
 /* Mobile responsive - logos fluidos entre 320px y 599px */
@@ -8862,6 +8862,22 @@ a.carrera-btn-inscribir {
         background: transparent;
         box-sizing: border-box;
         display: block;
+    }
+}
+
+/* Requisitos subtitle para pantallas mayores a 1920px */
+@media (min-width: 1920px) {
+    .requisitos-subtitle::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -8px;
+        width: 410px; /* Valor máximo a 1920px */
+        height: 12px;
+        background-image: url('/images/desktop/subpodes.png');
+        background-repeat: no-repeat;
+        background-position: left bottom;
+        background-size: contain;
     }
 }
 
@@ -13449,7 +13465,7 @@ a.cursada-inscribirme-btn {
     letter-spacing: 0.02em; /* 2% */
     color: var(--text-white);
     text-align: center;
-    margin: 0 0 clamp(40px, calc(40px + (100vw - 1100px) * 0.049), 80px) 0;
+    margin: 0;
     position: relative;
     max-width: 1200px;
     padding: 0 clamp(20px, 3vw, 40px);
@@ -13706,7 +13722,7 @@ html {
         padding: 0;
         padding-top: clamp(10px, 2vw, 15px);
         justify-content: flex-start;
-        align-items: flex-start; /* Alinear todo al top */
+        align-items: center; /* Centrar verticalmente los elementos */
     }
     
     /* Asegurar que el breadcrumb de inscripción también sea fluido en mobile */
@@ -13716,7 +13732,7 @@ html {
         padding: 0;
         padding-top: clamp(30px, 6vw, 45px);
         justify-content: flex-start;
-        align-items: flex-start;
+        align-items: center; /* Centrar verticalmente los elementos */
     }
     
     /* Título de inscripción en mobile */
@@ -13736,12 +13752,12 @@ html {
         height: clamp(30px, calc(40px + (100vw - 430px) * 0.06), 50px);
     }
     
-    /* Asegurar que todos los elementos del breadcrumb estén alineados al top */
+    /* Asegurar que todos los elementos del breadcrumb estén alineados */
     .lista-carreras-breadcrumb-link,
     .lista-carreras-breadcrumb-separator,
+    .lista-carreras-breadcrumb-current,
     .carrera-show-breadcrumb-link,
     .carrera-show-breadcrumb-separator {
-        vertical-align: top;
         line-height: 1.2; /* Ajustar line-height para alineación consistente */
     }
     
@@ -13936,7 +13952,8 @@ html {
         flex-shrink: 0;
     }
     
-    .carrera-btn-inscribir {
+    .carrera-btn-inscribir,
+    a.carrera-btn-inscribir {
         order: 2;
         flex: 1;
         padding: clamp(10px, 2.5vw, 14px) clamp(16px, 4vw, 24px);
@@ -14180,6 +14197,34 @@ html {
         display: flex;
         flex-direction: column; /* Apilar elementos verticalmente */
         align-items: center; /* Centrar contenido horizontalmente */
+    }
+    
+    .requisitos-subtitle::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: clamp(-10px, calc(-10px + (100vw - 320px) * ((-12 - -10) / (599 - 320))), -12px);
+        width: 260px;
+        height: clamp(5px, calc(5px + (100vw - 320px) * ((6 - 5) / (599 - 320))), 6px);
+        background-image: url('/images/desktop/subpodes.png');
+        background-repeat: no-repeat;
+        background-position: left bottom;
+        background-size: contain;
+    }
+    
+    /* Cuando hay solo 1 zona: ancho completo y alineado arriba en mobile */
+    .requisitos-cursar-card .cursar-grid.cursar-grid-single {
+        grid-template-columns: 1fr; /* 1 columna en lugar de 2 */
+        align-content: start; /* alineado arriba en lugar de centrado */
+    }
+    
+    .requisitos-cursar-card .cursar-grid.cursar-grid-single .cursar-item {
+        width: 100%; /* ancho completo cuando hay solo 1 zona */
+    }
+    
+    .cursar-hover span {
+        line-height: 1.2;
+        font-size: 12px;
     }
 }
 
