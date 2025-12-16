@@ -8888,19 +8888,6 @@ a.carrera-btn-inscribir {
     margin-left: clamp(6px, 0.6vw, 14px);
 }
 
-.requisitos-subtitle::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: clamp(-14px, -1vw, -8px);
-    width: calc(285px + clamp(0px, 100vw - 1100px, 266px) * 0.2632 + clamp(0px, 100vw - 1366px, 554px) * 0.0993);
-    height: clamp(8px, 1vw, 12px);
-    background-image: url('/images/desktop/subpodes.png');
-    background-repeat: no-repeat;
-    background-position: left bottom;
-    background-size: contain;
-}
-
 .requisitos-title::after {
     content: '';
     position: absolute;
