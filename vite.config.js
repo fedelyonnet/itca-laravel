@@ -11,7 +11,9 @@ export default defineConfig({
                 'resources/js/app.js',
                 'resources/js/backoffice.js',
                 'resources/js/carreras-test.js',
-                'resources/js/importacion-cursos.js'
+                'resources/js/importacion-cursos.js',
+                'resources/js/importacion-promociones.js',
+                'resources/js/inscripcion.js'
             ],
             refresh: true,
         }),
