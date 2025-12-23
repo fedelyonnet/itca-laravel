@@ -7,8 +7,11 @@ use App\Models\Curso;
 use App\Models\EnAccion;
 use App\Models\FotosCarrera;
 use App\Models\Cursada;
+use App\Models\PromoBadge;
+use App\Models\Descuento;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
@@ -670,13 +673,28 @@ class CursoController extends Controller
 
     public function importacionCursos()
     {
+        // En el admin se muestran TODAS las cursadas (sin filtrar por ver_curso)
         $cursadas = Cursada::orderBy('id', 'desc')->get();
-        return view('admin.carreras.importacion', compact('cursadas'));
+        
+        // Calcular estadísticas
+        $totalRegistros = Cursada::count();
+        $registrosVisibles = Cursada::where('ver_curso', 'ver')->count();
+        
+        // Obtener badge activo (si existe)
+        $promoBadge = PromoBadge::getActive();
+        
+        return view('admin.carreras.importacion', compact('cursadas', 'totalRegistros', 'registrosVisibles', 'promoBadge'));
     }
 
     public function ordenarFiltros()
     {
         return view('admin.carreras.ordenar-filtros');
+    }
+
+    public function importarPromociones()
+    {
+        $descuentos = \App\Models\Descuento::orderBy('id', 'desc')->get();
+        return view('admin.carreras.importar-promociones', compact('descuentos'));
     }
 
     public function getFiltrosPorCategoria(Request $request)
@@ -692,6 +710,7 @@ class CursoController extends Controller
         switch ($categoria) {
             case 'carrera':
                 $filtros = Cursada::select('carrera')
+                    ->where('ver_curso', 'ver')
                     ->whereNotNull('carrera')
                     ->where('carrera', '!=', '')
                     ->distinct()
@@ -709,6 +728,7 @@ class CursoController extends Controller
                 
             case 'sede':
                 $filtros = Cursada::select('sede')
+                    ->where('ver_curso', 'ver')
                     ->whereNotNull('sede')
                     ->where('sede', '!=', '')
                     ->distinct()
@@ -726,6 +746,7 @@ class CursoController extends Controller
                 
             case 'modalidad':
                 $filtros = Cursada::select('xModalidad', 'Régimen')
+                    ->where('ver_curso', 'ver')
                     ->whereNotNull('xModalidad')
                     ->where('xModalidad', '!=', '')
                     ->whereNotNull('Régimen')
@@ -753,6 +774,7 @@ class CursoController extends Controller
                 
             case 'turno':
                 $filtros = Cursada::select('xTurno')
+                    ->where('ver_curso', 'ver')
                     ->whereNotNull('xTurno')
                     ->where('xTurno', '!=', '')
                     ->distinct()
@@ -770,6 +792,7 @@ class CursoController extends Controller
                 
             case 'dia':
                 $filtros = Cursada::select('xDias')
+                    ->where('ver_curso', 'ver')
                     ->whereNotNull('xDias')
                     ->where('xDias', '!=', '')
                     ->distinct()
@@ -900,6 +923,7 @@ class CursoController extends Controller
             
             // Mapeo de headers del Excel a campos de la base de datos
             // Headers del Excel (con espacios/puntos) → Nombres de BD (con guiones bajos)
+            // Basado en BASE CARRERAS AL 17-12.xlsx
             $headerMap = [
                 'ID_Curso' => 'ID_Curso',
                 'carrera' => 'carrera',
@@ -912,11 +936,15 @@ class CursoController extends Controller
                 'Horario' => 'Horario',
                 'Vacantes' => 'Vacantes',
                 'Matric Base' => 'Matric_Base',
+                'Sin iva Mat' => 'Sin_iva_Mat', // Nueva columna
                 'Cta.Web' => 'Cta_Web',
+                'Sin IVA cta' => 'Sin_IVA_cta', // Nueva columna
                 'Dto.Cuota' => 'Dto_Cuota',
-                'Sin IVA' => 'Sin_IVA',
+                'cant. cuotas' => 'cuotas',
+                'cuotas' => 'cuotas', // Mantener por compatibilidad
                 'sede' => 'sede',
-                'casilla Promo' => 'casilla_Promo',
+                'Promo Mat-logo-' => 'Promo_Mat_logo',
+                'ver curso' => 'ver_curso', // Nueva columna
             ];
 
             // Crear un índice de columnas basado en los headers
@@ -980,12 +1008,27 @@ class CursoController extends Controller
                 try {
                     $data = [];
                     
-                    // Inicializar campos con valores por defecto
-                    $data['casilla_Promo'] = false; // Valor por defecto para el campo booleano
-                    
                     // Mapear cada campo
                     foreach ($columnIndex as $dbField => $colIndex) {
-                        $value = isset($row[$colIndex]) ? trim($row[$colIndex]) : '';
+                        // Para columnas que pueden tener fórmulas, obtener el valor calculado
+                        $cellValue = null;
+                        if (in_array($dbField, ['Sin_iva_Mat', 'Sin_IVA_cta'])) {
+                            try {
+                                // Convertir índice de columna a letra (A=0, B=1, etc.)
+                                $columnLetter = Coordinate::stringFromColumnIndex($colIndex + 1);
+                                $rowNumber = $i + 1; // +1 porque las filas empiezan en 1, no en 0
+                                $cellCoordinate = $columnLetter . $rowNumber;
+                                $cell = $worksheet->getCell($cellCoordinate);
+                                $cellValue = $cell->getCalculatedValue();
+                            } catch (\Exception $e) {
+                                // Si falla, usar el valor del array
+                                $cellValue = isset($row[$colIndex]) ? $row[$colIndex] : '';
+                            }
+                        } else {
+                            $cellValue = isset($row[$colIndex]) ? $row[$colIndex] : '';
+                        }
+                        
+                        $value = is_null($cellValue) ? '' : (is_numeric($cellValue) ? $cellValue : trim($cellValue));
                         
                         // Conversiones específicas por tipo de campo
                         switch ($dbField) {
@@ -995,41 +1038,48 @@ class CursoController extends Controller
                                 
                             case 'Matric_Base':
                             case 'Cta_Web':
-                            case 'Sin_IVA':
+                            case 'Sin_iva_Mat': // Nueva columna (puede tener fórmula)
+                            case 'Sin_IVA_cta': // Nueva columna (puede tener fórmula)
                                 // Para campos monetarios: convertir a decimal
-                                if (!empty($value)) {
-                                    $value = trim($value);
-                                    
-                                    // Si tiene coma, puede ser separador de miles o decimal
-                                    if (strpos($value, ',') !== false && strpos($value, '.') === false) {
-                                        $parts = explode(',', $value);
-                                        if (strlen($parts[0]) > 3) {
-                                            // Separador de miles: eliminar coma
-                                            $value = str_replace(',', '', $value);
-                                        } else {
-                                            // Decimal: cambiar coma por punto
+                                if (!empty($value) || $value === '0' || $value === 0) {
+                                    // Si ya es numérico (viene de fórmula calculada o es número directo)
+                                    if (is_numeric($value)) {
+                                        $data[$dbField] = (float)$value;
+                                    } else {
+                                        // Es string, procesar formato
+                                        $value = trim($value);
+                                        
+                                        // Si tiene coma, puede ser separador de miles o decimal
+                                        if (strpos($value, ',') !== false && strpos($value, '.') === false) {
+                                            $parts = explode(',', $value);
+                                            if (strlen($parts[0]) > 3) {
+                                                // Separador de miles: eliminar coma
+                                                $value = str_replace(',', '', $value);
+                                            } else {
+                                                // Decimal: cambiar coma por punto
+                                                $value = str_replace(',', '.', $value);
+                                            }
+                                        } elseif (strpos($value, ',') !== false && strpos($value, '.') !== false) {
+                                            // Tiene ambos: coma es decimal, punto es miles
+                                            $value = str_replace('.', '', $value);
                                             $value = str_replace(',', '.', $value);
                                         }
-                                    } elseif (strpos($value, ',') !== false && strpos($value, '.') !== false) {
-                                        // Tiene ambos: coma es decimal, punto es miles
-                                        $value = str_replace('.', '', $value);
-                                        $value = str_replace(',', '.', $value);
-                                    }
-                                    
-                                    // Eliminar cualquier punto restante si no hay coma (separador de miles)
-                                    if (strpos($value, '.') !== false && strpos($value, ',') === false) {
-                                        $parts = explode('.', $value);
-                                        if (count($parts) == 2 && strlen($parts[1]) <= 2) {
-                                            // Es decimal, mantener
-                                        } else {
-                                            // Es separador de miles, eliminar
-                                            $value = str_replace('.', '', $value);
+                                        
+                                        // Eliminar cualquier punto restante si no hay coma (separador de miles)
+                                        if (strpos($value, '.') !== false && strpos($value, ',') === false) {
+                                            $parts = explode('.', $value);
+                                            if (count($parts) == 2 && strlen($parts[1]) <= 2) {
+                                                // Es decimal, mantener
+                                            } else {
+                                                // Es separador de miles, eliminar
+                                                $value = str_replace('.', '', $value);
+                                            }
                                         }
+                                        
+                                        $data[$dbField] = is_numeric($value) ? (float)$value : null;
                                     }
-                                    
-                                    $data[$dbField] = (float)$value;
                                 } else {
-                                    $data[$dbField] = 0;
+                                    $data[$dbField] = null;
                                 }
                                 break;
                                 
@@ -1094,20 +1144,18 @@ class CursoController extends Controller
                                 $data[$dbField] = !empty($value) ? trim($value) : null;
                                 break;
                                 
-                            case 'casilla_Promo':
-                                // Campo booleano: convertir a boolean
-                                $value = trim($value);
+                            case 'cuotas':
+                                // Cuotas es un número entero
                                 if (!empty($value)) {
-                                    $valueLower = strtolower($value);
-                                    // Aceptar: true, 1, "si", "sí", "yes", "y", "x", "✓", "verdadero", "s", "t", "sí"
-                                    $data[$dbField] = in_array($valueLower, ['true', '1', 'si', 'sí', 'yes', 'y', 'x', '✓', 'verdadero', 's', 't', 's']);
-                                    // Log para debug
-                                    if ($i <= 3) {
-                                        \Log::info("casilla_Promo - Fila {$i}: valor original='{$value}', valor lower='{$valueLower}', resultado=" . var_export($data[$dbField], true));
-                                    }
+                                    $data[$dbField] = is_numeric($value) ? (int)$value : null;
                                 } else {
-                                    $data[$dbField] = false;
+                                    $data[$dbField] = null;
                                 }
+                                break;
+                                
+                            case 'ver_curso':
+                                // Normalizar ver_curso: trim + lowercase para usar índices eficientemente
+                                $data[$dbField] = !empty($value) ? mb_strtolower(trim($value), 'UTF-8') : null;
                                 break;
                                 
                             default:
@@ -1131,6 +1179,9 @@ class CursoController extends Controller
                 }
             }
 
+            // Invalidar caché de filtros de inscripción (todos los cursos)
+            \Cache::flush(); // Flush completo porque no sabemos qué cursos están afectados
+            
             $message = "Se reemplazó el contenido de la base de datos. Se importaron {$imported} cursadas correctamente.";
             if ($deletedCount > 0) {
                 $message .= " Se eliminaron {$deletedCount} registros anteriores.";
@@ -1467,5 +1518,211 @@ class CursoController extends Controller
         $certificados->save();
 
         return redirect()->route('admin.carreras.multimedia')->with('success', 'Certificado eliminado exitosamente.');
+    }
+
+    public function storeImportacionPromociones(Request $request)
+    {
+        try {
+            \Log::info('storeImportacionPromociones llamado', [
+                'has_file' => $request->hasFile('archivo_excel'),
+                'is_ajax' => $request->ajax(),
+                'wants_json' => $request->wantsJson()
+            ]);
+
+            $request->validate([
+                'archivo_excel' => 'required|mimes:xlsx,xls|max:10240', // 10MB máximo
+            ]);
+
+            $file = $request->file('archivo_excel');
+            
+            \Log::info('Archivo recibido', [
+                'name' => $file->getClientOriginalName(),
+                'size' => $file->getSize(),
+                'mime' => $file->getMimeType()
+            ]);
+            
+            // Cargar el archivo Excel
+            $spreadsheet = IOFactory::load($file->getRealPath());
+            $worksheet = $spreadsheet->getActiveSheet();
+            $rows = $worksheet->toArray();
+
+            if (count($rows) < 2) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'El archivo Excel debe tener al menos una fila de datos además del encabezado.'
+                ], 400, ['Content-Type' => 'application/json']);
+            }
+
+            // Obtener los headers de la primera fila
+            $headers = array_map('trim', $rows[0]);
+            
+            \Log::info('Headers encontrados en Excel: ' . json_encode($headers));
+            
+            // Mapeo de headers del Excel a campos de la base de datos
+            $headerMap = [
+                'Codigo_Promocion' => 'Codigo_Promocion',
+                'Promocion_Descripcion' => 'Promocion_Descripcion',
+                'Porcentaje' => 'Porcentaje',
+                'codigo web' => 'codigo_web',
+                'codigo_web' => 'codigo_web', // Mantener por compatibilidad
+            ];
+
+            // Crear un índice de columnas basado en los headers
+            $columnIndex = [];
+            foreach ($headerMap as $excelHeader => $dbField) {
+                $index = false;
+                foreach ($headers as $idx => $header) {
+                    $headerNormalized = trim($header);
+                    $excelHeaderNormalized = trim($excelHeader);
+                    if (strcasecmp($headerNormalized, $excelHeaderNormalized) === 0) {
+                        $index = $idx;
+                        break;
+                    }
+                }
+                if ($index !== false) {
+                    $columnIndex[$dbField] = $index;
+                } else {
+                    \Log::warning("Header no encontrado en Excel: '{$excelHeader}' (buscando en: " . implode(', ', $headers) . ")");
+                }
+            }
+
+            // Borrar todos los registros existentes antes de importar
+            $deletedCount = Descuento::count();
+            Descuento::truncate();
+            
+            \Log::info("Se eliminaron {$deletedCount} registros existentes antes de la importación");
+
+            $imported = 0;
+            $errors = [];
+
+            // Procesar cada fila de datos (empezando desde la fila 2, índice 1)
+            for ($i = 1; $i < count($rows); $i++) {
+                $row = $rows[$i];
+                
+                // Saltar filas vacías
+                if (empty(array_filter($row))) {
+                    continue;
+                }
+
+                try {
+                    $data = [];
+                    
+                    // Mapear cada campo
+                    foreach ($columnIndex as $dbField => $colIndex) {
+                        $cellValue = isset($row[$colIndex]) ? $row[$colIndex] : '';
+                        
+                        // Conversiones específicas por tipo de campo
+                        switch ($dbField) {
+                            case 'Porcentaje':
+                                // Porcentaje puede venir como "20%" (texto) o como número
+                                if (!empty($cellValue)) {
+                                    // Convertir a string y limpiar
+                                    $porcentajeStr = trim((string)$cellValue);
+                                    // Remover el símbolo % y espacios
+                                    $porcentajeStr = str_replace(['%', ' '], '', $porcentajeStr);
+                                    // Convertir coma decimal a punto si existe
+                                    $porcentajeStr = str_replace(',', '.', $porcentajeStr);
+                                    // Intentar convertir a float
+                                    $porcentajeFloat = is_numeric($porcentajeStr) ? (float)$porcentajeStr : null;
+                                    $data[$dbField] = $porcentajeFloat;
+                                } else {
+                                    $data[$dbField] = null;
+                                }
+                                break;
+                                
+                            default:
+                                // Los demás campos son texto
+                                $value = is_null($cellValue) ? '' : (is_numeric($cellValue) ? $cellValue : trim((string)$cellValue));
+                                $data[$dbField] = !empty($value) ? trim((string)$value) : null;
+                                break;
+                        }
+                    }
+                    
+                    // Crear el registro
+                    Descuento::create($data);
+                    $imported++;
+                    
+                } catch (\Exception $e) {
+                    $errors[] = [
+                        'fila' => $i + 1,
+                        'mensaje' => $e->getMessage()
+                    ];
+                    \Log::warning("Error en fila " . ($i + 1) . ": " . $e->getMessage());
+                }
+            }
+
+            $message = "Se importaron {$imported} promociones correctamente.";
+            if (count($errors) > 0) {
+                $message .= " Se encontraron " . count($errors) . " errores.";
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'imported' => $imported,
+                'errors' => $errors
+            ], 200, ['Content-Type' => 'application/json']);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de validación: ' . implode(', ', $e->errors()['archivo_excel'] ?? ['Archivo inválido'])
+            ], 422, ['Content-Type' => 'application/json']);
+        } catch (\Exception $e) {
+            \Log::error('Error en storeImportacionPromociones: ' . $e->getMessage());
+            \Log::error($e->getTraceAsString());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al procesar el archivo: ' . $e->getMessage()
+            ], 500, ['Content-Type' => 'application/json']);
+        }
+    }
+
+    public function buscarDescuento(Request $request)
+    {
+        try {
+            $request->validate([
+                'codigo' => 'required|string',
+            ]);
+
+            $codigo = trim($request->input('codigo'));
+            
+            // Búsqueda case-sensitive exacta usando BINARY para MySQL
+            $descuento = Descuento::whereRaw('BINARY codigo_web = ?', [$codigo])
+                ->orWhereRaw('BINARY Codigo_Promocion = ?', [$codigo])
+                ->first();
+
+            if (!$descuento) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Código de descuento no encontrado'
+                ], 200); // Usar 200 en lugar de 404 para evitar error en consola
+            }
+
+            return response()->json([
+                'success' => true,
+                'descuento' => [
+                    'codigo' => $descuento->codigo_web ?? $descuento->Codigo_Promocion,
+                    'descripcion' => $descuento->Promocion_Descripcion,
+                    'porcentaje' => $descuento->Porcentaje
+                ]
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'El código es requerido'
+            ], 200);
+        } catch (\Exception $e) {
+            \Log::error('Error en buscarDescuento: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al buscar el código de descuento. Por favor, intentá nuevamente.'
+            ], 200);
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al buscar el código de descuento'
+            ], 500);
+        }
     }
 }

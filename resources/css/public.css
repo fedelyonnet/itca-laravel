@@ -8436,14 +8436,29 @@ section h2 {
     width: clamp(500px, calc(500px + (100vw - 1100px) * 0.301), 768px);
     height: auto;
     position: relative;
+    /* Prevenir layout shift: establecer aspect-ratio aproximado */
+    aspect-ratio: 768 / 440;
+    min-height: clamp(300px, calc(300px + (100vw - 1100px) * 0.171), 440px);
+    /* Background mientras carga la imagen */
+    background-color: rgba(0, 0, 0, 0.05);
+    overflow: hidden;
 }
 
 .carrera-image img {
     width: 100%;
-    height: auto;
+    height: 100%;
     object-fit: cover;
     border-radius: 8px;
     display: block;
+    /* Prevenir que la imagen se muestre antes de tener dimensiones */
+    min-height: 100%;
+    /* Suavizar la carga */
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.carrera-image img.loaded {
+    opacity: 1;
 }
 
 /* Fix específico para carrera-show-image: alineación al fondo como en carreras.blade.php */
@@ -8457,6 +8472,7 @@ section h2 {
     height: auto;
     object-fit: contain;
     display: block;
+    opacity: 1 !important; /* Sobrescribir la opacidad 0 de .carrera-image img */
 }
 
 /* Controlar visibilidad de imágenes desktop/mobile en show */
@@ -13884,14 +13900,19 @@ html {
         max-width: 100%;
         height: auto;
         display: block;
+        /* Prevenir layout shift: establecer aspect-ratio */
+        aspect-ratio: 388 / 430;
+        min-height: clamp(310px, calc(430px + (100vw - 430px) * 1.41), 430px);
     }
     
     .carrera-image img {
         width: 100%;
-        height: auto;
-        aspect-ratio: 327 / 176;
+        height: 100%;
+        aspect-ratio: 388 / 430;
         object-fit: cover;
         border-radius: 8px;
+        /* Prevenir que la imagen se muestre antes de tener dimensiones */
+        min-height: 100%;
     }
     
     /* Mostrar imagen mobile, ocultar desktop */
@@ -14250,7 +14271,7 @@ body.inscripcion-page {
 }
 
 .inscripcion-container {
-    max-width: clamp(1070px, 85vw, 1557px);
+    max-width: clamp(1070px, 95vw, 1850px);
     margin: 0 auto;
     padding: 0;
     overflow: visible;
@@ -14521,6 +14542,7 @@ body.inscripcion-page {
     display: flex;
     flex-direction: column;
     max-height: clamp(900px, calc(900px + (100vw - 1100px) * 0.4634), 1280px);
+    min-width: clamp(600px, calc(600px + (100vw - 1100px) * 0.3684), 950px);
 }
 
 .inscripcion-filtros-recuadro {
@@ -14617,7 +14639,7 @@ body.inscripcion-page {
 .filtro-opcion {
     font-family: 'Montserrat', sans-serif;
     font-weight: 400;
-    font-size: clamp(12px, calc(12px + (100vw - 1100px) * 0.0037), 15px);
+    font-size: clamp(10px, calc(10px + (100vw - 1100px) * 0.0061), 15px);
     text-align: left;
     width: 100%;
     display: block;
@@ -14641,11 +14663,14 @@ body.inscripcion-page {
     max-height: clamp(900px, calc(900px + (100vw - 1100px) * 0.4634), 1280px);
     overflow-y: auto;
     overflow-x: hidden;
-    padding-right: clamp(20px, calc(20px + (100vw - 1100px) * 0.0122), 30px);
-    margin-right: clamp(10px, calc(10px + (100vw - 1100px) * 0.0122), 20px);
+    padding-right: 0;
+    margin-right: 0;
     /* Firefox */
     scrollbar-width: thin;
     scrollbar-color: #60D697 rgba(217, 217, 217, 0.2);
+    /* Reservar espacio para el scrollbar usando padding-right */
+    padding-right: 24px;
+    box-sizing: border-box;
 }
 
 /* WebKit browsers (Chrome, Safari, Edge) - Scrollbars unificados - Ancho fijo para consistencia en TODOS los tamaños */
@@ -14679,7 +14704,7 @@ body.inscripcion-page {
 
 .cursada-item {
     width: 100%;
-    max-width: clamp(900px, calc(900px + (100vw - 1100px) * 0.268), 1120px);
+    max-width: 100%;
     border: 1px solid #FFFFFF;
     border-radius: 8px;
     padding: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem);
@@ -14808,6 +14833,15 @@ body.inscripcion-page {
     align-items: center;
     justify-content: center;
     justify-self: end;
+    gap: clamp(8px, calc(8px + (100vw - 1100px) * ((12 - 8) / (1920 - 1100))), 12px);
+}
+
+.cursada-promo-badge {
+    width: clamp(60px, calc(60px + (100vw - 1100px) * ((75 - 60) / (1920 - 1100))), 75px);
+    height: clamp(48px, calc(48px + (100vw - 1100px) * ((60 - 48) / (1920 - 1100))), 60px);
+    object-fit: contain;
+    flex-shrink: 0;
+    display: none;
 }
 
 .cursada-btn-ver-valores {
@@ -14815,11 +14849,11 @@ body.inscripcion-page {
     color: #010C42;
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
-    font-size: clamp(19px, calc(19px + (100vw - 1100px) * 0.00244), 21px);
+    font-size: clamp(12px, calc(12px + (100vw - 1100px) * ((21 - 12) / (1920 - 1100))), 21px);
     border: none;
-    border-radius: 48px;
-    width: clamp(240px, calc(240px + (100vw - 1100px) * 0.02927), 264px);
-    height: clamp(50px, calc(50px + (100vw - 1100px) * 0.00122), 51px);
+    border-radius: clamp(24px, calc(24px + (100vw - 1100px) * ((42 - 24) / (1920 - 1100))), 42px);
+    width: clamp(112px, calc(112px + (100vw - 1100px) * ((195 - 112) / (1920 - 1100))), 195px);
+    height: clamp(29px, calc(29px + (100vw - 1100px) * ((51 - 29) / (1920 - 1100))), 51px);
     padding: 0;
     display: flex;
     align-items: center;
@@ -14841,6 +14875,88 @@ body.inscripcion-page {
 .cursada-btn-ver-valores.panel-desplegado:hover {
     opacity: 1;
     cursor: default;
+}
+
+.cursada-btn-ver-valores.sin-vacantes,
+.cursada-btn-ver-valores:disabled {
+    background-color: rgba(103, 103, 103, 0.95);
+    color: #919191;
+    border: 1px solid #919191;
+    cursor: not-allowed;
+    opacity: 1;
+    pointer-events: none;
+}
+
+.cursada-btn-ver-valores.sin-vacantes:hover,
+.cursada-btn-ver-valores:disabled:hover {
+    opacity: 1;
+    background-color: rgba(103, 103, 103, 0.95);
+}
+
+.cursada-formulario-boton-continuar-container {
+    margin-top: clamp(1rem, calc(1rem + (100vw - 1100px) * 0.0024), 1.5rem);
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.cursada-formulario-columna-der .cursada-formulario-boton-continuar-container {
+    margin-top: clamp(1rem, calc(1rem + (100vw - 1100px) * 0.0024), 1.5rem);
+    justify-content: center;
+}
+
+.cursada-btn-continuar {
+    background-color: rgba(174, 174, 174, 0.2);
+    color: #aeaeae;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: clamp(12px, calc(12px + (100vw - 1100px) * ((21 - 12) / (1920 - 1100))), 21px);
+    border: none;
+    border-radius: clamp(24px, calc(24px + (100vw - 1100px) * ((42 - 24) / (1920 - 1100))), 42px);
+    width: clamp(140px, calc(140px + (100vw - 1100px) * ((230 - 140) / (1920 - 1100))), 230px);
+    height: clamp(28px, calc(28px + (100vw - 1100px) * ((44 - 28) / (1920 - 1100))), 44px);
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+    white-space: nowrap;
+    transition: all 0.2s;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.cursada-btn-continuar:hover {
+    opacity: 0.9;
+}
+
+.cursada-btn-continuar.activo {
+    background-color: #65E09C;
+    color: #010C42;
+    border: none;
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.cursada-btn-continuar.activo:hover {
+    opacity: 0.9;
+}
+
+.cursada-btn-continuar:disabled,
+.cursada-btn-continuar[disabled] {
+    background-color: rgba(174, 174, 174, 0.2) !important;
+    color: #aeaeae !important;
+    border: none !important;
+    cursor: default !important;
+    opacity: 1 !important;
+    pointer-events: none !important;
+}
+
+.cursada-btn-continuar:disabled:hover,
+.cursada-btn-continuar[disabled]:hover {
+    opacity: 1 !important;
+    cursor: default !important;
+    background-color: rgba(174, 174, 174, 0.2) !important;
 }
 
 .cursada-valores-panel {
@@ -14876,11 +14992,12 @@ body.inscripcion-page {
 }
 
 .cursada-valores-panel.panel-visible {
-    max-height: 500px;
+    max-height: 800px;
     opacity: 1;
     transform: translateY(0);
-    padding-top: clamp(30px, calc(30px + (100vw - 1100px) * 0.0244), 50px);
-    padding-bottom: clamp(30px, calc(30px + (100vw - 1100px) * 0.0244), 50px);
+    padding-top: clamp(15px, calc(15px + (100vw - 1100px) * ((20 - 15) / (1920 - 1100))), 20px);
+    padding-bottom: clamp(15px, calc(15px + (100vw - 1100px) * ((20 - 15) / (1920 - 1100))), 20px);
+    padding-left: clamp(10px, calc(10px + (100vw - 1100px) * ((20 - 10) / (1920 - 1100))), 20px);
     margin-top: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem);
 }
 
@@ -14972,11 +15089,24 @@ body.inscripcion-page {
 
 .cursada-valores-grid {
     display: grid;
-    grid-template-columns: 1.5fr 1fr;
-    gap: clamp(1.5rem, calc(1.5rem + (100vw - 1100px) * 0.0061), 2rem);
-    align-items: flex-start;
-    padding-left: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem);
-    padding-right: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem);
+    grid-template-columns: 60fr 1px 40fr;
+    gap: 0;
+    align-items: stretch;
+    padding-left: 0;
+    padding-right: 0;
+    position: relative;
+    flex: 1;
+    min-height: 100%;
+}
+
+.cursada-valores-separador {
+    background-color: #FFFFFF;
+    width: 1px;
+    margin: calc(-1 * clamp(30px, calc(30px + (100vw - 1100px) * 0.0244), 50px)) 0;
+    padding: 0;
+    align-self: stretch;
+    min-height: calc(100% + 2 * clamp(30px, calc(30px + (100vw - 1100px) * 0.0244), 50px));
+    height: calc(100% + 2 * clamp(30px, calc(30px + (100vw - 1100px) * 0.0244), 50px));
 }
 
 .cursada-valores-columna-izq {
@@ -14984,159 +15114,279 @@ body.inscripcion-page {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.cursada-cuota-info {
+    margin-top: clamp(24px, calc(24px + (100vw - 1100px) * 0.029268), 48px);
+    width: 100%;
+    text-align: left;
+    margin-bottom: clamp(24px, calc(24px + (100vw - 1100px) * 0.029268), 48px);
+    box-sizing: border-box;
+    display: none;
+}
+
+.cursada-cuota-linea-1 {
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: clamp(15px, calc(15px + (100vw - 1100px) * ((18 - 15) / (1920 - 1100))), 18px);
+    line-height: 1.6;
+    margin: 0;
+    margin-bottom: clamp(0.25rem, calc(0.25rem + (100vw - 1100px) * 0.0006), 0.4rem);
+}
+
+.cursada-cuota-valor {
+    font-weight: 600;
+}
+
+.cursada-cuota-linea-2 {
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: clamp(15px, calc(15px + (100vw - 1100px) * ((18 - 15) / (1920 - 1100))), 18px);
+    line-height: 1.6;
+    margin: 0;
+    margin-top: clamp(0.25rem, calc(0.25rem + (100vw - 1100px) * 0.0006), 0.4rem);
+}
+
+.cursada-cuota-cantidad-label {
+    font-weight: 600;
+}
+
+.cursada-cuota-cantidad-valor {
+    font-weight: 400;
+}
+
+.cursada-cuota-linea-3 {
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: clamp(12px, calc(12px + (100vw - 1100px) * ((14 - 12) / (1920 - 1100))), 14px);
+    line-height: 1.6;
+    margin: 0;
+    margin-top: clamp(0.25rem, calc(0.25rem + (100vw - 1100px) * 0.0006), 0.4rem);
+}
+
+.cursada-cuota-precio-total {
+    font-weight: 600;
 }
 
 .cursada-valores-info-wrapper {
-    display: flex;
+    display: flex !important;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     width: 100%;
-    padding-left: clamp(30px, calc(30px + (100vw - 1100px) * 0.0244), 50px);
-    padding-bottom: clamp(20px, calc(20px + (100vw - 1100px) * 0.0183), 35px);
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.cursada-valores-renglon-1,
+.cursada-codigo-descuento-wrapper {
+    display: block !important;
 }
 
 .cursada-valores-renglon-1 {
     width: 100%;
-    text-align: left;
-}
-
-.cursada-valores-renglon-2 {
-    width: 100%;
-    text-align: left;
-    white-space: nowrap;
-}
-
-.cursada-descuento-texto {
-    font-weight: 600;
-    color: #FFFFFF;
-    font-family: 'Montserrat', sans-serif;
-    font-size: clamp(13px, calc(13px + max(0px, min(100vw, 1640px) - 1365px) * 0.0024 + max(0px, 100vw - 1640px) * 0.0005), 18px);
-    line-height: 1.6;
-}
-
-.cursada-cuotas-texto {
-    font-weight: 400;
-    color: #FFFFFF;
-    font-family: 'Montserrat', sans-serif;
-    font-size: clamp(13px, calc(13px + max(0px, min(100vw, 1640px) - 1365px) * 0.0024 + max(0px, 100vw - 1640px) * 0.0005), 18px);
-    line-height: 1.6;
-}
-
-.cursada-valores-columna-der {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-}
-
-.cursada-valores-content {
-    color: #FFFFFF;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 400;
-    font-size: clamp(13px, calc(13px + max(0px, min(100vw, 1640px) - 1365px) * 0.0024 + max(0px, 100vw - 1640px) * 0.0005), 18px);
-    line-height: 1.6;
-    margin: 0;
-    text-align: left;
-    white-space: nowrap;
-}
-
-.cursada-valor-cuota {
-    font-weight: 600;
-}
-
-.cursada-valores-matricula {
-    color: #FFFFFF;
+    text-align: center;
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
-    font-size: clamp(13px, calc(13px + max(0px, min(100vw, 1640px) - 1365px) * 0.0024 + max(0px, 100vw - 1640px) * 0.0005), 18px);
-    line-height: 1.6;
-    margin: 0;
+    font-size: clamp(12px, calc(12px + (100vw - 1100px) * ((18 - 12) / (1920 - 1100))), 18px);
 }
 
 .cursada-valor-matricula {
-    font-weight: 600;
+    width: 100%;
+    margin-bottom: clamp(0.5rem, calc(0.5rem + (100vw - 1100px) * 0.0012), 0.75rem);
 }
 
-.cursada-codigo-descuento-texto {
-    color: #60D697;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
-    font-size: clamp(11px, calc(11px + max(0px, min(100vw, 1640px) - 1365px) * 0.0024 + max(0px, 100vw - 1640px) * 0.0005), 15px);
-    line-height: 1.6;
-    margin: 0;
-}
-
-.cursada-descuento-titulo {
-    margin-top: clamp(1rem, calc(1rem + (100vw - 1100px) * 0.0024), 1.5rem);
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-}
-
-.cursada-descuento-label {
+.cursada-precio-total-matricula {
     color: #FFFFFF;
     font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
-    font-size: clamp(17px, calc(17px + max(0px, min(100vw, 1640px) - 1365px) * 0.0024 + max(0px, 100vw - 1640px) * 0.0005), 19px);
-    line-height: 1.6;
-}
-
-.cursada-descuento-valor {
-    color: #FFFFFF;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
-    font-size: clamp(17px, calc(17px + max(0px, min(100vw, 1640px) - 1365px) * 0.0024 + max(0px, 100vw - 1640px) * 0.0005), 19px);
-    line-height: 1.6;
-}
-
-.cursada-total-matricula {
-    margin-top: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.0012), 1rem);
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-}
-
-.cursada-total-label {
-    color: #60D697;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
-    font-size: clamp(28px, calc(28px + max(0px, min(100vw, 1640px) - 1365px) * 0.0024 + max(0px, 100vw - 1640px) * 0.0005), 32px);
-    line-height: 1.6;
-}
-
-.cursada-total-valor {
-    color: #60D697;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
-    font-size: clamp(28px, calc(28px + max(0px, min(100vw, 1640px) - 1365px) * 0.0024 + max(0px, 100vw - 1640px) * 0.0005), 32px);
-    line-height: 1.6;
-}
-
-.cursada-reserva-texto {
-    margin-top: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.0012), 1rem);
-    color: #FFFFFF;
-    font-family: 'Montserrat', sans-serif;
-    font-size: clamp(14px, calc(14px + max(0px, min(100vw, 1640px) - 1365px) * 0.0024 + max(0px, 100vw - 1640px) * 0.0005), 16px);
-    line-height: 1.6;
-    margin-bottom: 0;
-}
-
-.cursada-reserva-bold {
-    font-weight: 700;
-}
-
-.cursada-reserva-regular {
     font-weight: 400;
+    font-size: clamp(12px, calc(12px + (100vw - 1100px) * ((14 - 12) / (1920 - 1100))), 14px);
+    line-height: 1.6;
+    width: 100%;
+    margin-bottom: clamp(0.5rem, calc(0.5rem + (100vw - 1100px) * 0.0012), 0.75rem);
+    text-align: center;
+    display: inline-block;
+    max-width: clamp(280px, calc(280px + (100vw - 1500px) * ((500 - 280) / (1920 - 1500))), 500px);
 }
 
-.cursada-checkbox-container {
-    margin-top: clamp(1rem, calc(1rem + (100vw - 1100px) * 0.0024), 1.5rem);
+.cursada-codigo-descuento-wrapper {
+    width: 100%;
+    text-align: center;
     display: flex;
     align-items: center;
-    gap: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.0012), 1rem);
+    justify-content: center;
+    gap: clamp(0.5rem, calc(0.5rem + (100vw - 1100px) * 0.0006), 0.75rem);
+    margin-top: clamp(0.5rem, calc(0.5rem + (100vw - 1100px) * 0.0012), 0.75rem);
 }
 
-.cursada-checkbox-input {
+.cursada-link-codigo-descuento {
+    color: #65E09C;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: clamp(11px, calc(11px + (100vw - 1100px) * ((14 - 11) / (1920 - 1100))), 14px);
+    text-decoration: underline;
+    cursor: pointer;
+    transition: opacity 0.2s, color 0.2s;
+    text-align: left;
+    flex-shrink: 0;
+}
+
+.cursada-link-codigo-descuento.cursada-link-disabled {
+    color: #aeaeae;
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.cursada-promo-badge-descuento {
+    width: clamp(40px, calc(40px + (100vw - 1100px) * ((50 - 40) / (1920 - 1100))), 50px);
+    height: clamp(32px, calc(32px + (100vw - 1100px) * ((40 - 32) / (1920 - 1100))), 40px);
+    object-fit: contain;
+    flex-shrink: 0;
+    display: none;
+}
+
+.cursada-promo-badge-descuento-visible {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.cursada-link-codigo-descuento:hover {
+    opacity: 0.8;
+}
+
+.cursada-codigo-descuento-input-container {
+    display: none;
+    gap: clamp(0.25rem, calc(0.25rem + (100vw - 1100px) * 0.0006), 0.5rem);
+    margin-top: clamp(0.5rem, calc(0.5rem + (100vw - 1100px) * 0.0012), 0.75rem);
+    margin-bottom: 0;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.cursada-codigo-descuento-input-container.input-visible {
+    display: flex;
+    margin-bottom: clamp(1rem, calc(1rem + (100vw - 1100px) * 0.0024), 1.5rem);
+}
+
+/* Estilos para el indicador de carga de cursadas */
+#cursadas-loading {
+    text-align: center;
+    padding: 2rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.cursada-codigo-descuento-input {
+    flex: 1;
+    max-width: clamp(160px, calc(160px + (100vw - 1100px) * ((200 - 160) / (1920 - 1100))), 200px);
+    padding: clamp(0.375rem, calc(0.375rem + (100vw - 1100px) * 0.0006), 0.5rem);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(11px, calc(11px + (100vw - 1100px) * ((14 - 11) / (1920 - 1100))), 14px);
+}
+
+.cursada-codigo-descuento-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.cursada-codigo-descuento-input:focus {
+    outline: none;
+    border-color: #65E09C;
+}
+
+.cursada-codigo-descuento-btn {
+    padding: clamp(0.375rem, calc(0.375rem + (100vw - 1100px) * 0.0006), 0.5rem) clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.0012), 1rem);
+    background-color: #65E09C;
+    color: #010C42;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: clamp(11px, calc(11px + (100vw - 1100px) * ((14 - 11) / (1920 - 1100))), 14px);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.cursada-codigo-descuento-btn:hover {
+    opacity: 0.9;
+}
+
+.cursada-descuento-aplicado {
+    width: 100%;
+    text-align: center;
+    margin-top: clamp(0.5rem, calc(0.5rem + (100vw - 1100px) * 0.0012), 0.75rem);
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: clamp(12px, calc(12px + (100vw - 1100px) * ((18 - 12) / (1920 - 1100))), 18px);
+}
+
+.cursada-descuento-aplicado .cursada-descuento-valor {
+    color: #FFFFFF;
+    font-weight: 500;
+    font-size: clamp(12px, calc(12px + (100vw - 1100px) * ((18 - 12) / (1920 - 1100))), 18px);
+}
+
+.cursada-total-aplicado {
+    width: 100%;
+    text-align: center;
+    margin-top: clamp(0.5rem, calc(0.5rem + (100vw - 1100px) * 0.0012), 0.75rem);
+    color: #60D697;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: clamp(16px, calc(16px + (100vw - 1100px) * ((32 - 16) / (1920 - 1100))), 32px);
+}
+
+.cursada-total-aplicado .cursada-total-valor {
+    color: #60D697;
+    font-weight: 700;
+}
+
+.cursada-texto-pago-matricula {
+    width: 100%;
+    text-align: center;
+    margin-top: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.0018), 1rem);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.25rem, calc(0.25rem + (100vw - 1100px) * 0.0006), 0.5rem);
+}
+
+.cursada-texto-pago-linea-1 {
+    width: 100%;
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: clamp(12px, calc(12px + (100vw - 1100px) * ((16 - 12) / (1920 - 1100))), 16px);
+    line-height: 1.4;
+}
+
+.cursada-texto-pago-linea-2 {
+    width: 100%;
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: clamp(12px, calc(12px + (100vw - 1100px) * ((16 - 12) / (1920 - 1100))), 16px);
+    line-height: 1.4;
+}
+
+.cursada-checkbox-terminos-container {
+    width: 100%;
+    margin-top: clamp(12px, calc(12px + (100vw - 1100px) * ((40 - 12) / (1920 - 1100))), 40px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cursada-checkbox-terminos-input {
     position: absolute;
     opacity: 0;
     cursor: pointer;
@@ -15144,36 +15394,87 @@ body.inscripcion-page {
     width: 0;
 }
 
-.cursada-checkbox-label {
+.cursada-checkbox-terminos-label {
     display: flex;
     align-items: center;
-    gap: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.0012), 1rem);
+    gap: clamp(0.5rem, calc(0.5rem + (100vw - 1100px) * 0.0006), 0.75rem);
     cursor: pointer;
+    user-select: none;
+    transition: opacity 0.2s;
 }
 
-.cursada-checkbox-custom {
-    width: clamp(24px, calc(24px + (100vw - 1100px) * 0.0049), 28px);
-    height: clamp(24px, calc(24px + (100vw - 1100px) * 0.0049), 28px);
-    border: 1px solid #FFFFFF;
+.cursada-checkbox-terminos-label.cursada-checkbox-disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.cursada-checkbox-terminos-input:disabled + .cursada-checkbox-terminos-label {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.cursada-checkbox-terminos-input:disabled + .cursada-checkbox-terminos-label .cursada-checkbox-terminos-custom {
     background-color: rgba(217, 217, 217, 0.1);
-    border-radius: clamp(6px, calc(6px + (100vw - 1100px) * 0.0051), 8px);
-    display: inline-block;
-    position: relative;
-    transition: background-color 0.3s ease;
+    border-color: rgba(217, 217, 217, 0.3);
+    opacity: 0.6;
+}
+
+.cursada-checkbox-terminos-custom {
+    width: clamp(18px, calc(18px + (100vw - 1100px) * ((24 - 18) / (1920 - 1100))), 24px);
+    height: clamp(18px, calc(18px + (100vw - 1100px) * ((24 - 18) / (1920 - 1100))), 24px);
+    background-color: rgba(217, 217, 217, 0.1);
+    border: 1px solid rgba(217, 217, 217, 0.3);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
     flex-shrink: 0;
 }
 
-.cursada-checkbox-input:checked + .cursada-checkbox-label .cursada-checkbox-custom {
-    background-color: #65E09C;
+.cursada-checkbox-terminos-input:checked + .cursada-checkbox-terminos-label .cursada-checkbox-terminos-custom {
+    background-color: #60D697;
+    border-color: #60D697;
 }
 
-.cursada-checkbox-texto {
+.cursada-checkbox-terminos-texto {
     color: #FFFFFF;
     font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
-    font-size: clamp(13px, calc(13px + max(0px, min(100vw, 1640px) - 1365px) * 0.0024 + max(0px, 100vw - 1640px) * 0.0005), 15px);
-    line-height: 1.6;
-    text-decoration: underline;
+    font-weight: 400;
+    font-size: clamp(11px, calc(11px + (100vw - 1100px) * ((13 - 11) / (1920 - 1100))), 13px);
+    line-height: 1.4;
+}
+
+.cursada-terminos-link-ver {
+    color: #65E09C;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: clamp(11px, calc(11px + (100vw - 1100px) * ((13 - 11) / (1920 - 1100))), 13px);
+    text-decoration: none;
+    cursor: pointer;
+    transition: opacity 0.2s, color 0.2s;
+}
+
+.cursada-terminos-link-ver:hover:not(.cursada-link-disabled) {
+    opacity: 0.8;
+}
+
+.cursada-terminos-link-ver.cursada-link-disabled {
+    color: #aeaeae;
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+
+.cursada-valores-columna-der {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
 }
 
 .cursada-btn-reservar {
@@ -15182,11 +15483,11 @@ body.inscripcion-page {
     color: #010C42;
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
-    font-size: clamp(18px, calc(18px + (100vw - 1100px) * 0.0085), 25px);
+    font-size: clamp(12px, calc(12px + (100vw - 1100px) * ((21 - 12) / (1920 - 1100))), 21px);
     border: none;
     border-radius: 48px;
-    width: clamp(300px, calc(300px + (100vw - 1100px) * 0.1037), 385px);
-    height: clamp(50px, calc(50px + (100vw - 1100px) * 0.0122), 60px);
+    width: clamp(262px, calc(262px + (100vw - 1100px) * ((337 - 262) / (1920 - 1100))), 337px);
+    height: clamp(43px, calc(43px + (100vw - 1100px) * ((52 - 43) / (1920 - 1100))), 52px);
     padding: 0;
     display: flex;
     align-items: center;
@@ -15200,22 +15501,25 @@ body.inscripcion-page {
     opacity: 0.9;
 }
 
-.cursada-btn-reservar:disabled {
-    background-color: rgba(255, 255, 255, 0.2);
-    color: #aeaeae;
-    cursor: not-allowed;
-    opacity: 1;
+.cursada-btn-reservar:disabled,
+.cursada-btn-reservar[disabled] {
+    background-color: rgba(174, 174, 174, 0.2) !important;
+    color: #aeaeae !important;
+    border: none !important;
+    cursor: default !important;
+    opacity: 1 !important;
+    pointer-events: none !important;
 }
+
+.cursada-btn-reservar:disabled:hover,
+.cursada-btn-reservar[disabled]:hover {
+    opacity: 1 !important;
+    cursor: default !important;
+    background-color: rgba(174, 174, 174, 0.2) !important;
+}
+
 
 .cursada-descuento-texto {
-    font-weight: 600;
-}
-
-.cursada-cuotas-texto {
-    font-weight: 400;
-}
-
-.cursada-cantidad-cuotas {
     font-weight: 600;
 }
 
@@ -15226,6 +15530,7 @@ body.inscripcion-page {
 .cursada-formulario-titulo {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     gap: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.0012), 1rem);
     margin-bottom: clamp(1rem, calc(1rem + (100vw - 1100px) * 0.0024), 1.5rem);
 }
@@ -15244,6 +15549,10 @@ body.inscripcion-page {
     line-height: 1.6;
 }
 
+.cursada-formulario-texto-semibold {
+    font-weight: 600;
+}
+
 .cursada-formulario {
     width: 100%;
 }
@@ -15258,7 +15567,10 @@ body.inscripcion-page {
 .cursada-formulario-columna-der {
     display: flex;
     flex-direction: column;
-    gap: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.0012), 1rem);
+    gap: clamp(1.25rem, calc(1.25rem + (100vw - 1100px) * 0.0024), 1.75rem);
+    padding-left: clamp(0.5rem, calc(0.5rem + (100vw - 1100px) * 0.0012), 1rem);
+    padding-right: clamp(0.5rem, calc(0.5rem + (100vw - 1100px) * 0.0012), 1rem);
+    box-sizing: border-box;
 }
 
 .cursada-formulario-campo {
@@ -15297,8 +15609,212 @@ body.inscripcion-page {
     display: none;
 }
 
+.cursada-formulario-campo-telefono {
+    width: 100%;
+}
+
+.cursada-telefono-wrapper {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, calc(8px + (100vw - 1100px) * ((12 - 8) / (1920 - 1100))), 12px);
+    width: 100%;
+}
+
+.cursada-telefono-prefijo-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    max-width: clamp(50px, calc(50px + (100vw - 1100px) * ((85 - 50) / (1920 - 1100))), 85px);
+}
+
+.cursada-telefono-prefijo {
+    flex-shrink: 0;
+    background: transparent !important;
+    border: none !important;
+    border-top: none !important;
+    border-right: none !important;
+    border-left: none !important;
+    border-bottom: 1px solid #FFFFFF;
+    padding: clamp(0.5rem, calc(0.5rem + (100vw - 1100px) * 0.0012), 0.75rem) clamp(0.25rem, calc(0.25rem + (100vw - 1100px) * 0.0006), 0.5rem);
+    padding-right: clamp(1.25rem, calc(1.25rem + (100vw - 1100px) * 0.0009), 1.75rem);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: clamp(14px, calc(14px + (100vw - 1100px) * ((18 - 14) / (1920 - 1100))), 18px);
+    outline: none !important;
+    cursor: pointer;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    background-image: none !important;
+    position: relative;
+    width: clamp(50px, calc(50px + (100vw - 1100px) * ((70 - 50) / (1920 - 1100))), 70px);
+    text-align: left;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    border-radius: 0 !important;
+    -webkit-border-radius: 0 !important;
+    -moz-border-radius: 0 !important;
+    /* Estilos de scrollbar para el dropdown - igual que inscripcion-listado-panel */
+    scrollbar-width: thin;
+    scrollbar-color: #60D697 rgba(217, 217, 217, 0.2);
+}
+
+.cursada-telefono-prefijo::-ms-expand {
+    display: none;
+}
+
+.cursada-telefono-prefijo::-webkit-select {
+    border: none !important;
+    outline: none !important;
+}
+
+.cursada-telefono-prefijo::-moz-focus-inner {
+    border: 0 !important;
+    padding: 0;
+}
+
+.cursada-telefono-prefijo option {
+    color: rgba(255, 255, 255, 0.6);
+    background-color: #010C42;
+}
+
+.cursada-telefono-prefijo:focus {
+    border: none !important;
+    border-bottom: 1px solid #60D697 !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.cursada-telefono-prefijo:hover {
+    border: none !important;
+    border-bottom: 1px solid #60D697 !important;
+}
+
+.cursada-telefono-chevron {
+    position: absolute;
+    right: clamp(0.25rem, calc(0.25rem + (100vw - 1100px) * 0.0006), 0.5rem);
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(10px, calc(10px + (100vw - 1100px) * ((14 - 10) / (1920 - 1100))), 14px);
+    color: rgba(255, 255, 255, 0.6);
+    pointer-events: none;
+    font-weight: 400;
+    z-index: 1;
+    line-height: 1;
+}
+
+.cursada-telefono-prefijo:hover {
+    border-bottom-color: #60D697;
+}
+
+.cursada-telefono-prefijo:focus {
+    border-bottom-color: #60D697;
+}
+
+/* WebKit browsers (Chrome, Safari, Edge) - Scrollbar del dropdown del select telefónico */
+/* Nota: Los estilos de scrollbar en elementos <select> nativos tienen limitaciones
+   porque el dropdown es renderizado por el sistema operativo, no por el navegador.
+   Estos estilos pueden no funcionar en todos los navegadores/sistemas operativos. */
+select::-webkit-scrollbar {
+    width: 24px !important;
+    min-width: 24px;
+    max-width: 24px;
+}
+
+select::-webkit-scrollbar-track {
+    background: rgba(217, 217, 217, 0.2);
+    border-radius: 200px;
+    border: 1px solid #60D697;
+}
+
+select::-webkit-scrollbar-thumb {
+    background-color: #60D697;
+    border-radius: 200px;
+    border: 1px solid #60D697;
+    box-sizing: border-box;
+    min-width: 8px;
+}
+
+select::-webkit-scrollbar-thumb:hover {
+    background-color: #60D697;
+}
+
+.cursada-telefono-input {
+    flex: 1;
+    min-width: 0;
+}
+
+.cursada-telefono-input.error {
+    border-bottom-color: #ff4444;
+}
+
 .cursada-formulario-error.show {
     display: block;
+}
+
+/* Notificaciones personalizadas */
+.cursada-notificaciones-container {
+    position: fixed;
+    top: clamp(1rem, calc(1rem + (100vw - 1100px) * 0.0012), 1.5rem);
+    right: clamp(1rem, calc(1rem + (100vw - 1100px) * 0.0012), 1.5rem);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.5rem, calc(0.5rem + (100vw - 1100px) * 0.0006), 0.75rem);
+    pointer-events: none;
+}
+
+.cursada-notificacion {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.5rem, calc(0.5rem + (100vw - 1100px) * 0.0006), 0.75rem);
+    padding: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.0009), 1rem) clamp(1rem, calc(1rem + (100vw - 1100px) * 0.0012), 1.5rem);
+    border-radius: clamp(4px, calc(4px + (100vw - 1100px) * 0.0003), 8px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(12px, calc(12px + (100vw - 1100px) * ((14 - 12) / (1920 - 1100))), 14px);
+    font-weight: 500;
+    min-width: clamp(250px, calc(250px + (100vw - 1100px) * 0.1), 350px);
+    max-width: clamp(300px, calc(300px + (100vw - 1100px) * 0.15), 450px);
+    pointer-events: auto;
+    transform: translateX(calc(100% + 2rem));
+    opacity: 0;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.cursada-notificacion-visible {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.cursada-notificacion-error {
+    background-color: #ff4444;
+    color: #FFFFFF;
+    border-left: 4px solid #cc0000;
+}
+
+.cursada-notificacion-success {
+    background-color: #65E09C;
+    color: #010C42;
+    border-left: 4px solid #4BC97A;
+}
+
+.cursada-notificacion-icono {
+    width: clamp(18px, calc(18px + (100vw - 1100px) * ((20 - 18) / (1920 - 1100))), 20px);
+    height: clamp(18px, calc(18px + (100vw - 1100px) * ((20 - 18) / (1920 - 1100))), 20px);
+    flex-shrink: 0;
+}
+
+.cursada-notificacion-texto {
+    flex: 1;
+    line-height: 1.4;
 }
 
 .cursada-item-label {
@@ -15314,6 +15830,22 @@ body.inscripcion-page {
     font-weight: 300;
     font-size: clamp(15px, calc(15px + (100vw - 1320px) * 0.005), 19px);
     display: inline-block;
+}
+
+/* Estilos cuando no hay vacantes (Vacantes = 0) */
+.cursada-item.sin-vacantes .cursada-dia-turno-texto,
+.cursada-item.sin-vacantes .cursada-dia-turno-separador,
+.cursada-item.sin-vacantes .cursada-dia-turno-horario {
+    color: #a1a1a1;
+}
+
+.cursada-item.sin-vacantes .cursada-lugares-texto {
+    color: #a1a1a1;
+}
+
+.cursada-item.sin-vacantes .cursada-item-label,
+.cursada-item.sin-vacantes .cursada-item-value {
+    color: #a1a1a1;
 }
 
 .cursada-item-value-linea2 {

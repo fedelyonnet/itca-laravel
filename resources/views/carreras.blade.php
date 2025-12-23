@@ -107,9 +107,9 @@
                         <div class="carrera-right">
                             <a href="{{ route('carreras.show', $carrera->id) }}" class="carrera-image">
                                 <!-- Imagen Desktop (solo visible en desktop y tablet) -->
-                                <img src="{{ asset('storage/' . $carrera->ilustracion_desktop) }}" alt="{{ $carrera->nombre }}" class="carreras-image-desktop" />
+                                <img src="{{ asset('storage/' . $carrera->ilustracion_desktop) }}" alt="{{ $carrera->nombre }}" class="carreras-image-desktop" loading="lazy" />
                                 <!-- Imagen Mobile (solo visible en mobile) -->
-                                <img src="{{ asset('storage/' . $carrera->ilustracion_mobile) }}" alt="{{ $carrera->nombre }}" class="carreras-image-mobile" />
+                                <img src="{{ asset('storage/' . $carrera->ilustracion_mobile) }}" alt="{{ $carrera->nombre }}" class="carreras-image-mobile" loading="lazy" />
                                 <div class="carreras-modalidad-badge carreras-modalidad-badge-desktop">
                                     <span class="carreras-modalidad-text">Modalidad: <strong>
                                         @if($carrera->modalidad_online && $carrera->modalidad_presencial)
@@ -496,9 +496,24 @@
             });
         }
         
+        // Función para marcar imágenes como cargadas
+        function markImagesAsLoaded() {
+            const images = document.querySelectorAll('.carrera-image img');
+            images.forEach(img => {
+                if (img.complete) {
+                    img.classList.add('loaded');
+                } else {
+                    img.addEventListener('load', function() {
+                        this.classList.add('loaded');
+                    });
+                }
+            });
+        }
+        
         // Ejecutar al cargar la página
         document.addEventListener('DOMContentLoaded', function() {
             handleCarrerasImages();
+            markImagesAsLoaded();
         });
         
         // Ejecutar al redimensionar la ventana

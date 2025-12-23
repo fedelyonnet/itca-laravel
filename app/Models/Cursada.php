@@ -20,20 +20,33 @@ class Cursada extends Model
         'Horario',
         'Vacantes',
         'Matric_Base',
+        'Sin_iva_Mat', // Nueva columna del Excel
         'Cta_Web',
+        'Sin_IVA_cta', // Nueva columna del Excel
         'Dto_Cuota',
-        'Sin_IVA',
+        'cuotas',
         'sede',
+        'Promo_Mat_logo',
+        'ver_curso', // Nueva columna del Excel
+        // Columnas antiguas (mantener por compatibilidad si existen en producción)
+        'Sin_IVA',
         'casilla_Promo',
+        'Promo_ctas',
+        'Proximamente',
+        'avisar',
+        'Avisar_link',
     ];
     
     protected $casts = [
         'Fecha_Inicio' => 'date',
         'Matric_Base' => 'decimal:2',
+        'Sin_iva_Mat' => 'decimal:2',
         'Cta_Web' => 'decimal:2',
+        'Sin_IVA_cta' => 'decimal:2',
         'Dto_Cuota' => 'decimal:2', // Porcentaje
-        'Sin_IVA' => 'decimal:2',
         'Vacantes' => 'integer',
         'casilla_Promo' => 'boolean',
+        // Mantener cast antiguo por compatibilidad
+        'Sin_IVA' => 'decimal:2',
     ];
 }

@@ -10,7 +10,9 @@ Route::get('/carreras', [App\Http\Controllers\WelcomeController::class, 'carrera
 Route::get('/carreras/{curso}', [CursoController::class, 'show'])->name('carreras.show');
 // Inscripción/Compra
 Route::get('/inscripcion/{curso}', [App\Http\Controllers\WelcomeController::class, 'inscripcion'])->name('inscripcion');
+Route::get('/api/inscripcion/{curso}/cursadas', [App\Http\Controllers\WelcomeController::class, 'getCursadas'])->name('api.inscripcion.cursadas');
 Route::post('/leads', [App\Http\Controllers\WelcomeController::class, 'storeLead'])->name('leads.store');
+Route::post('/buscar-descuento', [App\Http\Controllers\CursoController::class, 'buscarDescuento'])->name('buscar.descuento')->middleware('web');
 
 
 Route::middleware('auth')->group(function () {
@@ -37,8 +39,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/carreras/ordenar-filtros', [App\Http\Controllers\CursoController::class, 'ordenarFiltros'])->name('admin.carreras.ordenar-filtros');
         Route::get('/carreras/ordenar-filtros/get', [App\Http\Controllers\CursoController::class, 'getFiltrosPorCategoria'])->name('admin.carreras.ordenar-filtros.get');
         Route::post('/carreras/ordenar-filtros/guardar', [App\Http\Controllers\CursoController::class, 'guardarOrdenFiltros'])->name('admin.carreras.ordenar-filtros.guardar');
+        Route::get('/carreras/importar-promociones', [App\Http\Controllers\CursoController::class, 'importarPromociones'])->name('admin.carreras.importar-promociones');
+        Route::post('/carreras/importar-promociones', [App\Http\Controllers\CursoController::class, 'storeImportacionPromociones'])->name('admin.carreras.importar-promociones.store');
         Route::post('/carreras/importacion', [App\Http\Controllers\CursoController::class, 'storeImportacion'])->name('admin.carreras.importacion.store');
         Route::post('/carreras/multimedia', [App\Http\Controllers\CursoController::class, 'storeFoto'])->name('admin.carreras.multimedia.store');
+        Route::post('/promo-badge', [App\Http\Controllers\PromoBadgeController::class, 'store'])->name('admin.promo-badge.store');
+        Route::delete('/promo-badge', [App\Http\Controllers\PromoBadgeController::class, 'destroy'])->name('admin.promo-badge.destroy');
         Route::get('/carreras/multimedia/{id}/data', [App\Http\Controllers\CursoController::class, 'getFotoData'])->name('admin.carreras.multimedia.data');
         Route::put('/carreras/multimedia/{id}', [App\Http\Controllers\CursoController::class, 'updateFoto'])->name('admin.carreras.multimedia.update');
         Route::delete('/carreras/multimedia/{id}', [App\Http\Controllers\CursoController::class, 'destroyFoto'])->name('admin.carreras.multimedia.destroy');

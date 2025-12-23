@@ -14,6 +14,7 @@ use App\Models\StickyBar;
 use App\Models\Noticia;
 use App\Models\Cursada;
 use App\Models\Lead;
+use App\Models\PromoBadge;
 
 class WelcomeController extends Controller
 {
@@ -108,174 +109,362 @@ class WelcomeController extends Controller
 
     public function inscripcion(Curso $curso)
     {
-        // Obtener sedes disponibles para el footer
-        $sedes = Sede::where('disponible', true)
-                    ->whereNotIn('nombre', ['online', 'Online', 'ONLINE', 'próximamente', 'Proximamente', 'PROXIMAMENTE'])
-                    ->ordered()
-                    ->get();
+        $startTime = microtime(true);
         
-        // Obtener Sticky Bar
-        $stickyBar = StickyBar::first();
+        // Usar caché para los filtros (TTL: 30 minutos)
+        // Cachear por curso para que si hay cambios en un curso no afecte a otros
+        $cacheKey = 'inscripcion_filtros_' . $curso->id;
+        $cacheTTL = 30 * 60; // 30 minutos
         
-        // Buscar la carrera en cursadas que coincida con el nombre del curso
-        $carreraSeleccionada = null;
-        $carrerasDisponibles = Cursada::select('carrera')
-            ->whereNotNull('carrera')
-            ->where('carrera', '!=', '')
-            ->distinct()
-            ->orderBy('carrera')
-            ->pluck('carrera')
-            ->unique()
-            ->values();
-        
-        // Buscar coincidencia flexible entre el nombre del curso y las carreras disponibles
-        // Usar la función corregirNombreCarrera para comparar con los nombres convertidos
-        $nombreCurso = mb_strtolower(trim($curso->nombre ?? ''), 'UTF-8');
-        foreach ($carrerasDisponibles as $carrera) {
-            // Convertir el nombre de la carrera usando la misma función que se usa en la vista
-            $carreraConvertida = corregirNombreCarrera($carrera);
-            $nombreCarreraConvertido = mb_strtolower(trim($carreraConvertida), 'UTF-8');
+        $filtrosData = \Cache::remember($cacheKey, $cacheTTL, function () use ($curso, &$startTime) {
+            \Log::info('Inscripcion: Cache miss - generando datos', ['curso_id' => $curso->id]);
+            $queryStart = microtime(true);
+            // Obtener sedes disponibles para el footer
+            $sedes = Sede::where('disponible', true)
+                        ->whereNotIn('nombre', ['online', 'Online', 'ONLINE', 'próximamente', 'Proximamente', 'PROXIMAMENTE'])
+                        ->ordered()
+                        ->get();
             
-            // Comparación flexible: si el nombre del curso coincide con el nombre convertido de la carrera
-            if ($nombreCarreraConvertido === $nombreCurso || 
-                strpos($nombreCarreraConvertido, $nombreCurso) !== false || 
-                strpos($nombreCurso, $nombreCarreraConvertido) !== false) {
-                $carreraSeleccionada = $carrera; // Guardar el valor original de la BD
-                break;
+            // Obtener Sticky Bar
+            $stickyBar = StickyBar::first();
+            
+            // Base query optimizada: usar índice en lugar de whereRaw
+            $baseQuery = Cursada::where('ver_curso', 'ver');
+            
+            // Buscar la carrera en cursadas que coincida con el nombre del curso
+            $carreraSeleccionada = null;
+            // Optimizar: usar groupBy en lugar de distinct() + unique()
+            $carrerasDisponibles = (clone $baseQuery)
+                ->select('carrera')
+                ->whereNotNull('carrera')
+                ->where('carrera', '!=', '')
+                ->groupBy('carrera')
+                ->orderBy('carrera')
+                ->pluck('carrera');
+            
+            // Pre-calcular nombres convertidos una sola vez (optimización)
+            $carrerasConNombresConvertidos = $carrerasDisponibles->map(function($carrera) {
+                return [
+                    'original' => $carrera,
+                    'convertido' => mb_strtolower(trim(corregirNombreCarrera($carrera)), 'UTF-8')
+                ];
+            });
+            
+            // Buscar coincidencia flexible entre el nombre del curso y las carreras disponibles
+            $nombreCurso = mb_strtolower(trim($curso->nombre ?? ''), 'UTF-8');
+            foreach ($carrerasConNombresConvertidos as $carreraData) {
+                $nombreCarreraConvertido = $carreraData['convertido'];
+                
+                // Comparación flexible: si el nombre del curso coincide con el nombre convertido de la carrera
+                if ($nombreCarreraConvertido === $nombreCurso || 
+                    strpos($nombreCarreraConvertido, $nombreCurso) !== false || 
+                    strpos($nombreCurso, $nombreCarreraConvertido) !== false) {
+                    $carreraSeleccionada = $carreraData['original']; // Guardar el valor original de la BD
+                    break;
+                }
             }
-        }
-        
-        // Si no hay coincidencia exacta, buscar por palabras clave comunes
-        if (!$carreraSeleccionada) {
-            $palabrasCurso = explode(' ', $nombreCurso);
-            foreach ($carrerasDisponibles as $carrera) {
-                $carreraConvertida = corregirNombreCarrera($carrera);
-                $nombreCarreraConvertido = mb_strtolower(trim($carreraConvertida), 'UTF-8');
-                foreach ($palabrasCurso as $palabra) {
-                    if (strlen($palabra) > 3 && strpos($nombreCarreraConvertido, $palabra) !== false) {
-                        $carreraSeleccionada = $carrera; // Guardar el valor original de la BD
-                        break 2;
+            
+            // Si no hay coincidencia exacta, buscar por palabras clave comunes
+            if (!$carreraSeleccionada) {
+                $palabrasCurso = explode(' ', $nombreCurso);
+                foreach ($carrerasConNombresConvertidos as $carreraData) {
+                    $nombreCarreraConvertido = $carreraData['convertido'];
+                    foreach ($palabrasCurso as $palabra) {
+                        if (strlen($palabra) > 3 && strpos($nombreCarreraConvertido, $palabra) !== false) {
+                            $carreraSeleccionada = $carreraData['original']; // Guardar el valor original de la BD
+                            break 2;
+                        }
                     }
                 }
             }
-        }
-        
-        // Función helper para aplicar orden guardado
-        $aplicarOrden = function($items, $categoria, $campoValor = null) {
-            $ordenGuardado = \DB::table('filtro_orden')
-                ->where('categoria', $categoria)
+            
+            // Cargar TODOS los órdenes guardados en una sola consulta
+            $ordenesGuardados = \DB::table('filtro_orden')
+                ->whereIn('categoria', ['carrera', 'sede', 'modalidad', 'turno', 'dia'])
+                ->orderBy('categoria')
                 ->orderBy('orden')
-                ->pluck('valor')
-                ->toArray();
+                ->get()
+                ->groupBy('categoria')
+                ->map(function($items) {
+                    return $items->pluck('valor')->toArray();
+                });
             
-            if (empty($ordenGuardado)) {
-                return $items;
-            }
-            
-            // Separar items ordenados y nuevos
-            $itemsOrdenados = collect();
-            $itemsNuevos = collect();
-            
-            foreach ($items as $item) {
-                // Obtener el valor según el tipo de item
-                if (is_object($item) && $campoValor) {
-                    $valor = $item->{$campoValor} ?? null;
-                } elseif (is_array($item) && $campoValor) {
-                    $valor = $item[$campoValor] ?? null;
-                } else {
-                    $valor = $item; // Para strings directos
+            // Función helper para aplicar orden guardado (optimizada)
+            $aplicarOrden = function($items, $categoria, $campoValor = null) use ($ordenesGuardados) {
+                $ordenGuardado = $ordenesGuardados->get($categoria, []);
+                
+                if (empty($ordenGuardado)) {
+                    return $items;
                 }
                 
-                $posicion = array_search($valor, $ordenGuardado);
-                if ($posicion !== false) {
-                    // Item con orden guardado
-                    $itemsOrdenados->push([
-                        'item' => $item,
-                        'orden' => $posicion
-                    ]);
-                } else {
-                    // Item nuevo (no está en el orden guardado)
-                    $itemsNuevos->push($item);
+                // Separar items ordenados y nuevos
+                $itemsOrdenados = collect();
+                $itemsNuevos = collect();
+                
+                foreach ($items as $item) {
+                    // Obtener el valor según el tipo de item
+                    if (is_object($item) && $campoValor) {
+                        $valor = $item->{$campoValor} ?? null;
+                    } elseif (is_array($item) && $campoValor) {
+                        $valor = $item[$campoValor] ?? null;
+                    } else {
+                        $valor = $item; // Para strings directos
+                    }
+                    
+                    $posicion = array_search($valor, $ordenGuardado);
+                    if ($posicion !== false) {
+                        // Item con orden guardado
+                        $itemsOrdenados->push([
+                            'item' => $item,
+                            'orden' => $posicion
+                        ]);
+                    } else {
+                        // Item nuevo (no está en el orden guardado)
+                        $itemsNuevos->push($item);
+                    }
                 }
-            }
+                
+                // Ordenar los items con orden guardado
+                $itemsOrdenados = $itemsOrdenados->sortBy('orden')->pluck('item');
+                
+                // Combinar: primero los ordenados, luego los nuevos (ordenados alfabéticamente)
+                return $itemsOrdenados->merge($itemsNuevos->sort()->values())->values();
+            };
             
-            // Ordenar los items con orden guardado
-            $itemsOrdenados = $itemsOrdenados->sortBy('orden')->pluck('item');
+            // Obtener datos únicos de cursadas para los filtros (optimizado con índices)
+            $carreras = $carrerasDisponibles->map(function($carrera) {
+                return (object)['carrera' => $carrera];
+            });
+            // Aplicar orden guardado a carreras
+            $carreras = $aplicarOrden($carreras, 'carrera', 'carrera');
             
-            // Combinar: primero los ordenados, luego los nuevos (ordenados alfabéticamente)
-            return $itemsOrdenados->merge($itemsNuevos->sort()->values())->values();
-        };
-        
-        // Obtener datos únicos de cursadas para los filtros
-        $carreras = $carrerasDisponibles->map(function($carrera) {
-            return (object)['carrera' => $carrera];
+            $sedesFiltro = (clone $baseQuery)
+                ->select('sede')
+                ->whereNotNull('sede')
+                ->where('sede', '!=', '')
+                ->groupBy('sede')
+                ->orderBy('sede')
+                ->pluck('sede');
+            // Aplicar orden guardado a sedes
+            $sedesFiltro = $aplicarOrden($sedesFiltro, 'sede');
+            
+            // Obtener combinaciones únicas de modalidad + régimen
+            $modalidades = (clone $baseQuery)
+                ->select('xModalidad', 'Régimen')
+                ->whereNotNull('xModalidad')
+                ->where('xModalidad', '!=', '')
+                ->whereNotNull('Régimen')
+                ->where('Régimen', '!=', '')
+                ->groupBy('xModalidad', 'Régimen')
+                ->orderBy('xModalidad')
+                ->orderBy('Régimen')
+                ->get()
+                ->map(function($item) {
+                    return [
+                        'modalidad' => $item->xModalidad,
+                        'regimen' => $item->Régimen,
+                        'combinacion' => $item->xModalidad . ' - ' . $item->Régimen,
+                        'valor' => $item->xModalidad . '|' . $item->Régimen // Separador para el filtrado
+                    ];
+                });
+            // Aplicar orden guardado a modalidades
+            $modalidades = $aplicarOrden($modalidades, 'modalidad', 'valor');
+            
+            $turnos = (clone $baseQuery)
+                ->select('xTurno')
+                ->whereNotNull('xTurno')
+                ->where('xTurno', '!=', '')
+                ->groupBy('xTurno')
+                ->orderBy('xTurno')
+                ->pluck('xTurno');
+            // Aplicar orden guardado a turnos
+            $turnos = $aplicarOrden($turnos, 'turno');
+            
+            $dias = (clone $baseQuery)
+                ->select('xDias')
+                ->whereNotNull('xDias')
+                ->where('xDias', '!=', '')
+                ->groupBy('xDias')
+                ->orderBy('xDias')
+                ->pluck('xDias');
+            // Aplicar orden guardado a días
+            $dias = $aplicarOrden($dias, 'dia');
+            
+            // NO cargar cursadas aquí - se cargarán vía AJAX para reducir HTML inicial
+            // Esto reduce el HTML de 3.5MB a ~100KB en la carga inicial
+            
+            return compact('sedes', 'stickyBar', 'carreras', 'sedesFiltro', 'modalidades', 'turnos', 'dias', 'carreraSeleccionada');
         });
-        // Aplicar orden guardado a carreras
-        $carreras = $aplicarOrden($carreras, 'carrera', 'carrera');
         
-        $sedesFiltro = Cursada::select('sede')
-            ->distinct()
-            ->whereNotNull('sede')
-            ->where('sede', '!=', '')
-            ->orderBy('sede')
-            ->pluck('sede')
-            ->unique()
-            ->values();
-        // Aplicar orden guardado a sedes
-        $sedesFiltro = $aplicarOrden($sedesFiltro, 'sede');
+        $cacheTime = microtime(true) - $startTime;
+        \Log::info('Inscripcion: Tiempo total con cache', ['time' => round($cacheTime * 1000, 2) . 'ms', 'curso_id' => $curso->id]);
         
-        // Obtener combinaciones únicas de modalidad + régimen
-        $modalidades = Cursada::select('xModalidad', 'Régimen')
-            ->whereNotNull('xModalidad')
-            ->where('xModalidad', '!=', '')
-            ->whereNotNull('Régimen')
-            ->where('Régimen', '!=', '')
-            ->distinct()
-            ->orderBy('xModalidad')
-            ->orderBy('Régimen')
+        // Obtener el badge activo (no cachear porque puede cambiar)
+        $badgeStart = microtime(true);
+        $promoBadge = PromoBadge::getActive();
+        $badgeTime = microtime(true) - $badgeStart;
+        \Log::info('Inscripcion: Badge cargado', ['time' => round($badgeTime * 1000, 2) . 'ms']);
+        
+        // Extraer datos del caché
+        extract($filtrosData);
+        
+        // No pasar cursadas - se cargarán vía AJAX
+        $cursadas = collect();
+        
+        $viewStart = microtime(true);
+        $view = view('inscripcion', compact('curso', 'sedes', 'stickyBar', 'carreras', 'sedesFiltro', 'modalidades', 'turnos', 'dias', 'cursadas', 'carreraSeleccionada', 'promoBadge'));
+        $viewTime = microtime(true) - $viewStart;
+        \Log::info('Inscripcion: Vista renderizada', ['time' => round($viewTime * 1000, 2) . 'ms', 'cursadas_count' => 0]);
+        
+        $totalTime = microtime(true) - $startTime;
+        \Log::info('Inscripcion: Tiempo TOTAL', ['time' => round($totalTime * 1000, 2) . 'ms']);
+        
+        return $view;
+    }
+    
+    public function getCursadas(Curso $curso)
+    {
+        $startTime = microtime(true);
+        
+        // Obtener el badge activo
+        $promoBadge = PromoBadge::getActive();
+        
+        // Base query optimizada
+        $baseQuery = Cursada::where('ver_curso', 'ver');
+        
+        // Obtener y pre-procesar cursadas
+        $cursadas = $baseQuery
+            ->select([
+                'id', 'carrera', 'sede', 'xModalidad', 'Régimen', 'xTurno', 'xDias',
+                'Fecha_Inicio', 'Horario', 'Vacantes', 'Matric_Base', 'Sin_iva_Mat', 'Cta_Web',
+                'Sin_IVA_cta', 'Dto_Cuota', 'cuotas', 'Promo_Mat_logo'
+            ])
+            ->orderBy('Fecha_Inicio')
             ->get()
-            ->map(function($item) {
+            ->map(function($cursada) {
+                // Pre-calcular todos los valores que se usan en la vista
+                $vacantes = intval($cursada->Vacantes ?? 0);
+                $sinVacantes = ($vacantes === 0);
+                $tieneDescuento = false;
+                $dtoCuotaValue = 0;
+                if (!empty($cursada->Dto_Cuota) && $cursada->Dto_Cuota !== null) {
+                    $dtoCuotaValue = floatval($cursada->Dto_Cuota);
+                    $tieneDescuento = (abs($dtoCuotaValue) > 0.01);
+                }
+                
+                // Pre-calcular día completo
+                $diaCompleto = convertirDiasCompletos($cursada->xDias ?? '');
+                $diaMayusculas = mb_strtoupper($diaCompleto, 'UTF-8');
+                
+                // Pre-calcular turno
+                $turno = $cursada->xTurno ?? '';
+                $turnoMayusculas = mb_strtoupper($turno, 'UTF-8');
+                
+                // Pre-calcular horario formateado
+                $horario = $cursada->Horario ?? '';
+                $horarioFormateado = '';
+                if (!empty($horario)) {
+                    $horario = trim($horario);
+                    $horario = preg_replace('/\s*hs?\s*/i', '', $horario);
+                    $horario = preg_replace('/\s*-\s*/', ' a ', $horario);
+                    $horario = preg_replace('/\s+/', ' ', $horario);
+                    if (!preg_match('/hs?$/i', $horario)) {
+                        $horarioFormateado = $horario . 'hs';
+                    } else {
+                        $horarioFormateado = $horario;
+                    }
+                }
+                
+                // Pre-calcular fecha formateada
+                $fechaFormateada = 'N/A';
+                $mesNombre = '';
+                if ($cursada->Fecha_Inicio) {
+                    $fecha = \Carbon\Carbon::parse($cursada->Fecha_Inicio);
+                    $meses = [
+                        1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
+                        5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
+                        9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre'
+                    ];
+                    $mesNombre = $meses[$fecha->month] ?? $fecha->format('F');
+                    $fechaFormateada = $mesNombre . ' ' . $fecha->year;
+                }
+                
+                // Pre-calcular modalidad completa
+                $modalidad = $cursada->xModalidad ?? '';
+                $regimen = $cursada->Régimen ?? '';
+                if (stripos($modalidad, 'Sempresencial') !== false) {
+                    $modalidad = str_ireplace('Sempresencial', 'Semipresencial', $modalidad);
+                }
+                $modalidadCompleta = '';
+                if (!empty($modalidad) && !empty($regimen)) {
+                    $modalidadCompleta = $modalidad . ' - ' . $regimen;
+                } elseif (!empty($modalidad)) {
+                    $modalidadCompleta = $modalidad;
+                } elseif (!empty($regimen)) {
+                    $modalidadCompleta = $regimen;
+                } else {
+                    $modalidadCompleta = 'N/A';
+                }
+                
+                // Pre-calcular sede
+                $sedeCompleta = corregirNombreSede($cursada->sede ?? 'N/A');
+                $sedeSimplificada = simplificarNombreSede($sedeCompleta);
+                
+                // Retornar como array para JSON
                 return [
-                    'modalidad' => $item->xModalidad,
-                    'regimen' => $item->Régimen,
-                    'combinacion' => $item->xModalidad . ' - ' . $item->Régimen,
-                    'valor' => $item->xModalidad . '|' . $item->Régimen // Separador para el filtrado
+                    'id' => $cursada->id,
+                    'carrera' => $cursada->carrera,
+                    'sede' => $cursada->sede,
+                    'xModalidad' => $cursada->xModalidad,
+                    'Régimen' => $cursada->Régimen,
+                    'xTurno' => $cursada->xTurno,
+                    'xDias' => $cursada->xDias,
+                    'Fecha_Inicio' => $cursada->Fecha_Inicio ? (\Carbon\Carbon::parse($cursada->Fecha_Inicio)->format('Y-m-d')) : null,
+                    'Horario' => $cursada->Horario,
+                    'Vacantes' => $cursada->Vacantes,
+                    'Matric_Base' => $cursada->Matric_Base,
+                    'Sin_iva_Mat' => $cursada->Sin_iva_Mat,
+                    'Cta_Web' => $cursada->Cta_Web,
+                    'Sin_IVA_cta' => $cursada->Sin_IVA_cta,
+                    'Dto_Cuota' => $cursada->Dto_Cuota,
+                    'cuotas' => $cursada->cuotas,
+                    'Promo_Mat_logo' => $cursada->Promo_Mat_logo,
+                    'pre_calculado' => [
+                        'vacantes' => $vacantes,
+                        'sinVacantes' => $sinVacantes,
+                        'tieneDescuento' => $tieneDescuento,
+                        'dtoCuotaValue' => $dtoCuotaValue,
+                        'diaCompleto' => $diaCompleto,
+                        'diaMayusculas' => $diaMayusculas,
+                        'turno' => $turno,
+                        'turnoMayusculas' => $turnoMayusculas,
+                        'horarioFormateado' => $horarioFormateado,
+                        'fechaFormateada' => $fechaFormateada,
+                        'mesNombre' => $mesNombre,
+                        'modalidadCompleta' => $modalidadCompleta,
+                        'sedeCompleta' => $sedeCompleta,
+                        'sedeSimplificada' => $sedeSimplificada,
+                    ]
                 ];
-            })
-            ->unique(function($item) {
-                return $item['modalidad'] . '|' . $item['regimen'];
-            })
-            ->values();
-        // Aplicar orden guardado a modalidades
-        $modalidades = $aplicarOrden($modalidades, 'modalidad', 'valor');
+            });
         
-        $turnos = Cursada::select('xTurno')
-            ->distinct()
-            ->whereNotNull('xTurno')
-            ->where('xTurno', '!=', '')
-            ->orderBy('xTurno')
-            ->pluck('xTurno')
-            ->unique()
-            ->values();
-        // Aplicar orden guardado a turnos
-        $turnos = $aplicarOrden($turnos, 'turno');
+        $totalTime = microtime(true) - $startTime;
+        \Log::info('Inscripcion AJAX: Cursadas cargadas', ['count' => $cursadas->count(), 'time' => round($totalTime * 1000, 2) . 'ms']);
         
-        $dias = Cursada::select('xDias')
-            ->distinct()
-            ->whereNotNull('xDias')
-            ->where('xDias', '!=', '')
-            ->orderBy('xDias')
-            ->pluck('xDias')
-            ->unique()
-            ->values();
-        // Aplicar orden guardado a días
-        $dias = $aplicarOrden($dias, 'dia');
+        // Preparar información del badge para el frontend
+        $badgeInfo = null;
+        if ($promoBadge && $promoBadge->archivo) {
+            $badgeInfo = [
+                'image_path' => $promoBadge->image_path,
+                'archivo' => true
+            ];
+        }
         
-        // Obtener TODAS las cursadas (no filtrar por carrera, el filtrado se hace en el frontend)
-        $cursadas = Cursada::orderBy('Fecha_Inicio')
-            ->get();
-        
-        return view('inscripcion', compact('curso', 'sedes', 'stickyBar', 'carreras', 'sedesFiltro', 'modalidades', 'turnos', 'dias', 'cursadas', 'carreraSeleccionada'));
+        return response()->json([
+            'success' => true,
+            'cursadas' => $cursadas->values(),
+            'promoBadge' => $badgeInfo
+        ]);
     }
 
     public function storeLead(Request $request)
@@ -286,7 +475,7 @@ class WelcomeController extends Controller
                 'apellido' => 'required|string|max:255',
                 'dni' => 'required|string|max:8|regex:/^[0-9]{7,8}$/',
                 'correo' => 'required|email|max:255',
-                'telefono' => 'required|string|max:12|regex:/^[0-9]{12}$/',
+                'telefono' => 'required|string|max:20', // Prefijo internacional + 10 dígitos
             ]);
 
             Lead::create($validated);

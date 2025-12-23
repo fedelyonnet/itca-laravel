@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initResizableTable();
     initImportacionButton();
     initTableSorting();
+    initTableFilters();
 });
 
 /**
@@ -427,11 +428,14 @@ function sortTable(field, direction) {
         'Horario': 8,
         'Vacantes': 9,
         'Matric_Base': 10,
-        'Cta_Web': 11,
-        'Dto_Cuota': 12,
-        'Sin_IVA': 13,
-        'sede': 14,
-        'casilla_Promo': 15
+        'Sin_iva_Mat': 11,
+        'Cta_Web': 12,
+        'Sin_IVA_cta': 13,
+        'Dto_Cuota': 14,
+        'cuotas': 15,
+        'sede': 16,
+        'Promo_Mat_logo': 17,
+        'ver_curso': 18
     };
     
     const columnIndex = fieldIndexMap[field];
@@ -441,7 +445,7 @@ function sortTable(field, direction) {
     }
     
     // Campos numéricos
-    const numericFields = ['ID_Curso', 'Vacantes', 'Matric_Base', 'Cta_Web', 'Dto_Cuota', 'Sin_IVA'];
+    const numericFields = ['ID_Curso', 'Vacantes', 'Matric_Base', 'Sin_iva_Mat', 'Cta_Web', 'Sin_IVA_cta', 'Dto_Cuota', 'cuotas'];
     // Campos de fecha
     const dateFields = ['Fecha_Inicio'];
     // Campos booleanos
@@ -495,10 +499,22 @@ function sortTable(field, direction) {
         
         // Ordenar por número
         if (numericFields.includes(field)) {
-            // Para campos monetarios, remover símbolos y separadores
-            if (field === 'Matric_Base' || field === 'Cta_Web' || field === 'Dto_Cuota' || field === 'Sin_IVA') {
-                aValue = aValue.replace(/[$,.\s%]/g, '');
-                bValue = bValue.replace(/[$,.\s%]/g, '');
+            // Para campos monetarios, convertir formato argentino (punto=miles, coma=decimal) a número
+            if (field === 'Matric_Base' || field === 'Cta_Web' || field === 'Sin_iva_Mat' || field === 'Sin_IVA_cta') {
+                // Remover símbolo $ y espacios
+                aValue = aValue.replace(/[$,\s]/g, '');
+                bValue = bValue.replace(/[$,\s]/g, '');
+                // Formato: 294.200,00 -> 294200.00
+                // Primero remover puntos (separador de miles)
+                aValue = aValue.replace(/\./g, '');
+                bValue = bValue.replace(/\./g, '');
+                // Luego convertir coma (decimal) a punto
+                aValue = aValue.replace(',', '.');
+                bValue = bValue.replace(',', '.');
+            } else if (field === 'Dto_Cuota') {
+                // Para porcentaje, remover % y espacios, convertir coma a punto
+                aValue = aValue.replace(/[%\s]/g, '').replace(',', '.');
+                bValue = bValue.replace(/[%\s]/g, '').replace(',', '.');
             }
             
             const aNum = parseFloat(aValue) || 0;
@@ -523,6 +539,180 @@ function sortTable(field, direction) {
     
     // Reordenar las filas en el DOM
     rows.forEach(row => tbody.appendChild(row));
+}
+
+/**
+ * Inicializa los filtros de la tabla
+ */
+function initTableFilters() {
+    const filtroCarrera = document.getElementById('filtroCarrera');
+    const filtroSede = document.getElementById('filtroSede');
+    const filtroModalidad = document.getElementById('filtroModalidad');
+    const filtroTurno = document.getElementById('filtroTurno');
+    const filtroDias = document.getElementById('filtroDias');
+    const filtroRegimen = document.getElementById('filtroRegimen');
+    const filtroVerCurso = document.getElementById('filtroVerCurso');
+    const filtroVacantes = document.getElementById('filtroVacantes');
+    const btnLimpiarFiltros = document.getElementById('btnLimpiarFiltros');
+    
+    if (!filtroCarrera || !filtroSede || !filtroModalidad || !filtroTurno || !filtroDias || !filtroRegimen || !filtroVerCurso || !filtroVacantes) {
+        return;
+    }
+    
+    // Función para aplicar filtros
+    function aplicarFiltros() {
+        const tbody = document.getElementById('tablaCursadasBody');
+        if (!tbody) return;
+        
+        // Obtener contadores dentro de la función para asegurar que siempre se encuentren
+        const contadorTotalEl = document.getElementById('contadorTotal');
+        const contadorWebEl = document.getElementById('contadorWeb');
+        
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        let totalVisible = 0;
+        let totalWeb = 0;
+        
+        const carreraValue = filtroCarrera.value.trim().toLowerCase();
+        const sedeValue = filtroSede.value.trim().toLowerCase();
+        const modalidadValue = filtroModalidad.value.trim().toLowerCase();
+        const turnoValue = filtroTurno.value.trim().toLowerCase();
+        const diasValue = filtroDias.value.trim().toLowerCase();
+        const regimenValue = filtroRegimen.value.trim().toLowerCase();
+        const verCursoValue = filtroVerCurso.value.trim().toLowerCase();
+        const vacantesValue = filtroVacantes.value.trim();
+        
+        rows.forEach(row => {
+            if (row.cells.length < 19) {
+                row.style.display = 'none';
+                return;
+            }
+            
+            let mostrar = true;
+            
+            // Filtro por carrera (columna 1, índice 1)
+            if (carreraValue && row.cells[1]) {
+                const carrera = (row.cells[1].textContent || '').trim().toLowerCase();
+                if (carrera !== carreraValue) {
+                    mostrar = false;
+                }
+            }
+            
+            // Filtro por sede (columna 16, índice 16 - después de cuotas)
+            if (mostrar && sedeValue && row.cells[16]) {
+                const sede = (row.cells[16].textContent || '').trim().toLowerCase();
+                if (sede !== sedeValue) {
+                    mostrar = false;
+                }
+            }
+            
+            // Filtro por modalidad (columna 5, índice 5)
+            if (mostrar && modalidadValue && row.cells[5]) {
+                const modalidad = (row.cells[5].textContent || '').trim().toLowerCase();
+                // Normalizar "sempresencial" a "semipresencial" para comparación
+                const modalidadNormalizada = modalidad.replace('sempresencial', 'semipresencial');
+                const filtroNormalizado = modalidadValue.replace('sempresencial', 'semipresencial');
+                if (modalidadNormalizada !== filtroNormalizado) {
+                    mostrar = false;
+                }
+            }
+            
+            // Filtro por turno (columna 7, índice 7)
+            if (mostrar && turnoValue && row.cells[7]) {
+                const turno = (row.cells[7].textContent || '').trim().toLowerCase();
+                if (turno !== turnoValue) {
+                    mostrar = false;
+                }
+            }
+            
+            // Filtro por días (columna 4, índice 4)
+            if (mostrar && diasValue && row.cells[4]) {
+                const diaOriginal = (row.cells[4].getAttribute('data-dia-original') || '').trim().toLowerCase();
+                if (diaOriginal !== diasValue) {
+                    mostrar = false;
+                }
+            }
+            
+            // Filtro por régimen (columna 6, índice 6)
+            if (mostrar && regimenValue && row.cells[6]) {
+                const regimen = (row.cells[6].textContent || '').trim().toLowerCase();
+                if (regimen !== regimenValue) {
+                    mostrar = false;
+                }
+            }
+            
+            // Filtro por ver_curso (columna 17, índice 17)
+            // Filtro por ver curso (columna 18, índice 18 - después de Promo_Mat_logo)
+            if (mostrar && verCursoValue && row.cells[18]) {
+                const verCurso = (row.cells[18].textContent || '').trim().toLowerCase();
+                if (verCurso !== verCursoValue) {
+                    mostrar = false;
+                }
+            }
+            
+            // Filtro por vacantes (columna 9, índice 9)
+            if (mostrar && vacantesValue && row.cells[9]) {
+                const vacantesText = (row.cells[9].textContent || '').trim();
+                const vacantes = parseInt(vacantesText) || 0;
+                
+                if (vacantesValue === 'con' && vacantes === 0) {
+                    mostrar = false;
+                } else if (vacantesValue === 'sin' && vacantes > 0) {
+                    mostrar = false;
+                }
+            }
+            
+            if (mostrar) {
+                row.style.display = '';
+                totalVisible++;
+                
+                // Verificar si tiene "ver" en ver_curso (columna 18)
+                if (row.cells[18]) {
+                    const verCurso = (row.cells[18].textContent || row.cells[18].innerText || '').trim().toLowerCase();
+                    if (verCurso === 'ver') {
+                        totalWeb++;
+                    }
+                }
+            } else {
+                row.style.display = 'none';
+            }
+        });
+        
+        // Actualizar contadores (las variables ya están declaradas al inicio de la función)
+        if (contadorTotalEl) {
+            contadorTotalEl.textContent = totalVisible;
+        }
+        if (contadorWebEl) {
+            contadorWebEl.textContent = totalWeb;
+        }
+    }
+    
+    // Agregar event listeners a los filtros
+    filtroCarrera.addEventListener('change', aplicarFiltros);
+    filtroSede.addEventListener('change', aplicarFiltros);
+    filtroModalidad.addEventListener('change', aplicarFiltros);
+    filtroTurno.addEventListener('change', aplicarFiltros);
+    filtroDias.addEventListener('change', aplicarFiltros);
+    filtroRegimen.addEventListener('change', aplicarFiltros);
+    filtroVerCurso.addEventListener('change', aplicarFiltros);
+    filtroVacantes.addEventListener('change', aplicarFiltros);
+    
+    // Botón limpiar filtros
+    if (btnLimpiarFiltros) {
+        btnLimpiarFiltros.addEventListener('click', function() {
+            filtroCarrera.value = '';
+            filtroSede.value = '';
+            filtroModalidad.value = '';
+            filtroTurno.value = '';
+            filtroDias.value = '';
+            filtroRegimen.value = '';
+            filtroVerCurso.value = '';
+            filtroVacantes.value = '';
+            aplicarFiltros();
+        });
+    }
+    
+    // Aplicar filtros iniciales (para contar registros)
+    aplicarFiltros();
 }
 
 // Hacer funciones disponibles globalmente

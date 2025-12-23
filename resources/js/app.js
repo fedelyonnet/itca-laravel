@@ -1694,18 +1694,48 @@ document.addEventListener('DOMContentLoaded', function() {
 // PARTNERS SLICK CAROUSEL
 // ========================================
 let partnersCarouselInitialized = false;
+let partnersCarouselRetryCount = 0;
+const MAX_PARTNERS_RETRIES = 50; // Intentar hasta 5 segundos (50 * 100ms)
 
 function initializePartnersCarousel() {
-    if (partnersCarouselInitialized) {
+    // Verificar que jQuery y Slick estén disponibles en cada intento
+    if (typeof jQuery === 'undefined' || typeof $ === 'undefined' || typeof $.fn === 'undefined') {
+        // Si aún no está disponible y no hemos excedido los reintentos, intentar de nuevo
+        if (partnersCarouselRetryCount < MAX_PARTNERS_RETRIES) {
+            partnersCarouselRetryCount++;
+            setTimeout(initializePartnersCarousel, 100);
+        }
         return;
     }
     
-    if ($('.partners-slider').length > 0 && typeof $.fn.slick !== 'undefined') {
-        if ($('.partners-slider').hasClass('slick-initialized')) {
-            return;
+    // Verificar que Slick esté disponible
+    if (typeof $.fn.slick === 'undefined') {
+        if (partnersCarouselRetryCount < MAX_PARTNERS_RETRIES) {
+            partnersCarouselRetryCount++;
+            setTimeout(initializePartnersCarousel, 100);
         }
-        
-        $('.partners-slider').slick({
+        return;
+    }
+    
+    // Verificar que el elemento exista
+    const slider = $('.partners-slider');
+    if (slider.length === 0) {
+        if (partnersCarouselRetryCount < MAX_PARTNERS_RETRIES) {
+            partnersCarouselRetryCount++;
+            setTimeout(initializePartnersCarousel, 100);
+        }
+        return;
+    }
+    
+    // Si ya está inicializado, no hacer nada
+    if (slider.hasClass('slick-initialized')) {
+        partnersCarouselInitialized = true;
+        return;
+    }
+    
+    // Inicializar el carrusel
+    try {
+        slider.slick({
             autoplay: true,
             autoplaySpeed: 0,
             speed: 1500,
@@ -1718,12 +1748,30 @@ function initializePartnersCarousel() {
         });
         
         partnersCarouselInitialized = true;
+    } catch (error) {
+        // Si hay un error, intentar de nuevo si no hemos excedido los reintentos
+        if (partnersCarouselRetryCount < MAX_PARTNERS_RETRIES) {
+            partnersCarouselRetryCount++;
+            setTimeout(initializePartnersCarousel, 100);
+        }
     }
 }
 
-$(document).ready(function() {
-    // Initialize only once when document is ready
+// Inicializar cuando el DOM esté listo
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(initializePartnersCarousel, 100);
+    });
+} else {
+    // DOM ya está listo
     setTimeout(initializePartnersCarousel, 100);
+}
+
+// También intentar cuando la ventana esté completamente cargada
+window.addEventListener('load', function() {
+    if (!partnersCarouselInitialized) {
+        setTimeout(initializePartnersCarousel, 100);
+    }
 });
 
 // ========================================
