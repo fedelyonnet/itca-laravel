@@ -216,8 +216,9 @@
                         if (descuento > 0.01 && vacantesCount > 0) {
                             const badgeDescuento = descuentoWrapper.querySelector('.cursada-badge-descuento');
                             if (badgeDescuento) badgeDescuento.textContent = Math.round(descuento) + '% OFF';
+                            descuentoWrapper.style.display = 'block';
                         } else {
-                            descuentoWrapper.remove();
+                            descuentoWrapper.style.display = 'none';
                         }
                     }
                     

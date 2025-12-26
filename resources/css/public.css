@@ -14834,6 +14834,7 @@ body.inscripcion-page {
     justify-content: center;
     justify-self: end;
     gap: clamp(8px, calc(8px + (100vw - 1100px) * ((12 - 8) / (1920 - 1100))), 12px);
+    padding-right: clamp(0px, calc(0px + (100vw - 1100px) * (25 / 820)), 25px);
 }
 
 .cursada-promo-badge {

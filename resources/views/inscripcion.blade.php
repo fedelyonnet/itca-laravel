@@ -387,20 +387,15 @@
                                             <div class="cursada-lugares-texto">
                                                 ¡Quedan <strong>{{ $cursada->Vacantes }}</strong> lugares!
                                             </div>
-                                            @php
-                                                $descuento = abs($pre['dtoCuotaValue']);
-                                                $mostrarDescuento = ($descuento > 0.01 && $pre['vacantes'] > 0);
-                                            @endphp
-                                            @if($mostrarDescuento)
-                                                <div class="cursada-descuento-wrapper">
-                                                    <div class="cursada-badge-descuento">
-                                                        {{ number_format($descuento, 0) }}% OFF
-                                                    </div>
-                                                    <div class="cursada-texto-cuotas">
-                                                        en todas las cuotas
-                                                    </div>
+                                            <!-- Wrapper siempre presente para que JavaScript pueda mostrarlo/ocultarlo -->
+                                            <div class="cursada-descuento-wrapper" style="display: none;">
+                                                <div class="cursada-badge-descuento">
+                                                    {{ number_format(abs($pre['dtoCuotaValue'] ?? 0), 0) }}% OFF
                                                 </div>
-                                            @endif
+                                                <div class="cursada-texto-cuotas">
+                                                    en todas las cuotas
+                                                </div>
+                                            </div>
                                         </div>
                                         
                                         <!-- Columna 3: Badge promo (si aplica) y Botón ver valores -->
