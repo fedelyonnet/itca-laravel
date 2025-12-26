@@ -315,17 +315,19 @@
                                     });
                                 @endphp
                                 @if(count($horariosConHoras) > 0)
-                                    @foreach($horariosConHoras as $horario)
-                                        <div class="modalidad-special-cell modalidad-special-cell-right">
-                                            @if($horario['icono'] ?? null)
-                                                <img src="{{ $horario['icono'] }}" alt="{{ $horario['nombre'] }}" class="modalidad-special-icon">
-                                            @endif
-                                            <div class="modalidad-special-time">
-                                                <span class="modalidad-special-time-label">{{ $horario['nombre'] }}</span>
-                                                <span class="modalidad-special-time-hours">{{ $horario['horas'] }}</span>
+                                    <div class="modalidad-special-right-wrapper">
+                                        @foreach($horariosConHoras as $horario)
+                                            <div class="modalidad-special-cell modalidad-special-cell-right">
+                                                @if($horario['icono'] ?? null)
+                                                    <img src="{{ $horario['icono'] }}" alt="{{ $horario['nombre'] }}" class="modalidad-special-icon">
+                                                @endif
+                                                <div class="modalidad-special-time">
+                                                    <span class="modalidad-special-time-label">{{ $horario['nombre'] }}</span>
+                                                    <span class="modalidad-special-time-hours">{{ $horario['horas'] }}</span>
+                                                </div>
                                             </div>
-                                        </div>
-                                    @endforeach
+                                        @endforeach
+                                    </div>
                                 @endif
                             </div>
                         </div>

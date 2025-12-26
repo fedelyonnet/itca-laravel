@@ -256,6 +256,16 @@
     flex-shrink: 0;
 }
 
+.modalidad-special-right-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: clamp(100px, calc(100px + (100vw - 1366px) * ((260 - 100) / (1920 - 1366))), 260px);
+    padding-right: clamp(0px, calc((100vw - 1100px) * (50 / 820)), 50px);
+    flex-wrap: wrap;
+}
+
 .modalidad-special-cell-right {
     align-items: center;
     flex-direction: row;
