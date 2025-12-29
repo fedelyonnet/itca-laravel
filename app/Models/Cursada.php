@@ -45,6 +45,7 @@ class Cursada extends Model
         'Sin_IVA_cta' => 'decimal:2',
         'Dto_Cuota' => 'decimal:2', // Porcentaje
         'Vacantes' => 'integer',
+        'cuotas' => 'integer', // Asegurar que cuotas sea un entero
         'casilla_Promo' => 'boolean',
         // Mantener cast antiguo por compatibilidad
         'Sin_IVA' => 'decimal:2',

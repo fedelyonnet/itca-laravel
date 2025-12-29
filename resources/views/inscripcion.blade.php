@@ -600,7 +600,7 @@
                                     <!-- Texto informativo entre panel y línea del item -->
                                     <div class="cursada-info-texto panel-hidden" id="info-{{ $cursadaId }}">
                                         <p class="cursada-info-texto-content">
-                                            <span class="cursada-info-texto-destacado">*Valor de cuota actual, vigente hasta el fin del presente mes.</span> Los valores de cuotas se ajustan y actualizan mes a mes según IPC publicado por el INDEC. Cuotas totales a abonar en el 1er año: 12. Consultar por promociones y descuentos aplicables sobre adelantamientos de cuotas.
+                                            <span class="cursada-info-texto-destacado">*Valor de cuota actual, vigente hasta el fin del presente mes.</span> Los valores de cuotas se ajustan y actualizan mes a mes según IPC publicado por el INDEC. Cuotas totales a abonar en el 1er año: <span class="cursada-cuotas-totales">{{ $cursada->cuotas ?? 12 }}</span>. Consultar por promociones y descuentos aplicables sobre adelantamientos de cuotas.
                                         </p>
                                     </div>
                                         </div>

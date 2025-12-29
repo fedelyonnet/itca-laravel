@@ -260,11 +260,16 @@ class WelcomeController extends Controller
                 ->orderBy('Régimen')
                 ->get()
                 ->map(function($item) {
+                    // Normalizar "Sempresencial" a "Semipresencial" para consistencia
+                    $modalidad = $item->xModalidad;
+                    if (stripos($modalidad, 'Sempresencial') !== false) {
+                        $modalidad = str_ireplace('Sempresencial', 'Semipresencial', $modalidad);
+                    }
                     return [
-                        'modalidad' => $item->xModalidad,
+                        'modalidad' => $modalidad,
                         'regimen' => $item->Régimen,
-                        'combinacion' => $item->xModalidad . ' - ' . $item->Régimen,
-                        'valor' => $item->xModalidad . '|' . $item->Régimen // Separador para el filtrado
+                        'combinacion' => $modalidad . ' - ' . $item->Régimen,
+                        'valor' => $modalidad . '|' . $item->Régimen // Separador para el filtrado
                     ];
                 });
             // Aplicar orden guardado a modalidades

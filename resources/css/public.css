@@ -2286,8 +2286,7 @@ section h2 {
 
 /* Ocultar UTN en tablet y mobile */
 @media (max-width: 1099px) {
-    .carreras-UTN,
-    .carreras-UTN-base {
+    .carreras-UTN {
         display: none;
     }
     
@@ -13556,6 +13555,11 @@ body:has(.lista-carreras) .beneficios-section {
     background-color: #02115A !important;
 }
 
+/* Specific background color for partners section in carreras page */
+body:has(.lista-carreras) .partners-section {
+    background-color: #010C42 !important;
+}
+
 /* Requisitos > Podés cursar en: minimal, scoped rules */
 .requisitos-cursar-card .cursar-grid {
     display: grid;
@@ -13731,6 +13735,7 @@ html {
     .lista-carreras-container {
         max-width: 100%;
         padding: 0 clamp(15px, 4vw, 20px);
+        padding-bottom: clamp(15px, calc(15px + (100vw - 380px) * ((30 - 15) / (430 - 380))), 30px); /* 15px @ 380px, 30px @ 430px */
     }
     
     /* Header mobile: breadcrumb arriba, título debajo */
@@ -14003,6 +14008,76 @@ html {
         background-color: #02115A !important;
     }
     
+    /* Specific background color for contacto section in carreras page (mobile) */
+    body:has(.lista-carreras) .contacto-section {
+        background-color: #02115A !important;
+    }
+    
+    /* Specific background color for contacto-tercio elements in carreras page (mobile) */
+    body:has(.lista-carreras) .contacto-tercio.contacto-contacto,
+    body:has(.lista-carreras) .contacto-tercio.contacto-sedes {
+        background-color: #02115A !important;
+    }
+    
+    /* Specific background colors for carrera individual page (show) - mobile */
+    body:has(.lista-carreras--show) .partners-section {
+        background-color: #02115A !important; /* Azul claro para partners */
+    }
+    
+    body:has(.lista-carreras--show) .contacto-section {
+        background-color: #010C42 !important; /* Azul oscuro para contacto */
+    }
+    
+    body:has(.lista-carreras--show) .contacto-tercio.contacto-info {
+        background-color: #02115A !important; /* Azul claro para "¿Querés más info?" */
+    }
+    
+    body:has(.lista-carreras--show) .contacto-tercio.contacto-contacto,
+    body:has(.lista-carreras--show) .contacto-tercio.contacto-sedes {
+        background-color: #010C42 !important; /* Azul oscuro para match con contacto section */
+    }
+    
+    /* Specific background colors for home page (welcome) - mobile */
+    body:has(.carreras-UTN-home) .partners-section {
+        background-color: #010C42 !important; /* Azul oscuro para partners */
+    }
+    
+    body:has(.carreras-UTN-home) .contacto-section {
+        background-color: #02115A !important; /* Azul claro para contacto */
+    }
+    
+    body:has(.carreras-UTN-home) .contacto-tercio.contacto-info {
+        background-color: #010C42 !important; /* Azul oscuro para "¿Querés más info?" */
+    }
+    
+    body:has(.carreras-UTN-home) .contacto-tercio.contacto-contacto,
+    body:has(.carreras-UTN-home) .contacto-tercio.contacto-sedes {
+        background-color: #02115A !important; /* Azul claro para match con contacto section */
+    }
+    
+    /* Mostrar y estilizar redes sociales en carrera individual (show) mobile */
+    body:has(.lista-carreras--show) .contacto-tercio.contacto-contacto .contacto-redes-title {
+        display: block !important;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 500; /* Medium */
+        font-size: clamp(20px, calc(20px + (100vw - 320px) * 0.0143), 24px);
+        line-height: 1.2;
+        letter-spacing: 0.04em; /* 4% */
+        margin-top: clamp(20px, 4vw, 30px);
+        margin-bottom: clamp(15px, 3vw, 20px);
+    }
+    
+    body:has(.lista-carreras--show) .contacto-tercio.contacto-contacto .contacto-redes-icons {
+        display: flex !important;
+        gap: clamp(20px, calc(20px + (100vw - 320px) * 0.0455), 25px);
+        align-items: center;
+    }
+    
+    body:has(.lista-carreras--show) .contacto-tercio.contacto-contacto .contacto-redes-icon {
+        width: clamp(24px, calc(24px + (100vw - 320px) * 0.0143), 28px);
+        height: clamp(24px, calc(24px + (100vw - 320px) * 0.0143), 28px);
+    }
+    
     /* ========================================
        CARRERA SHOW BODY CONTAINER - MOBILE
        ======================================== */
@@ -14062,15 +14137,15 @@ html {
     }
     
     .carrera-show-image {
-        width: 100%;
-        max-width: clamp(280px, calc(388px + (100vw - 430px) * 1.27), 388px);
-        height: auto;
+        width: 100% !important; /* Mismo ancho que el texto */
+        height: auto !important;
+        min-height: unset !important;
+        aspect-ratio: 368 / 168 !important; /* Mantener proporción, pero estirar para ocupar el ancho completo */
     }
     
     .carrera-show-image img {
         width: 100%;
-        height: auto;
-        aspect-ratio: 327 / 176;
+        height: 100%;
         object-fit: cover;
         border-radius: 8px;
     }
@@ -14078,6 +14153,7 @@ html {
     .carrera-show-text p {
         font-size: clamp(13px, calc(13px + (100vw - 320px) * 0.0179), 15px);
         line-height: 1.5;
+        hyphens: auto;
     }
     
     .carrera-show-buttons {

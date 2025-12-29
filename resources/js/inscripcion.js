@@ -277,6 +277,12 @@
                         const cantidadCuotas = cuotaInfo.querySelector('.cursada-cuota-cantidad-valor');
                         if (cantidadCuotas) cantidadCuotas.textContent = cursada.cuotas || 12;
                         
+                        // Actualizar cuotas totales en el texto informativo
+                        const cuotasTotales = clone.querySelector('.cursada-cuotas-totales');
+                        if (cuotasTotales) {
+                            cuotasTotales.textContent = cursada.cuotas || 12;
+                        }
+                        
                         const precioTotal = cuotaInfo.querySelector('.cursada-cuota-precio-total');
                         if (precioTotal) {
                             const precio = parseFloat(cursada.Sin_IVA_cta || 0).toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
@@ -624,12 +630,13 @@
                 const diaSeleccionado = filtrosSeleccionados.dia;
                 const promocionSeleccionada = filtrosSeleccionados.promocion;
                 
+                
                 // Re-obtener todas las cursadas del DOM (por si hay cambios)
                 const todasLasCursadas = document.querySelectorAll('.cursada-item');
                 
                 let visibleCount = 0;
                 
-                todasLasCursadas.forEach(item => {
+                todasLasCursadas.forEach((item, index) => {
                     const carrera = (item.getAttribute('data-carrera') || '').trim();
                     const sede = (item.getAttribute('data-sede') || '').trim();
                     const modalidad = (item.getAttribute('data-modalidad') || '').trim();
@@ -667,13 +674,20 @@
                         }
                     }
                     
-                    // Para modalidad: el valor puede ser "modalidad|regimen" o solo "modalidad"
+                    // Para modalidad: el valor es "modalidad|regimen"
                     let coincideModalidad = true;
                     if (modalidadSeleccionada !== '') {
                         if (modalidadSeleccionada.includes('|')) {
                             // Es una combinación modalidad|regimen
                             const [modalidadFiltro, regimenFiltro] = modalidadSeleccionada.split('|');
-                            coincideModalidad = normalizarComparar(modalidad, modalidadFiltro) && normalizarComparar(regimen, regimenFiltro);
+                            // Normalizar "Sempresencial" a "Semipresencial" en ambos lados
+                            let modalidadNormalizada = (modalidad || '').toLowerCase().trim().replace(/sempresencial/g, 'semipresencial');
+                            let modalidadFiltroNormalizada = (modalidadFiltro || '').toLowerCase().trim().replace(/sempresencial/g, 'semipresencial');
+                            const regimenNormalizado = (regimen || '').toLowerCase().trim();
+                            const regimenFiltroNormalizado = (regimenFiltro || '').toLowerCase().trim();
+                            
+                            // Comparación exacta
+                            coincideModalidad = (modalidadNormalizada === modalidadFiltroNormalizada) && (regimenNormalizado === regimenFiltroNormalizado);
                         } else {
                             // Solo modalidad (compatibilidad con formato anterior)
                             coincideModalidad = normalizarComparar(modalidad, modalidadSeleccionada);
@@ -716,8 +730,11 @@
                     
                     const coincidePromocion = promocionSeleccionada === '' || promocion === promocionSeleccionada;
                     
-                    if (coincideCarrera && coincideSede && coincideModalidad && coincideTurno && coincideDia && coincidePromocion) {
-                        item.style.display = 'block';
+                    const pasaTodosLosFiltros = coincideCarrera && coincideSede && coincideModalidad && coincideTurno && coincideDia && coincidePromocion;
+                    
+                    if (pasaTodosLosFiltros) {
+                        // Restaurar display original (flex o grid según el CSS)
+                        item.style.display = '';
                         visibleCount++;
                     } else {
                         item.style.display = 'none';
