@@ -1096,8 +1096,9 @@
                                 </div>
                             </div>
                             
-                            <h4 class="contacto-redes-title">Redes Sociales</h4>
-                            <div class="contacto-redes-icons">
+                            <!-- Redes Sociales (visible solo en desktop) -->
+                            <h4 class="contacto-redes-title contacto-redes-desktop">Redes Sociales</h4>
+                            <div class="contacto-redes-icons contacto-redes-desktop">
                                 <a href="https://www.instagram.com/itca.oficial/?hl=en" target="_blank" class="contacto-redes-link">
                                     <img src="/images/social/ig.png" alt="Instagram" class="contacto-redes-icon">
                                 </a>

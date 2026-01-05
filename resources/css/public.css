@@ -7888,10 +7888,14 @@ section h2 {
         padding-top: clamp(20px, calc(20px + (100vw - 320px) * 0.1364), 35px);
     }
     
-    /* Ocultar redes sociales del tercio contacto en mobile */
-    .contacto-tercio.contacto-contacto .contacto-redes-title,
-    .contacto-tercio.contacto-contacto .contacto-redes-icons {
-        display: none;
+    /* Ocultar redes sociales del tercio contacto en mobile (usando clase específica) */
+    .contacto-redes-desktop {
+        display: none !important;
+    }
+    
+    /* Asegurar que el tercio redes sociales separado esté visible en mobile */
+    .contacto-tercio.contacto-redes {
+        display: flex !important;
     }
     
     /* Fondos para mobile */
@@ -8039,7 +8043,16 @@ section h2 {
 /* Ocultar tercio redes sociales separado en pantallas grandes */
 @media (min-width: 600px) {
     .contacto-tercio.contacto-redes {
-        display: none;
+        display: none !important;
+    }
+    
+    /* Mostrar redes sociales dentro del tercio contacto en desktop */
+    .contacto-redes-desktop {
+        display: block !important;
+    }
+    
+    .contacto-redes-desktop.contacto-redes-icons {
+        display: flex !important;
     }
 }
 
@@ -14055,27 +14068,29 @@ html {
         background-color: #02115A !important; /* Azul claro para match con contacto section */
     }
     
-    /* Mostrar y estilizar redes sociales en carrera individual (show) mobile */
-    body:has(.lista-carreras--show) .contacto-tercio.contacto-contacto .contacto-redes-title {
-        display: block !important;
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 500; /* Medium */
-        font-size: clamp(20px, calc(20px + (100vw - 320px) * 0.0143), 24px);
-        line-height: 1.2;
-        letter-spacing: 0.04em; /* 4% */
-        margin-top: clamp(20px, 4vw, 30px);
-        margin-bottom: clamp(15px, 3vw, 20px);
-    }
-    
-    body:has(.lista-carreras--show) .contacto-tercio.contacto-contacto .contacto-redes-icons {
-        display: flex !important;
-        gap: clamp(20px, calc(20px + (100vw - 320px) * 0.0455), 25px);
-        align-items: center;
-    }
-    
-    body:has(.lista-carreras--show) .contacto-tercio.contacto-contacto .contacto-redes-icon {
-        width: clamp(24px, calc(24px + (100vw - 320px) * 0.0143), 28px);
-        height: clamp(24px, calc(24px + (100vw - 320px) * 0.0143), 28px);
+    /* Mostrar y estilizar redes sociales en carrera individual (show) - solo desktop */
+    @media (min-width: 600px) {
+        body:has(.lista-carreras--show) .contacto-tercio.contacto-contacto .contacto-redes-desktop.contacto-redes-title {
+            display: block !important;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500; /* Medium */
+            font-size: clamp(20px, calc(20px + (100vw - 320px) * 0.0143), 24px);
+            line-height: 1.2;
+            letter-spacing: 0.04em; /* 4% */
+            margin-top: clamp(20px, 4vw, 30px);
+            margin-bottom: clamp(15px, 3vw, 20px);
+        }
+        
+        body:has(.lista-carreras--show) .contacto-tercio.contacto-contacto .contacto-redes-desktop.contacto-redes-icons {
+            display: flex !important;
+            gap: clamp(20px, calc(20px + (100vw - 320px) * 0.0455), 25px);
+            align-items: center;
+        }
+        
+        body:has(.lista-carreras--show) .contacto-tercio.contacto-contacto .contacto-redes-desktop .contacto-redes-icon {
+            width: clamp(24px, calc(24px + (100vw - 320px) * 0.0143), 28px);
+            height: clamp(24px, calc(24px + (100vw - 320px) * 0.0143), 28px);
+        }
     }
     
     /* ========================================

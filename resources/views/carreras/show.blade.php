@@ -1207,8 +1207,9 @@
                             <div class="contacto-info-item"><span class="contacto-info-label">WhatsApp: </span><span class="contacto-info-value">11-2267-4822</span></div>
                             <div class="contacto-info-item"><span class="contacto-info-label">Mail: </span><span class="contacto-info-value"><a href="mailto:inscripciones@itca.edu.ar">inscripciones@itca.edu.ar</a></span></div>
                         </div>
-                        <h4 class="contacto-redes-title">Redes Sociales</h4>
-                        <div class="contacto-redes-icons">
+                        <!-- Redes Sociales (visible solo en desktop) -->
+                        <h4 class="contacto-redes-title contacto-redes-desktop">Redes Sociales</h4>
+                        <div class="contacto-redes-icons contacto-redes-desktop">
                             <a href="https://www.instagram.com/itca.oficial/?hl=en" target="_blank" class="contacto-redes-link"><img src="/images/social/ig.png" alt="Instagram" class="contacto-redes-icon"></a>
                             <a href="https://www.tiktok.com/@itca.oficial" target="_blank" class="contacto-redes-link"><img src="/images/social/tik.png" alt="TikTok" class="contacto-redes-icon"></a>
                             <a href="https://www.facebook.com/ITCAoficial/" target="_blank" class="contacto-redes-link"><img src="/images/social/fb.png" alt="Facebook" class="contacto-redes-icon"></a>
