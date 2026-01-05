@@ -8,6 +8,7 @@ export default defineConfig({
                 'resources/css/app.css', 
                 'resources/css/backoffice.css',
                 'resources/css/public.css',
+                'resources/css/inscripcion-mobile.css',
                 'resources/js/app.js',
                 'resources/js/backoffice.js',
                 'resources/js/carreras-test.js',
