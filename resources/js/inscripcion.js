@@ -86,9 +86,129 @@
             
             // Variable global para promoBadgeInfo
             let globalPromoBadgeInfo = null;
+            // Variable global para almacenar las cursadas originales
+            let globalCursadas = null;
+            // Variable para rastrear si el botón de ordenar ya fue inicializado
+            let ordenarBtnInicializado = false;
+            // Variable para rastrear el estado del ordenamiento: true = descendente (mayor primero), false = ascendente (menor primero)
+            let ordenDescendente = true;
+            
+            // Función para ordenar cursadas por Dto_Cuota (alterna entre mayor y menor descuento)
+            function ordenarPorDescuento() {
+                if (!globalCursadas || !cursadasContainer) return;
+                
+                // Obtener todas las cursadas del DOM (incluyendo las ocultas)
+                const todasLasCursadasItems = Array.from(cursadasContainer.querySelectorAll('.cursada-item'));
+                
+                if (todasLasCursadasItems.length === 0) return;
+                
+                // Crear un array con los elementos y sus valores de descuento para ordenar
+                const cursadasConDescuento = todasLasCursadasItems.map(item => {
+                    // Buscar el ID en los elementos hijos que tienen data-cursada-id
+                    const elementoConId = item.querySelector('[data-cursada-id]');
+                    if (elementoConId) {
+                        const cursadaIdStr = elementoConId.getAttribute('data-cursada-id');
+                        // El formato es 'cursada-{id}', extraer el ID numérico
+                        const idMatch = cursadaIdStr.match(/cursada-(\d+)/);
+                        if (idMatch) {
+                            const cursadaId = parseInt(idMatch[1]);
+                            // Buscar la cursada original por ID
+                            const cursada = globalCursadas.find(c => c.id == cursadaId);
+                            if (cursada) {
+                                const descuento = Math.abs(parseFloat(cursada.Dto_Cuota || 0));
+                                return {
+                                    element: item,
+                                    descuento: descuento,
+                                    cursadaId: cursadaId
+                                };
+                            }
+                        }
+                    }
+                    return null;
+                }).filter(item => item !== null);
+                
+                // Si no hay cursadas válidas, no hacer nada
+                if (cursadasConDescuento.length === 0) return;
+                
+                // Ordenar por descuento (alterna entre descendente y ascendente)
+                // Si hay empate en descuento, mantener el orden por ID (estable)
+                cursadasConDescuento.sort((a, b) => {
+                    if (b.descuento !== a.descuento) {
+                        // Alternar entre orden descendente y ascendente
+                        return ordenDescendente ? (b.descuento - a.descuento) : (a.descuento - b.descuento);
+                    }
+                    // Si tienen el mismo descuento, mantener el orden por ID
+                    return a.cursadaId - b.cursadaId;
+                });
+                
+                // Guardar el estado de visibilidad de cada elemento antes de reordenar
+                const estadosVisibilidad = cursadasConDescuento.map(item => ({
+                    element: item.element,
+                    display: item.element.style.display
+                }));
+                
+                // Reordenar los elementos en el DOM usando DocumentFragment
+                const fragment = document.createDocumentFragment();
+                cursadasConDescuento.forEach(item => {
+                    fragment.appendChild(item.element);
+                });
+                
+                // Limpiar el contenedor y agregar los elementos ordenados
+                // Esto asegura que siempre se reordene correctamente, incluso en múltiples clics
+                cursadasContainer.innerHTML = '';
+                cursadasContainer.appendChild(fragment);
+                
+                // Restaurar el estado de visibilidad de cada elemento
+                estadosVisibilidad.forEach(estado => {
+                    if (estado.display) {
+                        estado.element.style.display = estado.display;
+                    }
+                });
+                
+                // Actualizar el texto del botón para indicar el orden que se acaba de aplicar
+                // Desktop
+                const ordenarBtn = document.querySelector('.inscripcion-filtros-ordenar');
+                if (ordenarBtn) {
+                    const textoDestacado = ordenarBtn.querySelector('.inscripcion-filtros-ordenar-destacado');
+                    const chevron = ordenarBtn.querySelector('.inscripcion-filtros-ordenar-chevron');
+                    if (textoDestacado) {
+                        // Mostrar el orden que se acaba de aplicar (ordenDescendente antes de alternar)
+                        textoDestacado.textContent = ordenDescendente ? 'Mayor descuento' : 'Menor descuento';
+                    }
+                    if (chevron) {
+                        // Cambiar la dirección del chevron según el orden aplicado
+                        chevron.textContent = ordenDescendente ? '▼' : '▲';
+                    }
+                }
+                
+                // Mobile
+                const ordenarBtnMobile = document.querySelector('.inscripcion-mobile-ordenar');
+                if (ordenarBtnMobile) {
+                    const textoDestacadoMobile = ordenarBtnMobile.querySelector('.inscripcion-mobile-ordenar-destacado');
+                    const chevronMobile = ordenarBtnMobile.querySelector('.inscripcion-mobile-ordenar-chevron');
+                    if (textoDestacadoMobile) {
+                        // Mostrar el orden que se acaba de aplicar (ordenDescendente antes de alternar)
+                        textoDestacadoMobile.textContent = ordenDescendente ? 'Mayor descuento' : 'Menor descuento';
+                    }
+                    if (chevronMobile) {
+                        // Cambiar la dirección del chevron según el orden aplicado
+                        chevronMobile.textContent = ordenDescendente ? '▼' : '▲';
+                    }
+                }
+                
+                // Alternar el estado del ordenamiento para el próximo clic
+                ordenDescendente = !ordenDescendente;
+                
+                // Re-aplicar los filtros para mantener el estado de visibilidad correcto
+                if (typeof filtrarCursadas === 'function') {
+                    filtrarCursadas();
+                }
+            }
             
             // Función para renderizar cursadas desde JSON (optimizada)
             function renderCursadas(cursadas, promoBadgeInfo) {
+                // Guardar las cursadas originales
+                globalCursadas = cursadas;
                 // Guardar promoBadgeInfo globalmente
                 globalPromoBadgeInfo = promoBadgeInfo;
                 const template = document.getElementById('cursada-template');
@@ -154,9 +274,9 @@
                         item.classList.add('sin-vacantes');
                     }
                     
-                    // Actualizar contenido dinámico
-                    const diaTurnoContainer = clone.querySelector('.cursada-item-dia-turno');
-                    if (diaTurnoContainer) {
+                    // Actualizar contenido dinámico (desktop y mobile)
+                    const diaTurnoContainers = clone.querySelectorAll('.cursada-item-dia-turno');
+                    diaTurnoContainers.forEach(diaTurnoContainer => {
                         const diaTextos = diaTurnoContainer.querySelectorAll('.cursada-dia-turno-texto');
                         if (diaTextos.length >= 1) {
                             // Primer span: día
@@ -178,17 +298,19 @@
                                 }
                             }
                         }
-                    }
+                    });
                     
-                    const horario = clone.querySelector('.cursada-dia-turno-horario');
-                    if (horario) {
+                    // Actualizar horarios (desktop y mobile)
+                    const horarios = clone.querySelectorAll('.cursada-dia-turno-horario');
+                    horarios.forEach(horario => {
                         if (pre.horarioFormateado && pre.horarioFormateado !== 'TEMPLATE_HORARIO') {
                             horario.textContent = ' (' + pre.horarioFormateado + ')';
                         } else {
                             horario.remove();
                         }
-                    }
+                    });
                     
+                    // Actualizar valores en columnas originales (desktop)
                     const valoresItems = clone.querySelectorAll('.cursada-item-value');
                     if (valoresItems.length >= 1) {
                         valoresItems[0].textContent = pre.fechaFormateada || 'N/A';
@@ -206,12 +328,33 @@
                         }
                     }
                     
-                    const vacantes = clone.querySelector('.cursada-lugares-texto strong');
-                    if (vacantes) vacantes.textContent = vacantesCount;
+                    // Actualizar valores en fila 2 móvil
+                    const valoresFila2 = clone.querySelectorAll('.cursada-item-fila-2-value');
+                    if (valoresFila2.length >= 1) {
+                        valoresFila2[0].textContent = pre.fechaFormateada || 'N/A';
+                    }
+                    if (valoresFila2.length >= 2) {
+                        const modalidadCompleta = pre.modalidadCompleta || 'N/A';
+                        if (modalidadCompleta !== 'TEMPLATE_MODALIDAD') {
+                            valoresFila2[1].textContent = modalidadCompleta;
+                        }
+                    }
+                    if (valoresFila2.length >= 3) {
+                        const sedeSimplificada = pre.sedeSimplificada || 'N/A';
+                        if (sedeSimplificada !== 'TEMPLATE_SEDE') {
+                            valoresFila2[2].textContent = sedeSimplificada;
+                        }
+                    }
                     
-                    // Actualizar descuento
-                    const descuentoWrapper = clone.querySelector('.cursada-descuento-wrapper');
-                    if (descuentoWrapper) {
+                    // Actualizar vacantes (desktop y mobile)
+                    const vacantes = clone.querySelectorAll('.cursada-lugares-texto strong');
+                    vacantes.forEach(vacante => {
+                        vacante.textContent = vacantesCount;
+                    });
+                    
+                    // Actualizar descuento (desktop y mobile)
+                    const descuentoWrappers = clone.querySelectorAll('.cursada-descuento-wrapper');
+                    descuentoWrappers.forEach(descuentoWrapper => {
                         const descuento = Math.abs(pre.dtoCuotaValue || 0);
                         if (descuento > 0.01 && vacantesCount > 0) {
                             const badgeDescuento = descuentoWrapper.querySelector('.cursada-badge-descuento');
@@ -220,34 +363,36 @@
                         } else {
                             descuentoWrapper.style.display = 'none';
                         }
-                    }
+                    });
                     
-                    // Actualizar badge promo
-                    const promoBadgeImg = clone.querySelector('.cursada-promo-badge');
-                    if (promoBadgeImg) {
-                        const promoMatLogo = (cursada.Promo_Mat_logo || '').toLowerCase().trim();
-                        // Verificar si debe mostrarse el badge: Promo_Mat_logo === 'mostrar' Y existe promoBadge activo
-                        if (promoMatLogo === 'mostrar' && promoBadgeInfo && promoBadgeInfo.archivo && promoBadgeInfo.image_path) {
-                            promoBadgeImg.src = promoBadgeInfo.image_path;
-                            promoBadgeImg.style.display = 'block';
-                            promoBadgeImg.alt = 'Promo Mat Logo';
-                        } else {
-                            // Ocultar el badge si no debe mostrarse (no remover, solo ocultar)
-                            promoBadgeImg.style.display = 'none';
+                    // Actualizar badge promo (desktop y mobile)
+                    const promoBadgeImgs = clone.querySelectorAll('.cursada-promo-badge');
+                    promoBadgeImgs.forEach(promoBadgeImg => {
+                        if (promoBadgeImg) {
+                            const promoMatLogo = (cursada.Promo_Mat_logo || '').toLowerCase().trim();
+                            // Verificar si debe mostrarse el badge: Promo_Mat_logo === 'mostrar' Y existe promoBadge activo
+                            if (promoMatLogo === 'mostrar' && promoBadgeInfo && promoBadgeInfo.archivo && promoBadgeInfo.image_path) {
+                                promoBadgeImg.src = promoBadgeInfo.image_path;
+                                promoBadgeImg.style.display = 'block';
+                                promoBadgeImg.alt = 'Promo Mat Logo';
+                            } else {
+                                // Ocultar el badge si no debe mostrarse (no remover, solo ocultar)
+                                promoBadgeImg.style.display = 'none';
+                            }
                         }
-                    }
+                    });
                     
-                    // Actualizar botón ver valores - IMPORTANTE: remover clases y disabled por defecto
-                    const btnVerValores = clone.querySelector('.cursada-btn-ver-valores');
-                    if (btnVerValores) {
-                        btnVerValores.classList.remove('sin-vacantes');
-                        btnVerValores.disabled = false;
+                    // Actualizar botones ver valores (desktop y mobile) - IMPORTANTE: remover clases y disabled por defecto
+                    const btnVerValores = clone.querySelectorAll('.cursada-btn-ver-valores');
+                    btnVerValores.forEach(btn => {
+                        btn.classList.remove('sin-vacantes');
+                        btn.disabled = false;
                         // Solo aplicar sin-vacantes si realmente no hay vacantes
                         if (sinVacantes) {
-                            btnVerValores.classList.add('sin-vacantes');
-                            btnVerValores.disabled = true;
+                            btn.classList.add('sin-vacantes');
+                            btn.disabled = true;
                         }
-                    }
+                    });
                     
                     // Actualizar valores de cuota
                     const cuotaInfo = clone.querySelector('.cursada-cuota-info');
@@ -346,12 +491,141 @@
                         // Insertar todo el fragmento de una vez (más eficiente)
                         cursadasContainer.appendChild(fragment);
                         // Llamar a initializeFiltering DESPUÉS de que todas las cursadas estén en el DOM
-                        setTimeout(initializeFiltering, 0);
+                        setTimeout(() => {
+                            initializeFiltering();
+                            initializeOrdenar();
+                        }, 0);
                     }
                 }
                 
                 // Iniciar procesamiento por lotes
                 processBatch();
+            }
+            
+            // Función para inicializar el botón de ordenar
+            function initializeOrdenar() {
+                // Evitar agregar múltiples event listeners
+                if (ordenarBtnInicializado) return;
+                
+                // Desktop
+                const ordenarBtn = document.querySelector('.inscripcion-filtros-ordenar');
+                if (ordenarBtn) {
+                    ordenarBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        ordenarPorDescuento();
+                    });
+                }
+                
+                // Mobile
+                const ordenarBtnMobile = document.querySelector('.inscripcion-mobile-ordenar');
+                if (ordenarBtnMobile) {
+                    ordenarBtnMobile.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        ordenarPorDescuento();
+                    });
+                }
+                
+                // Dropdown de filtros mobile - Abrir modal
+                const filtrosDropdownMobile = document.querySelector('.inscripcion-mobile-filtros-dropdown');
+                const filtrosModal = document.getElementById('filtros-modal-mobile');
+                const filtrosModalClose = document.getElementById('filtros-modal-close');
+                const filtrosModalOverlay = document.querySelector('.filtros-modal-overlay');
+                const filtrosModalContent = document.querySelector('.filtros-modal-content');
+                
+                // Función para calcular la altura del header
+                function calcularAlturaHeader() {
+                    const header = document.querySelector('.header');
+                    const stickyBar = document.querySelector('.sticky-bar');
+                    let alturaTotal = 0;
+                    
+                    if (stickyBar && stickyBar.offsetParent !== null) {
+                        alturaTotal += stickyBar.offsetHeight;
+                    }
+                    
+                    if (header && header.offsetParent !== null) {
+                        alturaTotal += header.offsetHeight;
+                    }
+                    
+                    return alturaTotal || 80; // Fallback a 80px si no se encuentra
+                }
+                
+                // Función para abrir el modal
+                function abrirModalFiltros() {
+                    if (filtrosModal) {
+                        const alturaHeader = calcularAlturaHeader();
+                        
+                        filtrosModal.classList.add('active');
+                        document.body.classList.add('filtros-modal-open');
+                        document.body.style.overflow = 'hidden';
+                        
+                        // Ajustar padding-top del contenido para que empiece debajo del header
+                        // Este valor debe ser dinámico porque depende de la altura real del header
+                        if (filtrosModalContent) {
+                            filtrosModalContent.style.paddingTop = alturaHeader + 'px';
+                        }
+                    }
+                }
+                
+                // Función para cerrar el modal
+                function cerrarModalFiltros() {
+                    if (filtrosModal) {
+                        filtrosModal.classList.remove('active');
+                        document.body.classList.remove('filtros-modal-open');
+                        document.body.style.overflow = '';
+                        
+                        // Restaurar padding del contenido (este sí necesita ser dinámico)
+                        if (filtrosModalContent) {
+                            filtrosModalContent.style.paddingTop = '';
+                        }
+                    }
+                }
+                
+                if (filtrosDropdownMobile && filtrosModal) {
+                    filtrosDropdownMobile.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        abrirModalFiltros();
+                    });
+                }
+                
+                // Cerrar modal con botón X
+                if (filtrosModalClose) {
+                    filtrosModalClose.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        cerrarModalFiltros();
+                    });
+                }
+                
+                // Cerrar modal con overlay
+                if (filtrosModalOverlay) {
+                    filtrosModalOverlay.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        cerrarModalFiltros();
+                    });
+                }
+                
+                // Botón "Limpiar filtros" del modal
+                const limpiarFiltrosModal = document.getElementById('limpiar-filtros-modal');
+                if (limpiarFiltrosModal) {
+                    limpiarFiltrosModal.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        // Simular clic en el botón "Borrar todo" existente
+                        const borrarTodoBtn = document.getElementById('borrar-todo-filtros');
+                        if (borrarTodoBtn) {
+                            borrarTodoBtn.click();
+                        }
+                    });
+                }
+                
+                // Botón "Ver x resultados" del modal
+                const verResultadosModal = document.getElementById('ver-resultados-modal');
+                if (verResultadosModal) {
+                    verResultadosModal.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        cerrarModalFiltros();
+                    });
+                }
+                
+                ordenarBtnInicializado = true;
             }
             
             // Función para inicializar el filtrado después de cargar las cursadas
@@ -405,7 +679,9 @@
             
             // Función para actualizar los colores de las opciones de filtro
             function actualizarColoresFiltros() {
-                opcionesFiltro.forEach(opcion => {
+                // Buscar todos los filtros dinámicamente para incluir los del modal
+                const todasLasOpciones = document.querySelectorAll('.filtro-opcion');
+                todasLasOpciones.forEach(opcion => {
                     const tipo = opcion.getAttribute('data-tipo');
                     const valor = opcion.getAttribute('data-valor');
                     const estaSeleccionado = filtrosSeleccionados[tipo] === valor;
@@ -570,14 +846,25 @@
             
             // Función para actualizar los chips de filtros aplicados
             function actualizarChipsFiltros() {
-                // Limpiar chips existentes
+                // Limpiar chips existentes en desktop
                 filtrosAplicadosContainer.innerHTML = '';
+                
+                // Limpiar chips existentes en mobile
+                const filtrosAplicadosMobile = document.getElementById('filtros-aplicados-mobile');
+                if (filtrosAplicadosMobile) {
+                    filtrosAplicadosMobile.innerHTML = '';
+                }
+                
+                // Contar filtros seleccionados
+                let cantidadFiltros = 0;
                 
                 Object.keys(filtrosSeleccionados).forEach(tipo => {
                     const valor = filtrosSeleccionados[tipo];
                     if (valor) {
+                        cantidadFiltros++;
                         const texto = obtenerTextoFiltro(tipo, valor);
                         if (texto) {
+                            // Crear chip para desktop
                             const chip = document.createElement('span');
                             chip.className = 'filtro-chip';
                             
@@ -596,9 +883,30 @@
                             chip.appendChild(textoChip);
                             chip.appendChild(btnEliminar);
                             filtrosAplicadosContainer.appendChild(chip);
+                            
+                            // Crear chip para mobile (mismo estilo)
+                            if (filtrosAplicadosMobile) {
+                                const chipMobile = chip.cloneNode(true);
+                                // Re-agregar el event listener al botón de eliminar del chip clonado
+                                const btnEliminarMobile = chipMobile.querySelector('.filtro-chip-eliminar');
+                                if (btnEliminarMobile) {
+                                    btnEliminarMobile.addEventListener('click', function(e) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        eliminarFiltro(tipo);
+                                    });
+                                }
+                                filtrosAplicadosMobile.appendChild(chipMobile);
+                            }
                         }
                     }
                 });
+                
+                // Actualizar contador de filtros en mobile
+                const contadorFiltrosMobile = document.getElementById('contador-filtros-mobile');
+                if (contadorFiltrosMobile) {
+                    contadorFiltrosMobile.textContent = cantidadFiltros;
+                }
             }
             
             // Función para eliminar un filtro específico
@@ -756,6 +1064,12 @@
                     contadorResultados.textContent = visibleCount;
                 }
                 
+                // Actualizar contador del modal
+                const contadorResultadosModal = document.getElementById('contador-resultados-modal');
+                if (contadorResultadosModal) {
+                    contadorResultadosModal.textContent = visibleCount;
+                }
+                
                 // Actualizar chips de filtros aplicados
                 actualizarChipsFiltros();
                 
@@ -779,11 +1093,13 @@
                 }
             }
             
-            // Agregar event listeners a las opciones de filtro
-            opcionesFiltro.forEach(opcion => {
-                opcion.addEventListener('click', function() {
-                    const tipo = this.getAttribute('data-tipo');
-                    const valor = this.getAttribute('data-valor');
+            // Agregar event listeners a las opciones de filtro (incluyendo las del modal)
+            // Usar delegación de eventos para que funcione con filtros del modal también
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('filtro-opcion')) {
+                    const opcion = e.target;
+                    const tipo = opcion.getAttribute('data-tipo');
+                    const valor = opcion.getAttribute('data-valor');
                     
                     // Si ya está seleccionado, deseleccionarlo
                     if (filtrosSeleccionados[tipo] === valor) {
@@ -804,7 +1120,7 @@
                     
                     actualizarColoresFiltros();
                     filtrarCursadas();
-                });
+                }
             });
             
             // Event listener para borrar todos los filtros

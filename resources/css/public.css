@@ -14485,8 +14485,9 @@ body.inscripcion-page {
 .inscripcion-filtros-bar-columna-der {
     flex: 1;
     display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem);
 }
 
 .inscripcion-filtros-bar-der-wrapper {
@@ -14497,6 +14498,30 @@ body.inscripcion-page {
     gap: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem);
     flex-wrap: wrap;
     width: 100%;
+}
+
+.inscripcion-filtros-ordenar {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400; /* Regular */
+    font-size: clamp(16px, calc(16px + (100vw - 1100px) * 0.00244), 18px);
+    color: var(--text-white);
+    white-space: nowrap;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.inscripcion-filtros-ordenar-destacado {
+    color: #60D697;
+    font-weight: 400; /* Regular */
+    text-decoration: underline;
+}
+
+.inscripcion-filtros-ordenar-chevron {
+    font-size: 0.8em;
+    transition: transform 0.2s;
+    color: #60D697;
 }
 
 .inscripcion-filtros-borrar-resultados-grupo {

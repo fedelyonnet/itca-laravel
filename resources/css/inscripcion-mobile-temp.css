@@ -1,0 +1,44 @@
+/* ========================================
+   INSCRIPCIÓN PAGE - MOBILE (380px - 599px)
+   ======================================== */
+
+@media (min-width: 380px) and (max-width: 599px) {
+    /* Ocultar breadcrumb en mobile */
+    .inscripcion-page .lista-carreras-breadcrumb {
+        display: none !important;
+    }
+    
+    /* Ocultar barra de filtros en mobile */
+    .inscripcion-filtros-bar {
+        display: none !important;
+    }
+    
+    /* Ocultar panel de filtros en mobile */
+    .inscripcion-filtros-panel {
+        display: none !important;
+    }
+    
+    /* Asegurar que el listado de opciones se muestre correctamente */
+    .inscripcion-listado-panel {
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+    }
+    
+    /* Ajustar el contenedor de paneles para que solo muestre el listado */
+    .inscripcion-paneles-container {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    /* Ajustar padding del contenedor de inscripción en mobile */
+    .inscripcion-container {
+        padding: 0 clamp(15px, 4vw, 20px);
+    }
+    
+    /* Ajustar padding de la sección de inscripción en mobile */
+    .inscripcion-section {
+        padding-top: clamp(20px, 4vw, 30px);
+        padding-bottom: clamp(30px, 4vw, 50px);
+    }
+}

@@ -1,0 +1,867 @@
+/* ========================================
+   INSCRIPCIÓN PAGE - MOBILE (0px - 599px)
+   ======================================== */
+
+@media (max-width: 599px) {
+    /* Eliminar padding-bottom de lista-carreras-container carrera-show-container en mobile */
+    .lista-carreras-container.carrera-show-container {
+        padding-bottom: 0 !important;
+    }
+    
+    /* Ocultar breadcrumb en mobile */
+    .inscripcion-page .lista-carreras-breadcrumb {
+        display: none !important;
+    }
+    
+    /* Ocultar barra de filtros en mobile */
+    .inscripcion-filtros-bar {
+        display: none !important;
+    }
+    
+    /* Ocultar panel de filtros en mobile por defecto */
+    .inscripcion-filtros-panel {
+        display: none !important;
+    }
+    
+    /* Mostrar panel de filtros cuando se activa el dropdown */
+    .inscripcion-filtros-panel.mobile-visible {
+        display: block !important;
+        width: 100%;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    /* Hacer que text-1 y text-2 estén en la misma línea, text-3 en otra */
+    .inscripcion-page .lista-carreras-title {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    
+    .inscripcion-page .lista-carreras-title-text-1,
+    .inscripcion-page .lista-carreras-title-text-2 {
+        display: inline;
+        white-space: nowrap;
+        font-weight: 500; /* Medium */
+        font-size: clamp(16px, calc(16px + (100vw - 320px) * ((22 - 16) / (430 - 320))), 22px);
+    }
+    
+    .inscripcion-page .lista-carreras-title-text-2::before {
+        width: clamp(210px, calc(210px + (100vw - 320px) * ((280 - 210) / (430 - 320))), 280px);
+    }
+    
+    .inscripcion-page .lista-carreras-title-text-3 {
+        flex-basis: 100%;
+        text-align: center;
+        font-weight: 600; /* Semibold */
+        font-size: clamp(16px, calc(16px + (100vw - 320px) * ((22 - 16) / (430 - 320))), 22px);
+        margin-top: -0.25rem;
+    }
+    
+    /* Subtítulo mobile solo visible en <599px */
+    .inscripcion-mobile-subtitle {
+        flex-basis: 100%;
+        display: block;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 500; /* Medium */
+        font-size: clamp(10px, calc(10px + (100vw - 320px) * ((12 - 10) / (430 - 320))), 12px);
+        color: var(--text-white);
+        text-align: center;
+        margin-top: 0.5rem;
+        margin-bottom: 0;
+    }
+    
+    /* Divisor mobile solo visible en <599px */
+    .inscripcion-mobile-divider {
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        justify-content: space-between;
+        width: 100vw;
+        min-height: auto;
+        height: auto;
+        padding: clamp(10px, 2.5vw, 15px) clamp(15px, 4vw, 20px);
+        margin-left: calc(-50vw + 50%);
+        border-top: 1px solid var(--text-white);
+        border-bottom: 1px solid var(--text-white);
+        margin-top: 1.5rem;
+        margin-bottom: 0;
+        order: 999; /* Asegurar que esté al final */
+        gap: 0;
+        overflow: visible;
+        position: relative;
+    }
+    
+    /* Contenedor izquierdo del divider */
+    .inscripcion-mobile-divider-left {
+        display: flex;
+        align-items: center;
+        flex: 0 0 auto;
+    }
+    
+    /* Contenedor derecho del divider con línea vertical separadora */
+    .inscripcion-mobile-divider-right {
+        display: flex;
+        align-items: center;
+        flex: 0 0 auto;
+        margin-left: auto;
+        position: relative;
+        padding-left: 1rem;
+        align-self: stretch;
+    }
+    
+    /* Línea vertical separadora usando pseudo-elemento */
+    .inscripcion-mobile-divider-right::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: calc(-1 * clamp(10px, 2.5vw, 15px));
+        bottom: calc(-1 * clamp(10px, 2.5vw, 15px));
+        width: 1px;
+        background-color: var(--text-white);
+    }
+    
+    /* Botón de ordenar en mobile */
+    .inscripcion-mobile-ordenar {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 400;
+        font-size: clamp(12px, calc(12px + (100vw - 320px) * ((14 - 12) / (430 - 320))), 14px);
+        color: var(--text-white);
+        cursor: pointer;
+        user-select: none;
+    }
+    
+    .inscripcion-mobile-ordenar-destacado {
+        font-weight: 400; /* Regular */
+        color: #60D697;
+        text-decoration: underline;
+        text-underline-offset: 0.2em;
+    }
+    
+    .inscripcion-mobile-ordenar-chevron {
+        font-size: clamp(10px, calc(10px + (100vw - 320px) * ((12 - 10) / (430 - 320))), 12px);
+        color: #60D697;
+    }
+    
+    /* Dropdown de filtros en mobile */
+    .inscripcion-mobile-filtros-dropdown {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 400;
+        font-size: clamp(12px, calc(12px + (100vw - 320px) * ((14 - 12) / (430 - 320))), 14px);
+        color: var(--text-white);
+        cursor: pointer;
+        user-select: none;
+    }
+    
+    .inscripcion-mobile-filtros-chevron {
+        font-size: clamp(10px, calc(10px + (100vw - 320px) * ((12 - 10) / (430 - 320))), 12px);
+        color: #60D697;
+    }
+    
+    /* Asegurar que el header mantenga el orden correcto */
+    .inscripcion-page .lista-carreras-header {
+        display: flex;
+        flex-direction: column;
+        gap: 0 !important; /* Eliminar gap para quitar espacio entre divider y chips */
+    }
+    
+    /* Asegurar que el título aparezca antes del divisor */
+    .inscripcion-page .lista-carreras-title {
+        order: 1;
+        margin-bottom: clamp(15px, 4vw, 25px); /* Restaurar espacio solo después del título */
+    }
+    
+    .inscripcion-page .inscripcion-mobile-divider {
+        order: 2;
+    }
+    
+    /* Contenedor de chips de filtros aplicados en mobile */
+    .inscripcion-filtros-chips-mobile {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        min-height: 30px;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100vw;
+        padding: clamp(10px, 2.5vw, 15px) clamp(15px, 4vw, 20px);
+        padding-top: clamp(8px, 2vw, 10px) !important; /* Igualar distancia con divider = distancia con primer item */
+        padding-bottom: clamp(8px, 2vw, 10px); /* Misma distancia que padding-top para simetría */
+        margin-left: calc(-50vw + 50%);
+        order: 3;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+    
+    /* Tamaño de fuente de los chips en mobile: 12px en 430px, se achica hacia 320px */
+    .inscripcion-filtros-chips-mobile .filtro-chip {
+        font-size: clamp(10px, calc(10px + (100vw - 320px) * ((12 - 10) / (430 - 320))), 12px);
+    }
+    
+    /* Eliminar font-size del botón eliminar en mobile */
+    .inscripcion-filtros-chips-mobile .filtro-chip-eliminar {
+        font-size: unset;
+    }
+    
+    /* Estilos para items de cursada en mobile */
+    .cursada-item {
+        padding: clamp(12px, 3vw, 16px);
+        margin-bottom: clamp(12px, 3vw, 16px);
+    }
+    
+    /* Eliminar margin del último item para evitar espacio extra */
+    .cursada-item:last-child {
+        margin-bottom: 0;
+    }
+    
+    /* Ocultar columnas originales de desktop en mobile */
+    .cursada-item-columna-izq,
+    .cursada-item-columna-medio,
+    .cursada-item-columna-der {
+        display: none !important;
+    }
+    
+    /* Mostrar nuevas filas horizontales en mobile */
+    .cursada-item-fila-1,
+    .cursada-item-fila-2,
+    .cursada-item-fila-3 {
+        display: flex;
+    }
+    
+    /* Contenedor principal - 3 filas horizontales */
+    .cursada-item-grid {
+        display: flex;
+        flex-direction: column;
+        gap: clamp(10px, 2.5vw, 14px);
+    }
+    
+    /* ============================================
+       FILA 1: DÍA | TURNO
+       ============================================ */
+    .cursada-item-fila-1 {
+        width: 100%;
+    }
+    
+    .cursada-item-fila-1 .cursada-item-dia-turno {
+        margin-bottom: 0;
+    }
+    
+    /* Día y turno - 15px en 430px, se achica hacia 320px, semibold */
+    .cursada-item-fila-1 .cursada-dia-turno-texto {
+        font-size: clamp(13px, calc(13px + (100vw - 320px) * ((15 - 13) / (430 - 320))), 15px);
+        line-height: 1.3;
+        font-weight: 600; /* Semibold */
+    }
+    
+    /* Separador y horario - mismo tamaño pero regular */
+    .cursada-item-fila-1 .cursada-dia-turno-separador,
+    .cursada-item-fila-1 .cursada-dia-turno-horario {
+        font-size: clamp(13px, calc(13px + (100vw - 320px) * ((15 - 13) / (430 - 320))), 15px);
+        line-height: 1.3;
+        font-weight: 400; /* Regular */
+    }
+    
+    /* ============================================
+       FILA 2: INFORMACIÓN (IZQ) + BADGE PROMO (DER)
+       ============================================ */
+    .cursada-item-fila-2 {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: clamp(8px, 2vw, 12px);
+        width: 100%;
+    }
+    
+    /* Contenedor izquierdo: Inicia, Modalidad, Sede (apilados) */
+    .cursada-item-fila-2-izq {
+        display: flex;
+        flex-direction: column;
+        gap: clamp(4px, 1vw, 6px);
+        min-width: 0;
+        overflow: hidden; /* Evita que el contenido se desborde */
+    }
+    
+    /* Cada item de información (Inicia, Modalidad, Sede) */
+    .cursada-item-fila-2-item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        gap: clamp(4px, 1vw, 6px);
+        font-size: clamp(11px, calc(11px + (100vw - 320px) * ((13 - 11) / (430 - 320))), 13px);
+        line-height: 1.3;
+        text-align: left;
+    }
+    
+    /* Permitir que el texto se ajuste si es necesario */
+    .cursada-item-fila-2-item .cursada-item-fila-2-value {
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+    
+    .cursada-item-fila-2-label {
+        font-weight: 500; /* Medium */
+        color: var(--text-white);
+        flex-shrink: 0; /* El label no se comprime */
+        white-space: nowrap; /* El label no se parte */
+    }
+    
+    .cursada-item-fila-2-value {
+        font-weight: 400; /* Regular */
+        color: var(--text-white);
+        flex: 0 1 auto; /* No crece, puede encogerse */
+        min-width: 0;
+        text-align: left;
+    }
+    
+    /* Contenedor derecho: Badge Promo - tamaño fijo que no se comprime */
+    .cursada-item-fila-2-der {
+        flex: 0 0 auto; /* No crece, no se encoge, tamaño automático */
+        width: clamp(38px, calc(38px + (100vw - 320px) * ((74 - 38) / (430 - 320))), 74px);
+        height: clamp(30px, calc(30px + (100vw - 320px) * ((58 - 30) / (430 - 320))), 58px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        align-self: center; /* Alineación vertical en el grid */
+    }
+    
+    .cursada-item-fila-2-der .cursada-promo-badge {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+    }
+    
+    /* Ocultar badge si no tiene src */
+    .cursada-item-fila-2-der .cursada-promo-badge:not([src]),
+    .cursada-item-fila-2-der .cursada-promo-badge[src=""] {
+        display: none;
+    }
+    
+    /* ============================================
+       FILA 3: DESCUENTO/LUGARES (IZQ) + BOTÓN (DER)
+       ============================================ */
+    .cursada-item-fila-3 {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: clamp(8px, 2vw, 12px);
+        width: 100%;
+    }
+    
+    /* Contenedor izquierdo: Descuento arriba + Lugares abajo */
+    .cursada-item-fila-3-izq {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: clamp(6px, 1.5vw, 8px);
+        flex: 1;
+        min-width: 0;
+    }
+    
+    /* Descuento wrapper - solo mostrar badge, ocultar texto de cuotas */
+    .cursada-item-fila-3 .cursada-descuento-wrapper {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 0;
+    }
+    
+    .cursada-item-fila-3 .cursada-badge-descuento {
+        font-size: clamp(11px, calc(11px + (100vw - 320px) * ((13 - 11) / (430 - 320))), 13px);
+        padding: clamp(4px, 1vw, 6px) clamp(8px, 2vw, 12px);
+        width: auto;
+        min-width: auto;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    
+    /* Ocultar "en todas las cuotas" en mobile */
+    .cursada-item-fila-3 .cursada-texto-cuotas {
+        display: none !important;
+    }
+    
+    /* Lugares disponibles */
+    .cursada-item-fila-3 .cursada-lugares-texto {
+        font-size: clamp(11px, calc(11px + (100vw - 320px) * ((13 - 11) / (430 - 320))), 13px);
+        text-align: left;
+        color: var(--text-white);
+    }
+    
+    /* Contenedor derecho: Botón Ver valores */
+    .cursada-item-fila-3-der {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+    }
+    
+    /* A partir de 360px, el contenedor puede expandirse para ocupar el ancho disponible */
+    @media (min-width: 360px) {
+        .cursada-item-fila-3-der {
+            flex: 1;
+            justify-content: flex-end;
+            min-width: 0;
+        }
+    }
+    
+    /* Ancho base en 430px, se achica hacia 360px */
+    .cursada-item-fila-3 .cursada-btn-ver-valores {
+        width: clamp(100px, calc(100px + (100vw - 360px) * ((130 - 100) / (430 - 360))), 130px);
+        min-width: clamp(100px, calc(100px + (100vw - 360px) * ((130 - 100) / (430 - 360))), 130px);
+        height: clamp(36px, 9vw, 42px);
+        font-size: clamp(12px, calc(12px + (100vw - 320px) * ((14 - 12) / (430 - 320))), 14px);
+        border-radius: clamp(18px, 4.5vw, 21px);
+        padding: 0 clamp(12px, 3vw, 16px);
+        white-space: nowrap;
+    }
+    
+    /* A partir de 360px, el botón tiene tamaño fluido: 163x31 en 430px, reduciéndose hacia 320px */
+    @media (min-width: 360px) {
+        .cursada-item-fila-3 .cursada-btn-ver-valores {
+            width: clamp(121px, calc(121px + (100vw - 320px) * ((163 - 121) / (430 - 320))), 163px);
+            height: clamp(23px, calc(23px + (100vw - 320px) * ((31 - 23) / (430 - 320))), 31px);
+            min-width: 0;
+        }
+    }
+    
+    /* ============================================
+       RESPONSIVE: Ajustes para pantallas muy pequeñas
+       ============================================ */
+    @media (max-width: 320px) {
+        .cursada-item-fila-2 {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: clamp(8px, 2vw, 12px);
+        }
+        
+        .cursada-item-fila-2-der {
+            align-self: flex-end; /* Badge alineado a la derecha */
+        }
+        
+        .cursada-item-fila-3 {
+            flex-wrap: wrap;
+        }
+        
+        .cursada-item-fila-3-der {
+            width: 100%;
+            margin-top: clamp(8px, 2vw, 12px);
+        }
+        
+        .cursada-item-fila-3 .cursada-btn-ver-valores {
+            width: 100%;
+        }
+    }
+    
+    /* Asegurar que el listado de opciones se muestre correctamente */
+    .inscripcion-listado-panel {
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+    }
+    
+    /* Contenedor de cursadas en mobile */
+    #cursadas-container {
+        display: flex;
+        flex-direction: column;
+        gap: clamp(12px, 3vw, 16px);
+        width: 100%;
+        padding-right: 0 !important; /* Eliminar espacio reservado para scrollbar en mobile */
+        max-height: none !important; /* Eliminar max-height en mobile */
+        overflow-y: visible !important; /* No necesitamos scroll interno en mobile */
+    }
+    
+    /* Panel de valores desplegable en mobile */
+    .cursada-valores-panel {
+        margin-top: clamp(12px, 3vw, 16px);
+        padding: clamp(12px, 3vw, 16px);
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .cursada-valores-grid {
+        display: flex;
+        flex-direction: column;
+        gap: clamp(12px, 3vw, 16px);
+    }
+    
+    .cursada-valores-columna-izq,
+    .cursada-valores-columna-der {
+        width: 100%;
+    }
+    
+    .cursada-valores-separador {
+        display: none;
+    }
+    
+    /* Formulario en mobile */
+    .cursada-formulario-grid {
+        display: flex;
+        flex-direction: column;
+        gap: clamp(10px, 2.5vw, 12px);
+    }
+    
+    .cursada-formulario-columna-izq,
+    .cursada-formulario-columna-der {
+        width: 100%;
+    }
+    
+    .cursada-formulario-input {
+        font-size: clamp(12px, calc(12px + (100vw - 320px) * ((14 - 12) / (430 - 320))), 14px);
+        padding: clamp(10px, 2.5vw, 12px);
+    }
+    
+    .cursada-btn-continuar {
+        width: 100%;
+        font-size: clamp(12px, calc(12px + (100vw - 320px) * ((14 - 12) / (430 - 320))), 14px);
+        padding: clamp(10px, 2.5vw, 12px);
+    }
+    
+    .cursada-btn-reservar {
+        width: 100%;
+        font-size: clamp(12px, calc(12px + (100vw - 320px) * ((14 - 12) / (430 - 320))), 14px);
+        padding: clamp(12px, 3vw, 16px);
+    }
+    
+    /* Ajustar el contenedor de paneles para que solo muestre el listado */
+    .inscripcion-paneles-container {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    /* Ajustar padding del contenedor de inscripción en mobile */
+    .inscripcion-container {
+        padding: 0 clamp(15px, 4vw, 20px);
+    }
+    
+    /* Ajustar padding de la sección de inscripción en mobile */
+    .inscripcion-section {
+        padding-top: 0 !important; /* Eliminar padding-top para acercar chips y resultados */
+        padding-bottom: clamp(20px, 4vw, 30px); /* Reducido de 30-50px a 20-30px */
+    }
+    
+    /* Eliminar padding-bottom del header de lista-carreras en inscripción mobile */
+    .inscripcion-page .lista-carreras--show .lista-carreras-header {
+        padding-bottom: 0 !important;
+    }
+    
+    /* Reducir espacio entre chips y contenedor de cursadas */
+    .inscripcion-paneles-container {
+        margin-top: 0;
+    }
+    
+    /* Reducir margin-top del contenedor de cursadas */
+    #cursadas-container {
+        margin-top: 0;
+    }
+    
+    /* Eliminar scrollbar personalizado en mobile - usar el nativo del sistema */
+    #cursadas-container::-webkit-scrollbar {
+        width: 0 !important;
+        display: none !important;
+    }
+    
+    #cursadas-container {
+        scrollbar-width: none; /* Firefox - ocultar scrollbar */
+        -ms-overflow-style: none; /* IE y Edge */
+    }
+    
+    /* Modal de Filtros Mobile */
+    .filtros-modal-mobile {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 10000;
+        overflow-y: auto;
+    }
+    
+    .filtros-modal-mobile.active {
+        display: block;
+    }
+    
+    /* Oscurecer header cuando el modal está abierto */
+    body.filtros-modal-open .header {
+        opacity: 0.5 !important;
+        pointer-events: none !important;
+        z-index: 10004 !important; /* Por encima del overlay (10001) para que sea visible pero oscurecido */
+    }
+    
+    /* Bloquear específicamente el hamburger cuando el modal está abierto */
+    body.filtros-modal-open .hamburger {
+        pointer-events: none !important;
+        cursor: not-allowed !important;
+    }
+    
+    /* También oscurecer el sticky bar si existe */
+    body.filtros-modal-open .sticky-bar {
+        opacity: 0.5 !important;
+        pointer-events: none !important;
+        z-index: 10004 !important;
+    }
+    
+    .filtros-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 10001;
+        /* El overlay cubrirá todo, pero el header quedará visible encima con menor opacidad */
+    }
+    
+    .filtros-modal-content {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background-color: #010C42;
+        z-index: 10002;
+        padding-top: 0;
+        padding-bottom: 0;
+        display: flex;
+        flex-direction: column;
+        /* El padding-top se ajustará dinámicamente con JavaScript */
+    }
+    
+    .filtros-modal-header {
+        position: relative;
+        width: 100%;
+        height: 60px;
+        background-color: #010C42;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0 20px;
+        z-index: 10003;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin: 0;
+        flex-shrink: 0;
+    }
+    
+    .filtros-modal-body {
+        padding: 0 clamp(15px, 4vw, 20px);
+        margin-top: 0;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+    }
+    
+    .filtros-modal-close {
+        background: none;
+        border: none;
+        color: var(--text-white);
+        font-size: 36px;
+        font-weight: 300;
+        line-height: 1;
+        cursor: pointer;
+        padding: 0;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.2s ease;
+    }
+    
+    .filtros-modal-close:hover {
+        opacity: 0.7;
+    }
+    
+    /* Replicar exactamente la estructura de desktop en el modal */
+    .filtros-modal-body .inscripcion-filtros-recuadro {
+        margin: 0;
+        padding: 0;
+        padding-top: clamp(8px, calc(8px + (100vw - 320px) * ((16 - 8) / (430 - 320))), 16px);
+        background-color: transparent;
+        border: none;
+        border-radius: 0;
+        flex: 1;
+        min-height: 0;
+    }
+    
+    /* Replicar estilos de sección de filtro de desktop */
+    .filtros-modal-body .inscripcion-filtro-seccion {
+        padding: 0;
+        margin: 0;
+        position: relative;
+    }
+    
+    /* Línea separadora entre secciones (igual que desktop) */
+    .filtros-modal-body .inscripcion-filtro-seccion:not(:first-child)::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: calc(-1 * clamp(15px, 4vw, 20px));
+        right: calc(-1 * clamp(15px, 4vw, 20px));
+        height: 1px;
+        background-color: transparent;
+    }
+    
+    /* Replicar estilos de subtítulo de desktop (sin padding, solo gap natural) */
+    .filtros-modal-body .inscripcion-filtro-subtitulo {
+        display: flex;
+        align-items: center;
+        gap: clamp(8px, calc(8px + (100vw - 320px) * 0.0122), 12px);
+        margin: 0;
+        padding: 0;
+        color: var(--text-white);
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 500; /* Medium */
+        font-size: clamp(14px, calc(14px + (100vw - 320px) * ((17 - 14) / (430 - 320))), 17px);
+        position: relative;
+    }
+    
+    /* Línea debajo del subtítulo (igual que desktop) */
+    .filtros-modal-body .inscripcion-filtro-subtitulo::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: calc(-1 * clamp(15px, 4vw, 20px));
+        right: calc(-1 * clamp(15px, 4vw, 20px));
+        height: 1px;
+        background-color: transparent;
+    }
+    
+    /* Replicar estilos de icono de desktop */
+    .filtros-modal-body .inscripcion-filtro-icono {
+        width: clamp(20px, calc(20px + (100vw - 320px) * 0.0244), 28px);
+        height: clamp(20px, calc(20px + (100vw - 320px) * 0.0244), 28px);
+        object-fit: contain;
+        flex-shrink: 0;
+    }
+    
+    /* Replicar estilos de opciones de filtro de desktop (padding-left para alinear con texto del título) */
+    .filtros-modal-body #filtro-carrera-opciones-modal,
+    .filtros-modal-body #filtro-sede-opciones-modal,
+    .filtros-modal-body #filtro-modalidad-opciones-modal,
+    .filtros-modal-body #filtro-turno-opciones-modal,
+    .filtros-modal-body #filtro-dia-opciones-modal,
+    .filtros-modal-body #filtro-promocion-opciones-modal {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        align-items: flex-start;
+        margin: 0;
+        padding-top: 0;
+        padding-bottom: clamp(10px, calc(10px + (100vw - 320px) * 0.0122), 20px);
+        padding-left: clamp(28px, calc(28px + (100vw - 320px) * 0.0366), 40px);
+        padding-right: 0;
+    }
+    
+    /* Replicar estilos de opción de filtro de desktop */
+    .filtros-modal-body .filtro-opcion {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 300; /* Light */
+        font-size: clamp(12px, calc(12px + (100vw - 320px) * ((14 - 12) / (430 - 320))), 14px);
+        text-align: left;
+        width: 100%;
+        display: block;
+        color: var(--text-white);
+        cursor: pointer;
+        padding: 0;
+        transition: color 0.2s;
+    }
+    
+    .filtros-modal-body .filtro-opcion[data-seleccionado="true"] {
+        color: #66F7A7;
+        font-weight: 500; /* Medium */
+        text-decoration: underline;
+    }
+    
+    /* Línea separadora y acciones del modal - Posicionado en el bottom */
+    .filtros-modal-acciones {
+        margin-top: auto;
+        padding-top: clamp(10px, calc(10px + (100vw - 320px) * 0.0122), 20px);
+        padding-bottom: clamp(8px, calc(8px + (100vw - 320px) * ((12 - 8) / (430 - 320))), 12px);
+        flex-shrink: 0;
+        width: 100%;
+    }
+    
+    .filtros-modal-linea {
+        width: calc(100% + 2 * clamp(15px, 4vw, 20px));
+        height: 1px;
+        background-color: var(--text-white);
+        margin-left: calc(-1 * clamp(15px, 4vw, 20px));
+        margin-right: calc(-1 * clamp(15px, 4vw, 20px));
+        margin-bottom: clamp(8px, calc(8px + (100vw - 320px) * ((12 - 8) / (430 - 320))), 12px);
+    }
+    
+    .filtros-modal-acciones-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: clamp(10px, calc(10px + (100vw - 320px) * ((15 - 10) / (430 - 320))), 15px);
+    }
+    
+    .filtros-modal-limpiar {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 400;
+        font-size: clamp(14px, calc(14px + (100vw - 320px) * ((18 - 14) / (430 - 320))), 18px);
+        color: var(--text-white);
+        text-decoration: none;
+        cursor: pointer;
+        transition: opacity 0.2s;
+    }
+    
+    .filtros-modal-limpiar:hover {
+        opacity: 0.7;
+    }
+    
+    .filtros-modal-ver-resultados {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600; /* Semibold */
+        font-size: clamp(13px, calc(13px + (100vw - 320px) * ((15 - 13) / (430 - 320))), 15px);
+        color: #010C42;
+        background-color: #65E09C;
+        border: none;
+        border-radius: 40px;
+        cursor: pointer;
+        padding: clamp(8px, calc(8px + (100vw - 320px) * ((10 - 8) / (430 - 320))), 10px) clamp(16px, calc(16px + (100vw - 320px) * ((20 - 16) / (430 - 320))), 20px);
+        transition: opacity 0.2s;
+    }
+    
+    .filtros-modal-ver-resultados:hover {
+        opacity: 0.9;
+    }
+}
+
+/* Ocultar elementos mobile en desktop (>=600px) */
+@media (min-width: 600px) {
+    .inscripcion-mobile-subtitle,
+    .inscripcion-mobile-divider,
+    .inscripcion-filtros-chips-mobile {
+        display: none !important;
+    }
+    
+    /* Ocultar modal de filtros en desktop */
+    .filtros-modal-mobile {
+        display: none !important;
+    }
+    
+    /* Ocultar nuevas filas horizontales de mobile en desktop */
+    .cursada-item-fila-1,
+    .cursada-item-fila-2,
+    .cursada-item-fila-3 {
+        display: none !important;
+    }
+    
+    /* Mostrar columnas originales de desktop */
+    .cursada-item-columna-izq,
+    .cursada-item-columna-medio,
+    .cursada-item-columna-der {
+        display: flex !important;
+    }
+}

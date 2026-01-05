@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Special+Gothic+Expanded+One&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Special+Gothic+Expanded+One&display=swap" rel="stylesheet"></noscript>
     <!-- Styles -->
-    @vite(['resources/css/public.css', 'resources/js/app.js'])
+    @vite(['resources/css/public.css', 'resources/css/inscripcion-mobile.css', 'resources/js/app.js'])
     <!-- Swiper CSS - Cargar de forma no bloqueante -->
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"></noscript>
@@ -64,6 +64,182 @@
         </div>
     </header>
 
+    <!-- Modal de Filtros Mobile -->
+    <div id="filtros-modal-mobile" class="filtros-modal-mobile">
+        <div class="filtros-modal-overlay"></div>
+        <div class="filtros-modal-content">
+            <div class="filtros-modal-header">
+                <button class="filtros-modal-close" id="filtros-modal-close">×</button>
+            </div>
+            <div class="filtros-modal-body">
+                <div class="inscripcion-filtros-recuadro">
+                    <!-- Filtro: Carrera -->
+                    <div class="inscripcion-filtro-seccion">
+                        <h4 class="inscripcion-filtro-subtitulo">
+                            <img src="/images/desktop/wrench_g.png" alt="Carrera" class="inscripcion-filtro-icono">
+                            <span>Carrera</span>
+                        </h4>
+                        <div id="filtro-carrera-opciones-modal">
+                            @foreach($carreras as $carreraItem)
+                                @php
+                                    $nombreCarrera = $carreraItem->carrera ?? 'N/A';
+                                    $nombreCorregido = corregirNombreCarrera($nombreCarrera);
+                                    // Comparar con la carrera seleccionada encontrada en el controlador (comparación flexible)
+                                    $esSeleccionado = false;
+                                    if (isset($carreraSeleccionada) && $carreraSeleccionada && $nombreCarrera) {
+                                        $nombreCarreraNormalizado = mb_strtolower(trim($nombreCarrera), 'UTF-8');
+                                        $carreraSeleccionadaNormalizada = mb_strtolower(trim($carreraSeleccionada), 'UTF-8');
+                                        $esSeleccionado = $nombreCarreraNormalizado === $carreraSeleccionadaNormalizada;
+                                    }
+                                @endphp
+                                <span class="filtro-opcion" 
+                                      data-tipo="carrera" 
+                                      data-valor="{{ $nombreCarrera }}"
+                                      data-seleccionado="{{ $esSeleccionado ? 'true' : 'false' }}">
+                                    {{ $nombreCorregido }}
+                                </span>
+                            @endforeach
+                        </div>
+                    </div>
+                    
+                    <!-- Filtro: Sede -->
+                    <div class="inscripcion-filtro-seccion">
+                        <h4 class="inscripcion-filtro-subtitulo">
+                            <img src="/images/desktop/sede_g.png" alt="Sede" class="inscripcion-filtro-icono">
+                            <span>Sede</span>
+                        </h4>
+                        <div id="filtro-sede-opciones-modal">
+                            @foreach($sedesFiltro as $sede)
+                                @php
+                                    $sedeCorregida = corregirNombreSede($sede);
+                                @endphp
+                                <span class="filtro-opcion" 
+                                      data-tipo="sede" 
+                                      data-valor="{{ $sede }}"
+                                      data-seleccionado="false">
+                                    {{ $sedeCorregida }}
+                                </span>
+                            @endforeach
+                        </div>
+                    </div>
+                    
+                    <!-- Filtro: Modalidad -->
+                    <div class="inscripcion-filtro-seccion">
+                        <h4 class="inscripcion-filtro-subtitulo">
+                            <img src="/images/desktop/gear_g.png" alt="Modalidad" class="inscripcion-filtro-icono">
+                            <span>Modalidad</span>
+                        </h4>
+                        <div id="filtro-modalidad-opciones-modal">
+                            @foreach($modalidades as $modalidadItem)
+                                @php
+                                    $modalidadDisplay = $modalidadItem['combinacion'] ?? $modalidadItem;
+                                    // Corregir "Sempresencial" a "Semipresencial" en el display
+                                    if (is_string($modalidadDisplay) && stripos($modalidadDisplay, 'Sempresencial') !== false) {
+                                        $modalidadDisplay = str_ireplace('Sempresencial', 'Semipresencial', $modalidadDisplay);
+                                    } elseif (isset($modalidadItem['combinacion'])) {
+                                        $modalidadDisplay = str_ireplace('Sempresencial', 'Semipresencial', $modalidadItem['combinacion']);
+                                    }
+                                    
+                                    // Agregar duración según modalidad y régimen
+                                    $modalidad = $modalidadItem['modalidad'] ?? '';
+                                    $regimen = $modalidadItem['regimen'] ?? '';
+                                    $duracion = '';
+                                    if (stripos($modalidad, 'Presencial') !== false || stripos($modalidad, 'Semipresencial') !== false) {
+                                        if (stripos($regimen, 'Regular') !== false) {
+                                            $duracion = '10 Meses';
+                                        } elseif (stripos($regimen, 'Intensivo') !== false) {
+                                            $duracion = '5 Meses';
+                                        }
+                                    }
+                                    
+                                    // Construir el texto completo con duración
+                                    if ($duracion) {
+                                        $modalidadDisplay = $modalidadDisplay . ' : ' . $duracion;
+                                    }
+                                    
+                                    $valorModalidad = isset($modalidadItem['valor']) ? $modalidadItem['valor'] : $modalidadItem;
+                                @endphp
+                                <span class="filtro-opcion" 
+                                      data-tipo="modalidad" 
+                                      data-valor="{{ $valorModalidad }}"
+                                      data-modalidad="{{ $modalidadItem['modalidad'] ?? '' }}"
+                                      data-regimen="{{ $modalidadItem['regimen'] ?? '' }}"
+                                      data-seleccionado="false">
+                                    {{ $modalidadDisplay }}
+                                </span>
+                            @endforeach
+                        </div>
+                    </div>
+                    
+                    <!-- Filtro: Turno -->
+                    <div class="inscripcion-filtro-seccion">
+                        <h4 class="inscripcion-filtro-subtitulo">
+                            <img src="/images/desktop/clock_g.png" alt="Turno" class="inscripcion-filtro-icono">
+                            <span>Turno</span>
+                        </h4>
+                        <div id="filtro-turno-opciones-modal">
+                            @foreach($turnos as $turno)
+                                <span class="filtro-opcion" 
+                                      data-tipo="turno" 
+                                      data-valor="{{ $turno }}"
+                                      data-seleccionado="false">
+                                    {{ $turno }}
+                                </span>
+                            @endforeach
+                        </div>
+                    </div>
+                    
+                    <!-- Filtro: Día -->
+                    <div class="inscripcion-filtro-seccion">
+                        <h4 class="inscripcion-filtro-subtitulo">
+                            <img src="/images/desktop/calendar_g.png" alt="Día" class="inscripcion-filtro-icono">
+                            <span>Día</span>
+                        </h4>
+                        <div id="filtro-dia-opciones-modal">
+                            @foreach($dias as $dia)
+                                @php
+                                    // Convertir a nombres completos usando la función helper
+                                    $diaDisplay = convertirDiasCompletos($dia);
+                                @endphp
+                                <span class="filtro-opcion" 
+                                      data-tipo="dia" 
+                                      data-valor="{{ $dia }}"
+                                      data-seleccionado="false">
+                                    {{ $diaDisplay }}
+                                </span>
+                            @endforeach
+                        </div>
+                    </div>
+                    
+                    <!-- Filtro: Promociones -->
+                    <div class="inscripcion-filtro-seccion">
+                        <h4 class="inscripcion-filtro-subtitulo">
+                            <img src="/images/desktop/fire.png" alt="Promociones" class="inscripcion-filtro-icono">
+                            <span>Promociones</span>
+                        </h4>
+                        <div id="filtro-promocion-opciones-modal">
+                            <span class="filtro-opcion" 
+                                  data-tipo="promocion" 
+                                  data-valor="con_descuento"
+                                  data-seleccionado="false">
+                                Cuotas con descuento
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Línea separadora y acciones -->
+                <div class="filtros-modal-acciones">
+                    <div class="filtros-modal-linea"></div>
+                    <div class="filtros-modal-acciones-container">
+                        <a href="#" id="limpiar-filtros-modal" class="filtros-modal-limpiar">Limpiar filtros</a>
+                        <button type="button" id="ver-resultados-modal" class="filtros-modal-ver-resultados">Ver <span id="contador-resultados-modal">0</span> resultados</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Main Content -->
     <main>
         <!-- Header lista-carreras con breadcrumb (sin título) -->
@@ -97,7 +273,24 @@
                         <span class="lista-carreras-title-text-1">Convertí</span>
                         <span class="lista-carreras-title-text-2">tu pasión en profesión</span>
                         <span class="lista-carreras-title-text-3">¡Inscribite hoy!</span>
+                        <span class="inscripcion-mobile-subtitle">Aplicá los filtros para descubrir la cursada ideal para vos</span>
                     </h2>
+                    <div class="inscripcion-mobile-divider">
+                        <div class="inscripcion-mobile-divider-left">
+                            <span class="inscripcion-mobile-ordenar">
+                                Ordenar por <span class="inscripcion-mobile-ordenar-destacado">Mayor descuento</span> <span class="inscripcion-mobile-ordenar-chevron">▼</span>
+                            </span>
+                        </div>
+                        <div class="inscripcion-mobile-divider-right">
+                            <span class="inscripcion-mobile-filtros-dropdown">
+                                Filtros (<span id="contador-filtros-mobile">0</span>) <span class="inscripcion-mobile-filtros-chevron">▼</span>
+                            </span>
+                        </div>
+                    </div>
+                    <!-- Chips de filtros aplicados en mobile -->
+                    <div id="filtros-aplicados-mobile" class="inscripcion-filtros-chips-mobile">
+                        <!-- Los chips se agregarán dinámicamente con JavaScript -->
+                    </div>
                 </div>
             </div>
         </section>
@@ -127,6 +320,9 @@
                                 <div id="filtros-aplicados" class="inscripcion-filtros-chips">
                                     <!-- Los chips se agregarán dinámicamente con JavaScript -->
                                 </div>
+                            </div>
+                            <div class="inscripcion-filtros-ordenar">
+                                Ordenar por <span class="inscripcion-filtros-ordenar-destacado">Mayor descuento</span> <span class="inscripcion-filtros-ordenar-chevron">▼</span>
                             </div>
                         </div>
                     </div>
@@ -351,7 +547,7 @@
                                      data-dia="{{ $cursada->xDias }}"
                                      data-promocion="{{ $pre['tieneDescuento'] ? 'con_descuento' : 'sin_descuento' }}">
                                     <div class="cursada-item-grid">
-                                        <!-- Columna 1: Información de la cursada -->
+                                        <!-- Desktop: Estructura original con columnas -->
                                         <div class="cursada-item-columna-izq">
                                             <!-- Nuevo Item 0: DIA | TURNO x (horario) -->
                                             <div class="cursada-item-dia-turno">
@@ -382,7 +578,6 @@
                                             </div>
                                         </div>
                                         
-                                        <!-- Columna 2: Lugares disponibles y badge -->
                                         <div class="cursada-item-columna-medio">
                                             <div class="cursada-lugares-texto">
                                                 ¡Quedan <strong>{{ $cursada->Vacantes }}</strong> lugares!
@@ -398,12 +593,66 @@
                                             </div>
                                         </div>
                                         
-                                        <!-- Columna 3: Badge promo (si aplica) y Botón ver valores -->
                                         <div class="cursada-item-columna-der">
                                             <!-- Badge siempre presente en template para que JavaScript pueda mostrarlo/ocultarlo -->
                                             <img src="" alt="Promo Mat Logo" class="cursada-promo-badge">
                                             <button class="cursada-btn-ver-valores" 
                                                     data-cursada-id="{{ $cursadaId }}">Ver valores</button>
+                                        </div>
+                                        
+                                        <!-- Mobile: Nueva estructura con 3 filas -->
+                                        <!-- FILA 1: Día/Turno -->
+                                        <div class="cursada-item-fila-1">
+                                            <div class="cursada-item-dia-turno">
+                                                <span class="cursada-dia-turno-texto">{{ $pre['diaMayusculas'] }}</span>
+                                                <span class="cursada-dia-turno-separador">|</span>
+                                                <span class="cursada-dia-turno-texto">TURNO {{ $pre['turnoMayusculas'] }}</span>
+                                                @if(!empty($pre['horarioFormateado']))
+                                                    <span class="cursada-dia-turno-horario"> ({{ $pre['horarioFormateado'] }})</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- FILA 2: Información (izq) + Badge Promo (der) -->
+                                        <div class="cursada-item-fila-2">
+                                            <div class="cursada-item-fila-2-izq">
+                                                <div class="cursada-item-fila-2-item">
+                                                    <span class="cursada-item-fila-2-label">Inicia:</span>
+                                                    <span class="cursada-item-fila-2-value">{{ $pre['fechaFormateada'] }}</span>
+                                                </div>
+                                                <div class="cursada-item-fila-2-item">
+                                                    <span class="cursada-item-fila-2-label">Modalidad:</span>
+                                                    <span class="cursada-item-fila-2-value">{{ $pre['modalidadCompleta'] }}</span>
+                                                </div>
+                                                <div class="cursada-item-fila-2-item">
+                                                    <span class="cursada-item-fila-2-label">Sede:</span>
+                                                    <span class="cursada-item-fila-2-value">{{ $pre['sedeSimplificada'] }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="cursada-item-fila-2-der">
+                                                <img src="" alt="Promo Mat Logo" class="cursada-promo-badge">
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- FILA 3: Descuento/Lugares (izq) + Botón (der) -->
+                                        <div class="cursada-item-fila-3">
+                                            <div class="cursada-item-fila-3-izq">
+                                                <div class="cursada-descuento-wrapper" style="display: none;">
+                                                    <div class="cursada-badge-descuento">
+                                                        {{ number_format(abs($pre['dtoCuotaValue'] ?? 0), 0) }}% OFF
+                                                    </div>
+                                                    <div class="cursada-texto-cuotas">
+                                                        en todas las cuotas
+                                                    </div>
+                                                </div>
+                                                <div class="cursada-lugares-texto">
+                                                    ¡Quedan <strong>{{ $cursada->Vacantes }}</strong> lugares!
+                                                </div>
+                                            </div>
+                                            <div class="cursada-item-fila-3-der">
+                                                <button class="cursada-btn-ver-valores" 
+                                                        data-cursada-id="{{ $cursadaId }}">Ver valores</button>
+                                            </div>
                                         </div>
                                     </div>
                                     
