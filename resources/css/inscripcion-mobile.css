@@ -698,6 +698,7 @@
         height: clamp(24px, calc(24px + (100vw - 320px) * ((28 - 24) / (430 - 320))), 28px);
         object-fit: contain;
         flex-shrink: 0;
+        margin-right: clamp(8px, 2vw, 12px) !important;
     }
     
     .cursada-btn-continuar {
