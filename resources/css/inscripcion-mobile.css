@@ -726,9 +726,13 @@
     }
     
     .cursada-codigo-descuento-input-container {
+        display: none !important;
         margin-top: clamp(8px, 2vw, 12px);
-        display: flex;
         gap: clamp(8px, 2vw, 12px);
+    }
+    
+    .cursada-codigo-descuento-input-container.input-visible {
+        display: flex !important;
     }
     
     .cursada-codigo-descuento-input {

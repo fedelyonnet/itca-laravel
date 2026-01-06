@@ -1732,6 +1732,8 @@
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json',
+                                        'Accept': 'application/json',
+                                        'X-Requested-With': 'XMLHttpRequest',
                                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                                     },
                                     body: JSON.stringify({
@@ -1742,12 +1744,37 @@
                             telefono: telefonoCompleto
                                     })
                                 })
-                                .then(response => {
+                                .then(async response => {
+                                    // Verificar el Content-Type antes de intentar parsear
+                                    const contentType = response.headers.get('content-type');
+                                    const isJson = contentType && contentType.includes('application/json');
+                                    
                                     if (!response.ok) {
-                                        return response.json().then(data => {
+                                        // Si la respuesta no es JSON, leer como texto
+                                        if (!isJson) {
+                                            const text = await response.text();
+                                            console.error('Error del servidor (HTML):', text.substring(0, 200));
+                                            throw new Error('Error del servidor. Por favor, intente nuevamente.');
+                                        }
+                                        // Si es JSON, parsear y extraer el mensaje
+                                        try {
+                                            const data = await response.json();
                                             throw new Error(data.message || 'Error al guardar los datos');
-                                        });
+                                        } catch (e) {
+                                            if (e instanceof Error && e.message) {
+                                                throw e;
+                                            }
+                                            throw new Error('Error al guardar los datos');
+                                        }
                                     }
+                                    
+                                    // Verificar que la respuesta sea JSON antes de parsear
+                                    if (!isJson) {
+                                        const text = await response.text();
+                                        console.error('Respuesta inesperada del servidor:', text.substring(0, 200));
+                                        throw new Error('Error: El servidor no devolvió una respuesta válida');
+                                    }
+                                    
                                     return response.json();
                                 })
                                 .then(data => {
