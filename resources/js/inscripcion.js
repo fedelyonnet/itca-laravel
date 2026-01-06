@@ -92,6 +92,213 @@
             let ordenarBtnInicializado = false;
             // Variable para rastrear el estado del ordenamiento: true = descendente (mayor primero), false = ascendente (menor primero)
             let ordenDescendente = true;
+            // Variable para rastrear si los event listeners de formularios ya fueron inicializados
+            let formsEventListenersInicializados = false;
+            // Función para cerrar todos los paneles excepto uno
+            function cerrarTodosLosPaneles(excluirCursadaId = null) {
+                document.querySelectorAll('.cursada-valores-panel').forEach(panel => {
+                    const panelId = panel.getAttribute('id');
+                    const cursadaId = panelId.replace('panel-', '');
+                    
+                    if (cursadaId !== excluirCursadaId) {
+                        panel.classList.remove('panel-visible');
+                        panel.classList.add('panel-hidden');
+                        
+                        // Remover estado desplegado del botón (usar querySelectorAll para encontrar todos los botones)
+                        document.querySelectorAll('.cursada-btn-ver-valores[data-cursada-id="' + cursadaId + '"]').forEach(botonVerValores => {
+                            botonVerValores.classList.remove('panel-desplegado');
+                        });
+                        
+                        const infoTexto = document.getElementById('info-' + cursadaId);
+                        if (infoTexto) {
+                            infoTexto.classList.remove('panel-visible');
+                            infoTexto.classList.add('panel-hidden');
+                        }
+                        
+                        const formulario = document.getElementById('formulario-' + cursadaId);
+                        if (formulario) {
+                            const inputs = formulario.querySelectorAll('.cursada-formulario-input');
+                            inputs.forEach(input => {
+                                input.setAttribute('tabindex', '-1');
+                                input.value = ''; // Borrar el valor del input
+                            });
+                            const telefonoPrefijo = formulario.querySelector('#telefono-prefijo-' + cursadaId);
+                            if (telefonoPrefijo) {
+                                telefonoPrefijo.setAttribute('tabindex', '-1');
+                                telefonoPrefijo.value = '+54'; // Resetear al valor por defecto
+                            }
+                        }
+                        
+                        // Limpiar errores de validación
+                        const errorElements = document.querySelectorAll('#formulario-' + cursadaId + ' .cursada-formulario-error');
+                        const inputElements = document.querySelectorAll('#formulario-' + cursadaId + ' .cursada-formulario-input');
+                        errorElements.forEach(error => {
+                            error.classList.remove('show');
+                            error.textContent = '';
+                        });
+                        inputElements.forEach(input => {
+                            input.classList.remove('error');
+                        });
+                    }
+                });
+            }
+            
+            // Registrar event listener para botones "ver valores" UNA SOLA VEZ al inicio
+            // Esto funciona con delegación de eventos, así que funcionará con todos los botones, incluso los creados dinámicamente
+            if (!formsEventListenersInicializados) {
+                document.addEventListener('click', function(e) {
+                    // Verificar si el click fue en un botón "ver valores" o en su contenido
+                    // Usar closest para encontrar el botón incluso si el click fue en un elemento hijo
+                    let boton = null;
+                    
+                    // Primero intentar con closest (más confiable)
+                    if (e.target && e.target.closest) {
+                        boton = e.target.closest('.cursada-btn-ver-valores');
+                    }
+                    
+                    // Si no se encontró con closest, verificar si el target mismo es el botón
+                    if (!boton && e.target && e.target.classList && e.target.classList.contains('cursada-btn-ver-valores')) {
+                        boton = e.target;
+                    }
+                    
+                    // Si aún no se encontró, buscar en el path del evento
+                    if (!boton && e.composedPath) {
+                        const path = e.composedPath();
+                        boton = path.find(el => el && el.classList && el.classList.contains('cursada-btn-ver-valores'));
+                    }
+                    
+                    // Si no es un botón "ver valores", salir
+                    if (!boton) return;
+                    
+                    // Prevenir click si el botón está deshabilitado (sin vacantes)
+                    if (boton.classList.contains('sin-vacantes') || boton.disabled) {
+                        return;
+                    }
+                    
+                    // Prevenir propagación para evitar conflictos con otros listeners
+                    e.stopPropagation();
+                    
+                    // Obtener el cursadaId del botón
+                    let cursadaId = boton.getAttribute('data-cursada-id');
+                    
+                    // Si no tiene data-cursada-id, intentar obtenerlo del elemento padre
+                    if (!cursadaId || cursadaId === 'TEMPLATE_ID') {
+                        const cursadaItem = boton.closest('.cursada-item');
+                        if (cursadaItem) {
+                            // Buscar el panel dentro del mismo item
+                            const panelEnItem = cursadaItem.querySelector('.cursada-valores-panel');
+                            if (panelEnItem) {
+                                const panelId = panelEnItem.id;
+                                cursadaId = panelId.replace('panel-', '');
+                                // Actualizar el data-cursada-id del botón
+                                boton.setAttribute('data-cursada-id', cursadaId);
+                            }
+                        }
+                    }
+                    
+                    // Verificar que se encontró el cursadaId
+                    if (!cursadaId || cursadaId === 'TEMPLATE_ID') {
+                        return;
+                    }
+                    
+                    let panel = document.getElementById('panel-' + cursadaId);
+                    let infoTexto = document.getElementById('info-' + cursadaId);
+                    let formulario = document.getElementById('formulario-' + cursadaId);
+                    
+                    // Si no se encuentra el panel, intentar encontrarlo dentro del mismo item
+                    if (!panel) {
+                        const cursadaItem = boton.closest('.cursada-item');
+                        if (cursadaItem) {
+                            panel = cursadaItem.querySelector('.cursada-valores-panel');
+                            if (panel) {
+                                const panelId = panel.id;
+                                cursadaId = panelId.replace('panel-', '');
+                                infoTexto = document.getElementById('info-' + cursadaId);
+                                formulario = document.getElementById('formulario-' + cursadaId);
+                            } else {
+                                return;
+                            }
+                        } else {
+                            return;
+                        }
+                    }
+                    
+                    if (panel) {
+                        // Toggle del panel con animación
+                        if (panel.classList.contains('panel-visible')) {
+                            // Cerrar este panel
+                            panel.classList.remove('panel-visible');
+                            panel.classList.add('panel-hidden');
+                            boton.classList.remove('panel-desplegado');
+                            if (infoTexto) {
+                                infoTexto.classList.remove('panel-visible');
+                                infoTexto.classList.add('panel-hidden');
+                            }
+                            // Deshabilitar tabindex y limpiar inputs cuando el panel se oculta
+                            if (formulario) {
+                                const inputs = formulario.querySelectorAll('.cursada-formulario-input');
+                                inputs.forEach(input => {
+                                    input.setAttribute('tabindex', '-1');
+                                    input.value = ''; // Borrar el valor del input
+                                });
+                                const telefonoPrefijo = formulario.querySelector('#telefono-prefijo-' + cursadaId);
+                                if (telefonoPrefijo) {
+                                    telefonoPrefijo.setAttribute('tabindex', '-1');
+                                    telefonoPrefijo.value = '+54'; // Resetear al valor por defecto
+                                }
+                            }
+                            
+                            // Limpiar errores de validación
+                            const errorElements = document.querySelectorAll('#formulario-' + cursadaId + ' .cursada-formulario-error');
+                            const inputElements = document.querySelectorAll('#formulario-' + cursadaId + ' .cursada-formulario-input');
+                            errorElements.forEach(error => {
+                                error.classList.remove('show');
+                                error.textContent = '';
+                            });
+                            inputElements.forEach(input => {
+                                input.classList.remove('error');
+                            });
+                        } else {
+                            // Cerrar todos los demás paneles antes de abrir este
+                            cerrarTodosLosPaneles(cursadaId);
+                            
+                            // Abrir este panel
+                            panel.classList.remove('panel-hidden');
+                            panel.classList.add('panel-visible');
+                            boton.classList.add('panel-desplegado');
+                            if (infoTexto) {
+                                infoTexto.classList.remove('panel-hidden');
+                                infoTexto.classList.add('panel-visible');
+                            }
+                            // Inicializar valores de descuento cuando se abre el panel
+                            // Asegurar que muestren "n/d" si el formulario no está validado
+                            setTimeout(() => {
+                                if (typeof inicializarValoresDescuento === 'function') {
+                                    inicializarValoresDescuento(cursadaId);
+                                }
+                            }, 0);
+                            // Habilitar tabindex de los inputs cuando el panel se muestra
+                            if (formulario) {
+                                const nombre = formulario.querySelector('#nombre-' + cursadaId);
+                                const apellido = formulario.querySelector('#apellido-' + cursadaId);
+                                const dni = formulario.querySelector('#dni-' + cursadaId);
+                                const correo = formulario.querySelector('#correo-' + cursadaId);
+                                const telefono = formulario.querySelector('#telefono-' + cursadaId);
+                                
+                                if (nombre) nombre.setAttribute('tabindex', '1');
+                                if (apellido) apellido.setAttribute('tabindex', '2');
+                                if (dni) dni.setAttribute('tabindex', '3');
+                                if (correo) correo.setAttribute('tabindex', '4');
+                                const telefonoPrefijo = formulario.querySelector('#telefono-prefijo-' + cursadaId);
+                                if (telefonoPrefijo) telefonoPrefijo.setAttribute('tabindex', '5');
+                                if (telefono) telefono.setAttribute('tabindex', '6');
+                            }
+                        }
+                    }
+                });
+                
+                formsEventListenersInicializados = true;
+            }
             
             // Función para ordenar cursadas por Dto_Cuota (alterna entre mayor y menor descuento)
             function ordenarPorDescuento() {
@@ -385,6 +592,8 @@
                     // Actualizar botones ver valores (desktop y mobile) - IMPORTANTE: remover clases y disabled por defecto
                     const btnVerValores = clone.querySelectorAll('.cursada-btn-ver-valores');
                     btnVerValores.forEach(btn => {
+                        // Asegurar que el data-cursada-id esté correctamente asignado
+                        btn.setAttribute('data-cursada-id', cursadaId);
                         btn.classList.remove('sin-vacantes');
                         btn.disabled = false;
                         // Solo aplicar sin-vacantes si realmente no hay vacantes
@@ -1140,6 +1349,21 @@
             initializeForms();
             }
             
+            // Función para limpiar inputs de un panel específico
+            function limpiarInputsPanel(cursadaId) {
+                const formulario = document.getElementById('formulario-' + cursadaId);
+                if (formulario) {
+                    const inputs = formulario.querySelectorAll('.cursada-formulario-input');
+                    inputs.forEach(input => {
+                        input.value = ''; // Borrar el valor del input
+                    });
+                    const telefonoPrefijo = formulario.querySelector('#telefono-prefijo-' + cursadaId);
+                    if (telefonoPrefijo) {
+                        telefonoPrefijo.value = '+54'; // Resetear al valor por defecto
+                    }
+                }
+            }
+            
             // Función para inicializar formularios y botones
             function initializeForms() {
             // Función para cerrar todos los paneles excepto uno
@@ -1153,10 +1377,9 @@
                         panel.classList.add('panel-hidden');
                         
                         // Remover estado desplegado del botón
-                        const botonVerValores = document.querySelector('.cursada-btn-ver-valores[data-cursada-id="' + cursadaId + '"]');
-                        if (botonVerValores) {
+                        document.querySelectorAll('.cursada-btn-ver-valores[data-cursada-id="' + cursadaId + '"]').forEach(botonVerValores => {
                             botonVerValores.classList.remove('panel-desplegado');
-                        }
+                        });
                         
                         const infoTexto = document.getElementById('info-' + cursadaId);
                         if (infoTexto) {
@@ -1192,108 +1415,6 @@
                 });
             }
             
-            // Función para limpiar inputs de un panel específico
-            function limpiarInputsPanel(cursadaId) {
-                const formulario = document.getElementById('formulario-' + cursadaId);
-                if (formulario) {
-                    const inputs = formulario.querySelectorAll('.cursada-formulario-input');
-                    inputs.forEach(input => {
-                        input.value = ''; // Borrar el valor del input
-                    });
-                    const telefonoPrefijo = formulario.querySelector('#telefono-prefijo-' + cursadaId);
-                    if (telefonoPrefijo) {
-                        telefonoPrefijo.value = '+54'; // Resetear al valor por defecto
-                    }
-                }
-            }
-            
-            // Funcionalidad para mostrar/ocultar panel de valores
-            const botonesVerValores = document.querySelectorAll('.cursada-btn-ver-valores');
-            botonesVerValores.forEach(boton => {
-                boton.addEventListener('click', function() {
-                    // Prevenir click si el botón está deshabilitado (sin vacantes)
-                    if (this.classList.contains('sin-vacantes') || this.disabled) {
-                        return;
-                    }
-                    
-                    const cursadaId = this.getAttribute('data-cursada-id');
-                    const panel = document.getElementById('panel-' + cursadaId);
-                    const infoTexto = document.getElementById('info-' + cursadaId);
-                    const formulario = document.getElementById('formulario-' + cursadaId);
-                    
-                    if (panel) {
-                        // Toggle del panel con animación
-                        if (panel.classList.contains('panel-visible')) {
-                            // Cerrar este panel
-                            panel.classList.remove('panel-visible');
-                            panel.classList.add('panel-hidden');
-                            this.classList.remove('panel-desplegado');
-                            if (infoTexto) {
-                                infoTexto.classList.remove('panel-visible');
-                                infoTexto.classList.add('panel-hidden');
-                            }
-                            // Deshabilitar tabindex y limpiar inputs cuando el panel se oculta
-                            if (formulario) {
-                                const inputs = formulario.querySelectorAll('.cursada-formulario-input');
-                                inputs.forEach(input => {
-                                    input.setAttribute('tabindex', '-1');
-                                    input.value = ''; // Borrar el valor del input
-                                });
-                                const telefonoPrefijo = formulario.querySelector('#telefono-prefijo-' + cursadaId);
-                                if (telefonoPrefijo) {
-                                    telefonoPrefijo.setAttribute('tabindex', '-1');
-                                    telefonoPrefijo.value = '+54'; // Resetear al valor por defecto
-                                }
-                            }
-                            
-                            // Limpiar errores de validación
-                            const errorElements = document.querySelectorAll('#formulario-' + cursadaId + ' .cursada-formulario-error');
-                            const inputElements = document.querySelectorAll('#formulario-' + cursadaId + ' .cursada-formulario-input');
-                            errorElements.forEach(error => {
-                                error.classList.remove('show');
-                                error.textContent = '';
-                            });
-                            inputElements.forEach(input => {
-                                input.classList.remove('error');
-                            });
-                        } else {
-                            // Cerrar todos los demás paneles antes de abrir este
-                            cerrarTodosLosPaneles(cursadaId);
-                            
-                            // Abrir este panel
-                            panel.classList.remove('panel-hidden');
-                            panel.classList.add('panel-visible');
-                            this.classList.add('panel-desplegado');
-                            if (infoTexto) {
-                                infoTexto.classList.remove('panel-hidden');
-                                infoTexto.classList.add('panel-visible');
-                            }
-                            // Inicializar valores de descuento cuando se abre el panel
-                            // Asegurar que muestren "n/d" si el formulario no está validado
-                            setTimeout(() => {
-                                inicializarValoresDescuento(cursadaId);
-                            }, 0);
-                            // Habilitar tabindex de los inputs cuando el panel se muestra
-                            if (formulario) {
-                                const nombre = formulario.querySelector('#nombre-' + cursadaId);
-                                const apellido = formulario.querySelector('#apellido-' + cursadaId);
-                                const dni = formulario.querySelector('#dni-' + cursadaId);
-                                const correo = formulario.querySelector('#correo-' + cursadaId);
-                                const telefono = formulario.querySelector('#telefono-' + cursadaId);
-                                
-                                if (nombre) nombre.setAttribute('tabindex', '1');
-                                if (apellido) apellido.setAttribute('tabindex', '2');
-                                if (dni) dni.setAttribute('tabindex', '3');
-                                if (correo) correo.setAttribute('tabindex', '4');
-                                const telefonoPrefijo = formulario.querySelector('#telefono-prefijo-' + cursadaId);
-                                if (telefonoPrefijo) telefonoPrefijo.setAttribute('tabindex', '5');
-                                if (telefono) telefono.setAttribute('tabindex', '6');
-                            }
-                        }
-                    }
-                });
-            });
-            
             // Funcionalidad para código de descuento
             document.addEventListener('click', function(e) {
                 // Manejar click en el link "¡Tengo Código de descuento!"
@@ -1315,6 +1436,18 @@
                             inputContainer.classList.add('input-visible');
                             const input = document.getElementById('codigo-input-field-' + cursadaId);
                             if (input) input.focus();
+                            
+                            // Scroll automático para mostrar el botón completo en mobile
+                            setTimeout(() => {
+                                const btnReservar = document.querySelector(`button.cursada-btn-reservar[data-cursada-id="${cursadaId}"]`);
+                                if (btnReservar) {
+                                    btnReservar.scrollIntoView({ 
+                                        behavior: 'smooth', 
+                                        block: 'end',
+                                        inline: 'nearest'
+                                    });
+                                }
+                            }, 100);
                         }
                     }
                 }

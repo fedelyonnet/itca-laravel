@@ -14988,6 +14988,9 @@ body.inscripcion-page {
     cursor: pointer;
     white-space: nowrap;
     transition: opacity 0.2s;
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
 }
 
 .cursada-btn-ver-valores:hover {
@@ -15025,6 +15028,10 @@ body.inscripcion-page {
     display: flex;
     justify-content: flex-start;
     width: 100%;
+}
+
+.cursada-arrow-insc {
+    display: none;
 }
 
 .cursada-formulario-columna-der .cursada-formulario-boton-continuar-container {
@@ -15102,11 +15109,15 @@ body.inscripcion-page {
     max-height: 0;
     opacity: 0;
     transform: translateY(-10px);
+    pointer-events: none;
+    visibility: hidden;
+    z-index: 1;
     transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
                 opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
                 transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
                 padding 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-                margin 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+                margin 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .cursada-valores-panel.panel-hidden {
@@ -15116,6 +15127,8 @@ body.inscripcion-page {
     padding-top: 0;
     padding-bottom: 0;
     margin-top: 0;
+    pointer-events: none;
+    visibility: hidden;
 }
 
 .cursada-valores-panel.panel-visible {
@@ -15126,6 +15139,8 @@ body.inscripcion-page {
     padding-bottom: clamp(15px, calc(15px + (100vw - 1100px) * ((20 - 15) / (1920 - 1100))), 20px);
     padding-left: clamp(10px, calc(10px + (100vw - 1100px) * ((20 - 10) / (1920 - 1100))), 20px);
     margin-top: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem);
+    pointer-events: auto;
+    visibility: visible;
 }
 
 .cursada-valores-panel::before {
@@ -15185,6 +15200,8 @@ body.inscripcion-page {
     padding-top: 0;
     padding-bottom: 0;
     margin-top: 0;
+    pointer-events: none;
+    visibility: hidden;
 }
 
 .cursada-info-texto.panel-visible {
@@ -15194,6 +15211,8 @@ body.inscripcion-page {
     padding-top: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem);
     padding-bottom: clamp(0.75rem, calc(0.75rem + (100vw - 1100px) * 0.003), 1rem);
     margin-top: 0;
+    pointer-events: auto;
+    visibility: visible;
 }
 
 .cursada-info-texto-content {
@@ -15322,9 +15341,15 @@ body.inscripcion-page {
     font-size: clamp(12px, calc(12px + (100vw - 1100px) * ((18 - 12) / (1920 - 1100))), 18px);
 }
 
+.cursada-valores-matricula-wrapper {
+    width: 100%;
+    text-align: center;
+    margin-bottom: clamp(0.5rem, calc(0.5rem + (100vw - 1100px) * 0.0012), 0.75rem);
+}
+
 .cursada-valor-matricula {
     width: 100%;
-    margin-bottom: clamp(0.5rem, calc(0.5rem + (100vw - 1100px) * 0.0012), 0.75rem);
+    margin-bottom: clamp(0.25rem, calc(0.25rem + (100vw - 1100px) * 0.0006), 0.4rem);
 }
 
 .cursada-precio-total-matricula {
@@ -15334,7 +15359,7 @@ body.inscripcion-page {
     font-size: clamp(12px, calc(12px + (100vw - 1100px) * ((14 - 12) / (1920 - 1100))), 14px);
     line-height: 1.6;
     width: 100%;
-    margin-bottom: clamp(0.5rem, calc(0.5rem + (100vw - 1100px) * 0.0012), 0.75rem);
+    margin-bottom: 0;
     text-align: center;
     display: inline-block;
     max-width: clamp(280px, calc(280px + (100vw - 1500px) * ((500 - 280) / (1920 - 1500))), 500px);
@@ -15375,6 +15400,16 @@ body.inscripcion-page {
     object-fit: contain;
     flex-shrink: 0;
     display: none;
+}
+
+.cursada-descuento-aplicado .cursada-promo-badge-descuento {
+    display: none;
+}
+
+.cursada-descuento-aplicado .cursada-promo-badge-descuento-visible {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 .cursada-promo-badge-descuento-visible {
@@ -15455,6 +15490,10 @@ body.inscripcion-page {
     font-family: 'Montserrat', sans-serif;
     font-weight: 400;
     font-size: clamp(12px, calc(12px + (100vw - 1100px) * ((18 - 12) / (1920 - 1100))), 18px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.5rem, calc(0.5rem + (100vw - 1100px) * 0.0006), 0.75rem);
 }
 
 .cursada-descuento-aplicado .cursada-descuento-valor {

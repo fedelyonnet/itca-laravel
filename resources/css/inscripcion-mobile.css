@@ -423,6 +423,9 @@
         border-radius: clamp(18px, 4.5vw, 21px);
         padding: 0 clamp(12px, 3vw, 16px);
         white-space: nowrap;
+        position: relative;
+        z-index: 10;
+        pointer-events: auto;
     }
     
     /* A partir de 360px, el botón tiene tamaño fluido: 163x31 en 430px, reduciéndose hacia 320px */
@@ -486,6 +489,7 @@
         margin-left: 0 !important;
         margin-right: 0 !important;
         width: 100% !important;
+        overflow: visible !important;
     }
     
     .cursada-valores-panel.panel-hidden {
@@ -496,20 +500,28 @@
         padding-left: 0 !important;
         padding-right: 0 !important;
         max-height: 0 !important;
+        pointer-events: none !important;
+        visibility: hidden !important;
     }
     
     .cursada-valores-panel.panel-visible {
         margin-top: clamp(12px, 3vw, 16px) !important;
         margin-left: calc(-1 * clamp(12px, 3vw, 16px)) !important;
         margin-right: calc(-1 * clamp(12px, 3vw, 16px)) !important;
+        margin-bottom: clamp(12px, 3vw, 16px) !important;
         padding: clamp(12px, 3vw, 16px) !important;
         padding-top: clamp(12px, 3vw, 16px) !important;
-        padding-bottom: clamp(12px, 3vw, 16px) !important;
+        padding-bottom: clamp(20px, 5vw, 24px) !important;
         padding-left: clamp(12px, 3vw, 16px) !important;
         padding-right: clamp(12px, 3vw, 16px) !important;
         width: calc(100% + 2 * clamp(12px, 3vw, 16px)) !important;
         border-top: 1px solid rgba(255, 255, 255, 0.2);
         box-sizing: border-box;
+        max-height: none !important;
+        overflow: visible !important;
+        height: auto !important;
+        pointer-events: auto !important;
+        visibility: visible !important;
     }
     
     .cursada-valores-grid {
@@ -523,6 +535,9 @@
         width: 100%;
         padding-left: 0 !important;
         padding-right: 0 !important;
+        overflow: visible !important;
+        max-height: none !important;
+        height: auto !important;
     }
     
     .cursada-valores-separador {
@@ -549,6 +564,11 @@
     .cursada-formulario-texto {
         font-size: clamp(12px, calc(12px + (100vw - 320px) * ((14 - 12) / (430 - 320))), 14px) !important;
         line-height: 1.4 !important;
+        font-weight: 400 !important;
+    }
+    
+    .cursada-formulario-texto-semibold {
+        font-weight: 600 !important;
     }
     
     /* Formulario en mobile */
@@ -667,6 +687,17 @@
     .cursada-formulario-boton-continuar-container {
         margin-top: clamp(8px, 2vw, 12px) !important;
         width: 100%;
+        display: flex;
+        align-items: center;
+        gap: clamp(8px, 2vw, 12px);
+    }
+    
+    .cursada-arrow-insc {
+        display: block !important;
+        width: clamp(101px, calc(101px + (100vw - 320px) * ((118 - 101) / (430 - 320))), 118px);
+        height: clamp(24px, calc(24px + (100vw - 320px) * ((28 - 24) / (430 - 320))), 28px);
+        object-fit: contain;
+        flex-shrink: 0;
     }
     
     .cursada-btn-continuar {
@@ -681,12 +712,18 @@
     .cursada-cuota-info {
         margin-top: clamp(12px, 3vw, 16px);
         padding: 0;
+        margin-bottom: 0;
     }
     
     .cursada-cuota-linea-1,
-    .cursada-cuota-linea-2,
-    .cursada-cuota-linea-3 {
+    .cursada-cuota-linea-2 {
         font-size: clamp(11px, calc(11px + (100vw - 320px) * ((13 - 11) / (430 - 320))), 13px) !important;
+        line-height: 1.4 !important;
+        margin-bottom: clamp(6px, 1.5vw, 8px);
+    }
+    
+    .cursada-cuota-linea-3 {
+        font-size: clamp(10px, calc(10px + (100vw - 320px) * ((12 - 10) / (430 - 320))), 12px) !important;
         line-height: 1.4 !important;
         margin-bottom: clamp(6px, 1.5vw, 8px);
     }
@@ -697,10 +734,21 @@
         font-size: clamp(11px, calc(11px + (100vw - 320px) * ((13 - 11) / (430 - 320))), 13px) !important;
     }
     
+    /* Estilos específicos para cantidad de cuotas en mobile */
+    .cursada-cuota-cantidad-label {
+        font-weight: 400 !important;
+    }
+    
+    .cursada-cuota-cantidad-valor {
+        font-weight: 600 !important;
+    }
+    
     /* Panel de valores derecho en mobile */
     .cursada-valores-info-wrapper {
         width: 100%;
-        margin-top: clamp(12px, 3vw, 16px);
+        overflow: visible !important;
+        max-height: none !important;
+        height: auto !important;
     }
     
     .cursada-valores-renglon-1 {
@@ -709,12 +757,77 @@
         gap: clamp(8px, 2vw, 12px);
     }
     
-    .cursada-valor-matricula,
-    .cursada-precio-total-matricula,
-    .cursada-descuento-aplicado,
-    .cursada-total-aplicado {
+    .cursada-valores-matricula-wrapper {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        width: 100%;
+        margin-bottom: clamp(8px, 2vw, 12px) !important;
+    }
+    
+    .cursada-valor-matricula {
+        font-size: clamp(13px, calc(13px + (100vw - 320px) * ((15 - 13) / (430 - 320))), 15px) !important;
+        font-weight: 600 !important;
+        line-height: 1.4 !important;
+        margin-bottom: clamp(4px, 1vw, 6px) !important;
+        width: 100% !important;
+        display: block !important;
+        text-align: center !important;
+    }
+    
+    .cursada-valor-matricula-valor {
+        font-size: clamp(13px, calc(13px + (100vw - 320px) * ((15 - 13) / (430 - 320))), 15px) !important;
+        font-weight: 500 !important;
+    }
+    
+    .cursada-descuento-aplicado {
         font-size: clamp(11px, calc(11px + (100vw - 320px) * ((13 - 11) / (430 - 320))), 13px) !important;
         line-height: 1.4 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: clamp(6px, 1.5vw, 8px) !important;
+    }
+    
+    .cursada-descuento-aplicado .cursada-promo-badge-descuento {
+        width: clamp(30px, calc(30px + (100vw - 320px) * ((40 - 30) / (430 - 320))), 40px) !important;
+        height: clamp(24px, calc(24px + (100vw - 320px) * ((32 - 24) / (430 - 320))), 32px) !important;
+        display: none !important;
+    }
+    
+    .cursada-descuento-aplicado .cursada-promo-badge-descuento-visible {
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    .cursada-total-aplicado {
+        font-size: clamp(22px, calc(22px + (100vw - 320px) * ((28 - 22) / (430 - 320))), 28px) !important;
+        font-weight: 700 !important;
+        line-height: 1.4 !important;
+    }
+    
+    .cursada-total-valor {
+        font-size: clamp(22px, calc(22px + (100vw - 320px) * ((28 - 22) / (430 - 320))), 28px) !important;
+        font-weight: 700 !important;
+    }
+    
+    .cursada-precio-total-matricula {
+        font-size: clamp(10px, calc(10px + (100vw - 320px) * ((12 - 10) / (430 - 320))), 12px) !important;
+        line-height: 1.4 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        display: block !important;
+        text-align: center !important;
+        white-space: nowrap !important;
+        overflow: visible !important;
+        margin: 0 auto !important;
+        margin-bottom: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .cursada-precio-total-matricula-valor {
+        text-align: center !important;
     }
     
     .cursada-codigo-descuento-wrapper {
@@ -748,11 +861,19 @@
     
     .cursada-texto-pago-matricula {
         margin-top: clamp(12px, 3vw, 16px);
+        display: flex;
+        flex-direction: column;
+        gap: clamp(2px, 0.5vw, 4px) !important;
     }
     
     .cursada-texto-pago-linea-1,
     .cursada-texto-pago-linea-2 {
         font-size: clamp(11px, calc(11px + (100vw - 320px) * ((13 - 11) / (430 - 320))), 13px) !important;
+        font-weight: 400 !important;
+    }
+    
+    .cursada-texto-pago-linea-1 strong {
+        font-weight: 700 !important;
     }
     
     .cursada-checkbox-terminos-container {
@@ -767,7 +888,8 @@
         width: 100% !important;
         font-size: clamp(12px, calc(12px + (100vw - 320px) * ((14 - 12) / (430 - 320))), 14px) !important;
         padding: clamp(12px, 3vw, 16px) !important;
-        margin-top: clamp(12px, 3vw, 16px);
+        margin-top: clamp(12px, 3vw, 16px) !important;
+        margin-bottom: clamp(12px, 3vw, 16px) !important;
         height: auto !important;
         min-height: clamp(40px, 10vw, 48px) !important;
     }

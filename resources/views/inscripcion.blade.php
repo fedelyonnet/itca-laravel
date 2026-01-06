@@ -663,7 +663,7 @@
                                                 <div class="cursada-formulario-container">
                                                     <div class="cursada-formulario-titulo">
                                                         <img src="/images/desktop/student-v.png" alt="Student" class="cursada-formulario-icono">
-                                                        <span class="cursada-formulario-texto"><span class="cursada-formulario-texto-semibold">Completá tus datos</span> para poder ver los valores:</span>
+                                                        <span class="cursada-formulario-texto">Completá <span class="cursada-formulario-texto-semibold">tus datos</span> para poder ver los valores:</span>
                                                     </div>
                                                     <form class="cursada-formulario" id="formulario-{{ $cursadaId }}">
                                                         <div class="cursada-formulario-grid">
@@ -772,6 +772,7 @@
                                                                     <span class="cursada-formulario-error" id="error-correo-{{ $cursadaId }}"></span>
                                                                 </div>
                                                                 <div class="cursada-formulario-boton-continuar-container">
+                                                                    <img src="/images/mobile/arrow-insc.png" alt="Arrow" class="cursada-arrow-insc">
                                                                     <button type="button" class="cursada-btn-continuar" data-cursada-id="{{ $cursadaId }}">Continuar</button>
                                                                 </div>
                                                             </div>
@@ -797,7 +798,7 @@
                                                             <span class="cursada-cuota-cantidad-label">Cantidad de cuotas:</span> <span class="cursada-cuota-cantidad-valor">{{ $cantidadCuotas }}</span>
                                                         </p>
                                                         <p class="cursada-cuota-linea-3">
-                                                            Precio total de cuota sin impuestos nacionales: <span class="cursada-cuota-precio-total">${{ number_format($cursada->Sin_IVA_cta, 2, ',', '.') }}</span>
+                                                            Valor cuota sin impuestos nacionales: <span class="cursada-cuota-precio-total">${{ number_format($cursada->Sin_IVA_cta, 2, ',', '.') }}</span>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -808,14 +809,15 @@
                                             <div class="cursada-valores-columna-der">
                                                 <div class="cursada-valores-info-wrapper">
                                                     <div class="cursada-valores-renglon-1">
-                                                        <div class="cursada-valor-matricula">
-                                                            Valor de matrícula: <strong class="cursada-valor-matricula-valor" id="valor-matricula-{{ $cursadaId }}">n/d</strong>
-                                                        </div>
-                                                        <div class="cursada-precio-total-matricula">
-                                                            Valor total de matrícula sin impuestos nacionales: <span class="cursada-precio-total-matricula-valor" id="precio-total-matricula-{{ $cursadaId }}">n/d</span>
+                                                        <div class="cursada-valores-matricula-wrapper">
+                                                            <div class="cursada-valor-matricula">
+                                                                Valor de matrícula: <strong class="cursada-valor-matricula-valor" id="valor-matricula-{{ $cursadaId }}">n/d</strong>
+                                                            </div>
+                                                            <div class="cursada-precio-total-matricula">
+                                                                Valor matrícula sin impuestos nacionales: <span class="cursada-precio-total-matricula-valor" id="precio-total-matricula-{{ $cursadaId }}">n/d</span>
+                                                            </div>
                                                         </div>
                                                         <div class="cursada-codigo-descuento-wrapper">
-                                                            <img src="" alt="Promo Mat Logo" class="cursada-promo-badge-descuento" id="promo-badge-descuento-TEMPLATE_ID">
                                                             <a href="#" class="cursada-link-codigo-descuento cursada-link-disabled" data-cursada-id="{{ $cursadaId }}" id="link-codigo-{{ $cursadaId }}">¡Tengo Código de descuento!</a>
                                                             <div class="cursada-codigo-descuento-input-container" id="codigo-input-{{ $cursadaId }}">
                                                                 <input type="text" class="cursada-codigo-descuento-input" placeholder="Ingresá tu código" data-cursada-id="{{ $cursadaId }}" id="codigo-input-field-{{ $cursadaId }}">
@@ -823,6 +825,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="cursada-descuento-aplicado" id="descuento-aplicado-{{ $cursadaId }}">
+                                                            <img src="" alt="Promo Mat Logo" class="cursada-promo-badge-descuento" id="promo-badge-descuento-TEMPLATE_ID">
                                                             Descuento: <strong class="cursada-descuento-valor" id="descuento-valor-{{ $cursadaId }}">n/d</strong>
                                                         </div>
                                                     </div>
@@ -830,7 +833,7 @@
                                                         Total: <strong class="cursada-total-valor" id="total-valor-{{ $cursadaId }}">n/d</strong>
                                                     </div>
                                                     <div class="cursada-texto-pago-matricula" id="texto-pago-matricula-{{ $cursadaId }}">
-                                                        <div class="cursada-texto-pago-linea-1">Ahora solo debés pagar la matrícula</div>
+                                                        <div class="cursada-texto-pago-linea-1">Ahora <strong>sólo debés pagar la matrícula</strong></div>
                                                         <div class="cursada-texto-pago-linea-2">para poder reservar tu vacante</div>
                                                     </div>
                                                     <div class="cursada-checkbox-terminos-container" id="checkbox-terminos-{{ $cursadaId }}">
