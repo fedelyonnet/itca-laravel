@@ -474,52 +474,46 @@ class WelcomeController extends Controller
 
     public function storeLead(Request $request)
     {
-        // Asegurar que siempre devolvamos JSON para peticiones AJAX
-        if ($request->ajax() || $request->wantsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
-            try {
-                $validated = $request->validate([
-                    'nombre' => 'required|string|max:255',
-                    'apellido' => 'required|string|max:255',
-                    'dni' => 'required|string|max:8|regex:/^[0-9]{7,8}$/',
-                    'correo' => 'required|email|max:255',
-                    'telefono' => 'required|string|max:20', // Prefijo internacional + 10 dígitos
-                ]);
+        // Esta ruta siempre devuelve JSON (solo se llama desde AJAX)
+        try {
+            $validated = $request->validate([
+                'nombre' => 'required|string|max:255',
+                'apellido' => 'required|string|max:255',
+                'dni' => 'required|string|max:8|regex:/^[0-9]{7,8}$/',
+                'correo' => 'required|email|max:255',
+                'telefono' => 'required|string|max:20', // Prefijo internacional + 10 dígitos
+            ]);
 
-                Lead::create($validated);
+            Lead::create($validated);
 
-                return response()->json(['success' => true, 'message' => 'Lead guardado correctamente'], 200, [
-                    'Content-Type' => 'application/json'
-                ]);
-            } catch (\Illuminate\Validation\ValidationException $e) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Error de validación: ' . implode(', ', array_map(function($errors) {
-                        return is_array($errors) ? implode(', ', $errors) : $errors;
-                    }, $e->errors()))
-                ], 422, [
-                    'Content-Type' => 'application/json'
-                ]);
-            } catch (\Exception $e) {
-                \Log::error('Error al guardar lead', [
-                    'error' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString()
-                ]);
-                
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Error al guardar los datos: ' . $e->getMessage()
-                ], 500, [
-                    'Content-Type' => 'application/json'
-                ]);
-            }
+            return response()->json(['success' => true, 'message' => 'Lead guardado correctamente'], 200, [
+                'Content-Type' => 'application/json'
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de validación: ' . implode(', ', array_map(function($errors) {
+                    return is_array($errors) ? implode(', ', $errors) : $errors;
+                }, $e->errors()))
+            ], 422, [
+                'Content-Type' => 'application/json'
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error al guardar lead', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'headers' => $request->headers->all(),
+                'ajax' => $request->ajax(),
+                'wantsJson' => $request->wantsJson(),
+                'xRequestedWith' => $request->header('X-Requested-With')
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al guardar los datos: ' . $e->getMessage()
+            ], 500, [
+                'Content-Type' => 'application/json'
+            ]);
         }
-        
-        // Si no es una petición AJAX, devolver error 400
-        return response()->json([
-            'success' => false,
-            'message' => 'Esta petición requiere ser AJAX'
-        ], 400, [
-            'Content-Type' => 'application/json'
-        ]);
     }
 }
