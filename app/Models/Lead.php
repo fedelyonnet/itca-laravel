@@ -12,5 +12,14 @@ class Lead extends Model
         'dni',
         'correo',
         'telefono',
+        'cursada_id',
     ];
+
+    /**
+     * Relación con Cursada
+     */
+    public function cursada()
+    {
+        return $this->belongsTo(Cursada::class, 'cursada_id');
+    }
 }

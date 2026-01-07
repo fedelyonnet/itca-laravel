@@ -482,9 +482,27 @@ class WelcomeController extends Controller
                 'dni' => 'required|string|max:8|regex:/^[0-9]{7,8}$/',
                 'correo' => 'required|email|max:255',
                 'telefono' => 'required|string|max:20', // Prefijo internacional + 10 dígitos
+                'cursada_id' => 'required|integer|exists:cursadas,id',
             ]);
 
-            Lead::create($validated);
+            // Obtener la cursada
+            $cursada = \App\Models\Cursada::findOrFail($validated['cursada_id']);
+
+            // Guardar el lead
+            $lead = Lead::create($validated);
+
+            // Enviar email de notificación
+            try {
+                $toEmail = env('MAIL_TO_ADMIN', 'federico.lyonnet@gmail.com');
+                \Mail::to($toEmail)->send(new \App\Mail\LeadNotification($lead, $cursada));
+            } catch (\Exception $emailException) {
+                // Log del error de email pero no fallar el guardado del lead
+                \Log::error('Error al enviar email de notificación de lead', [
+                    'lead_id' => $lead->id,
+                    'error' => $emailException->getMessage(),
+                    'trace' => $emailException->getTraceAsString(),
+                ]);
+            }
 
             return response()->json(['success' => true, 'message' => 'Lead guardado correctamente'], 200, [
                 'Content-Type' => 'application/json'

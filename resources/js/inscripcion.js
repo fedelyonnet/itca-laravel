@@ -1860,6 +1860,10 @@
                     // Construir número de teléfono completo (prefijo + número)
                     const telefonoCompleto = (telefonoPrefijo?.value || '+54') + normalizarTelefono(telefono);
                     
+                    // Obtener el cursada_id del botón (formato: cursada-123)
+                    const cursadaIdFull = cursadaId; // cursadaId ya viene como 'cursada-123'
+                    const cursadaIdNumber = cursadaIdFull.replace('cursada-', ''); // Extraer solo el número
+                    
                                 // Guardar lead
                                 fetch(window.inscripcionConfig.leadsStoreUrl, {
                                     method: 'POST',
@@ -1874,7 +1878,8 @@
                                         apellido: apellido.value.trim(),
                                         dni: dni.value.trim(),
                                         correo: correo.value.trim(),
-                            telefono: telefonoCompleto
+                                        telefono: telefonoCompleto,
+                                        cursada_id: cursadaIdNumber
                                     })
                                 })
                                 .then(async response => {

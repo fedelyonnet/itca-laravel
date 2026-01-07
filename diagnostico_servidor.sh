@@ -1,0 +1,22 @@
+#!/bin/bash
+echo "=== SISTEMA OPERATIVO ==="
+uname -a
+echo ""
+echo "=== SERVIDOR WEB ==="
+which apache2 nginx 2>/dev/null || echo "No encontrado en PATH"
+systemctl is-active apache2 2>/dev/null && echo "Apache: ACTIVO" || echo "Apache: INACTIVO"
+systemctl is-active nginx 2>/dev/null && echo "Nginx: ACTIVO" || echo "Nginx: INACTIVO"
+echo ""
+echo "=== SERVIDORES DE CORREO ==="
+systemctl list-units --type=service --state=running | grep -E "(postfix|sendmail|exim|mail)" || echo "No se encontró servidor de correo activo"
+which postfix sendmail exim4 2>/dev/null || echo "No se encontró servidor de correo instalado"
+echo ""
+echo "=== PANELES DE CONTROL ==="
+dpkg -l 2>/dev/null | grep -E "(cpanel|plesk|webmin|vestacp|cyberpanel)" || rpm -qa 2>/dev/null | grep -E "(cpanel|plesk|webmin|vestacp|cyberpanel)" || echo "No se encontró panel de control"
+echo ""
+echo "=== HOSTNAME Y DOMINIO ==="
+hostname -f 2>/dev/null || hostname
+echo ""
+echo "=== CONFIGURACIÓN DE CORREO (si existe) ==="
+test -f /etc/postfix/main.cf && echo "Postfix config encontrado" || echo "Postfix config no encontrado"
+test -f /etc/exim4/exim4.conf && echo "Exim config encontrado" || echo "Exim config no encontrado"
