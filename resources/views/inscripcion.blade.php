@@ -676,7 +676,7 @@
                                                                     <span class="cursada-formulario-error" id="error-nombre-{{ $cursadaId }}"></span>
                                                                 </div>
                                                                 <div class="cursada-formulario-campo">
-                                                                    <input type="text" name="dni" id="dni-{{ $cursadaId }}" placeholder="DNI *" class="cursada-formulario-input" maxlength="8" pattern="[0-9]{7,8}" tabindex="3">
+                                                                    <input type="text" name="dni" id="dni-{{ $cursadaId }}" placeholder="DNI *" class="cursada-formulario-input" maxlength="8" pattern="[0-9]{7,8}" inputmode="numeric" tabindex="3">
                                                                     <span class="cursada-formulario-error" id="error-dni-{{ $cursadaId }}"></span>
                                                                 </div>
                                                                 <div class="cursada-formulario-campo cursada-formulario-campo-telefono">
@@ -760,7 +760,7 @@
                                                                             </select>
                                                                             <span class="cursada-telefono-chevron">▼</span>
                                                                         </div>
-                                                                        <input type="tel" name="telefono" id="telefono-{{ $cursadaId }}" placeholder="Teléfono *" class="cursada-formulario-input cursada-telefono-input" maxlength="14" pattern="[0-9]{8,14}" tabindex="6">
+                                                                        <input type="tel" name="telefono" id="telefono-{{ $cursadaId }}" placeholder="Teléfono *" class="cursada-formulario-input cursada-telefono-input" maxlength="14" pattern="[0-9]{8,14}" inputmode="numeric" tabindex="6">
                                                                     </div>
                                                                     <span class="cursada-formulario-error" id="error-telefono-{{ $cursadaId }}"></span>
                                                                 </div>
@@ -1005,6 +1005,19 @@
         };
     </script>
     @vite('resources/js/inscripcion.js')
+    
+    <!-- Modal para mobile (oculto por defecto) -->
+    <div class="cursada-modal-overlay" id="cursada-modal-overlay">
+        <div class="cursada-modal-container">
+            <div class="cursada-modal-header">
+                <div class="cursada-modal-header-content" id="cursada-modal-header-content"></div>
+                <button class="cursada-modal-close" id="cursada-modal-close">×</button>
+            </div>
+            <div class="cursada-modal-body" id="cursada-modal-body">
+                <!-- El contenido del panel se copiará aquí -->
+            </div>
+        </div>
+    </div>
 </body>
 </html>
 
