@@ -71,7 +71,6 @@
                             }
                         })
                         .catch(error => {
-                            console.error('Error al cargar cursadas:', error);
                             loadingIndicator.textContent = 'Error al cargar las cursadas';
                         });
                 }
@@ -86,6 +85,209 @@
             
             // Variable global para promoBadgeInfo
             let globalPromoBadgeInfo = null;
+            
+            // Constante para localStorage
+            const STORAGE_KEY = 'inscripcion_form_data';
+            
+            // Funciones necesarias para restaurar el estado - definidas temprano
+            function cargarDatosFormulario(cursadaId, intentos = 0) {
+                try {
+                    const datosGuardados = localStorage.getItem(STORAGE_KEY);
+                    if (!datosGuardados) return;
+                    
+                    const datos = JSON.parse(datosGuardados);
+                    const formulario = document.getElementById('formulario-' + cursadaId);
+                    if (!formulario) {
+                        // Si el formulario no existe aún, intentar de nuevo (máximo 5 intentos)
+                        if (intentos < 5) {
+                            setTimeout(() => cargarDatosFormulario(cursadaId, intentos + 1), 100);
+                        }
+                        return;
+                    }
+                    
+                    // Verificar si el formulario ya está deshabilitado (ya se envió)
+                    // Pero permitir cargar datos incluso si está readonly, ya que todos los formularios
+                    // quedan readonly después de completar uno
+                    const inputs = formulario.querySelectorAll('input, select');
+                    // No verificar si está disabled, solo cargar los datos
+                    
+                    const nombre = formulario.querySelector('#nombre-' + cursadaId);
+                    const apellido = formulario.querySelector('#apellido-' + cursadaId);
+                    const dni = formulario.querySelector('#dni-' + cursadaId);
+                    const correo = formulario.querySelector('#correo-' + cursadaId);
+                    const telefono = formulario.querySelector('#telefono-' + cursadaId);
+                    const telefonoPrefijo = formulario.querySelector('#telefono-prefijo-' + cursadaId);
+                    
+                    // Cargar los datos guardados en los campos (siempre, incluso si ya tienen valor)
+                    // Esto asegura que los datos se repliquen en todos los formularios
+                    if (nombre && datos.nombre) {
+                        nombre.value = datos.nombre;
+                    }
+                    if (apellido && datos.apellido) {
+                        apellido.value = datos.apellido;
+                    }
+                    if (dni && datos.dni) {
+                        dni.value = datos.dni;
+                    }
+                    if (correo && datos.correo) {
+                        correo.value = datos.correo;
+                    }
+                    if (telefono && datos.telefono) {
+                        telefono.value = datos.telefono;
+                    }
+                    if (telefonoPrefijo && datos.telefonoPrefijo) {
+                        telefonoPrefijo.value = datos.telefonoPrefijo;
+                    }
+                    
+                    // Actualizar el estado del botón después de cargar
+                    // Pero solo si el formulario no está completado (no está readonly)
+                    const isDisabled = Array.from(inputs).some(input => input.hasAttribute('readonly'));
+                    if (!isDisabled) {
+                        // actualizarEstadoBotonContinuar se definirá más tarde, pero no es crítico aquí
+                        if (typeof actualizarEstadoBotonContinuar === 'function') {
+                            actualizarEstadoBotonContinuar(cursadaId);
+                        }
+                    }
+                } catch (error) {
+                }
+            }
+            
+            function mostrarValoresEnFormulario(formCursadaId) {
+                const formCuotaInfo = document.getElementById('cuota-info-' + formCursadaId);
+                const formPanel = document.getElementById('panel-' + formCursadaId);
+                
+                if (!formCuotaInfo || !formPanel) return;
+                
+                // Mostrar sección de información de cuota (valores que estaban ocultos)
+                formCuotaInfo.style.display = 'block';
+                formCuotaInfo.style.visibility = 'visible';
+                formCuotaInfo.style.opacity = '1';
+                formCuotaInfo.style.height = 'auto';
+                formCuotaInfo.removeAttribute('hidden');
+                formCuotaInfo.classList.remove('hidden');
+                formCuotaInfo.classList.add('visible');
+                
+                // Habilitar elementos que estaban deshabilitados
+                const linkCodigo = document.getElementById('link-codigo-' + formCursadaId);
+                if (linkCodigo) {
+                    linkCodigo.classList.remove('cursada-link-disabled');
+                }
+                const checkboxTerminos = document.getElementById('acepto-terminos-' + formCursadaId);
+                if (checkboxTerminos) {
+                    checkboxTerminos.disabled = false;
+                }
+                const labelCheckbox = document.querySelector('label[for="acepto-terminos-' + formCursadaId + '"]');
+                if (labelCheckbox) {
+                    labelCheckbox.classList.remove('cursada-checkbox-disabled');
+                }
+                const linkVer = document.getElementById('link-ver-' + formCursadaId);
+                if (linkVer) {
+                    linkVer.classList.remove('cursada-link-disabled');
+                }
+                
+                // Obtener valores de los data attributes del cuotaInfo
+                const matricBase = parseFloat(formCuotaInfo.getAttribute('data-matric-base') || 0);
+                const sinIvaMat = parseFloat(formCuotaInfo.getAttribute('data-sin-iva-mat') || 0);
+                
+                // Actualizar valor de matrícula
+                const valorMatricula = document.getElementById('valor-matricula-' + formCursadaId);
+                if (valorMatricula) {
+                    if (matricBase > 0) {
+                        const valorFormateado = matricBase.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                        valorMatricula.textContent = '$' + valorFormateado;
+                    } else {
+                        valorMatricula.textContent = 'n/d';
+                    }
+                }
+                
+                // Actualizar precio total de matrícula sin impuestos
+                const precioTotalMatricula = document.getElementById('precio-total-matricula-' + formCursadaId);
+                if (precioTotalMatricula) {
+                    if (sinIvaMat > 0) {
+                        const precioFormateado = sinIvaMat.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                        precioTotalMatricula.textContent = '$' + precioFormateado;
+                    } else {
+                        precioTotalMatricula.textContent = 'n/d';
+                    }
+                }
+                
+                // Actualizar descuento y total usando la función de inicialización
+                setTimeout(() => {
+                    if (typeof inicializarValoresDescuento === 'function') {
+                        inicializarValoresDescuento(formCursadaId);
+                    }
+                }, 100);
+            }
+            
+            // Función para verificar si hay datos completos guardados y restaurar el estado
+            // Definida temprano para que esté disponible cuando se necesite
+            function verificarYRestaurarEstadoCompletado() {
+                try {
+                    const datosGuardados = localStorage.getItem(STORAGE_KEY);
+                    if (!datosGuardados) {
+                        return false;
+                    }
+                    
+                    const datos = JSON.parse(datosGuardados);
+                    
+                    // Verificar si todos los campos tienen datos (formulario completo)
+                    const formularioCompleto = datos.nombre && datos.apellido && datos.dni && 
+                                              datos.correo && datos.telefono;
+                    
+                    if (!formularioCompleto) {
+                        return false;
+                    }
+                    
+                    // Si el formulario está completo, restaurar el estado
+                    const formularios = document.querySelectorAll('.cursada-formulario');
+                    if (formularios.length === 0) {
+                        return false;
+                    }
+                    
+                    formularios.forEach(formulario => {
+                        const formularioId = formulario.getAttribute('id');
+                        if (formularioId) {
+                            const cursadaId = formularioId.replace('formulario-', '');
+                            
+                            // Cargar datos primero (necesitamos que cargarDatosFormulario esté definida)
+                            // Esto se hará después de que se definan las funciones
+                            
+                            // Desactivar todos los formularios
+                            const inputs = formulario.querySelectorAll('input, select');
+                            inputs.forEach(input => {
+                                input.setAttribute('readonly', 'readonly');
+                                input.setAttribute('disabled', 'disabled');
+                                input.style.pointerEvents = 'none';
+                                input.style.opacity = '0.6';
+                                input.style.cursor = 'not-allowed';
+                            });
+                            
+                            // Desactivar todos los botones continuar
+                            const botonesContinuar = document.querySelectorAll('.cursada-btn-continuar[data-cursada-id="' + cursadaId + '"]');
+                            botonesContinuar.forEach(botonContinuar => {
+                                botonContinuar.classList.remove('activo');
+                                botonContinuar.disabled = true;
+                                botonContinuar.style.opacity = '0.6';
+                                botonContinuar.style.cursor = 'not-allowed';
+                            });
+                        }
+                    });
+                    
+                    // Cargar datos y mostrar valores inmediatamente (las funciones ya están definidas)
+                    formularios.forEach(formulario => {
+                        const formularioId = formulario.getAttribute('id');
+                        if (formularioId) {
+                            const cursadaId = formularioId.replace('formulario-', '');
+                            cargarDatosFormulario(cursadaId);
+                            mostrarValoresEnFormulario(cursadaId);
+                        }
+                    });
+                    
+                    return true;
+                } catch (error) {
+                    return false;
+                }
+            }
             // Variable global para almacenar las cursadas originales
             let globalCursadas = null;
             // Variable para rastrear si el botón de ordenar ya fue inicializado
@@ -117,16 +319,13 @@
                         
                         const formulario = document.getElementById('formulario-' + cursadaId);
                         if (formulario) {
-                            const inputs = formulario.querySelectorAll('.cursada-formulario-input');
+                            // Solo actualizar tabindex, NO borrar los datos
+                            // Los datos se mantienen y se cargarán desde localStorage cuando se vuelva a abrir
+                            const inputs = formulario.querySelectorAll('input, select');
                             inputs.forEach(input => {
                                 input.setAttribute('tabindex', '-1');
-                                input.value = ''; // Borrar el valor del input
+                                // NO borrar el valor - se mantiene para reutilización
                             });
-                            const telefonoPrefijo = formulario.querySelector('#telefono-prefijo-' + cursadaId);
-                            if (telefonoPrefijo) {
-                                telefonoPrefijo.setAttribute('tabindex', '-1');
-                                telefonoPrefijo.value = '+54'; // Resetear al valor por defecto
-                            }
                         }
                         
                         // Limpiar errores de validación
@@ -234,18 +433,15 @@
                                 infoTexto.classList.remove('panel-visible');
                                 infoTexto.classList.add('panel-hidden');
                             }
-                            // Deshabilitar tabindex y limpiar inputs cuando el panel se oculta
+                            // Deshabilitar tabindex cuando el panel se oculta (NO borrar datos)
                             if (formulario) {
-                                const inputs = formulario.querySelectorAll('.cursada-formulario-input');
+                                const inputs = formulario.querySelectorAll('input, select');
+                                // Solo actualizar tabindex, NO borrar los datos
+                                // Los datos se mantienen y se cargarán desde localStorage cuando se vuelva a abrir
                                 inputs.forEach(input => {
                                     input.setAttribute('tabindex', '-1');
-                                    input.value = ''; // Borrar el valor del input
+                                    // NO borrar el valor - se mantiene para reutilización
                                 });
-                                const telefonoPrefijo = formulario.querySelector('#telefono-prefijo-' + cursadaId);
-                                if (telefonoPrefijo) {
-                                    telefonoPrefijo.setAttribute('tabindex', '-1');
-                                    telefonoPrefijo.value = '+54'; // Resetear al valor por defecto
-                                }
                             }
                             
                             // Limpiar errores de validación
@@ -292,6 +488,20 @@
                                 const telefonoPrefijo = formulario.querySelector('#telefono-prefijo-' + cursadaId);
                                 if (telefonoPrefijo) telefonoPrefijo.setAttribute('tabindex', '5');
                                 if (telefono) telefono.setAttribute('tabindex', '6');
+                                
+                                // Cargar datos guardados cuando se abre el panel
+                                // Usar múltiples intentos para asegurar que se carguen los datos
+                                setTimeout(() => {
+                                    if (typeof cargarDatosFormulario === 'function') {
+                                        cargarDatosFormulario(cursadaId);
+                                    }
+                                }, 100);
+                                // Segundo intento por si acaso
+                                setTimeout(() => {
+                                    if (typeof cargarDatosFormulario === 'function') {
+                                        cargarDatosFormulario(cursadaId);
+                                    }
+                                }, 300);
                             }
                         }
                     }
@@ -703,6 +913,28 @@
                         setTimeout(() => {
                             initializeFiltering();
                             initializeOrdenar();
+                            // Inicializar formularios después de renderizar
+                            if (typeof initializeFormularios === 'function') {
+                                initializeFormularios();
+                            }
+                            // Verificar si hay datos completos guardados y restaurar el estado
+                            // Usar múltiples delays para asegurar que todo esté listo
+                            setTimeout(() => {
+                                if (typeof verificarYRestaurarEstadoCompletado === 'function') {
+                                    const estadoRestaurado = verificarYRestaurarEstadoCompletado();
+                                    // Si no se restauró el estado, cargar datos normalmente
+                                    if (!estadoRestaurado && typeof cargarDatosEnTodosLosFormularios === 'function') {
+                                        cargarDatosEnTodosLosFormularios();
+                                    }
+                                }
+                            }, 500);
+                            
+                            // Segundo intento por si acaso
+                            setTimeout(() => {
+                                if (typeof verificarYRestaurarEstadoCompletado === 'function') {
+                                    verificarYRestaurarEstadoCompletado();
+                                }
+                            }, 1000);
                         }, 0);
                     }
                 }
@@ -1263,7 +1495,6 @@
                             if (!coincideModalidad) razones.push('modalidad');
                             if (!coincideTurno) razones.push('turno: ' + turno + ' vs ' + turnoSeleccionado);
                             if (!coincideDia) razones.push('dia: ' + dia + ' vs ' + diaSeleccionado);
-                            // console.log('No coincide:', razones.join(', '));
                         }
                     }
                 });
@@ -1389,16 +1620,13 @@
                         
                         const formulario = document.getElementById('formulario-' + cursadaId);
                         if (formulario) {
-                            const inputs = formulario.querySelectorAll('.cursada-formulario-input');
+                            // Solo actualizar tabindex, NO borrar los datos
+                            // Los datos se mantienen y se cargarán desde localStorage cuando se vuelva a abrir
+                            const inputs = formulario.querySelectorAll('input, select');
                             inputs.forEach(input => {
                                 input.setAttribute('tabindex', '-1');
-                                input.value = ''; // Borrar el valor del input
+                                // NO borrar el valor - se mantiene para reutilización
                             });
-                            const telefonoPrefijo = formulario.querySelector('#telefono-prefijo-' + cursadaId);
-                            if (telefonoPrefijo) {
-                                telefonoPrefijo.setAttribute('tabindex', '-1');
-                                telefonoPrefijo.value = '+54'; // Resetear al valor por defecto
-                            }
                         }
                         
                         // Limpiar errores de validación
@@ -1503,21 +1731,32 @@
                 
                 if (formularioValidado) {
                     // Si el formulario está validado, mostrar valores reales
-                    const matricBaseEl = document.querySelector('#panel-' + cursadaId + ' .cursada-valores-renglon-1 strong');
-                    if (matricBaseEl) {
-                        const matricBaseText = matricBaseEl.textContent.replace(/[^0-9,]/g, '').replace(',', '.');
-                        const matricBase = parseFloat(matricBaseText) || 0;
-                        
-                        // Establecer descuento en $0,00
-                        if (valorDescuento) {
-                            valorDescuento.textContent = '$0,00';
-                        }
-                        
-                        // Establecer total igual a matrícula
-                        if (valorTotal) {
-                            const valorFormateado = matricBase.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-                            valorTotal.textContent = '$' + valorFormateado;
-                        }
+                    // Obtener el valor de matrícula del elemento que acabamos de actualizar
+                    const valorMatriculaEl = document.getElementById('valor-matricula-' + cursadaId);
+                    let matricBase = 0;
+                    
+                    if (valorMatriculaEl && valorMatriculaEl.textContent.trim() !== 'n/d') {
+                        // Extraer el valor numérico del texto (formato: $123.456,78)
+                        const matricBaseText = valorMatriculaEl.textContent.replace(/[^0-9,]/g, '').replace(',', '.');
+                        matricBase = parseFloat(matricBaseText) || 0;
+                    }
+                    
+                    // Si no se encontró, intentar obtenerlo del cuotaInfo
+                    if (matricBase === 0 && cuotaInfo) {
+                        matricBase = parseFloat(cuotaInfo.getAttribute('data-matric-base') || 0);
+                    }
+                    
+                    // Establecer descuento en $0,00
+                    if (valorDescuento) {
+                        valorDescuento.textContent = '$0,00';
+                    }
+                    
+                    // Establecer total igual a matrícula
+                    if (valorTotal && matricBase > 0) {
+                        const valorFormateado = matricBase.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                        valorTotal.textContent = '$' + valorFormateado;
+                    } else if (valorTotal) {
+                        valorTotal.textContent = 'n/d';
                     }
                 } else {
                     // Si el formulario no está validado, mantener "n/d"
@@ -1724,8 +1963,50 @@
                 }
             }
             
-            // Validación en tiempo real para todos los formularios
-            document.querySelectorAll('.cursada-formulario').forEach(formulario => {
+            // Funciones para guardar y cargar datos del formulario en localStorage
+            // STORAGE_KEY ya está definida arriba
+            function guardarDatosFormulario(cursadaId) {
+                try {
+                    const formulario = document.getElementById('formulario-' + cursadaId);
+                    if (!formulario) return;
+                    
+                    const nombre = formulario.querySelector('#nombre-' + cursadaId);
+                    const apellido = formulario.querySelector('#apellido-' + cursadaId);
+                    const dni = formulario.querySelector('#dni-' + cursadaId);
+                    const correo = formulario.querySelector('#correo-' + cursadaId);
+                    const telefono = formulario.querySelector('#telefono-' + cursadaId);
+                    const telefonoPrefijo = formulario.querySelector('#telefono-prefijo-' + cursadaId);
+                    
+                    const datos = {
+                        nombre: nombre?.value?.trim() || '',
+                        apellido: apellido?.value?.trim() || '',
+                        dni: dni?.value?.trim() || '',
+                        correo: correo?.value?.trim() || '',
+                        telefono: telefono?.value?.trim() || '',
+                        telefonoPrefijo: telefonoPrefijo?.value || '+54'
+                    };
+                    
+                    // Guardar los datos en localStorage
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
+                } catch (error) {
+                }
+            }
+            
+            // Función para cargar datos en todos los formularios visibles
+            function cargarDatosEnTodosLosFormularios() {
+                document.querySelectorAll('.cursada-formulario').forEach(formulario => {
+                    const formularioId = formulario.getAttribute('id');
+                    if (formularioId) {
+                        const cursadaId = formularioId.replace('formulario-', '');
+                        cargarDatosFormulario(cursadaId);
+                    }
+                });
+            }
+            
+            
+            // Función para inicializar validación y carga de datos de formularios
+            function initializeFormularios() {
+                document.querySelectorAll('.cursada-formulario').forEach(formulario => {
                 const formularioId = formulario.getAttribute('id');
                 const cursadaId = formularioId.replace('formulario-', '');
                 
@@ -1740,7 +2021,26 @@
                             const errorDni = document.getElementById('error-dni-' + cursadaId);
                             const errorCorreo = document.getElementById('error-correo-' + cursadaId);
                             const errorTelefono = document.getElementById('error-telefono-' + cursadaId);
-                            
+                
+                // Cargar datos guardados al inicializar el formulario
+                // Usar un pequeño delay para asegurar que el DOM esté completamente listo
+                // Pero solo si el formulario no está ya completado
+                setTimeout(() => {
+                    // Verificar si hay datos completos guardados
+                    const datosGuardados = localStorage.getItem(STORAGE_KEY);
+                    if (datosGuardados) {
+                        const datos = JSON.parse(datosGuardados);
+                        const formularioCompleto = datos.nombre && datos.apellido && datos.dni && 
+                                                  datos.correo && datos.telefono;
+                        // Si el formulario está completo, no cargar datos aquí (se hará en verificarYRestaurarEstadoCompletado)
+                        if (!formularioCompleto) {
+                            cargarDatosFormulario(cursadaId);
+                        }
+                    } else {
+                        cargarDatosFormulario(cursadaId);
+                    }
+                }, 100);
+                
                 // Función genérica para validar campo de texto
                 function setupCampoTexto(input, errorElement, mensaje) {
                     if (!input) return;
@@ -1811,10 +2111,10 @@
                         actualizarEstadoBotonContinuar(cursadaId);
                     });
                 }
-            });
-            
-            // Funcionalidad del botón "Continuar" - guardar lead cuando está activo
-            document.querySelectorAll('.cursada-btn-continuar').forEach(boton => {
+                });
+                
+                // Funcionalidad del botón "Continuar" - guardar lead cuando está activo
+                document.querySelectorAll('.cursada-btn-continuar').forEach(boton => {
                 // Inicializar como inactivo
                 boton.classList.remove('activo');
                 
@@ -1890,8 +2190,7 @@
                                     if (!response.ok) {
                                         // Si la respuesta no es JSON, leer como texto
                                         if (!isJson) {
-                                            const text = await response.text();
-                                            console.error('Error del servidor (HTML):', text.substring(0, 200));
+                                            await response.text();
                                             throw new Error('Error del servidor. Por favor, intente nuevamente.');
                                         }
                                         // Si es JSON, parsear y extraer el mensaje
@@ -1908,8 +2207,7 @@
                                     
                                     // Verificar que la respuesta sea JSON antes de parsear
                                     if (!isJson) {
-                                        const text = await response.text();
-                                        console.error('Respuesta inesperada del servidor:', text.substring(0, 200));
+                                        await response.text();
                                         throw new Error('Error: El servidor no devolvió una respuesta válida');
                                     }
                                     
@@ -1917,80 +2215,63 @@
                                 })
                                 .then(data => {
                                     if (data.success) {
-                            // Desactivar formulario y botón después de guardar exitosamente
-                            const inputs = formulario.querySelectorAll('input, select');
-                            inputs.forEach(input => {
-                                input.setAttribute('readonly', 'readonly');
-                                input.style.pointerEvents = 'none';
-                                input.style.opacity = '0.6';
+                            // Guardar los datos del formulario en localStorage después de guardar exitosamente
+                            guardarDatosFormulario(cursadaId);
+                            
+                            // Desactivar TODOS los formularios después de guardar exitosamente
+                            document.querySelectorAll('.cursada-formulario').forEach(form => {
+                                const formId = form.getAttribute('id');
+                                if (formId) {
+                                    const formCursadaId = formId.replace('formulario-', '');
+                                    const formInputs = form.querySelectorAll('input, select');
+                                    formInputs.forEach(input => {
+                                        input.setAttribute('readonly', 'readonly');
+                                        input.setAttribute('disabled', 'disabled');
+                                        input.style.pointerEvents = 'none';
+                                        input.style.opacity = '0.6';
+                                        input.style.cursor = 'not-allowed';
+                                    });
+                                    
+                                    // Desactivar todos los botones continuar
+                                    const botonContinuarForm = document.querySelector('.cursada-btn-continuar[data-cursada-id="' + formCursadaId + '"]');
+                                    if (botonContinuarForm) {
+                                        botonContinuarForm.classList.remove('activo');
+                                        botonContinuarForm.disabled = true;
+                                        botonContinuarForm.style.opacity = '0.6';
+                                        botonContinuarForm.style.cursor = 'not-allowed';
+                                    }
+                                }
                             });
                             
-                            // Desactivar botón
-                            this.classList.remove('activo');
-                            this.disabled = true;
-                            this.style.opacity = '0.6';
-                            this.style.cursor = 'not-allowed';
-                            
-                            // Mostrar sección de información de cuota
-                            const cuotaInfo = document.getElementById('cuota-info-' + cursadaId);
-                            if (cuotaInfo) {
-                                cuotaInfo.style.display = 'block';
-                            }
-                            
-                            // Habilitar elementos que estaban deshabilitados
-                            const linkCodigo = document.getElementById('link-codigo-' + cursadaId);
-                            if (linkCodigo) {
-                                linkCodigo.classList.remove('cursada-link-disabled');
-                            }
-                            const checkboxTerminos = document.getElementById('acepto-terminos-' + cursadaId);
-                            if (checkboxTerminos) {
-                                checkboxTerminos.disabled = false;
-                            }
-                            const labelCheckbox = document.querySelector('label[for="acepto-terminos-' + cursadaId + '"]');
-                            if (labelCheckbox) {
-                                labelCheckbox.classList.remove('cursada-checkbox-disabled');
-                            }
-                            const linkVer = document.getElementById('link-ver-' + cursadaId);
-                            if (linkVer) {
-                                linkVer.classList.remove('cursada-link-disabled');
-                            }
-                            
-                            // Actualizar valores de "n/d" a valores reales
-                            const panel = document.getElementById('panel-' + cursadaId);
-                            if (panel) {
-                                // Obtener valores de los data attributes o del cuotaInfo
-                                const matricBase = parseFloat(cuotaInfo?.getAttribute('data-matric-base') || 0);
-                                const sinIvaMat = parseFloat(cuotaInfo?.getAttribute('data-sin-iva-mat') || 0);
-                                
-                                // Actualizar valor de matrícula
-                                const valorMatricula = document.getElementById('valor-matricula-' + cursadaId);
-                                if (valorMatricula && matricBase > 0) {
-                                    const valorFormateado = matricBase.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-                                    valorMatricula.textContent = '$' + valorFormateado;
+                            // Mostrar valores en TODOS los formularios
+                            document.querySelectorAll('.cursada-formulario').forEach(form => {
+                                const formId = form.getAttribute('id');
+                                if (formId) {
+                                    const formCursadaId = formId.replace('formulario-', '');
+                                    mostrarValoresEnFormulario(formCursadaId);
                                 }
-                                
-                                // Actualizar precio total de matrícula sin impuestos
-                                const precioTotalMatricula = document.getElementById('precio-total-matricula-' + cursadaId);
-                                if (precioTotalMatricula && sinIvaMat > 0) {
-                                    const precioFormateado = sinIvaMat.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-                                    precioTotalMatricula.textContent = '$' + precioFormateado;
+                            });
+                            
+                            // Cargar los datos en todos los formularios después de guardar
+                            setTimeout(() => {
+                                if (typeof cargarDatosEnTodosLosFormularios === 'function') {
+                                    cargarDatosEnTodosLosFormularios();
                                 }
-                                
-                                // Actualizar descuento y total usando la función de inicialización
-                                // Esto asegura que se muestren correctamente según el estado del formulario
-                                inicializarValoresDescuento(cursadaId);
-                            }
+                            }, 300);
                             
                                     } else {
                                         alert('Error al guardar los datos. Por favor, intente nuevamente.');
                                     }
                                 })
                                 .catch(error => {
-                                    console.error('Error:', error);
                                     alert(error.message || 'Error al guardar los datos. Por favor, intente nuevamente.');
                     });
                 });
-            });
+                });
+            }
+            
+            // Inicializar formularios cuando se cargan las cursadas
+            initializeFormularios();
             
             // Inicializar: deshabilitar tabindex de todos los inputs en paneles ocultos
             document.querySelectorAll('.cursada-valores-panel.panel-hidden').forEach(panel => {
