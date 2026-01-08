@@ -510,9 +510,9 @@
                         }
                     }
                     
-                    // Verificar si hay paneles abiertos
-                    const panelesAbiertos = document.querySelectorAll('.cursada-valores-panel.panel-visible');
-                    const hayPanelAbierto = panelesAbiertos.length > 0;
+                    // Manejar toggle del panel con scroll inteligente
+                    const cursadaItem = boton.closest('.cursada-item');
+                    const esMobile = window.innerWidth < 600;
                     const panelActualAbierto = panel && panel.classList.contains('panel-visible');
                     
                     // Si el panel actual ya está abierto, solo cerrarlo
@@ -532,83 +532,6 @@
                         }
                         return;
                     }
-                    
-                    // Función para cerrar todos los paneles abiertos
-                    const cerrarTodosLosPanelesAbiertos = () => {
-                        panelesAbiertos.forEach(panelAbierto => {
-                            panelAbierto.classList.remove('panel-visible');
-                            panelAbierto.classList.add('panel-hidden');
-                            
-                            const panelId = panelAbierto.id;
-                            const cursadaIdDelPanel = panelId.replace('panel-', '');
-                            const botonDelPanel = document.querySelector('.cursada-btn-ver-valores[data-cursada-id="' + cursadaIdDelPanel + '"]');
-                            const infoTextoDelPanel = document.getElementById('info-' + cursadaIdDelPanel);
-                            
-                            if (botonDelPanel) {
-                                botonDelPanel.classList.remove('panel-desplegado');
-                            }
-                            if (infoTextoDelPanel) {
-                                infoTextoDelPanel.classList.remove('panel-visible');
-                                infoTextoDelPanel.classList.add('panel-hidden');
-                            }
-                            
-                            const formularioDelPanel = document.getElementById('formulario-' + cursadaIdDelPanel);
-                            if (formularioDelPanel) {
-                                const inputs = formularioDelPanel.querySelectorAll('input, select');
-                                inputs.forEach(input => {
-                                    input.setAttribute('tabindex', '-1');
-                                });
-                            }
-                        });
-                    };
-                    
-                    // Función para hacer scroll al item
-                    const hacerScrollAlItem = (callback) => {
-                        const cursadaItem = boton.closest('.cursada-item');
-                        
-                        if (cursadaItem) {
-                            const esMobile = window.innerWidth < 600;
-                            let offset = 0;
-                            
-                            if (esMobile) {
-                                const stickyWrapper = document.querySelector('.inscripcion-mobile-sticky-wrapper');
-                                if (stickyWrapper) {
-                                    const stickyTop = 120;
-                                    offset = stickyTop + stickyWrapper.offsetHeight;
-                                } else {
-                                    offset = 180;
-                                }
-                            } else {
-                                const header = document.querySelector('.header');
-                                if (header) {
-                                    offset = header.offsetHeight;
-                                }
-                            }
-                            
-                            const itemRect = cursadaItem.getBoundingClientRect();
-                            const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                            const itemTopAbsoluto = itemRect.top + currentScrollTop;
-                            const diferencia = Math.abs(itemRect.top - offset);
-                            const estaVisible = diferencia <= 15;
-                            
-                            if (!estaVisible) {
-                                const scrollTarget = itemTopAbsoluto - offset;
-                                window.scrollTo({
-                                    top: Math.max(0, scrollTarget),
-                                    behavior: 'smooth'
-                                });
-                                
-                                // Esperar a que termine el scroll (300ms - más rápido)
-                                setTimeout(() => {
-                                    if (callback) callback();
-                                }, 300);
-                            } else {
-                                if (callback) callback();
-                            }
-                        } else {
-                            if (callback) callback();
-                        }
-                    };
                     
                     // Función para abrir el panel
                     const abrirPanel = () => {
@@ -630,28 +553,76 @@
                         }
                     };
                     
-                    // Flujo: Si hay panel abierto, cerrar -> pausa -> scroll -> pausa -> abrir
-                    if (hayPanelAbierto) {
-                        // Paso 1: Cerrar todos los paneles abiertos (animación fluida)
-                        cerrarTodosLosPanelesAbiertos();
+                    // Función para hacer scroll al item
+                    const hacerScrollAlItem = (callback) => {
+                        if (!cursadaItem) {
+                            if (callback) callback();
+                            return;
+                        }
                         
-                        // Paso 2: Esperar a que termine la animación de cierre (200ms - más rápido)
-                        setTimeout(() => {
-                            // Paso 3: Hacer scroll al item
-                            hacerScrollAlItem(() => {
-                                // Paso 4: Pausa mínima después del scroll (100ms)
-                                setTimeout(() => {
-                                    // Paso 5: Abrir el nuevo panel (animación fluida)
-                                    abrirPanel();
-                                }, 100);
+                        // Calcular el offset
+                        let offset = 0;
+                        if (esMobile) {
+                            const stickyWrapper = document.querySelector('.inscripcion-mobile-sticky-wrapper');
+                            if (stickyWrapper) {
+                                const stickyTop = 120;
+                                offset = stickyTop + stickyWrapper.offsetHeight;
+                            } else {
+                                offset = 180;
+                            }
+                        } else {
+                            const header = document.querySelector('.header');
+                            if (header) {
+                                offset = header.offsetHeight;
+                            }
+                        }
+                        
+                        // Obtener la posición del item DESPUÉS de cerrar paneles (ahora correcta)
+                        const itemRect = cursadaItem.getBoundingClientRect();
+                        const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        const itemTopAbsoluto = itemRect.top + currentScrollTop;
+                        
+                        // Verificar si el item ya está visible en la parte superior
+                        const diferencia = Math.abs(itemRect.top - offset);
+                        const estaVisible = diferencia <= 15;
+                        
+                        if (!estaVisible) {
+                            const scrollTarget = itemTopAbsoluto - offset;
+                            window.scrollTo({
+                                top: Math.max(0, scrollTarget),
+                                behavior: 'smooth'
                             });
-                        }, 200);
-                    } else {
-                        // Si no hay panel abierto, hacer scroll y luego abrir
-                        hacerScrollAlItem(() => {
+                            // Esperar a que termine el scroll (600ms para smooth scroll)
                             setTimeout(() => {
-                                abrirPanel();
-                            }, 100);
+                                if (callback) callback();
+                            }, 600);
+                        } else {
+                            if (callback) callback();
+                        }
+                    };
+                    
+                    // Verificar si hay paneles abiertos
+                    const hayPanelAbierto = document.querySelector('.cursada-valores-panel.panel-visible');
+                    
+                    if (hayPanelAbierto) {
+                        // Paso 1: Cerrar todos los paneles primero
+                        cerrarTodosLosPaneles(cursadaId);
+                        
+                        // Paso 2: Esperar a que el DOM se estabilice (el panel cerrado ya no ocupa espacio)
+                        // Usar requestAnimationFrame para asegurar que el DOM se actualizó
+                        requestAnimationFrame(() => {
+                            requestAnimationFrame(() => {
+                                // Paso 3: Hacer scroll al item (ahora con posiciones correctas)
+                                hacerScrollAlItem(() => {
+                                    // Paso 4: Abrir el nuevo panel
+                                    abrirPanel();
+                                });
+                            });
+                        });
+                    } else {
+                        // No hay paneles abiertos, hacer scroll y abrir directamente
+                        hacerScrollAlItem(() => {
+                            abrirPanel();
                         });
                     }
                 });
