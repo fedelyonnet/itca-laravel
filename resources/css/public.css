@@ -14488,6 +14488,7 @@ body.inscripcion-page {
     width: 100%;
     align-items: center;
     justify-content: flex-start;
+    scroll-margin-top: 0px; /* Offset para scrollIntoView - ajustar si es necesario */
 }
 
 .inscripcion-filtros-bar-columna-izq {

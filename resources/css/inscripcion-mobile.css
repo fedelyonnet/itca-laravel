@@ -88,6 +88,7 @@
         display: block !important; /* Asegurar que sea block para que los hijos se apilen verticalmente */
         overflow: visible !important; /* Asegurar que no corte el contenido */
         min-height: auto !important; /* Permitir que la altura se ajuste al contenido */
+        scroll-margin-top: 0px; /* Offset para scrollIntoView - ajustar si es necesario */
     }
     
     /* Asegurar que la sección no bloquee el sticky */

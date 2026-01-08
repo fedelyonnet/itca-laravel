@@ -195,8 +195,11 @@
                     if (matricBase > 0) {
                         const valorFormateado = matricBase.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
                         valorMatricula.textContent = '$' + valorFormateado;
+                        // Guardar el valor numérico en un data attribute para uso posterior
+                        valorMatricula.setAttribute('data-valor-numerico', matricBase);
                     } else {
                         valorMatricula.textContent = 'n/d';
+                        valorMatricula.removeAttribute('data-valor-numerico');
                     }
                 }
                 
@@ -211,12 +214,56 @@
                     }
                 }
                 
-                // Actualizar descuento y total usando la función de inicialización
-                setTimeout(() => {
-                    if (typeof inicializarValoresDescuento === 'function') {
-                        inicializarValoresDescuento(formCursadaId);
+                // Actualizar descuento y total directamente
+                // Función auxiliar para actualizar valores de descuento y total
+                const actualizarDescuentoYTotal = () => {
+                    const descuentoAplicado = document.getElementById('descuento-aplicado-' + formCursadaId);
+                    const totalAplicado = document.getElementById('total-aplicado-' + formCursadaId);
+                    const valorDescuento = descuentoAplicado ? descuentoAplicado.querySelector('.cursada-descuento-valor') : null;
+                    const valorTotal = totalAplicado ? totalAplicado.querySelector('.cursada-total-valor') : null;
+                    
+                    // Verificar si hay un descuento aplicado (si el descuento no es "n/d" ni "$0,00" y comienza con "-")
+                    const descuentoText = valorDescuento ? valorDescuento.textContent.trim() : '';
+                    const tieneDescuentoAplicado = descuentoText && descuentoText !== 'n/d' && descuentoText !== '$0,00' && descuentoText.startsWith('-');
+                    
+                    // Si no hay descuento aplicado, establecer valores iniciales
+                    if (!tieneDescuentoAplicado) {
+                        // Establecer descuento en $0,00
+                        if (valorDescuento) {
+                            valorDescuento.textContent = '$0,00';
+                        }
+                        
+                        // Establecer total igual a matrícula base (con impuestos)
+                        if (valorTotal && matricBase > 0) {
+                            const totalFormateado = matricBase.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                            valorTotal.textContent = '$' + totalFormateado;
+                        } else if (valorTotal) {
+                            valorTotal.textContent = 'n/d';
+                        }
+                    } else {
+                        // Si hay descuento aplicado, usar la función de inicialización para recalcular
+                        if (typeof inicializarValoresDescuento === 'function') {
+                            inicializarValoresDescuento(formCursadaId);
+                        }
                     }
-                }, 100);
+                };
+                
+                // Intentar actualizar inmediatamente
+                actualizarDescuentoYTotal();
+                
+                // Si los elementos no estaban disponibles, intentar de nuevo después de un breve delay
+                setTimeout(() => {
+                    const valorDescuento = document.querySelector('#descuento-aplicado-' + formCursadaId + ' .cursada-descuento-valor');
+                    const valorTotal = document.querySelector('#total-aplicado-' + formCursadaId + ' .cursada-total-valor');
+                    
+                    // Si aún muestran "n/d" y tenemos el valor de matrícula base, actualizar
+                    if (valorDescuento && valorDescuento.textContent.trim() === 'n/d' && matricBase > 0) {
+                        actualizarDescuentoYTotal();
+                    }
+                    if (valorTotal && valorTotal.textContent.trim() === 'n/d' && matricBase > 0) {
+                        actualizarDescuentoYTotal();
+                    }
+                }, 200);
             }
             
             // Función para verificar si hay datos completos guardados y restaurar el estado
@@ -342,6 +389,47 @@
                 });
             }
             
+            // Función para inicializar el panel después del scroll
+            function inicializarPanelDespuesDeScroll(cursadaId, panel, infoTexto, formulario, boton) {
+                // Inicializar valores de descuento cuando se abre el panel
+                // Asegurar que muestren "n/d" si el formulario no está validado
+                setTimeout(() => {
+                    if (typeof inicializarValoresDescuento === 'function') {
+                        inicializarValoresDescuento(cursadaId);
+                    }
+                }, 0);
+                // Habilitar tabindex de los inputs cuando el panel se muestra
+                if (formulario) {
+                    const nombre = formulario.querySelector('#nombre-' + cursadaId);
+                    const apellido = formulario.querySelector('#apellido-' + cursadaId);
+                    const dni = formulario.querySelector('#dni-' + cursadaId);
+                    const correo = formulario.querySelector('#correo-' + cursadaId);
+                    const telefono = formulario.querySelector('#telefono-' + cursadaId);
+                    
+                    if (nombre) nombre.setAttribute('tabindex', '1');
+                    if (apellido) apellido.setAttribute('tabindex', '2');
+                    if (dni) dni.setAttribute('tabindex', '3');
+                    if (correo) correo.setAttribute('tabindex', '4');
+                    const telefonoPrefijo = formulario.querySelector('#telefono-prefijo-' + cursadaId);
+                    if (telefonoPrefijo) telefonoPrefijo.setAttribute('tabindex', '5');
+                    if (telefono) telefono.setAttribute('tabindex', '6');
+                    
+                    // Cargar datos guardados cuando se abre el panel
+                    // Usar múltiples intentos para asegurar que se carguen los datos
+                    setTimeout(() => {
+                        if (typeof cargarDatosFormulario === 'function') {
+                            cargarDatosFormulario(cursadaId);
+                        }
+                    }, 100);
+                    // Segundo intento por si acaso
+                    setTimeout(() => {
+                        if (typeof cargarDatosFormulario === 'function') {
+                            cargarDatosFormulario(cursadaId);
+                        }
+                    }, 300);
+                }
+            }
+            
             // Registrar event listener para botones "ver valores" UNA SOLA VEZ al inicio
             // Esto funciona con delegación de eventos, así que funcionará con todos los botones, incluso los creados dinámicamente
             if (!formsEventListenersInicializados) {
@@ -422,88 +510,149 @@
                         }
                     }
                     
-                    if (panel) {
-                        // Toggle del panel con animación
-                        if (panel.classList.contains('panel-visible')) {
-                            // Cerrar este panel
-                            panel.classList.remove('panel-visible');
-                            panel.classList.add('panel-hidden');
-                            boton.classList.remove('panel-desplegado');
-                            if (infoTexto) {
-                                infoTexto.classList.remove('panel-visible');
-                                infoTexto.classList.add('panel-hidden');
+                    // Verificar si hay paneles abiertos
+                    const panelesAbiertos = document.querySelectorAll('.cursada-valores-panel.panel-visible');
+                    const hayPanelAbierto = panelesAbiertos.length > 0;
+                    const panelActualAbierto = panel && panel.classList.contains('panel-visible');
+                    
+                    // Si el panel actual ya está abierto, solo cerrarlo
+                    if (panelActualAbierto) {
+                        panel.classList.remove('panel-visible');
+                        panel.classList.add('panel-hidden');
+                        boton.classList.remove('panel-desplegado');
+                        if (infoTexto) {
+                            infoTexto.classList.remove('panel-visible');
+                            infoTexto.classList.add('panel-hidden');
+                        }
+                        if (formulario) {
+                            const inputs = formulario.querySelectorAll('input, select');
+                            inputs.forEach(input => {
+                                input.setAttribute('tabindex', '-1');
+                            });
+                        }
+                        return;
+                    }
+                    
+                    // Función para cerrar todos los paneles abiertos
+                    const cerrarTodosLosPanelesAbiertos = () => {
+                        panelesAbiertos.forEach(panelAbierto => {
+                            panelAbierto.classList.remove('panel-visible');
+                            panelAbierto.classList.add('panel-hidden');
+                            
+                            const panelId = panelAbierto.id;
+                            const cursadaIdDelPanel = panelId.replace('panel-', '');
+                            const botonDelPanel = document.querySelector('.cursada-btn-ver-valores[data-cursada-id="' + cursadaIdDelPanel + '"]');
+                            const infoTextoDelPanel = document.getElementById('info-' + cursadaIdDelPanel);
+                            
+                            if (botonDelPanel) {
+                                botonDelPanel.classList.remove('panel-desplegado');
                             }
-                            // Deshabilitar tabindex cuando el panel se oculta (NO borrar datos)
-                            if (formulario) {
-                                const inputs = formulario.querySelectorAll('input, select');
-                                // Solo actualizar tabindex, NO borrar los datos
-                                // Los datos se mantienen y se cargarán desde localStorage cuando se vuelva a abrir
+                            if (infoTextoDelPanel) {
+                                infoTextoDelPanel.classList.remove('panel-visible');
+                                infoTextoDelPanel.classList.add('panel-hidden');
+                            }
+                            
+                            const formularioDelPanel = document.getElementById('formulario-' + cursadaIdDelPanel);
+                            if (formularioDelPanel) {
+                                const inputs = formularioDelPanel.querySelectorAll('input, select');
                                 inputs.forEach(input => {
                                     input.setAttribute('tabindex', '-1');
-                                    // NO borrar el valor - se mantiene para reutilización
                                 });
                             }
+                        });
+                    };
+                    
+                    // Función para hacer scroll al item
+                    const hacerScrollAlItem = (callback) => {
+                        const cursadaItem = boton.closest('.cursada-item');
+                        
+                        if (cursadaItem) {
+                            const esMobile = window.innerWidth < 600;
+                            let offset = 0;
                             
-                            // Limpiar errores de validación
-                            const errorElements = document.querySelectorAll('#formulario-' + cursadaId + ' .cursada-formulario-error');
-                            const inputElements = document.querySelectorAll('#formulario-' + cursadaId + ' .cursada-formulario-input');
-                            errorElements.forEach(error => {
-                                error.classList.remove('show');
-                                error.textContent = '';
-                            });
-                            inputElements.forEach(input => {
-                                input.classList.remove('error');
-                            });
+                            if (esMobile) {
+                                const stickyWrapper = document.querySelector('.inscripcion-mobile-sticky-wrapper');
+                                if (stickyWrapper) {
+                                    const stickyTop = 120;
+                                    offset = stickyTop + stickyWrapper.offsetHeight;
+                                } else {
+                                    offset = 180;
+                                }
+                            } else {
+                                const header = document.querySelector('.header');
+                                if (header) {
+                                    offset = header.offsetHeight;
+                                }
+                            }
+                            
+                            const itemRect = cursadaItem.getBoundingClientRect();
+                            const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                            const itemTopAbsoluto = itemRect.top + currentScrollTop;
+                            const diferencia = Math.abs(itemRect.top - offset);
+                            const estaVisible = diferencia <= 15;
+                            
+                            if (!estaVisible) {
+                                const scrollTarget = itemTopAbsoluto - offset;
+                                window.scrollTo({
+                                    top: Math.max(0, scrollTarget),
+                                    behavior: 'smooth'
+                                });
+                                
+                                // Esperar a que termine el scroll (300ms - más rápido)
+                                setTimeout(() => {
+                                    if (callback) callback();
+                                }, 300);
+                            } else {
+                                if (callback) callback();
+                            }
                         } else {
-                            // Cerrar todos los demás paneles antes de abrir este
-                            cerrarTodosLosPaneles(cursadaId);
-                            
-                            // Abrir este panel
+                            if (callback) callback();
+                        }
+                    };
+                    
+                    // Función para abrir el panel
+                    const abrirPanel = () => {
+                        cerrarTodosLosPaneles(cursadaId);
+                        
+                        if (panel) {
                             panel.classList.remove('panel-hidden');
                             panel.classList.add('panel-visible');
-                            boton.classList.add('panel-desplegado');
-                            if (infoTexto) {
-                                infoTexto.classList.remove('panel-hidden');
-                                infoTexto.classList.add('panel-visible');
-                            }
-                            // Inicializar valores de descuento cuando se abre el panel
-                            // Asegurar que muestren "n/d" si el formulario no está validado
-                            setTimeout(() => {
-                                if (typeof inicializarValoresDescuento === 'function') {
-                                    inicializarValoresDescuento(cursadaId);
-                                }
-                            }, 0);
-                            // Habilitar tabindex de los inputs cuando el panel se muestra
-                            if (formulario) {
-                                const nombre = formulario.querySelector('#nombre-' + cursadaId);
-                                const apellido = formulario.querySelector('#apellido-' + cursadaId);
-                                const dni = formulario.querySelector('#dni-' + cursadaId);
-                                const correo = formulario.querySelector('#correo-' + cursadaId);
-                                const telefono = formulario.querySelector('#telefono-' + cursadaId);
-                                
-                                if (nombre) nombre.setAttribute('tabindex', '1');
-                                if (apellido) apellido.setAttribute('tabindex', '2');
-                                if (dni) dni.setAttribute('tabindex', '3');
-                                if (correo) correo.setAttribute('tabindex', '4');
-                                const telefonoPrefijo = formulario.querySelector('#telefono-prefijo-' + cursadaId);
-                                if (telefonoPrefijo) telefonoPrefijo.setAttribute('tabindex', '5');
-                                if (telefono) telefono.setAttribute('tabindex', '6');
-                                
-                                // Cargar datos guardados cuando se abre el panel
-                                // Usar múltiples intentos para asegurar que se carguen los datos
-                                setTimeout(() => {
-                                    if (typeof cargarDatosFormulario === 'function') {
-                                        cargarDatosFormulario(cursadaId);
-                                    }
-                                }, 100);
-                                // Segundo intento por si acaso
-                                setTimeout(() => {
-                                    if (typeof cargarDatosFormulario === 'function') {
-                                        cargarDatosFormulario(cursadaId);
-                                    }
-                                }, 300);
-                            }
                         }
+                        if (boton) {
+                            boton.classList.add('panel-desplegado');
+                        }
+                        if (infoTexto) {
+                            infoTexto.classList.remove('panel-hidden');
+                            infoTexto.classList.add('panel-visible');
+                        }
+                        if (typeof inicializarPanelDespuesDeScroll === 'function') {
+                            inicializarPanelDespuesDeScroll(cursadaId, panel, infoTexto, formulario, boton);
+                        }
+                    };
+                    
+                    // Flujo: Si hay panel abierto, cerrar -> pausa -> scroll -> pausa -> abrir
+                    if (hayPanelAbierto) {
+                        // Paso 1: Cerrar todos los paneles abiertos (animación fluida)
+                        cerrarTodosLosPanelesAbiertos();
+                        
+                        // Paso 2: Esperar a que termine la animación de cierre (200ms - más rápido)
+                        setTimeout(() => {
+                            // Paso 3: Hacer scroll al item
+                            hacerScrollAlItem(() => {
+                                // Paso 4: Pausa mínima después del scroll (100ms)
+                                setTimeout(() => {
+                                    // Paso 5: Abrir el nuevo panel (animación fluida)
+                                    abrirPanel();
+                                }, 100);
+                            });
+                        }, 200);
+                    } else {
+                        // Si no hay panel abierto, hacer scroll y luego abrir
+                        hacerScrollAlItem(() => {
+                            setTimeout(() => {
+                                abrirPanel();
+                            }, 100);
+                        });
                     }
                 });
                 
@@ -1722,45 +1871,88 @@
                 const valorDescuento = descuentoAplicado ? descuentoAplicado.querySelector('.cursada-descuento-valor') : null;
                 const valorTotal = totalAplicado ? totalAplicado.querySelector('.cursada-total-valor') : null;
                 
-                // Verificar si el formulario está validado
-                // El formulario está validado solo si cuotaInfo está visible Y el valor de matrícula no es "n/d"
-                const cuotaInfo = document.getElementById('cuota-info-' + cursadaId);
+                // Obtener el valor de matrícula
                 const valorMatricula = document.getElementById('valor-matricula-' + cursadaId);
-                const formularioValidado = cuotaInfo && cuotaInfo.style.display !== 'none' && 
-                                          valorMatricula && valorMatricula.textContent.trim() !== 'n/d';
+                const cuotaInfo = document.getElementById('cuota-info-' + cursadaId);
                 
-                if (formularioValidado) {
-                    // Si el formulario está validado, mostrar valores reales
-                    // Obtener el valor de matrícula del elemento que acabamos de actualizar
-                    const valorMatriculaEl = document.getElementById('valor-matricula-' + cursadaId);
-                    let matricBase = 0;
+                // Obtener el texto del valor de matrícula
+                const valorMatriculaText = valorMatricula ? valorMatricula.textContent.trim() : '';
+                
+                // Verificar si hay un descuento aplicado (si el descuento no es "n/d" ni "$0,00")
+                const descuentoText = valorDescuento ? valorDescuento.textContent.trim() : '';
+                const tieneDescuentoAplicado = descuentoText && descuentoText !== 'n/d' && descuentoText !== '$0,00' && descuentoText.startsWith('-');
+                
+                let matricBase = 0;
+                let descuentoValor = 0;
+                
+                // Si hay descuento aplicado, obtener el valor del descuento y calcular el total
+                if (tieneDescuentoAplicado && descuentoAplicado) {
+                    // Obtener el valor del descuento del data attribute
+                    descuentoValor = parseFloat(descuentoAplicado.getAttribute('data-valor-descuento') || 0);
+                    const valorFinal = parseFloat(descuentoAplicado.getAttribute('data-valor-final') || 0);
                     
-                    if (valorMatriculaEl && valorMatriculaEl.textContent.trim() !== 'n/d') {
-                        // Extraer el valor numérico del texto (formato: $123.456,78)
-                        const matricBaseText = valorMatriculaEl.textContent.replace(/[^0-9,]/g, '').replace(',', '.');
-                        matricBase = parseFloat(matricBaseText) || 0;
+                    if (valorFinal > 0) {
+                        // Usar el valor final que ya está calculado
+                        const totalFormateado = valorFinal.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                        if (valorTotal) {
+                            valorTotal.textContent = '$' + totalFormateado;
+                        }
+                        return; // Salir temprano si hay descuento aplicado
                     }
-                    
-                    // Si no se encontró, intentar obtenerlo del cuotaInfo
-                    if (matricBase === 0 && cuotaInfo) {
-                        matricBase = parseFloat(cuotaInfo.getAttribute('data-matric-base') || 0);
+                }
+                
+                // Obtener el valor de matrícula base (con impuestos) desde cuotaInfo (este es el valor que se debe usar para el total)
+                if (cuotaInfo) {
+                    const matricBaseAttr = cuotaInfo.getAttribute('data-matric-base');
+                    if (matricBaseAttr && matricBaseAttr !== '' && matricBaseAttr !== '0') {
+                        matricBase = parseFloat(matricBaseAttr);
+                        if (isNaN(matricBase)) {
+                            matricBase = 0;
+                        }
                     }
-                    
-                    // Establecer descuento en $0,00
-                    if (valorDescuento) {
+                }
+                
+                // Si no se encontró en cuotaInfo, intentar obtener del valor de matrícula
+                if (matricBase === 0 && valorMatricula) {
+                    const valorNumerico = valorMatricula.getAttribute('data-valor-numerico');
+                    if (valorNumerico && valorNumerico !== '' && valorNumerico !== '0') {
+                        matricBase = parseFloat(valorNumerico);
+                        if (isNaN(matricBase)) {
+                            matricBase = 0;
+                        }
+                    }
+                }
+                
+                // Si aún no se encontró, intentar extraer del texto como último recurso
+                if (matricBase === 0 && valorMatriculaText && valorMatriculaText !== 'n/d' && valorMatriculaText !== '' && valorMatriculaText.includes('$')) {
+                    // Remover el símbolo $ y espacios, luego reemplazar punto por nada (separador de miles) y coma por punto (decimal)
+                    const matricBaseText = valorMatriculaText
+                        .replace(/\$/g, '')  // Eliminar todos los $
+                        .trim()
+                        .replace(/\./g, '')  // Eliminar puntos (separadores de miles)
+                        .replace(',', '.');  // Reemplazar coma por punto (decimal)
+                    matricBase = parseFloat(matricBaseText);
+                    if (isNaN(matricBase)) {
+                        matricBase = 0;
+                    }
+                }
+                
+                // Si tenemos un valor de matrícula base, calcular y mostrar el total
+                if (matricBase > 0) {
+                    // Establecer descuento en $0,00 (si no hay descuento aplicado)
+                    if (valorDescuento && !tieneDescuentoAplicado) {
                         valorDescuento.textContent = '$0,00';
                     }
                     
-                    // Establecer total igual a matrícula
-                    if (valorTotal && matricBase > 0) {
-                        const valorFormateado = matricBase.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    // Establecer total igual a matrícula base (menos descuento si hay)
+                    if (valorTotal) {
+                        const total = matricBase - descuentoValor;
+                        const valorFormateado = total.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
                         valorTotal.textContent = '$' + valorFormateado;
-                    } else if (valorTotal) {
-                        valorTotal.textContent = 'n/d';
                     }
                 } else {
-                    // Si el formulario no está validado, mantener "n/d"
-                    if (valorDescuento) {
+                    // Si no hay valor de matrícula, mantener "n/d"
+                    if (valorDescuento && !tieneDescuentoAplicado) {
                         valorDescuento.textContent = 'n/d';
                     }
                     if (valorTotal) {
@@ -1792,12 +1984,53 @@
                     return;
                 }
                 
-                // Buscar el valor de matrícula base
-                const matricBaseEl = document.querySelector('#panel-' + cursadaId + ' .cursada-valores-renglon-1 strong');
-                if (!matricBaseEl) return;
+                // Buscar el valor de matrícula base (con impuestos) - este es el valor base para calcular el descuento
+                const cuotaInfo = document.getElementById('cuota-info-' + cursadaId);
+                const valorMatricula = document.getElementById('valor-matricula-' + cursadaId);
+                let matricBase = 0;
                 
-                const matricBaseText = matricBaseEl.textContent.replace(/[^0-9,]/g, '').replace(',', '.');
-                const matricBase = parseFloat(matricBaseText) || 0;
+                // Primero intentar obtener desde cuotaInfo
+                if (cuotaInfo) {
+                    const matricBaseAttr = cuotaInfo.getAttribute('data-matric-base');
+                    if (matricBaseAttr && matricBaseAttr !== '' && matricBaseAttr !== '0') {
+                        matricBase = parseFloat(matricBaseAttr);
+                        if (isNaN(matricBase)) {
+                            matricBase = 0;
+                        }
+                    }
+                }
+                
+                // Si no se encontró, intentar obtener del data attribute del valor de matrícula
+                if (matricBase === 0 && valorMatricula) {
+                    const valorNumerico = valorMatricula.getAttribute('data-valor-numerico');
+                    if (valorNumerico && valorNumerico !== '' && valorNumerico !== '0') {
+                        matricBase = parseFloat(valorNumerico);
+                        if (isNaN(matricBase)) {
+                            matricBase = 0;
+                        }
+                    }
+                }
+                
+                // Si aún no se encontró, intentar extraer del texto
+                if (matricBase === 0 && valorMatricula) {
+                    const valorMatriculaText = valorMatricula.textContent.trim();
+                    if (valorMatriculaText && valorMatriculaText !== 'n/d' && valorMatriculaText !== '' && valorMatriculaText.includes('$')) {
+                        const matricBaseText = valorMatriculaText
+                            .replace(/\$/g, '')
+                            .trim()
+                            .replace(/\./g, '')
+                            .replace(',', '.');
+                        matricBase = parseFloat(matricBaseText);
+                        if (isNaN(matricBase)) {
+                            matricBase = 0;
+                        }
+                    }
+                }
+                
+                if (matricBase === 0) {
+                    mostrarNotificacion('No se pudo obtener el valor de matrícula. Por favor, completá el formulario primero.', 'error');
+                    return;
+                }
                 
                 // Hacer la petición al servidor usando FormData para mejor compatibilidad con CSRF
                 const formData = new FormData();
