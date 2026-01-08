@@ -275,28 +275,31 @@
                         <span class="lista-carreras-title-text-3">¡Inscribite hoy!</span>
                         <span class="inscripcion-mobile-subtitle">Aplicá los filtros para descubrir la cursada ideal para vos</span>
                     </h2>
-                    <div class="inscripcion-mobile-divider">
-                        <div class="inscripcion-mobile-divider-left">
-                            <span class="inscripcion-mobile-ordenar">
-                                Ordenar por <span class="inscripcion-mobile-ordenar-destacado">Mayor descuento</span> <span class="inscripcion-mobile-ordenar-chevron">▼</span>
-                            </span>
-                        </div>
-                        <div class="inscripcion-mobile-divider-right">
-                            <span class="inscripcion-mobile-filtros-dropdown">
-                                Filtros (<span id="contador-filtros-mobile">0</span>) <span class="inscripcion-mobile-filtros-chevron">▼</span>
-                            </span>
-                        </div>
-                    </div>
-                    <!-- Chips de filtros aplicados en mobile -->
-                    <div id="filtros-aplicados-mobile" class="inscripcion-filtros-chips-mobile">
-                        <!-- Los chips se agregarán dinámicamente con JavaScript -->
-                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Inscripción Section -->
         <section class="inscripcion-section">
+            <!-- Contenedor sticky para divider y chips - debe estar en la misma sección que el listado -->
+            <div class="inscripcion-mobile-sticky-wrapper">
+                <div class="inscripcion-mobile-divider">
+                    <div class="inscripcion-mobile-divider-left">
+                        <span class="inscripcion-mobile-ordenar">
+                            Ordenar por <span class="inscripcion-mobile-ordenar-destacado">Mayor descuento</span> <span class="inscripcion-mobile-ordenar-chevron">▼</span>
+                        </span>
+                    </div>
+                    <div class="inscripcion-mobile-divider-right">
+                        <span class="inscripcion-mobile-filtros-dropdown">
+                            Filtros (<span id="contador-filtros-mobile">0</span>) <span class="inscripcion-mobile-filtros-chevron">▼</span>
+                        </span>
+                    </div>
+                </div>
+                <!-- Chips de filtros aplicados en mobile -->
+                <div id="filtros-aplicados-mobile" class="inscripcion-filtros-chips-mobile">
+                    <!-- Los chips se agregarán dinámicamente con JavaScript -->
+                </div>
+            </div>
             <div class="inscripcion-container">
                 <div class="inscripcion-content">
                     <!-- Línea horizontal superior: Aplicá los filtros, Borrar todo, Resultados, Chips -->

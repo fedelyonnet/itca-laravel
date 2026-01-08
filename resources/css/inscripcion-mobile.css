@@ -74,25 +74,66 @@
         margin-bottom: 0;
     }
     
+    /* Contenedor sticky para divider y chips en mobile - ahora en inscripcion-section */
+    .inscripcion-section .inscripcion-mobile-sticky-wrapper {
+        position: -webkit-sticky !important; /* Safari */
+        position: sticky !important;
+        /* Top: calcular dinámicamente con JavaScript */
+        top: 120px !important; /* Altura del header + sticky-bar en mobile - se ajustará con JS */
+        z-index: 998 !important; /* Debajo del header (z-index: 999) pero encima del contenido */
+        background-color: #010C42 !important; /* Color del menú (var(--menu-bg)) */
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important; /* Asegurar que sea block para que los hijos se apilen verticalmente */
+        overflow: visible !important; /* Asegurar que no corte el contenido */
+        min-height: auto !important; /* Permitir que la altura se ajuste al contenido */
+    }
+    
+    /* Asegurar que la sección no bloquee el sticky */
+    .inscripcion-page .inscripcion-section {
+        overflow: visible !important;
+    }
+    
     /* Divisor mobile solo visible en <599px */
     .inscripcion-mobile-divider {
         display: flex;
         flex-direction: row;
         align-items: stretch;
         justify-content: space-between;
-        width: 100vw;
+        width: 100%;
         min-height: auto;
         height: auto;
         padding: clamp(10px, 2.5vw, 15px) clamp(15px, 4vw, 20px);
-        margin-left: calc(-50vw + 50%);
+        margin-left: 0;
         border-top: 1px solid var(--text-white);
         border-bottom: 1px solid var(--text-white);
         margin-top: 1.5rem;
         margin-bottom: 0;
-        order: 999; /* Asegurar que esté al final */
+        order: 1;
         gap: 0;
         overflow: visible;
         position: relative;
+    }
+    
+    /* Ajustar divider cuando está dentro del wrapper sticky en inscripcion-section */
+    .inscripcion-section .inscripcion-mobile-sticky-wrapper .inscripcion-mobile-divider {
+        margin-top: 0 !important;
+        width: 100vw !important;
+        margin-left: calc(-50vw + 50%) !important;
+        margin-bottom: 0 !important;
+        position: static !important; /* Cambiar de relative a static para que no interfiera con el sticky */
+        display: flex !important; /* Asegurar que se muestre */
+        visibility: visible !important; /* Asegurar visibilidad */
+        opacity: 1 !important; /* Asegurar opacidad */
+        background-color: #010C42 !important; /* Color del menú (var(--menu-bg)) */
+        order: 1 !important; /* Asegurar que esté primero */
+        min-height: auto !important; /* Asegurar altura mínima */
+        height: auto !important; /* Asegurar altura automática */
+        padding: clamp(10px, 2.5vw, 15px) clamp(15px, 4vw, 20px) !important; /* Asegurar padding completo */
+        overflow: visible !important; /* Asegurar que no se corte */
+        border-top: 1px solid var(--text-white) !important; /* Asegurar borde superior */
+        border-bottom: 1px solid var(--text-white) !important; /* Asegurar borde inferior */
     }
     
     /* Contenedor izquierdo del divider */
@@ -100,6 +141,16 @@
         display: flex;
         align-items: center;
         flex: 0 0 auto;
+        min-height: 100%; /* Asegurar altura completa */
+    }
+    
+    /* Asegurar que los elementos del divider se vean correctamente cuando están en sticky wrapper */
+    .inscripcion-section .inscripcion-mobile-sticky-wrapper .inscripcion-mobile-divider-left,
+    .inscripcion-section .inscripcion-mobile-sticky-wrapper .inscripcion-mobile-divider-right {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        min-height: 100% !important;
     }
     
     /* Contenedor derecho del divider con línea vertical separadora */
@@ -111,6 +162,7 @@
         position: relative;
         padding-left: 1rem;
         align-self: stretch;
+        min-height: 100%; /* Asegurar altura completa */
     }
     
     /* Línea vertical separadora usando pseudo-elemento */
@@ -180,10 +232,6 @@
         margin-bottom: clamp(15px, 4vw, 25px); /* Restaurar espacio solo después del título */
     }
     
-    .inscripcion-page .inscripcion-mobile-divider {
-        order: 2;
-    }
-    
     /* Contenedor de chips de filtros aplicados en mobile */
     .inscripcion-filtros-chips-mobile {
         display: flex;
@@ -192,14 +240,22 @@
         min-height: 30px;
         justify-content: flex-start;
         align-items: center;
-        width: 100vw;
+        width: 100%;
         padding: clamp(10px, 2.5vw, 15px) clamp(15px, 4vw, 20px);
         padding-top: clamp(8px, 2vw, 10px) !important; /* Igualar distancia con divider = distancia con primer item */
         padding-bottom: clamp(8px, 2vw, 10px); /* Misma distancia que padding-top para simetría */
-        margin-left: calc(-50vw + 50%);
-        order: 3;
+        margin-left: 0;
+        order: 2;
         margin-top: 0;
         margin-bottom: 0;
+    }
+    
+    /* Ajustar chips cuando están dentro del wrapper sticky en inscripcion-section */
+    .inscripcion-section .inscripcion-mobile-sticky-wrapper .inscripcion-filtros-chips-mobile {
+        width: 100vw !important;
+        margin-left: calc(-50vw + 50%) !important;
+        order: 2 !important; /* Asegurar que esté después del divider */
+        background-color: #010C42 !important; /* Color del menú (var(--menu-bg)) */
     }
     
     /* Tamaño de fuente de los chips en mobile: 12px en 430px, se achica hacia 320px */

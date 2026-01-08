@@ -2366,4 +2366,60 @@
                 });
             });
             } // Cierre de initializeForms()
+            
+            // Calcular dinámicamente el top del sticky wrapper en mobile
+            function calcularTopStickyWrapper() {
+                // Solo ejecutar en mobile
+                if (window.innerWidth > 599) return;
+                
+                const stickyWrapper = document.querySelector('.inscripcion-mobile-sticky-wrapper');
+                if (!stickyWrapper) return;
+                
+                // Calcular altura del header
+                const header = document.querySelector('.header');
+                let headerHeight = 0;
+                if (header) {
+                    const headerRect = header.getBoundingClientRect();
+                    headerHeight = headerRect.height;
+                }
+                
+                // Calcular altura del sticky-bar si existe y está visible
+                let stickyBarHeight = 0;
+                const stickyBar = document.querySelector('.sticky-bar');
+                if (stickyBar && stickyBar.offsetParent !== null) {
+                    // El sticky-bar está visible
+                    const stickyBarRect = stickyBar.getBoundingClientRect();
+                    stickyBarHeight = stickyBarRect.height;
+                }
+                
+                // Calcular el top total
+                const topTotal = headerHeight + stickyBarHeight;
+                
+                // Aplicar el top al sticky wrapper
+                stickyWrapper.style.top = topTotal + 'px';
+            }
+            
+            // Ejecutar al cargar y al redimensionar
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', calcularTopStickyWrapper);
+            } else {
+                calcularTopStickyWrapper();
+            }
+            
+            // Recalcular al redimensionar la ventana
+            let resizeTimeout;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(calcularTopStickyWrapper, 100);
+            });
+            
+            // Recalcular cuando cambia la visibilidad del sticky-bar (si se agrega/elimina dinámicamente)
+            const observer = new MutationObserver(function(mutations) {
+                calcularTopStickyWrapper();
+            });
+            
+            const stickyBar = document.querySelector('.sticky-bar');
+            if (stickyBar) {
+                observer.observe(stickyBar, { attributes: true, attributeFilter: ['style', 'class'] });
+            }
         })(); // IIFE - se ejecuta inmediatamente
