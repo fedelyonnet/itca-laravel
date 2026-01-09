@@ -682,7 +682,7 @@
                                                                 <div class="cursada-formulario-campo cursada-formulario-campo-telefono">
                                                                     <div class="cursada-telefono-wrapper">
                                                                         <div class="cursada-telefono-prefijo-container">
-                                                                            <select name="telefono_prefijo" id="telefono-prefijo-{{ $cursadaId }}" class="cursada-telefono-prefijo" tabindex="5">
+                                                                            <select name="telefono_prefijo" id="telefono-prefijo-{{ $cursadaId }}" class="cursada-telefono-prefijo" tabindex="-1">
                                                                                 <option value="+54" selected>+54</option>
                                                                                 <option value="+1">+1</option>
                                                                                 <option value="+52">+52</option>
@@ -760,7 +760,7 @@
                                                                             </select>
                                                                             <span class="cursada-telefono-chevron">▼</span>
                                                                         </div>
-                                                                        <input type="tel" name="telefono" id="telefono-{{ $cursadaId }}" placeholder="Teléfono *" class="cursada-formulario-input cursada-telefono-input" maxlength="14" pattern="[0-9]{8,14}" inputmode="numeric" tabindex="6">
+                                                                        <input type="tel" name="telefono" id="telefono-{{ $cursadaId }}" placeholder="Teléfono *" class="cursada-formulario-input cursada-telefono-input" maxlength="14" pattern="[0-9]{8,14}" inputmode="numeric" tabindex="5">
                                                                     </div>
                                                                     <span class="cursada-formulario-error" id="error-telefono-{{ $cursadaId }}"></span>
                                                                 </div>
@@ -776,7 +776,7 @@
                                                                 </div>
                                                                 <div class="cursada-formulario-boton-continuar-container">
                                                                     <img src="/images/mobile/arrow-insc.png" alt="Arrow" class="cursada-arrow-insc">
-                                                                    <button type="button" class="cursada-btn-continuar" data-cursada-id="{{ $cursadaId }}">Continuar</button>
+                                                                    <button type="button" class="cursada-btn-continuar" data-cursada-id="{{ $cursadaId }}" tabindex="6">Continuar</button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -823,7 +823,7 @@
                                                         <div class="cursada-codigo-descuento-wrapper">
                                                             <a href="#" class="cursada-link-codigo-descuento cursada-link-disabled" data-cursada-id="{{ $cursadaId }}" id="link-codigo-{{ $cursadaId }}">¡Tengo Código de descuento!</a>
                                                             <div class="cursada-codigo-descuento-input-container" id="codigo-input-{{ $cursadaId }}">
-                                                                <input type="text" class="cursada-codigo-descuento-input" placeholder="Ingresá tu código" data-cursada-id="{{ $cursadaId }}" id="codigo-input-field-{{ $cursadaId }}">
+                                                                <input type="text" name="codigo_descuento" class="cursada-codigo-descuento-input" placeholder="Ingresá tu código" data-cursada-id="{{ $cursadaId }}" id="codigo-input-field-{{ $cursadaId }}">
                                                                 <button type="button" class="cursada-codigo-descuento-btn" data-cursada-id="{{ $cursadaId }}">Aplicar</button>
                                                             </div>
                                                         </div>

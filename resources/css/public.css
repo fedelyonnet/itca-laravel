@@ -15574,6 +15574,8 @@ body.inscripcion-page {
     cursor: pointer;
     height: 0;
     width: 0;
+    pointer-events: auto !important;
+    z-index: 1;
 }
 
 .cursada-checkbox-terminos-label {
@@ -15583,6 +15585,9 @@ body.inscripcion-page {
     cursor: pointer;
     user-select: none;
     transition: opacity 0.2s;
+    pointer-events: auto !important;
+    position: relative;
+    z-index: 2;
 }
 
 .cursada-checkbox-terminos-label.cursada-checkbox-disabled {
@@ -15612,6 +15617,7 @@ body.inscripcion-page {
     justify-content: center;
     transition: background-color 0.2s ease, border-color 0.2s ease;
     flex-shrink: 0;
+    position: relative;
 }
 
 .cursada-checkbox-terminos-input:checked + .cursada-checkbox-terminos-label .cursada-checkbox-terminos-custom {

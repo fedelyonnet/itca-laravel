@@ -93,10 +93,25 @@
             function cargarDatosFormulario(cursadaId, intentos = 0) {
                 try {
                     const datosGuardados = localStorage.getItem(STORAGE_KEY);
-                    if (!datosGuardados) return;
+                    if (!datosGuardados) {
+                        return;
+                    }
                     
                     const datos = JSON.parse(datosGuardados);
-                    const formulario = document.getElementById('formulario-' + cursadaId);
+                    
+                    // Buscar formulario, primero en el modal si está abierto, luego en el DOM normal
+                    const modalOverlay = document.getElementById('cursada-modal-overlay');
+                    const modalBody = document.getElementById('cursada-modal-body');
+                    const isInModal = modalOverlay && modalOverlay.classList.contains('cursada-modal-open') && modalBody;
+                    
+                    let formulario = null;
+                    if (isInModal) {
+                        formulario = modalBody.querySelector('#formulario-' + cursadaId) || modalBody.querySelector('form.cursada-formulario');
+                    }
+                    if (!formulario) {
+                        formulario = document.getElementById('formulario-' + cursadaId);
+                    }
+                    
                     if (!formulario) {
                         // Si el formulario no existe aún, intentar de nuevo (máximo 5 intentos)
                         if (intentos < 5) {
@@ -111,33 +126,50 @@
                     const inputs = formulario.querySelectorAll('input, select');
                     // No verificar si está disabled, solo cargar los datos
                     
-                    const nombre = formulario.querySelector('#nombre-' + cursadaId);
-                    const apellido = formulario.querySelector('#apellido-' + cursadaId);
-                    const dni = formulario.querySelector('#dni-' + cursadaId);
-                    const correo = formulario.querySelector('#correo-' + cursadaId);
-                    const telefono = formulario.querySelector('#telefono-' + cursadaId);
-                    const telefonoPrefijo = formulario.querySelector('#telefono-prefijo-' + cursadaId);
+                    // Buscar inputs por name primero (más confiable cuando se clona), luego por ID como fallback
+                    let nombre = formulario.querySelector('input[name="nombre"]');
+                    let apellido = formulario.querySelector('input[name="apellido"]');
+                    let dni = formulario.querySelector('input[name="dni"]');
+                    let correo = formulario.querySelector('input[name="correo"]');
+                    let telefono = formulario.querySelector('input[name="telefono"]');
+                    let telefonoPrefijo = formulario.querySelector('select[name="telefono_prefijo"]');
+                    
+                    // Si no se encuentran por name, intentar por ID (para compatibilidad)
+                    if (!nombre) nombre = formulario.querySelector('#nombre-' + cursadaId);
+                    if (!apellido) apellido = formulario.querySelector('#apellido-' + cursadaId);
+                    if (!dni) dni = formulario.querySelector('#dni-' + cursadaId);
+                    if (!correo) correo = formulario.querySelector('#correo-' + cursadaId);
+                    if (!telefono) telefono = formulario.querySelector('#telefono-' + cursadaId);
+                    if (!telefonoPrefijo) telefonoPrefijo = formulario.querySelector('#telefono-prefijo-' + cursadaId);
                     
                     // Cargar los datos guardados en los campos (siempre, incluso si ya tienen valor)
                     // Esto asegura que los datos se repliquen en todos los formularios
+                    let datosCargados = false;
                     if (nombre && datos.nombre) {
                         nombre.value = datos.nombre;
+                        datosCargados = true;
                     }
                     if (apellido && datos.apellido) {
                         apellido.value = datos.apellido;
+                        datosCargados = true;
                     }
                     if (dni && datos.dni) {
                         dni.value = datos.dni;
+                        datosCargados = true;
                     }
                     if (correo && datos.correo) {
                         correo.value = datos.correo;
+                        datosCargados = true;
                     }
                     if (telefono && datos.telefono) {
                         telefono.value = datos.telefono;
+                        datosCargados = true;
                     }
                     if (telefonoPrefijo && datos.telefonoPrefijo) {
                         telefonoPrefijo.value = datos.telefonoPrefijo;
+                        datosCargados = true;
                     }
+                    
                     
                     // Actualizar el estado del botón después de cargar
                     // Pero solo si el formulario no está completado (no está readonly)
@@ -149,6 +181,50 @@
                         }
                     }
                 } catch (error) {
+                }
+            }
+            
+            // Función para guardar datos del formulario en localStorage (definida temprano para que esté disponible en el modal)
+            function guardarDatosFormulario(cursadaId) {
+                try {
+                    // Buscar formulario, primero en el modal si está abierto, luego en el DOM normal
+                    const modalOverlay = document.getElementById('cursada-modal-overlay');
+                    const modalBody = document.getElementById('cursada-modal-body');
+                    const isInModal = modalOverlay && modalOverlay.classList.contains('cursada-modal-open') && modalBody;
+                    
+                    let formulario = null;
+                    if (isInModal) {
+                        formulario = modalBody.querySelector('#formulario-' + cursadaId) || modalBody.querySelector('form.cursada-formulario');
+                    }
+                    if (!formulario) {
+                        formulario = document.getElementById('formulario-' + cursadaId);
+                    }
+                    
+                    if (!formulario) {
+                        return;
+                    }
+                    
+                    // Buscar inputs por name para evitar problemas con IDs duplicados
+                    const nombre = formulario.querySelector('input[name="nombre"]');
+                    const apellido = formulario.querySelector('input[name="apellido"]');
+                    const dni = formulario.querySelector('input[name="dni"]');
+                    const correo = formulario.querySelector('input[name="correo"]');
+                    const telefono = formulario.querySelector('input[name="telefono"]');
+                    const telefonoPrefijo = formulario.querySelector('select[name="telefono_prefijo"]');
+                    
+                    const datos = {
+                        nombre: nombre?.value?.trim() || '',
+                        apellido: apellido?.value?.trim() || '',
+                        dni: dni?.value?.trim() || '',
+                        correo: correo?.value?.trim() || '',
+                        telefono: telefono?.value?.trim() || '',
+                        telefonoPrefijo: telefonoPrefijo?.value || '+54'
+                    };
+                    
+                    // Guardar los datos en localStorage
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
+                } catch (error) {
+                    console.error('guardarDatosFormulario: Error', error);
                 }
             }
             
@@ -189,17 +265,17 @@
                 let linkVer = null;
                 
                 if (isInModal) {
-                    linkCodigo = modalBody.querySelector('#link-codigo-' + formCursadaId);
-                    checkboxTerminos = modalBody.querySelector('#acepto-terminos-' + formCursadaId);
-                    labelCheckbox = modalBody.querySelector('label[for="acepto-terminos-' + formCursadaId + '"]');
-                    linkVer = modalBody.querySelector('#link-ver-' + formCursadaId);
+                    linkCodigo = modalBody.querySelector('#link-codigo-modal-' + formCursadaId) || modalBody.querySelector('#link-codigo-' + formCursadaId);
+                    checkboxTerminos = modalBody.querySelector('#acepto-terminos-modal-' + formCursadaId) || modalBody.querySelector('#acepto-terminos-' + formCursadaId);
+                    labelCheckbox = modalBody.querySelector('label[for="acepto-terminos-modal-' + formCursadaId + '"]') || modalBody.querySelector('label[for="acepto-terminos-' + formCursadaId + '"]');
+                    linkVer = modalBody.querySelector('#link-ver-modal-' + formCursadaId) || modalBody.querySelector('#link-ver-' + formCursadaId);
                 }
                 
                 // Si no se encontraron en el modal, buscar en el DOM normal
-                if (!linkCodigo) linkCodigo = document.getElementById('link-codigo-' + formCursadaId);
-                if (!checkboxTerminos) checkboxTerminos = document.getElementById('acepto-terminos-' + formCursadaId);
-                if (!labelCheckbox) labelCheckbox = document.querySelector('label[for="acepto-terminos-' + formCursadaId + '"]');
-                if (!linkVer) linkVer = document.getElementById('link-ver-' + formCursadaId);
+                if (!linkCodigo) linkCodigo = document.getElementById('link-codigo-modal-' + formCursadaId) || document.getElementById('link-codigo-' + formCursadaId);
+                if (!checkboxTerminos) checkboxTerminos = document.getElementById('acepto-terminos-modal-' + formCursadaId) || document.getElementById('acepto-terminos-' + formCursadaId);
+                if (!labelCheckbox) labelCheckbox = document.querySelector('label[for="acepto-terminos-modal-' + formCursadaId + '"]') || document.querySelector('label[for="acepto-terminos-' + formCursadaId + '"]');
+                if (!linkVer) linkVer = document.getElementById('link-ver-modal-' + formCursadaId) || document.getElementById('link-ver-' + formCursadaId);
                 
                 // Habilitar elementos que estaban deshabilitados
                 if (linkCodigo) {
@@ -338,18 +414,32 @@
                     }
                     
                     // Si el formulario está completo, restaurar el estado
-                    const formularios = document.querySelectorAll('.cursada-formulario');
-                    if (formularios.length === 0) {
+                    // Buscar formularios en DOM normal y también en modal
+                    const modalBody = document.getElementById('cursada-modal-body');
+                    const todosLosFormularios = [];
+                    
+                    // Agregar formularios del DOM normal
+                    document.querySelectorAll('.cursada-formulario').forEach(form => {
+                        todosLosFormularios.push(form);
+                    });
+                    
+                    // Agregar formularios del modal si existe
+                    if (modalBody) {
+                        modalBody.querySelectorAll('.cursada-formulario').forEach(form => {
+                            if (!todosLosFormularios.includes(form)) {
+                                todosLosFormularios.push(form);
+                            }
+                        });
+                    }
+                    
+                    if (todosLosFormularios.length === 0) {
                         return false;
                     }
                     
-                    formularios.forEach(formulario => {
+                    todosLosFormularios.forEach(formulario => {
                         const formularioId = formulario.getAttribute('id');
                         if (formularioId) {
                             const cursadaId = formularioId.replace('formulario-', '');
-                            
-                            // Cargar datos primero (necesitamos que cargarDatosFormulario esté definida)
-                            // Esto se hará después de que se definan las funciones
                             
                             // Desactivar todos los formularios
                             const inputs = formulario.querySelectorAll('input, select');
@@ -361,8 +451,18 @@
                                 input.style.cursor = 'not-allowed';
                             });
                             
-                            // Desactivar todos los botones continuar
-                            const botonesContinuar = document.querySelectorAll('.cursada-btn-continuar[data-cursada-id="' + cursadaId + '"]');
+                            // Desactivar todos los botones continuar (buscar en modal y DOM normal)
+                            let botonesContinuar = [];
+                            if (modalBody) {
+                                modalBody.querySelectorAll('.cursada-btn-continuar[data-cursada-id="' + cursadaId + '"]').forEach(b => botonesContinuar.push(b));
+                                modalBody.querySelectorAll('.cursada-btn-continuar').forEach(b => {
+                                    if (!botonesContinuar.includes(b)) botonesContinuar.push(b);
+                                });
+                            }
+                            document.querySelectorAll('.cursada-btn-continuar[data-cursada-id="' + cursadaId + '"]').forEach(b => {
+                                if (!botonesContinuar.includes(b)) botonesContinuar.push(b);
+                            });
+                            
                             botonesContinuar.forEach(botonContinuar => {
                                 botonContinuar.classList.remove('activo');
                                 botonContinuar.disabled = true;
@@ -373,7 +473,7 @@
                     });
                     
                     // Cargar datos y mostrar valores inmediatamente (las funciones ya están definidas)
-                    formularios.forEach(formulario => {
+                    todosLosFormularios.forEach(formulario => {
                         const formularioId = formulario.getAttribute('id');
                         if (formularioId) {
                             const cursadaId = formularioId.replace('formulario-', '');
@@ -582,6 +682,20 @@
                                 modalOverlay.classList.remove('cursada-modal-open');
                                 document.body.style.overflow = '';
                             }
+                            
+                            // Restaurar tabindex de elementos del fondo
+                            const todosLosElementos = document.querySelectorAll('[data-original-tabindex]');
+                            todosLosElementos.forEach(el => {
+                                if (el.dataset.originalTabindex !== undefined) {
+                                    if (el.dataset.originalTabindex === 'null') {
+                                        el.removeAttribute('tabindex');
+                                    } else {
+                                        el.setAttribute('tabindex', el.dataset.originalTabindex);
+                                    }
+                                    delete el.dataset.originalTabindex;
+                                }
+                            });
+                            
                             // Limpiar contenido
                             if (modalHeader) modalHeader.innerHTML = '';
                             if (modalBody) modalBody.innerHTML = '';
@@ -643,6 +757,72 @@
                             if (panelContent) {
                                 modalBody.innerHTML = '';
                                 const contentClone = panelContent.cloneNode(true);
+                                
+                                // Actualizar IDs ANTES de agregar al DOM para evitar duplicados
+                                const tempFormularioClone = contentClone.querySelector('form.cursada-formulario');
+                                if (tempFormularioClone) {
+                                    tempFormularioClone.id = 'formulario-' + cursadaId;
+                                    
+                                    // Actualizar IDs de inputs
+                                    const nombreInputClone = tempFormularioClone.querySelector('input[name="nombre"]');
+                                    const apellidoInputClone = tempFormularioClone.querySelector('input[name="apellido"]');
+                                    const dniInputClone = tempFormularioClone.querySelector('input[name="dni"]');
+                                    const correoInputClone = tempFormularioClone.querySelector('input[name="correo"]');
+                                    const telefonoInputClone = tempFormularioClone.querySelector('input[name="telefono"]');
+                                    const telefonoPrefijoInputClone = tempFormularioClone.querySelector('select[name="telefono_prefijo"]');
+                                    
+                                    if (nombreInputClone) nombreInputClone.id = 'nombre-' + cursadaId;
+                                    if (apellidoInputClone) apellidoInputClone.id = 'apellido-' + cursadaId;
+                                    if (dniInputClone) dniInputClone.id = 'dni-' + cursadaId;
+                                    if (correoInputClone) correoInputClone.id = 'correo-' + cursadaId;
+                                    if (telefonoInputClone) telefonoInputClone.id = 'telefono-' + cursadaId;
+                                    if (telefonoPrefijoInputClone) telefonoPrefijoInputClone.id = 'telefono-prefijo-' + cursadaId;
+                                    
+                                    // Actualizar IDs de errores
+                                    const errorNombreClone = tempFormularioClone.querySelector('span[id^="error-nombre-"]');
+                                    const errorApellidoClone = tempFormularioClone.querySelector('span[id^="error-apellido-"]');
+                                    const errorDniClone = tempFormularioClone.querySelector('span[id^="error-dni-"]');
+                                    const errorCorreoClone = tempFormularioClone.querySelector('span[id^="error-correo-"]');
+                                    const errorTelefonoClone = tempFormularioClone.querySelector('span[id^="error-telefono-"]');
+                                    
+                                    if (errorNombreClone) errorNombreClone.id = 'error-nombre-' + cursadaId;
+                                    if (errorApellidoClone) errorApellidoClone.id = 'error-apellido-' + cursadaId;
+                                    if (errorDniClone) errorDniClone.id = 'error-dni-' + cursadaId;
+                                    if (errorCorreoClone) errorCorreoClone.id = 'error-correo-' + cursadaId;
+                                    if (errorTelefonoClone) errorTelefonoClone.id = 'error-telefono-' + cursadaId;
+                                }
+                                
+                                // Actualizar IDs de elementos fuera del formulario
+                                const codigoInputFieldClone = contentClone.querySelector('#codigo-input-field-' + cursadaId);
+                                if (codigoInputFieldClone) {
+                                    codigoInputFieldClone.id = 'codigo-input-field-modal-' + cursadaId;
+                                }
+                                
+                                const codigoInputContainerClone = contentClone.querySelector('#codigo-input-' + cursadaId);
+                                if (codigoInputContainerClone) {
+                                    codigoInputContainerClone.id = 'codigo-input-modal-' + cursadaId;
+                                }
+                                
+                                const linkCodigoClone = contentClone.querySelector('#link-codigo-' + cursadaId);
+                                if (linkCodigoClone) {
+                                    linkCodigoClone.id = 'link-codigo-modal-' + cursadaId;
+                                }
+                                
+                                const linkVerClone = contentClone.querySelector('#link-ver-' + cursadaId);
+                                if (linkVerClone) {
+                                    linkVerClone.id = 'link-ver-modal-' + cursadaId;
+                                }
+                                
+                                const checkboxTerminosClone = contentClone.querySelector('#acepto-terminos-' + cursadaId);
+                                if (checkboxTerminosClone) {
+                                    checkboxTerminosClone.id = 'acepto-terminos-modal-' + cursadaId;
+                                    checkboxTerminosClone.setAttribute('name', 'acepto-terminos-' + cursadaId);
+                                    const labelCheckboxClone = contentClone.querySelector('label[for^="acepto-terminos-"]');
+                                    if (labelCheckboxClone) {
+                                        labelCheckboxClone.setAttribute('for', 'acepto-terminos-modal-' + cursadaId);
+                                    }
+                                }
+                                
                                 modalBody.appendChild(contentClone);
                                 
                                 // Inicializar el formulario dentro del modal replicando exactamente la lógica de desktop
@@ -651,7 +831,12 @@
                                     if (!tempFormulario) return;
                                     
                                     // Asegurar que tenga el ID correcto (siempre actualizar, incluso si ya tiene uno)
-                                        tempFormulario.id = 'formulario-' + cursadaId;
+                                    tempFormulario.id = 'formulario-' + cursadaId;
+                                    
+                                    // Cargar datos guardados ANTES de actualizar IDs (usa name, así que funciona)
+                                    if (typeof cargarDatosFormulario === 'function') {
+                                        cargarDatosFormulario(cursadaId);
+                                    }
                                     
                                     // Funciones helper locales (definidas antes de usarlas)
                                     const mostrarErrorLocal = (input, errorElement, mensaje) => {
@@ -722,7 +907,7 @@
                                         }
                                     };
                                     
-                                    // Actualizar todos los IDs de los inputs y elementos de error para evitar duplicados
+                                    // Los IDs ya fueron actualizados antes de agregar al DOM, solo verificar
                                     const nombreInput = tempFormulario.querySelector('input[name="nombre"]');
                                     const apellidoInput = tempFormulario.querySelector('input[name="apellido"]');
                                     const dniInput = tempFormulario.querySelector('input[name="dni"]');
@@ -730,32 +915,27 @@
                                     const telefonoInput = tempFormulario.querySelector('input[name="telefono"]');
                                     const telefonoPrefijoInput = tempFormulario.querySelector('select[name="telefono_prefijo"]');
                                     
-                                    if (nombreInput) nombreInput.id = 'nombre-' + cursadaId;
-                                    if (apellidoInput) apellidoInput.id = 'apellido-' + cursadaId;
-                                    if (dniInput) dniInput.id = 'dni-' + cursadaId;
-                                    if (correoInput) correoInput.id = 'correo-' + cursadaId;
-                                    if (telefonoInput) telefonoInput.id = 'telefono-' + cursadaId;
-                                    if (telefonoPrefijoInput) telefonoPrefijoInput.id = 'telefono-prefijo-' + cursadaId;
+                                    // Asegurar que los IDs estén correctos (por si acaso)
+                                    if (nombreInput && !nombreInput.id) nombreInput.id = 'nombre-' + cursadaId;
+                                    if (apellidoInput && !apellidoInput.id) apellidoInput.id = 'apellido-' + cursadaId;
+                                    if (dniInput && !dniInput.id) dniInput.id = 'dni-' + cursadaId;
+                                    if (correoInput && !correoInput.id) correoInput.id = 'correo-' + cursadaId;
+                                    if (telefonoInput && !telefonoInput.id) telefonoInput.id = 'telefono-' + cursadaId;
+                                    if (telefonoPrefijoInput && !telefonoPrefijoInput.id) telefonoPrefijoInput.id = 'telefono-prefijo-' + cursadaId;
                                     
-                                    // Actualizar IDs de elementos de error
-                                    const errorNombre = tempFormulario.querySelector('span[id^="error-nombre-"]') || modalBody.querySelector('span[id^="error-nombre-"]');
-                                    const errorApellido = tempFormulario.querySelector('span[id^="error-apellido-"]') || modalBody.querySelector('span[id^="error-apellido-"]');
-                                    const errorDni = tempFormulario.querySelector('span[id^="error-dni-"]') || modalBody.querySelector('span[id^="error-dni-"]');
-                                    const errorCorreo = tempFormulario.querySelector('span[id^="error-correo-"]') || modalBody.querySelector('span[id^="error-correo-"]');
-                                    const errorTelefono = tempFormulario.querySelector('span[id^="error-telefono-"]') || modalBody.querySelector('span[id^="error-telefono-"]');
+                                    // Cargar datos DESPUÉS de actualizar IDs (para asegurar que los IDs estén correctos)
+                                    // Usar un pequeño delay para asegurar que el DOM esté completamente actualizado
+                                    setTimeout(() => {
+                                        if (typeof cargarDatosFormulario === 'function') {
+                                            cargarDatosFormulario(cursadaId);
+                                        }
+                                        
+                                        // Verificar y restaurar estado de readonly si el formulario ya fue completado
+                                        if (typeof verificarYRestaurarEstadoCompletado === 'function') {
+                                            verificarYRestaurarEstadoCompletado();
+                                        }
+                                    }, 50);
                                     
-                                    if (errorNombre) errorNombre.id = 'error-nombre-' + cursadaId;
-                                    if (errorApellido) errorApellido.id = 'error-apellido-' + cursadaId;
-                                    if (errorDni) errorDni.id = 'error-dni-' + cursadaId;
-                                    if (errorCorreo) errorCorreo.id = 'error-correo-' + cursadaId;
-                                    if (errorTelefono) errorTelefono.id = 'error-telefono-' + cursadaId;
-                                    
-                                    console.log('Modal form initialized:', {
-                                        cursadaId,
-                                        formularioId: tempFormulario.id,
-                                        nombreId: nombreInput?.id,
-                                        botonContinuar: modalBody.querySelector('.cursada-btn-continuar')?.getAttribute('data-cursada-id')
-                                    });
                                     
                                     // Obtener elementos del formulario (buscando dentro del formulario del modal para evitar IDs duplicados)
                                     const nombre = nombreInput;
@@ -764,6 +944,12 @@
                                     const correo = correoInput;
                                     const telefono = telefonoInput;
                                     
+                                    // Obtener elementos de error
+                                    const errorNombre = tempFormulario.querySelector('#error-nombre-' + cursadaId) || modalBody.querySelector('#error-nombre-' + cursadaId);
+                                    const errorApellido = tempFormulario.querySelector('#error-apellido-' + cursadaId) || modalBody.querySelector('#error-apellido-' + cursadaId);
+                                    const errorDni = tempFormulario.querySelector('#error-dni-' + cursadaId) || modalBody.querySelector('#error-dni-' + cursadaId);
+                                    const errorCorreo = tempFormulario.querySelector('#error-correo-' + cursadaId) || modalBody.querySelector('#error-correo-' + cursadaId);
+                                    const errorTelefono = tempFormulario.querySelector('#error-telefono-' + cursadaId) || modalBody.querySelector('#error-telefono-' + cursadaId);
                                     
                                     // Función genérica para validar campo de texto (igual que desktop)
                                     function setupCampoTexto(input, errorElement, mensaje) {
@@ -897,39 +1083,78 @@
                                         }
                                     }
                                     
-                                    if (correo && typeof validarCorreo === 'function') {
-                                        correo.addEventListener('blur', function() {
-                                            if (!validarCorreo(this)) {
-                                                mostrarErrorLocal(this, errorCorreo, this.value.trim() ? 'Por favor ingrese un correo electrónico válido' : 'Este campo es obligatorio');
-                                            } else {
-                                                ocultarErrorLocal(this, errorCorreo);
-                                            }
-                                            // Actualizar botón usando función local
-                                            if (typeof actualizarBotonLocal === 'function') {
-                                                actualizarBotonLocal();
-                                            }
-                                            // También intentar función global
-                                            setTimeout(() => {
-                                                if (typeof actualizarEstadoBotonContinuar === 'function') {
-                                                    actualizarEstadoBotonContinuar(cursadaId);
+                                    if (correo && errorCorreo) {
+                                        if (typeof validarCorreo === 'function') {
+                                            correo.addEventListener('blur', function() {
+                                                if (!validarCorreo(this)) {
+                                                    mostrarErrorLocal(this, errorCorreo, this.value.trim() ? 'Por favor ingrese un correo electrónico válido' : 'Este campo es obligatorio');
+                                                } else {
+                                                    ocultarErrorLocal(this, errorCorreo);
                                                 }
-                                            }, 0);
-                                        });
-                                        correo.addEventListener('input', function() {
-                                            if (validarCorreo(this)) {
-                                                ocultarErrorLocal(this, errorCorreo);
-                                            }
-                                            // Actualizar botón usando función local
-                                            if (typeof actualizarBotonLocal === 'function') {
-                                                actualizarBotonLocal();
-                                            }
-                                            // También intentar función global
-                                            setTimeout(() => {
-                                                if (typeof actualizarEstadoBotonContinuar === 'function') {
-                                                    actualizarEstadoBotonContinuar(cursadaId);
+                                                // Actualizar botón usando función local
+                                                if (typeof actualizarBotonLocal === 'function') {
+                                                    actualizarBotonLocal();
                                                 }
-                                            }, 0);
-                                        });
+                                                // También intentar función global
+                                                setTimeout(() => {
+                                                    if (typeof actualizarEstadoBotonContinuar === 'function') {
+                                                        actualizarEstadoBotonContinuar(cursadaId);
+                                                    }
+                                                }, 0);
+                                            });
+                                            correo.addEventListener('input', function() {
+                                                if (validarCorreo(this)) {
+                                                    ocultarErrorLocal(this, errorCorreo);
+                                                }
+                                                // Actualizar botón usando función local
+                                                if (typeof actualizarBotonLocal === 'function') {
+                                                    actualizarBotonLocal();
+                                                }
+                                                // También intentar función global
+                                                setTimeout(() => {
+                                                    if (typeof actualizarEstadoBotonContinuar === 'function') {
+                                                        actualizarEstadoBotonContinuar(cursadaId);
+                                                    }
+                                                }, 0);
+                                            });
+                                        } else {
+                                            // Si validarCorreo no está disponible, usar validación inline
+                                            correo.addEventListener('blur', function() {
+                                                const valor = this.value.trim();
+                                                const esValido = valor && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor);
+                                                if (!esValido) {
+                                                    mostrarErrorLocal(this, errorCorreo, valor ? 'Por favor ingrese un correo electrónico válido' : 'Este campo es obligatorio');
+                                                } else {
+                                                    ocultarErrorLocal(this, errorCorreo);
+                                                }
+                                                // Actualizar botón usando función local
+                                                if (typeof actualizarBotonLocal === 'function') {
+                                                    actualizarBotonLocal();
+                                                }
+                                                // También intentar función global
+                                                setTimeout(() => {
+                                                    if (typeof actualizarEstadoBotonContinuar === 'function') {
+                                                        actualizarEstadoBotonContinuar(cursadaId);
+                                                    }
+                                                }, 0);
+                                            });
+                                            correo.addEventListener('input', function() {
+                                                const valor = this.value.trim();
+                                                if (valor && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor)) {
+                                                    ocultarErrorLocal(this, errorCorreo);
+                                                }
+                                                // Actualizar botón usando función local
+                                                if (typeof actualizarBotonLocal === 'function') {
+                                                    actualizarBotonLocal();
+                                                }
+                                                // También intentar función global
+                                                setTimeout(() => {
+                                                    if (typeof actualizarEstadoBotonContinuar === 'function') {
+                                                        actualizarEstadoBotonContinuar(cursadaId);
+                                                    }
+                                                }, 0);
+                                            });
+                                        }
                                     }
                                     
                                     // Validación de teléfono (igual que desktop)
@@ -956,15 +1181,15 @@
                                         telefono.addEventListener('blur', function() {
                                             normalizarYValidarTelefono();
                                             // Validar formato
-                                            if (typeof validarTelefono === 'function') {
-                                                const esValido = validarTelefono(telefono);
-                                                const errorTelefono = tempFormulario.querySelector('#error-telefono-' + cursadaId) || modalBody.querySelector('#error-telefono-' + cursadaId);
-                                                if (!esValido && errorTelefono) {
-                                                    mostrarErrorLocal(telefono, errorTelefono, 'El teléfono debe tener entre 8 y 14 dígitos');
-                                                } else if (esValido && errorTelefono) {
-                                                    ocultarErrorLocal(telefono, errorTelefono);
-                                                }
+                                            const valorTelefono = telefono.value.replace(/\D/g, '');
+                                            const esValido = valorTelefono && /^[0-9]{8,14}$/.test(valorTelefono);
+                                            
+                                            if (!esValido && errorTelefono) {
+                                                mostrarErrorLocal(telefono, errorTelefono, 'El teléfono debe tener entre 8 y 14 dígitos');
+                                            } else if (esValido && errorTelefono) {
+                                                ocultarErrorLocal(telefono, errorTelefono);
                                             }
+                                            
                                             // Actualizar botón usando función local si está disponible
                                             if (typeof actualizarBotonLocal === 'function') {
                                                 actualizarBotonLocal();
@@ -990,12 +1215,6 @@
                                         botonContinuar.style.opacity = '0.6';
                                         botonContinuar.style.cursor = 'not-allowed';
                                         
-                                        console.log('Botón continuar configurado:', {
-                                            cursadaId,
-                                            dataCursadaId: botonContinuar.getAttribute('data-cursada-id'),
-                                            disabled: botonContinuar.disabled,
-                                            tieneActivo: botonContinuar.classList.contains('activo')
-                                        });
                                         
                                     // Actualizar estado inmediatamente después de configurar
                                     setTimeout(() => {
@@ -1080,26 +1299,103 @@
                                                     }
                                                 }
                                                 
-                                                return isJson ? response.json() : response.text();
+                                                // Siempre intentar parsear como JSON primero
+                                                const text = await response.text();
+                                                try {
+                                                    return JSON.parse(text);
+                                                } catch (e) {
+                                                    // Si no es JSON, devolver el texto
+                                                    console.warn('Modal: Respuesta no es JSON, devolviendo texto', text);
+                                                    return { success: false, message: text };
+                                                }
                                             })
                                             .then(data => {
-                                                if (data.success) {
+                                                // Si data es string, intentar parsearlo
+                                                if (typeof data === 'string') {
+                                                    try {
+                                                        data = JSON.parse(data);
+                                                    } catch (e) {
+                                                    }
+                                                }
+                                                
+                                                if (data && data.success) {
                                                     // Guardar los datos del formulario en localStorage
                                                     if (typeof guardarDatosFormulario === 'function') {
                                                         guardarDatosFormulario(cursadaIdBtn);
                                                     }
                                                     
-                                                    // Mostrar valores en el formulario
-                                                    // Llamar inmediatamente y también con delay para asegurar que se ejecute
-                                                    if (typeof mostrarValoresEnFormulario === 'function') {
-                                                        mostrarValoresEnFormulario(cursadaIdBtn);
+                                                    // Desactivar TODOS los formularios después de guardar exitosamente
+                                                    // Buscar en el DOM normal y también en el modal
+                                                    const modalBodyForReadonly = document.getElementById('cursada-modal-body');
+                                                    const todosLosFormulariosModal = [];
+                                                    
+                                                    // Agregar formularios del DOM normal
+                                                    document.querySelectorAll('.cursada-formulario').forEach(form => {
+                                                        todosLosFormulariosModal.push(form);
+                                                    });
+                                                    
+                                                    // Agregar formularios del modal si está abierto
+                                                    if (modalBodyForReadonly) {
+                                                        modalBodyForReadonly.querySelectorAll('.cursada-formulario').forEach(form => {
+                                                            if (!todosLosFormulariosModal.includes(form)) {
+                                                                todosLosFormulariosModal.push(form);
+                                                            }
+                                                        });
                                                     }
-                                                    // También intentar después de un pequeño delay
-                                                    setTimeout(() => {
-                                                        if (typeof mostrarValoresEnFormulario === 'function') {
-                                                            mostrarValoresEnFormulario(cursadaIdBtn);
+                                                    
+                                                    todosLosFormulariosModal.forEach(form => {
+                                                        const formId = form.getAttribute('id');
+                                                        if (formId) {
+                                                            const formCursadaId = formId.replace('formulario-', '');
+                                                            const formInputs = form.querySelectorAll('input, select');
+                                                            formInputs.forEach(input => {
+                                                                input.setAttribute('readonly', 'readonly');
+                                                                input.setAttribute('disabled', 'disabled');
+                                                                input.style.pointerEvents = 'none';
+                                                                input.style.opacity = '0.6';
+                                                                input.style.cursor = 'not-allowed';
+                                                            });
+                                                            
+                                                            // Desactivar todos los botones continuar (buscar en modal y DOM normal)
+                                                            let botonContinuarFormModal = null;
+                                                            if (modalBodyForReadonly) {
+                                                                botonContinuarFormModal = modalBodyForReadonly.querySelector('.cursada-btn-continuar[data-cursada-id="' + formCursadaId + '"]') || 
+                                                                                           modalBodyForReadonly.querySelector('.cursada-btn-continuar');
+                                                            }
+                                                            if (!botonContinuarFormModal) {
+                                                                botonContinuarFormModal = document.querySelector('.cursada-btn-continuar[data-cursada-id="' + formCursadaId + '"]');
+                                                            }
+                                                            if (botonContinuarFormModal) {
+                                                                botonContinuarFormModal.classList.remove('activo');
+                                                                botonContinuarFormModal.disabled = true;
+                                                                botonContinuarFormModal.style.opacity = '0.6';
+                                                                botonContinuarFormModal.style.cursor = 'not-allowed';
+                                                            }
                                                         }
-                                                    }, 100);
+                                                    });
+                                                    
+                                                    // Mostrar valores en TODOS los formularios
+                                                    todosLosFormulariosModal.forEach(form => {
+                                                        const formId = form.getAttribute('id');
+                                                        if (formId) {
+                                                            const formCursadaId = formId.replace('formulario-', '');
+                                                            if (typeof mostrarValoresEnFormulario === 'function') {
+                                                                mostrarValoresEnFormulario(formCursadaId);
+                                                            }
+                                                        }
+                                                    });
+                                                    
+                                                    // Cargar los datos en todos los formularios después de guardar
+                                                    setTimeout(() => {
+                                                        if (typeof cargarDatosEnTodosLosFormularios === 'function') {
+                                                            cargarDatosEnTodosLosFormularios();
+                                                        }
+                                                    }, 300);
+                                                    
+                                                    // Verificar y restaurar estado de readonly en todos los formularios
+                                                    if (typeof verificarYRestaurarEstadoCompletado === 'function') {
+                                                        verificarYRestaurarEstadoCompletado();
+                                                    }
                                                     
                                                     // Mostrar notificación de éxito
                                                     if (typeof mostrarNotificacion === 'function') {
@@ -1125,22 +1421,18 @@
                                                 cargarDatosFormulario(cursadaId);
                                             }
                                             // Actualizar estado inicial del botón después de cargar datos
-                                            // Usar múltiples intentos para asegurar que se actualice
                                             setTimeout(() => {
-                                            if (typeof actualizarEstadoBotonContinuar === 'function') {
-                                                    console.log('Llamando actualizarEstadoBotonContinuar (intento 1) con cursadaId:', cursadaId);
-                                                actualizarEstadoBotonContinuar(cursadaId);
+                                                if (typeof actualizarEstadoBotonContinuar === 'function') {
+                                                    actualizarEstadoBotonContinuar(cursadaId);
                                                 }
                                             }, 100);
-                                                setTimeout(() => {
-                                                    if (typeof actualizarEstadoBotonContinuar === 'function') {
-                                                    console.log('Llamando actualizarEstadoBotonContinuar (intento 2) con cursadaId:', cursadaId);
-                                                        actualizarEstadoBotonContinuar(cursadaId);
-                                                    }
+                                            setTimeout(() => {
+                                                if (typeof actualizarEstadoBotonContinuar === 'function') {
+                                                    actualizarEstadoBotonContinuar(cursadaId);
+                                                }
                                             }, 300);
                                             setTimeout(() => {
                                                 if (typeof actualizarEstadoBotonContinuar === 'function') {
-                                                    console.log('Llamando actualizarEstadoBotonContinuar (intento 3) con cursadaId:', cursadaId);
                                                     actualizarEstadoBotonContinuar(cursadaId);
                                                 }
                                             }, 500);
@@ -1155,9 +1447,48 @@
                                 }, 100);
                             }
                             
+                            // Deshabilitar elementos focusables del fondo (excluyendo el modal)
+                            const elementosFondo = document.querySelectorAll('body > *:not(.cursada-modal-overlay)');
+                            elementosFondo.forEach(el => {
+                                // Excluir el modal y sus elementos
+                                if (el.contains(modalOverlay) || modalOverlay.contains(el)) {
+                                    return;
+                                }
+                                // Solo procesar elementos que son focusables o contienen elementos focusables
+                                const focusables = el.querySelectorAll('a, button, input, textarea, select, [tabindex]:not([tabindex="-1"])');
+                                if (focusables.length > 0 || el.matches('a, button, input, textarea, select, [tabindex]:not([tabindex="-1"])')) {
+                                    const currentTabindex = el.getAttribute('tabindex');
+                                    el.dataset.originalTabindex = currentTabindex || 'null';
+                                    el.setAttribute('tabindex', '-1');
+                                }
+                            });
+                            
+                            // También deshabilitar elementos focusables dentro de los elementos del fondo
+                            elementosFondo.forEach(container => {
+                                if (container.contains(modalOverlay) || modalOverlay.contains(container)) {
+                                    return;
+                                }
+                                const focusablesInternos = container.querySelectorAll('a, button, input, textarea, select, [tabindex]:not([tabindex="-1"])');
+                                focusablesInternos.forEach(focusable => {
+                                    if (!modalOverlay.contains(focusable)) {
+                                        const currentTabindex = focusable.getAttribute('tabindex');
+                                        focusable.dataset.originalTabindex = currentTabindex || 'null';
+                                        focusable.setAttribute('tabindex', '-1');
+                                    }
+                                });
+                            });
+                            
                             // Mostrar el modal
                             modalOverlay.classList.add('cursada-modal-open');
                             document.body.style.overflow = 'hidden';
+                            
+                            // Establecer focus en el primer campo del formulario después de que se inicialice
+                            setTimeout(() => {
+                                const primerInput = modalBody.querySelector('input[name="nombre"]');
+                                if (primerInput) {
+                                    primerInput.focus();
+                                }
+                            }, 150);
                             
                             // Event listener para cerrar
                             if (modalClose) {
@@ -2349,11 +2680,11 @@
                     if (isInModal) {
                         const modalBody = document.getElementById('cursada-modal-body');
                         if (modalBody) {
-                            inputContainer = modalBody.querySelector('#codigo-input-' + cursadaId);
+                            inputContainer = modalBody.querySelector('#codigo-input-modal-' + cursadaId) || modalBody.querySelector('#codigo-input-' + cursadaId);
                         }
                     }
                     if (!inputContainer) {
-                        inputContainer = document.getElementById('codigo-input-' + cursadaId);
+                        inputContainer = document.getElementById('codigo-input-modal-' + cursadaId) || document.getElementById('codigo-input-' + cursadaId);
                     }
                     
                     if (inputContainer) {
@@ -2397,10 +2728,10 @@
                     // Buscar el link de código, primero en el modal si estamos ahí
                     let linkCodigo = null;
                     if (isInModal) {
-                        linkCodigo = modalBody.querySelector('#link-codigo-' + cursadaId);
+                        linkCodigo = modalBody.querySelector('#link-codigo-modal-' + cursadaId) || modalBody.querySelector('#link-codigo-' + cursadaId);
                     }
                     if (!linkCodigo) {
-                        linkCodigo = document.getElementById('link-codigo-' + cursadaId);
+                        linkCodigo = document.getElementById('link-codigo-modal-' + cursadaId) || document.getElementById('link-codigo-' + cursadaId);
                     }
                     
                     // Verificar si el link de código está deshabilitado
@@ -2426,45 +2757,35 @@
             document.addEventListener('change', function(e) {
                 if (e.target.classList.contains('cursada-checkbox-terminos-input')) {
                     const cursadaId = e.target.getAttribute('data-cursada-id');
-                    
-                    // Verificar si estamos dentro del modal
-                    const modalOverlay = document.getElementById('cursada-modal-overlay');
                     const modalBody = document.getElementById('cursada-modal-body');
-                    const isInModal = modalOverlay && modalOverlay.classList.contains('cursada-modal-open') && modalBody && modalBody.contains(e.target);
+                    const modalOpen = document.getElementById('cursada-modal-overlay')?.classList.contains('cursada-modal-open');
                     
-                    // Buscar el botón "Reservar", primero en el modal si estamos ahí
+                    // Actualizar clase del label para el estado visual
+                    const label = e.target.nextElementSibling;
+                    if (label && label.classList.contains('cursada-checkbox-terminos-label')) {
+                        if (e.target.checked) {
+                            label.classList.add('checkbox-checked');
+                        } else {
+                            label.classList.remove('checkbox-checked');
+                        }
+                    }
+                    
+                    // Buscar botón por data-cursada-id (más confiable que por ID)
                     let btnReservar = null;
-                    if (isInModal) {
+                    if (modalOpen && modalBody) {
                         btnReservar = modalBody.querySelector('.cursada-btn-reservar[data-cursada-id="' + cursadaId + '"]');
                     }
-                    // Si no se encontró en el modal, buscar en el DOM normal
                     if (!btnReservar) {
                         btnReservar = document.querySelector('.cursada-btn-reservar[data-cursada-id="' + cursadaId + '"]');
                     }
-                    
                     if (btnReservar) {
                         btnReservar.disabled = !e.target.checked;
                     }
                 }
             });
             
-            // Manejar click en el label del checkbox (para que funcione al hacer click en el texto también)
-            document.addEventListener('click', function(e) {
-                // Verificar si el click fue en el label o en el texto del checkbox
-                if (e.target.closest('.cursada-checkbox-terminos-label')) {
-                    const label = e.target.closest('.cursada-checkbox-terminos-label');
-                    const checkboxId = label.getAttribute('for');
-                    if (checkboxId) {
-                        const checkbox = document.getElementById(checkboxId);
-                        if (checkbox && !checkbox.disabled) {
-                            // Si el checkbox no está deshabilitado, toggle manual
-                            checkbox.checked = !checkbox.checked;
-                            // Disparar evento change para que se actualice el botón
-                            checkbox.dispatchEvent(new Event('change', { bubbles: true }));
-                        }
-                    }
-                }
-            });
+            // NO interferir con el comportamiento nativo del label
+            // El label nativo debería funcionar automáticamente y disparar el evento change del checkbox
             
             // Función para inicializar valores de descuento (cuando no hay descuento aplicado)
             function inicializarValoresDescuento(cursadaId) {
@@ -2608,7 +2929,7 @@
                 let valorMatricula = null;
                 
                 if (isInModal) {
-                    input = modalBody.querySelector('#codigo-input-field-' + cursadaId) || modalBody.querySelector('.cursada-codigo-descuento-input[data-cursada-id="' + cursadaId + '"]');
+                    input = modalBody.querySelector('#codigo-input-field-modal-' + cursadaId) || modalBody.querySelector('#codigo-input-field-' + cursadaId) || modalBody.querySelector('.cursada-codigo-descuento-input[data-cursada-id="' + cursadaId + '"]');
                     descuentoAplicado = modalBody.querySelector('#descuento-aplicado-' + cursadaId);
                     totalAplicado = modalBody.querySelector('#total-aplicado-' + cursadaId);
                     cuotaInfo = modalBody.querySelector('#cuota-info-' + cursadaId);
@@ -2616,7 +2937,7 @@
                 }
                 
                 // Si no se encontraron en el modal, buscar en el DOM normal
-                if (!input) input = document.getElementById('codigo-input-field-' + cursadaId);
+                if (!input) input = document.getElementById('codigo-input-field-modal-' + cursadaId) || document.getElementById('codigo-input-field-' + cursadaId);
                 if (!descuentoAplicado) descuentoAplicado = document.getElementById('descuento-aplicado-' + cursadaId);
                 if (!totalAplicado) totalAplicado = document.getElementById('total-aplicado-' + cursadaId);
                 if (!cuotaInfo) cuotaInfo = document.getElementById('cuota-info-' + cursadaId);
@@ -2681,15 +3002,25 @@
                     return;
                 }
                 
+                // Obtener el token CSRF actualizado (puede haber cambiado)
+                const currentCsrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 
+                                        window.inscripcionConfig?.csrfToken || 
+                                        csrfToken;
+                
+                if (!currentCsrfToken) {
+                    mostrarNotificacion('Error: No se pudo obtener el token de seguridad. Por favor, recargá la página.', 'error');
+                    return;
+                }
+                
                 // Hacer la petición al servidor usando FormData para mejor compatibilidad con CSRF
                 const formData = new FormData();
                 formData.append('codigo', codigo);
-                formData.append('_token', csrfToken);
+                formData.append('_token', currentCsrfToken);
                 
                 fetch(buscarDescuentoUrl, {
                     method: 'POST',
                     headers: {
-                        'X-CSRF-TOKEN': csrfToken,
+                        'X-CSRF-TOKEN': currentCsrfToken,
                         'X-Requested-With': 'XMLHttpRequest',
                         'Accept': 'application/json'
                     },
@@ -2778,6 +3109,41 @@
                             }
                         }
                         
+                        // Cerrar el input del código de descuento y deshabilitar el link
+                        let inputContainerCodigo = null;
+                        let linkCodigo = null;
+                        
+                        if (isInModal && modalBody) {
+                            inputContainerCodigo = modalBody.querySelector('#codigo-input-modal-' + cursadaId) || modalBody.querySelector('#codigo-input-' + cursadaId);
+                            linkCodigo = modalBody.querySelector('#link-codigo-modal-' + cursadaId) || modalBody.querySelector('#link-codigo-' + cursadaId) || modalBody.querySelector('.cursada-link-codigo-descuento[data-cursada-id="' + cursadaId + '"]');
+                        }
+                        
+                        if (!inputContainerCodigo) {
+                            inputContainerCodigo = document.getElementById('codigo-input-modal-' + cursadaId) || document.getElementById('codigo-input-' + cursadaId);
+                        }
+                        if (!linkCodigo) {
+                            linkCodigo = document.getElementById('link-codigo-modal-' + cursadaId) || document.getElementById('link-codigo-' + cursadaId) || document.querySelector('.cursada-link-codigo-descuento[data-cursada-id="' + cursadaId + '"]');
+                        }
+                        
+                        // Cerrar el input container
+                        if (inputContainerCodigo) {
+                            inputContainerCodigo.style.display = 'none';
+                            inputContainerCodigo.classList.remove('input-visible');
+                            // Limpiar el input
+                            const inputCodigo = inputContainerCodigo.querySelector('.cursada-codigo-descuento-input');
+                            if (inputCodigo) {
+                                inputCodigo.value = '';
+                            }
+                        }
+                        
+                        // Deshabilitar el link "Tengo código de descuento"
+                        if (linkCodigo) {
+                            linkCodigo.classList.add('cursada-link-disabled');
+                            linkCodigo.style.pointerEvents = 'none';
+                            linkCodigo.style.opacity = '0.6';
+                            linkCodigo.style.cursor = 'not-allowed';
+                        }
+                        
                         // Mostrar notificación de éxito
                         mostrarNotificacion('¡Código de descuento aplicado correctamente!', 'success');
                     } else {
@@ -2849,27 +3215,14 @@
                     // Si no se encuentra, buscar cualquier formulario en el modal
                     if (!formulario) {
                     formulario = modalBody.querySelector('form.cursada-formulario');
-                        console.log('validarFormularioCompleto: Formulario encontrado por clase en modal', formulario ? formulario.id : 'no encontrado');
-                    } else {
-                        console.log('validarFormularioCompleto: Formulario encontrado por ID en modal', formulario.id);
                     }
                 }
                 // Si no se encontró en el modal, buscar en el DOM normal
                 if (!formulario) {
                     formulario = document.getElementById('formulario-' + cursadaId);
-                    if (formulario) {
-                        console.log('validarFormularioCompleto: Formulario encontrado en DOM normal', formulario.id);
-                    }
                 }
                 
                 if (!formulario) {
-                    console.log('validarFormularioCompleto: Formulario no encontrado', {
-                        cursadaId,
-                        isInModal,
-                        modalBodyExists: !!modalBody,
-                        formulariosEnModal: modalBody ? modalBody.querySelectorAll('form.cursada-formulario').length : 0,
-                        idsEnModal: modalBody ? Array.from(modalBody.querySelectorAll('form')).map(f => f.id) : []
-                    });
                     return false;
                 }
                 
@@ -2894,22 +3247,6 @@
                 const validTelefono = validarTelefono ? validarTelefono(telefono) : (telefonoVal && /^[0-9]{8,14}$/.test(telefonoVal.replace(/\D/g, '')));
                 
                 const esValido = validNombre && validApellido && validDni && validCorreo && validTelefono;
-                
-                console.log('validarFormularioCompleto:', {
-                    cursadaId,
-                    isInModal,
-                    nombre: nombreVal,
-                    apellido: apellidoVal,
-                    dni: dniVal,
-                    correo: correoVal,
-                    telefono: telefonoVal,
-                    validNombre,
-                    validApellido,
-                    validDni,
-                    validCorreo,
-                    validTelefono,
-                    esValido
-                });
                 
                 return esValido;
             }
@@ -2940,30 +3277,13 @@
                 }
                 
                 if (!botonContinuar) {
-                    console.log('actualizarEstadoBotonContinuar: Botón no encontrado', {
-                        cursadaId,
-                        isInModal,
-                        modalBodyExists: !!modalBody,
-                        botonesEnModal: modalBody ? modalBody.querySelectorAll('.cursada-btn-continuar').length : 0
-                    });
                     return;
                 }
                 
                 const esValido = validarFormularioCompleto(cursadaId);
                 
-                console.log('actualizarEstadoBotonContinuar:', {
-                    cursadaId,
-                    isInModal,
-                    esValido,
-                    botonEncontrado: !!botonContinuar,
-                    botonDataCursadaId: botonContinuar.getAttribute('data-cursada-id'),
-                    botonDisabled: botonContinuar.disabled,
-                    botonTieneActivo: botonContinuar.classList.contains('activo')
-                });
-                
                 // Si esValido es undefined o null, no actualizar
                 if (esValido === undefined || esValido === null) {
-                    console.log('actualizarEstadoBotonContinuar: esValido es undefined/null, no se actualizará el botón');
                     return;
                 }
                 
@@ -2985,48 +3305,10 @@
                     botonContinuar.style.opacity = '0.6';
                     botonContinuar.style.cursor = 'not-allowed';
                 }
-                
-                console.log('actualizarEstadoBotonContinuar DESPUÉS de actualizar:', {
-                    botonDisabled: botonContinuar.disabled,
-                    botonTieneActivo: botonContinuar.classList.contains('activo'),
-                    botonOpacity: botonContinuar.style.opacity
-                });
-                
-                console.log('actualizarEstadoBotonContinuar DESPUÉS:', {
-                    botonDisabled: botonContinuar.disabled,
-                    botonTieneActivo: botonContinuar.classList.contains('activo'),
-                    botonOpacity: botonContinuar.style.opacity
-                });
             }
             
-            // Funciones para guardar y cargar datos del formulario en localStorage
-            // STORAGE_KEY ya está definida arriba
-            function guardarDatosFormulario(cursadaId) {
-                try {
-                    const formulario = document.getElementById('formulario-' + cursadaId);
-                    if (!formulario) return;
-                    
-                    const nombre = formulario.querySelector('#nombre-' + cursadaId);
-                    const apellido = formulario.querySelector('#apellido-' + cursadaId);
-                    const dni = formulario.querySelector('#dni-' + cursadaId);
-                    const correo = formulario.querySelector('#correo-' + cursadaId);
-                    const telefono = formulario.querySelector('#telefono-' + cursadaId);
-                    const telefonoPrefijo = formulario.querySelector('#telefono-prefijo-' + cursadaId);
-                    
-                    const datos = {
-                        nombre: nombre?.value?.trim() || '',
-                        apellido: apellido?.value?.trim() || '',
-                        dni: dni?.value?.trim() || '',
-                        correo: correo?.value?.trim() || '',
-                        telefono: telefono?.value?.trim() || '',
-                        telefonoPrefijo: telefonoPrefijo?.value || '+54'
-                    };
-                    
-                    // Guardar los datos en localStorage
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
-                } catch (error) {
-                }
-            }
+            // NOTA: guardarDatosFormulario ya está definida arriba (junto con cargarDatosFormulario) 
+            // para que esté disponible cuando se use en el modal
             
             // Función para cargar datos en todos los formularios visibles
             function cargarDatosEnTodosLosFormularios() {
@@ -3255,7 +3537,25 @@
                             guardarDatosFormulario(cursadaId);
                             
                             // Desactivar TODOS los formularios después de guardar exitosamente
+                            // Buscar en el DOM normal y también en el modal
+                            const modalBody = document.getElementById('cursada-modal-body');
+                            const todosLosFormularios = [];
+                            
+                            // Agregar formularios del DOM normal
                             document.querySelectorAll('.cursada-formulario').forEach(form => {
+                                todosLosFormularios.push(form);
+                            });
+                            
+                            // Agregar formularios del modal si está abierto
+                            if (modalBody) {
+                                modalBody.querySelectorAll('.cursada-formulario').forEach(form => {
+                                    if (!todosLosFormularios.includes(form)) {
+                                        todosLosFormularios.push(form);
+                                    }
+                                });
+                            }
+                            
+                            todosLosFormularios.forEach(form => {
                                 const formId = form.getAttribute('id');
                                 if (formId) {
                                     const formCursadaId = formId.replace('formulario-', '');
@@ -3268,8 +3568,15 @@
                                         input.style.cursor = 'not-allowed';
                                     });
                                     
-                                    // Desactivar todos los botones continuar
-                                    const botonContinuarForm = document.querySelector('.cursada-btn-continuar[data-cursada-id="' + formCursadaId + '"]');
+                                    // Desactivar todos los botones continuar (buscar en modal y DOM normal)
+                                    let botonContinuarForm = null;
+                                    if (modalBody) {
+                                        botonContinuarForm = modalBody.querySelector('.cursada-btn-continuar[data-cursada-id="' + formCursadaId + '"]') || 
+                                                           modalBody.querySelector('.cursada-btn-continuar');
+                                    }
+                                    if (!botonContinuarForm) {
+                                        botonContinuarForm = document.querySelector('.cursada-btn-continuar[data-cursada-id="' + formCursadaId + '"]');
+                                    }
                                     if (botonContinuarForm) {
                                         botonContinuarForm.classList.remove('activo');
                                         botonContinuarForm.disabled = true;
@@ -3279,8 +3586,8 @@
                                 }
                             });
                             
-                            // Mostrar valores en TODOS los formularios
-                            document.querySelectorAll('.cursada-formulario').forEach(form => {
+                            // Mostrar valores en TODOS los formularios (reutilizar la lista ya creada)
+                            todosLosFormularios.forEach(form => {
                                 const formId = form.getAttribute('id');
                                 if (formId) {
                                     const formCursadaId = formId.replace('formulario-', '');
@@ -3295,6 +3602,9 @@
                                 }
                             }, 300);
                             
+                            // Verificar y restaurar estado de readonly en todos los formularios
+                            verificarYRestaurarEstadoCompletado();
+                            
                                     } else {
                                         alert('Error al guardar los datos. Por favor, intente nuevamente.');
                                     }
@@ -3308,6 +3618,13 @@
             
             // Inicializar formularios cuando se cargan las cursadas
             initializeFormularios();
+            
+            // Verificar y restaurar estado completado después de inicializar formularios
+            setTimeout(() => {
+                if (typeof verificarYRestaurarEstadoCompletado === 'function') {
+                    verificarYRestaurarEstadoCompletado();
+                }
+            }, 500);
             
             // Inicializar: deshabilitar tabindex de todos los inputs en paneles ocultos
             document.querySelectorAll('.cursada-valores-panel.panel-hidden').forEach(panel => {
