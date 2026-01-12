@@ -340,7 +340,7 @@ class WelcomeController extends Controller
         // Obtener y pre-procesar cursadas
         $cursadas = $baseQuery
             ->select([
-                'id', 'carrera', 'sede', 'xModalidad', 'Régimen', 'xTurno', 'xDias',
+                'id', 'ID_Curso', 'carrera', 'sede', 'xModalidad', 'Régimen', 'xTurno', 'xDias',
                 'Fecha_Inicio', 'Horario', 'Vacantes', 'Matric_Base', 'Sin_iva_Mat', 'Cta_Web',
                 'Sin_IVA_cta', 'Dto_Cuota', 'cuotas', 'Promo_Mat_logo'
             ])
@@ -418,6 +418,7 @@ class WelcomeController extends Controller
                 // Retornar como array para JSON
                 return [
                     'id' => $cursada->id,
+                    'ID_Curso' => $cursada->ID_Curso,
                     'carrera' => $cursada->carrera,
                     'sede' => $cursada->sede,
                     'xModalidad' => $cursada->xModalidad,
@@ -482,13 +483,15 @@ class WelcomeController extends Controller
                 'dni' => 'required|string|max:8|regex:/^[0-9]{7,8}$/',
                 'correo' => 'required|email|max:255',
                 'telefono' => 'required|string|max:20', // Prefijo internacional + 10 dígitos
-                'cursada_id' => 'required|integer|exists:cursadas,id',
+                'cursada_id' => 'required|string|max:50|exists:cursadas,ID_Curso',
+                'tipo' => 'nullable|string|max:255',
+                'acepto_terminos' => 'boolean',
             ]);
 
-            // Obtener la cursada
-            $cursada = \App\Models\Cursada::findOrFail($validated['cursada_id']);
+            // Obtener la cursada por ID_Curso
+            $cursada = \App\Models\Cursada::where('ID_Curso', $validated['cursada_id'])->firstOrFail();
 
-            // Guardar el lead
+            // Guardar el lead (cursada_id ahora contiene ID_Curso)
             $lead = Lead::create($validated);
 
             // Enviar email de notificación

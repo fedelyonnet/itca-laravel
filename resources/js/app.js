@@ -2245,3 +2245,191 @@ document.addEventListener('DOMContentLoaded', function() {
     // Hacer la función global para que funcione desde el HTML
     window.scrollFotosCarousel = scrollFotosCarousel;
 });
+// ========================================
+// MENU ANIMADO (MAGIC LINE)
+// ========================================
+document.addEventListener('DOMContentLoaded', function() {
+    const navLinksContainer = document.querySelector('.nav-links');
+    
+    // Solo ejecutar si existe el contenedor
+    if (!navLinksContainer) return;
+    
+    // Crear el elemento indicador
+    // Verificamos si ya existe para evitar duplicados en reinicializaciones
+    let indicator = navLinksContainer.querySelector('.nav-indicator');
+    if (!indicator) {
+        indicator = document.createElement('li');
+        indicator.className = 'nav-indicator';
+        navLinksContainer.appendChild(indicator);
+    }
+    
+    const navItems = navLinksContainer.querySelectorAll('.nav-link');
+    
+    // Función para mover el indicador
+    function moveIndicator(targetLink) {
+        if (!targetLink) return;
+        
+        // Verificar si estamos en mobile (< 1100px) donde el indicador no debería mostrarse
+        if (window.innerWidth < 1100) return;
+        
+        const containerRect = navLinksContainer.getBoundingClientRect();
+        const linkRect = targetLink.getBoundingClientRect();
+        
+        // Calcular posición relativa al contenedor
+        // Si el target es el logo (que está fuera de nav-links), calculamos la diferencia
+        const left = linkRect.left - containerRect.left;
+        
+        // Si es el logo, ajustamos el ancho para que sea visualmente agradable
+        // El logo es una imagen, así que usamos su ancho real pero centramos la línea
+        let width = linkRect.width;
+        let finalLeft = left;
+        
+        if (targetLink.classList.contains('logo')) {
+            // Ajuste fino para el logo
+            width = linkRect.width; // Usar el ancho completo (100%)
+            finalLeft = left; // Posición izquierda exacta (sin centrado adicional)
+            
+            // Usamos una clase CSS para controlar la distancia fluida en lugar de estilos inline
+            indicator.classList.add('on-logo');
+            
+            // Limpiamos style.bottom por si había quedado un valor inline
+            indicator.style.bottom = '';
+        } else {
+            // Quitamos la clase del logo
+            indicator.classList.remove('on-logo');
+            
+            // Restaurar distancia normal para los otros links
+            indicator.style.bottom = '-5px';
+        }
+        
+        indicator.style.left = `${finalLeft}px`;
+        indicator.style.width = `${width}px`;
+        indicator.classList.add('visible');
+    }
+    
+    // Encontrar activo inicial
+    // Primero intentamos buscar 'Somos ITCA' (que es el Home) si estamos en la raíz
+    // O cualquier otro que tenga la clase active explícita
+    let initialActive = navLinksContainer.querySelector('.nav-link.active');
+    
+    // Si encontramos "Somos ITCA" activo, le quitamos la clase active para forzar el logo
+    // Esto es para cumplir el requerimiento: "cuando se carga la pagina (home) por default tiene que aparecer subrayado el logo, no somos itca"
+    if (initialActive && initialActive.textContent.trim() === 'Somos ITCA' && window.scrollY < 100) {
+        initialActive.classList.remove('active');
+        initialActive = null;
+    }
+    
+    // Si no hay ninguno activo, forzamos el LOGO como default
+    if (!initialActive) {
+        const logoLink = document.querySelector('.logo');
+        if (logoLink) {
+            initialActive = logoLink;
+        }
+    }
+    
+    // Inicializar inmediatamente sin animación
+    if (initialActive) {
+        moveIndicator(initialActive);
+        // Forzar un reflow/repaint para que la posición inicial se aplique sin transición
+        void indicator.offsetWidth;
+        // Ahora habilitar la animación para futuros movimientos
+        setTimeout(() => {
+            indicator.classList.add('animate');
+        }, 50);
+    } else {
+        // Si no hay activo inicial, habilitar animación después
+        setTimeout(() => {
+            indicator.classList.add('animate');
+        }, 50);
+    }
+    
+    // Event listeners para interacciones
+    navItems.forEach(link => {
+        // Al hacer hover, mover la línea al elemento
+        link.addEventListener('mouseenter', () => {
+            moveIndicator(link);
+        });
+    });
+    
+    // Incluir el Logo en la lógica de hover y movimiento
+    const logoLink = document.querySelector('.logo');
+    if (logoLink) {
+        logoLink.addEventListener('mouseenter', () => {
+            moveIndicator(logoLink);
+        });
+        
+        // Si se hace click en el logo, la línea también va ahí (aunque recargue)
+        logoLink.addEventListener('click', () => {
+            // Quitamos la clase active de todos los links
+            navItems.forEach(item => item.classList.remove('active'));
+            // Movemos la línea
+            moveIndicator(logoLink);
+        });
+    }
+    
+    // Al salir del contenedor del menú, volver al activo
+    // Necesitamos detectar salida tanto de .nav-links como del logo
+    const navContainer = document.querySelector('.nav'); // El contenedor padre de logo y links
+    
+    if (navContainer) {
+        navContainer.addEventListener('mouseleave', () => {
+            const currentActive = navLinksContainer.querySelector('.nav-link.active');
+            if (currentActive) {
+                moveIndicator(currentActive);
+            } else {
+                // Si no hay activo (ej: estamos en el logo), verificar si estamos arriba o si el logo fue el último clickeado
+                // Como no guardamos estado de click entre recargas aquí, confiamos en scrollY
+                if (logoLink && window.scrollY < 100) { 
+                     moveIndicator(logoLink);
+                } else {
+                     // Si no hay activo y no estamos arriba, ocultar (o mantener en logo si se prefiere)
+                     // Para consistencia con "el logo es home", si no hay otro activo, asumimos logo.
+                     if (logoLink) moveIndicator(logoLink);
+                }
+            }
+        });
+    }
+    
+    // Recalcular en resize
+    window.addEventListener('resize', () => {
+        // En resize volvemos al activo real o al logo si estamos arriba
+        const currentActive = navLinksContainer.querySelector('.nav-link.active');
+        if (currentActive) {
+            moveIndicator(currentActive);
+        } else {
+             // Si no hay activo, siempre al logo
+             const logoLink = document.querySelector('.logo');
+             if (logoLink) moveIndicator(logoLink);
+        }
+    });
+    
+    // Observar cambios en las clases para ScrollSpy
+    if (window.MutationObserver) {
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    const target = mutation.target;
+                    // Solo nos importa si ganó la clase active
+                    if (target.classList.contains('active')) {
+                        // Movemos la línea automáticamente cuando cambia el estado active (ScrollSpy)
+                        moveIndicator(target);
+                    } else {
+                        // Si PERDIÓ la clase active, verificamos si hay algún otro activo
+                        // Si no hay ninguno, volvemos al logo
+                        setTimeout(() => {
+                            const anyActive = navLinksContainer.querySelector('.nav-link.active');
+                            if (!anyActive) {
+                                const logoLink = document.querySelector('.logo');
+                                if (logoLink) moveIndicator(logoLink);
+                            }
+                        }, 50);
+                    }
+                }
+            });
+        });
+        
+        navItems.forEach(item => {
+            observer.observe(item, { attributes: true });
+        });
+    }
+});

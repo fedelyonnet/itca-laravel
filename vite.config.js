@@ -49,7 +49,7 @@ export default defineConfig({
             'Access-Control-Allow-Headers': 'Content-Type, Authorization',
         },
         hmr: {
-            host: 'devitca.localhost',
+            host: 'localhost',
             protocol: 'ws',
             clientPort: 5173,
             overlay: false, // Desactiva el overlay de errores en desarrollo
@@ -58,13 +58,6 @@ export default defineConfig({
             // Reduce la frecuencia de actualizaciones
             usePolling: false,
             interval: 1000,
-        },
-        proxy: {
-            '/images': {
-                target: 'http://devitca.localhost',
-                changeOrigin: true,
-                secure: false,
-            },
         },
     },
 });

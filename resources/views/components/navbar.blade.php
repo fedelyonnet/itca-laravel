@@ -1,7 +1,37 @@
+@php
+    $isActivePanel = request()->routeIs('admin.dashboard');
+    
+    $carrerasRoutes = [
+        'admin.carreras.test',
+        'admin.carreras.multimedia',
+        'admin.carreras.importacion',
+        'admin.carreras.ordenar-filtros',
+        'admin.carreras.importar-promociones',
+    ];
+    $isActiveCarreras = request()->routeIs($carrerasRoutes);
+    
+    $cmsRoutes = [
+        'admin.edit-hero',
+        'admin.beneficios',
+        'admin.dudas',
+        'admin.sedes',
+        'admin.testimonios',
+        'admin.partners',
+        'admin.en-accion',
+        'admin.noticias',
+    ];
+    $isActiveCMS = request()->routeIs($cmsRoutes);
+    
+    $isActiveLeads = request()->routeIs('admin.leads');
+@endphp
+
 <nav class="flex items-center space-x-6">
     <a href="{{ route('admin.dashboard') }}" 
-       class="inline-flex items-center text-white hover:text-gray-300 px-2 py-1">
+       class="relative inline-flex items-center text-white hover:text-gray-300 px-2 py-1">
         Panel
+        @if($isActivePanel)
+            <img src="{{ asset('images/menu.png') }}" class="absolute -bottom-2 left-0 w-full h-auto" alt="active">
+        @endif
     </a>
     
     <div class="relative inline-flex items-center" 
@@ -20,6 +50,9 @@
                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
             </svg>
         </button>
+        @if($isActiveCarreras)
+            <img src="{{ asset('images/menu.png') }}" class="absolute -bottom-2 left-0 w-full h-auto pointer-events-none" alt="active">
+        @endif
 
         <div x-show="open" 
              x-cloak
@@ -87,6 +120,9 @@
                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
             </svg>
         </button>
+        @if($isActiveCMS)
+            <img src="{{ asset('images/menu.png') }}" class="absolute -bottom-2 left-0 w-full h-auto pointer-events-none" alt="active">
+        @endif
 
         <div x-show="open" 
              x-cloak

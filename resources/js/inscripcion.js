@@ -454,11 +454,18 @@
                             // Desactivar todos los botones continuar (buscar en modal y DOM normal)
                             let botonesContinuar = [];
                             if (modalBody) {
-                                modalBody.querySelectorAll('.cursada-btn-continuar[data-cursada-id="' + cursadaId + '"]').forEach(b => botonesContinuar.push(b));
-                                modalBody.querySelectorAll('.cursada-btn-continuar').forEach(b => {
+                                // Buscar en el modal primero
+                                modalBody.querySelectorAll('.cursada-btn-continuar[data-cursada-id="' + cursadaId + '"]').forEach(b => {
                                     if (!botonesContinuar.includes(b)) botonesContinuar.push(b);
                                 });
+                                // Si no se encontró por data-cursada-id, buscar cualquier botón continuar en el modal
+                                if (botonesContinuar.length === 0) {
+                                    modalBody.querySelectorAll('.cursada-btn-continuar').forEach(b => {
+                                        if (!botonesContinuar.includes(b)) botonesContinuar.push(b);
+                                    });
+                                }
                             }
+                            // Buscar en el DOM normal
                             document.querySelectorAll('.cursada-btn-continuar[data-cursada-id="' + cursadaId + '"]').forEach(b => {
                                 if (!botonesContinuar.includes(b)) botonesContinuar.push(b);
                             });
@@ -725,6 +732,12 @@
                         const abrirModal = () => {
                             if (!modalOverlay || !modalHeader || !modalBody || !cursadaItem || !panel) return;
                             
+                            // Obtener el ID_Curso del elemento original ANTES de clonar y guardarlo en el modal
+                            const idCursoOriginal = cursadaItem.getAttribute('data-id-curso');
+                            if (idCursoOriginal && modalBody) {
+                                modalBody.setAttribute('data-id-curso', idCursoOriginal);
+                            }
+                            
                             // Ocultar el panel original en mobile (solo mostrar el modal)
                             if (panel) {
                                 panel.classList.remove('panel-visible');
@@ -926,13 +939,26 @@
                                     // Cargar datos DESPUÉS de actualizar IDs (para asegurar que los IDs estén correctos)
                                     // Usar un pequeño delay para asegurar que el DOM esté completamente actualizado
                                     setTimeout(() => {
+                                        // Verificar primero si el formulario ya está completo (readonly)
+                                        let yaEstaReadonly = false;
+                                        if (typeof verificarYRestaurarEstadoCompletado === 'function') {
+                                            yaEstaReadonly = verificarYRestaurarEstadoCompletado();
+                                        }
+                                        
+                                        // Cargar datos del formulario
                                         if (typeof cargarDatosFormulario === 'function') {
                                             cargarDatosFormulario(cursadaId);
                                         }
                                         
-                                        // Verificar y restaurar estado de readonly si el formulario ya fue completado
-                                        if (typeof verificarYRestaurarEstadoCompletado === 'function') {
-                                            verificarYRestaurarEstadoCompletado();
+                                        // Si ya estaba readonly, asegurar que el botón esté deshabilitado
+                                        if (yaEstaReadonly) {
+                                            const botonContinuarReadonly = modalBody.querySelector('.cursada-btn-continuar[data-cursada-id="' + cursadaId + '"]') || modalBody.querySelector('.cursada-btn-continuar');
+                                            if (botonContinuarReadonly) {
+                                                botonContinuarReadonly.classList.remove('activo');
+                                                botonContinuarReadonly.disabled = true;
+                                                botonContinuarReadonly.style.opacity = '0.6';
+                                                botonContinuarReadonly.style.cursor = 'not-allowed';
+                                            }
                                         }
                                     }, 50);
                                     
@@ -1209,21 +1235,31 @@
                                     if (botonContinuar) {
                                         // Asegurar que tenga el data-cursada-id correcto
                                         botonContinuar.setAttribute('data-cursada-id', cursadaId);
-                                        // Inicializar como inactivo
-                                        botonContinuar.classList.remove('activo');
-                                        botonContinuar.disabled = true;
-                                        botonContinuar.style.opacity = '0.6';
-                                        botonContinuar.style.cursor = 'not-allowed';
                                         
-                                        
-                                    // Actualizar estado inmediatamente después de configurar
-                                    setTimeout(() => {
-                                        actualizarBotonLocal();
-                                        // También intentar llamar a la función global si está disponible
-                                        if (typeof actualizarEstadoBotonContinuar === 'function') {
-                                            actualizarEstadoBotonContinuar(cursadaId);
+                                        // Verificar si el formulario está en modo readonly
+                                        const formReadonly = tempFormulario.querySelector('input[readonly]') || tempFormulario.querySelector('input[disabled]');
+                                        if (formReadonly) {
+                                            // Si está readonly, deshabilitar el botón inmediatamente
+                                            botonContinuar.classList.remove('activo');
+                                            botonContinuar.disabled = true;
+                                            botonContinuar.style.opacity = '0.6';
+                                            botonContinuar.style.cursor = 'not-allowed';
+                                        } else {
+                                            // Si no está readonly, inicializar como inactivo y validar
+                                            botonContinuar.classList.remove('activo');
+                                            botonContinuar.disabled = true;
+                                            botonContinuar.style.opacity = '0.6';
+                                            botonContinuar.style.cursor = 'not-allowed';
+                                            
+                                            // Actualizar estado inmediatamente después de configurar
+                                            setTimeout(() => {
+                                                actualizarBotonLocal();
+                                                // También intentar llamar a la función global si está disponible
+                                                if (typeof actualizarEstadoBotonContinuar === 'function') {
+                                                    actualizarEstadoBotonContinuar(cursadaId);
+                                                }
+                                            }, 100);
                                         }
-                                    }, 100);
                                         
                                         // Agregar event listener (igual que desktop)
                                         botonContinuar.addEventListener('click', function(e) {
@@ -1249,6 +1285,7 @@
                                             const correoModal = tempFormulario.querySelector('#correo-' + cursadaIdBtn);
                                             const telefonoModal = tempFormulario.querySelector('#telefono-' + cursadaIdBtn);
                                             const telefonoPrefijoModal = tempFormulario.querySelector('#telefono-prefijo-' + cursadaIdBtn);
+                                            const checkboxTerminosModal = tempFormulario.querySelector('#acepto-terminos-modal-' + cursadaIdBtn) || tempFormulario.querySelector('#acepto-terminos-' + cursadaIdBtn);
                                             
                                             // Limpiar todos los errores antes de enviar (usar función local)
                                             ocultarErrorLocal(nombreModal, errorNombre);
@@ -1260,9 +1297,36 @@
                                             // Construir número de teléfono completo (usar función local)
                                             const telefonoCompleto = (telefonoPrefijoModal?.value || '+54') + normalizarTelefonoLocal(telefonoModal);
                                             
-                                            // Obtener el cursada_id
-                                            const cursadaIdFull = cursadaIdBtn;
-                                            const cursadaIdNumber = cursadaIdFull.replace('cursada-', '');
+                                            // Obtener el ID_Curso desde el modal body (donde lo guardamos al abrir)
+                                            let idCurso = modalBody ? modalBody.getAttribute('data-id-curso') : null;
+                                            
+                                            // Si no está en el modal body, intentar desde el elemento original
+                                            if (!idCurso) {
+                                                const formCursadaId = cursadaIdBtn.replace('cursada-', '');
+                                                const panel = document.getElementById('panel-' + formCursadaId);
+                                                if (panel) {
+                                                    const panelItem = panel.closest('.cursada-item');
+                                                    if (panelItem) {
+                                                        idCurso = panelItem.getAttribute('data-id-curso');
+                                                    }
+                                                }
+                                            }
+                                            
+                                            // Si aún no se encontró, buscar desde el botón original
+                                            if (!idCurso) {
+                                                const btnOriginal = document.querySelector('[data-cursada-id="' + cursadaIdBtn + '"]');
+                                                if (btnOriginal) {
+                                                    const cursadaItemOriginal = btnOriginal.closest('.cursada-item');
+                                                    if (cursadaItemOriginal) {
+                                                        idCurso = cursadaItemOriginal.getAttribute('data-id-curso');
+                                                    }
+                                                }
+                                            }
+                                            
+                                            if (!idCurso) {
+                                                mostrarNotificacion('Error: No se pudo obtener el ID del curso. Por favor, recargá la página.', 'error');
+                                                return;
+                                            }
                                             
                                             // Guardar lead (igual que desktop)
                                             fetch(window.inscripcionConfig.leadsStoreUrl, {
@@ -1279,35 +1343,37 @@
                                                     dni: dniModal.value.trim(),
                                                     correo: correoModal.value.trim(),
                                                     telefono: telefonoCompleto,
-                                                    cursada_id: cursadaIdNumber
+                                                    cursada_id: idCurso,
+                                                    tipo: 'Lead',
+                                                    acepto_terminos: checkboxTerminosModal ? checkboxTerminosModal.checked : false
                                                 })
                                             })
                                             .then(async response => {
+                                                // Leer la respuesta una sola vez
+                                                const text = await response.text();
                                                 const contentType = response.headers.get('content-type');
                                                 const isJson = contentType && contentType.includes('application/json');
                                                 
-                                                if (!response.ok) {
-                                                    if (!isJson) {
-                                                        await response.text();
+                                                // Intentar parsear como JSON
+                                                let data;
+                                                try {
+                                                    data = JSON.parse(text);
+                                                } catch (e) {
+                                                    // Si no es JSON y hay un error, lanzar error genérico
+                                                    if (!response.ok) {
                                                         throw new Error('Error del servidor. Por favor, intente nuevamente.');
                                                     }
-                                                    try {
-                                                        const errorData = await response.json();
-                                                        throw new Error(errorData.message || 'Error al guardar los datos');
-                                                    } catch (parseError) {
-                                                        throw new Error('Error al procesar la respuesta del servidor');
-                                                    }
-                                                }
-                                                
-                                                // Siempre intentar parsear como JSON primero
-                                                const text = await response.text();
-                                                try {
-                                                    return JSON.parse(text);
-                                                } catch (e) {
-                                                    // Si no es JSON, devolver el texto
-                                                    console.warn('Modal: Respuesta no es JSON, devolviendo texto', text);
+                                                    // Si es exitoso pero no es JSON, devolver objeto con el texto
                                                     return { success: false, message: text };
                                                 }
+                                                
+                                                // Si la respuesta no es OK, lanzar error con el mensaje del servidor
+                                                if (!response.ok) {
+                                                    throw new Error(data.message || 'Error al guardar los datos');
+                                                }
+                                                
+                                                // Respuesta exitosa
+                                                return data;
                                             })
                                             .then(data => {
                                                 // Si data es string, intentar parsearlo
@@ -1319,6 +1385,9 @@
                                                 }
                                                 
                                                 if (data && data.success) {
+                                                    // Verificar si el formulario ya estaba en modo readonly ANTES de aplicar readonly
+                                                    const yaEstabaReadonly = tempFormulario.querySelector('input[readonly]') || tempFormulario.querySelector('input[disabled]');
+                                                    
                                                     // Guardar los datos del formulario en localStorage
                                                     if (typeof guardarDatosFormulario === 'function') {
                                                         guardarDatosFormulario(cursadaIdBtn);
@@ -1397,10 +1466,7 @@
                                                         verificarYRestaurarEstadoCompletado();
                                                     }
                                                     
-                                                    // Mostrar notificación de éxito
-                                                    if (typeof mostrarNotificacion === 'function') {
-                                                        mostrarNotificacion('¡Datos guardados correctamente!', 'success');
-                                                    }
+                                                    // No mostrar notificación de éxito (solicitado por el usuario)
                                                 } else {
                                                     if (typeof mostrarNotificacion === 'function') {
                                                         mostrarNotificacion('Error al guardar los datos. Por favor, intente nuevamente.', 'error');
@@ -1670,6 +1736,7 @@
                     item.setAttribute('data-turno', cursada.xTurno || '');
                     item.setAttribute('data-dia', cursada.xDias || '');
                     item.setAttribute('data-promocion', pre.tieneDescuento ? 'con_descuento' : 'sin_descuento');
+                    item.setAttribute('data-id-curso', cursada.ID_Curso || '');
                     
                     const cursadaId = 'cursada-' + cursada.id;
                     
@@ -3461,6 +3528,7 @@
                     const correo = formulario.querySelector('#correo-' + cursadaId);
                     const telefono = formulario.querySelector('#telefono-' + cursadaId);
                     const telefonoPrefijo = formulario.querySelector('#telefono-prefijo-' + cursadaId);
+                    const checkboxTerminos = formulario.querySelector('#acepto-terminos-' + cursadaId);
                     
                     // Limpiar todos los errores antes de enviar
                     const errorNombre = document.getElementById('error-nombre-' + cursadaId);
@@ -3478,9 +3546,28 @@
                     // Construir número de teléfono completo (prefijo + número)
                     const telefonoCompleto = (telefonoPrefijo?.value || '+54') + normalizarTelefono(telefono);
                     
-                    // Obtener el cursada_id del botón (formato: cursada-123)
-                    const cursadaIdFull = cursadaId; // cursadaId ya viene como 'cursada-123'
-                    const cursadaIdNumber = cursadaIdFull.replace('cursada-', ''); // Extraer solo el número
+                    // Obtener el ID_Curso desde el item de la cursada
+                    const cursadaItem = formulario.closest('.cursada-item');
+                    let idCurso = null;
+                    if (cursadaItem) {
+                        idCurso = cursadaItem.getAttribute('data-id-curso');
+                    }
+                    // Si no se encuentra en el item, intentar obtenerlo del panel
+                    if (!idCurso) {
+                        const formCursadaId = cursadaId.replace('cursada-', '');
+                        const panel = document.getElementById('panel-' + formCursadaId);
+                        if (panel) {
+                            const panelItem = panel.closest('.cursada-item');
+                            if (panelItem) {
+                                idCurso = panelItem.getAttribute('data-id-curso');
+                            }
+                        }
+                    }
+                    
+                    if (!idCurso) {
+                        mostrarNotificacion('Error: No se pudo obtener el ID del curso. Por favor, recargá la página.', 'error');
+                        return;
+                    }
                     
                                 // Guardar lead
                                 fetch(window.inscripcionConfig.leadsStoreUrl, {
@@ -3497,7 +3584,9 @@
                                         dni: dni.value.trim(),
                                         correo: correo.value.trim(),
                                         telefono: telefonoCompleto,
-                                        cursada_id: cursadaIdNumber
+                                        cursada_id: idCurso,
+                                        tipo: 'Lead',
+                                        acepto_terminos: checkboxTerminos ? checkboxTerminos.checked : false
                                     })
                                 })
                                 .then(async response => {

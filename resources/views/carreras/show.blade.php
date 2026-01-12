@@ -24,10 +24,26 @@
                 <a href="/" class="logo">ITCA</a>
                 <!-- Desktop Navigation -->
                 <ul class="nav-links">
-                    <li><a href="/" class="nav-link">Somos ITCA</a></li>
-                    <li><a href="/carreras" class="nav-link">Carreras</a></li>
-                    <li><a href="/" class="nav-link">Beneficios</a></li>
-                    <li><a href="/" class="nav-link">Contacto</a></li>
+                    <li>
+                        <a href="{{ url('/') }}" class="nav-link">
+                            Somos ITCA
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('carreras') }}" class="nav-link active">
+                            Carreras
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url('/#beneficios') }}" class="nav-link">
+                            Beneficios
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url('/#contacto') }}" class="nav-link">
+                            Contacto
+                        </a>
+                    </li>
                 </ul>
                 <!-- Mobile Hamburger Button -->
                 <button class="hamburger"><span></span><span></span><span></span></button>

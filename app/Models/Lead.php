@@ -12,14 +12,8 @@ class Lead extends Model
         'dni',
         'correo',
         'telefono',
-        'cursada_id',
+        'cursada_id', // Ahora almacena ID_Curso (string) en lugar del id numérico
+        'tipo',
+        'acepto_terminos',
     ];
-
-    /**
-     * Relación con Cursada
-     */
-    public function cursada()
-    {
-        return $this->belongsTo(Cursada::class, 'cursada_id');
-    }
 }

@@ -149,8 +149,13 @@ function initFileUploads() {
             return;
         }
         
+        // Skip if input is for importación de cursos (se maneja con JavaScript custom)
+        if (input.id === 'archivo_excel' || input.closest('#formImportarExcel')) {
+            return;
+        }
+        
         input.addEventListener('change', function() {
-            if (this.files.length > 0) {
+            if (this.files.length > 0 && this.form) {
                 this.form.submit();
             }
         });

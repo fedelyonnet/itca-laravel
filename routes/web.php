@@ -176,6 +176,7 @@ Route::middleware('auth')->group(function () {
         
         // Rutas de leads
         Route::get('/leads', [App\Http\Controllers\LeadController::class, 'index'])->name('admin.leads');
+        Route::get('/leads/export', [App\Http\Controllers\LeadController::class, 'export'])->name('admin.leads.export');
     });
 });
 

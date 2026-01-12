@@ -116,7 +116,6 @@ function procesarImportacion(event) {
         event.stopImmediatePropagation();
     }
     
-    console.log('procesarImportacion llamado');
     const input = document.getElementById('archivo_excel');
     if (!input) {
         console.error('No se encontró el input archivo_excel');
@@ -125,7 +124,6 @@ function procesarImportacion(event) {
     }
     
     const file = input.files[0];
-    console.log('Archivo seleccionado:', file ? file.name : 'ninguno');
     
     if (!file) {
         mostrarToast('Por favor selecciona un archivo Excel', 'error');
@@ -166,10 +164,11 @@ function procesarImportacion(event) {
     // Obtener la ruta desde el atributo data-route o construirla
     const route = btnImportar?.getAttribute('data-route') || '/admin/carreras/importacion';
     
-    console.log('Enviando a:', route);
-    console.log('Token CSRF:', token ? 'presente' : 'ausente');
     
     // Enviar al servidor
+    // NOTA: El navegador mostrará códigos 400+ como "errores" en la consola de red,
+    // pero esto es normal y esperado cuando el servidor valida y rechaza datos inválidos.
+    // El código JavaScript maneja estos casos correctamente mostrando el error en el modal.
     fetch(route, {
         method: 'POST',
         body: formData,
@@ -189,15 +188,17 @@ function procesarImportacion(event) {
             throw new Error('El servidor no retornó JSON válido');
         }
         
+        // Si la respuesta no es OK (400, 500, etc.), manejar el error
+        // Esto es normal cuando el servidor valida y rechaza datos inválidos
         if (!response.ok) {
-            throw new Error(data.message || 'Error en la respuesta del servidor');
+            // Si hay un mensaje de error en los datos, lanzar error con ese mensaje
+            const errorMessage = data.message || data.error || 'Error en la respuesta del servidor';
+            throw new Error(errorMessage);
         }
         
         return data;
     })
     .then(data => {
-        console.log('Respuesta recibida:', data);
-        
         // Restaurar botón
         if (btnImportar) {
             btnImportar.disabled = false;
@@ -207,16 +208,18 @@ function procesarImportacion(event) {
         // Limpiar input
         input.value = '';
         
+        // Si la respuesta indica error, manejarlo como error ANTES de procesar
+        if (data && data.success === false) {
+            throw new Error(data.message || 'Error al procesar la importación');
+        }
+        
         // Buscar el elemento con Alpine.js - método más directo
         const alpineContainer = document.querySelector('.py-12[x-data]');
         
         if (!alpineContainer) {
             console.error('No se encontró el contenedor Alpine.js');
-            alert(data?.message || (data?.success ? 'Importación realizada correctamente' : 'Error al importar el archivo'));
-            if (data?.success) {
-                setTimeout(() => window.location.reload(), 1000);
-            }
-            return;
+            // Si no hay Alpine, lanzar error para que vaya al catch
+            throw new Error(data?.message || 'Error al importar el archivo');
         }
         
         // Acceder a Alpine.js de forma más directa
@@ -224,95 +227,146 @@ function procesarImportacion(event) {
         
         if (!alpine) {
             console.error('Alpine.js no está disponible');
-            alert(data?.message || (data?.success ? 'Importación realizada correctamente' : 'Error al importar el archivo'));
-            if (data?.success) {
-                setTimeout(() => window.location.reload(), 1000);
-            }
-            return;
+            // Si no hay Alpine, lanzar error para que vaya al catch
+            throw new Error(data?.message || 'Error al importar el archivo');
         }
         
-        // Obtener los datos de Alpine
+        // Obtener los datos de Alpine - múltiples métodos
         let alpineData;
         if (alpineContainer.__x && alpineContainer.__x.$data) {
             alpineData = alpineContainer.__x.$data;
-        } else {
-            // Intentar obtener desde Alpine global
-            alpineData = alpine.$data && alpine.$data(alpineContainer);
+        } else if (window.Alpine && window.Alpine.$data) {
+            alpineData = window.Alpine.$data(alpineContainer);
+        } else if (alpineContainer._x_dataStack && alpineContainer._x_dataStack[0]) {
+            alpineData = alpineContainer._x_dataStack[0];
         }
         
         if (!alpineData) {
             console.error('No se pudieron obtener los datos de Alpine.js');
-            alert(data?.message || (data?.success ? 'Importación realizada correctamente' : 'Error al importar el archivo'));
-            if (data?.success) {
-                setTimeout(() => window.location.reload(), 1000);
-            }
-            return;
+            // Si no hay Alpine, lanzar error para que vaya al catch
+            throw new Error(data?.message || 'Error al importar el archivo');
         }
-        
-        console.log('Datos de Alpine encontrados:', alpineData);
         
         // Guardar resultado primero
         alpineData.resultadoImportacion = data;
-        console.log('Resultado guardado:', data);
         
         // Cerrar modal de importación
         alpineData.modalImportarOpen = false;
-        console.log('Modal de importación cerrado:', alpineData.modalImportarOpen);
         
         // Usar requestAnimationFrame para asegurar que el DOM se actualice
         requestAnimationFrame(() => {
             // Abrir modal de resultado
             alpineData.modalResultadoOpen = true;
-            console.log('Modal de resultado abierto:', alpineData.modalResultadoOpen);
-            console.log('Estado completo:', {
-                modalImportarOpen: alpineData.modalImportarOpen,
-                modalResultadoOpen: alpineData.modalResultadoOpen,
-                resultadoImportacion: alpineData.resultadoImportacion
-            });
-            
-            // Verificar que el modal esté visible en el DOM
-            setTimeout(() => {
-                const modalResultado = document.querySelector('[x-show*="modalResultadoOpen"]');
-                if (modalResultado) {
-                    const isVisible = window.getComputedStyle(modalResultado).display !== 'none';
-                    console.log('Modal de resultado visible en DOM:', isVisible);
-                    console.log('Estilos del modal:', window.getComputedStyle(modalResultado).display);
-                } else {
-                    console.error('No se encontró el modal de resultado en el DOM');
-                }
-            }, 100);
         });
     })
     .catch(error => {
-        console.error('Error completo:', error);
-        
         // Restaurar botón
         if (btnImportar) {
             btnImportar.disabled = false;
             btnImportar.textContent = textoOriginal;
         }
         
+        // Usar el mismo método que en el caso de éxito para obtener Alpine data
         const alpineContainer = document.querySelector('.py-12[x-data]');
         
+        // Obtener los datos de Alpine - múltiples métodos (igual que en el caso de éxito)
+        let alpineData;
         if (alpineContainer && alpineContainer.__x && alpineContainer.__x.$data) {
-            const alpineData = alpineContainer.__x.$data;
-            
+            alpineData = alpineContainer.__x.$data;
+        } else if (alpineContainer && window.Alpine && typeof window.Alpine.$data === 'function') {
+            try {
+                alpineData = window.Alpine.$data(alpineContainer);
+            } catch (e) {
+                console.error('Error accediendo a Alpine.$data:', e);
+            }
+        } else if (alpineContainer && alpineContainer._x_dataStack && alpineContainer._x_dataStack.length > 0) {
+            alpineData = alpineContainer._x_dataStack[0];
+        }
+        
+        if (alpineData) {
             // Cerrar modal de importación
             alpineData.modalImportarOpen = false;
             
-            // Configurar error
+            // Configurar error con mensaje descriptivo
+            const errorMessage = error.message || 'Error al procesar la importación';
+            
             alpineData.resultadoImportacion = {
                 success: false,
-                message: error.message || 'Error al procesar la importación'
+                message: errorMessage
             };
             
-            // Abrir modal de resultado
-            setTimeout(() => {
+            // Usar requestAnimationFrame como en el caso de éxito para asegurar que Alpine se actualice
+            requestAnimationFrame(() => {
                 alpineData.modalResultadoOpen = true;
-            }, 300);
+            });
         } else {
-            // Fallback solo si no hay Alpine.js
-            alert('Error: ' + (error.message || 'Error al procesar la importación'));
+            console.error('Alpine.js no disponible en catch, usando fallback DOM');
+            // Fallback: manipulación directa del DOM usando el mismo selector que Alpine
+            const modalResultado = document.querySelector('[x-show*="modalResultadoOpen"]');
+            if (modalResultado) {
+                // Forzar mostrar el modal removiendo el style="display: none"
+                modalResultado.removeAttribute('style');
+                modalResultado.style.display = 'flex';
+                modalResultado.style.zIndex = '50';
+                
+                const modalContent = modalResultado.querySelector('.bg-gray-800');
+                if (modalContent) {
+                    // Actualizar título
+                    const title = modalContent.querySelector('h3');
+                    if (title) {
+                        title.textContent = 'Error en la Importación';
+                    }
+                    
+                    // Buscar el div .p-6 que contiene el contenido
+                    const p6Div = modalContent.querySelector('.p-6');
+                    if (p6Div) {
+                        // Ocultar sección de éxito si existe
+                        const successSection = p6Div.querySelector('div[x-show*="resultadoImportacion.success"]');
+                        if (successSection) {
+                            successSection.style.display = 'none';
+                        }
+                        
+                        // Buscar o crear sección de error
+                        let errorSection = p6Div.querySelector('div[x-show*="!resultadoImportacion.success"]');
+                        if (!errorSection) {
+                            // Crear la sección de error
+                            errorSection = document.createElement('div');
+                            errorSection.className = 'space-y-4';
+                            p6Div.appendChild(errorSection);
+                        }
+                        
+                        // Mostrar la sección de error
+                        errorSection.style.display = 'block';
+                        
+                        // Actualizar o crear el contenido del error
+                        let errorContent = errorSection.querySelector('.flex.items-start');
+                        if (!errorContent) {
+                            errorContent = document.createElement('div');
+                            errorContent.className = 'flex items-start';
+                            errorSection.appendChild(errorContent);
+                        }
+                        
+                        // Actualizar el mensaje
+                        let messageP = errorContent.querySelector('.text-gray-200');
+                        if (!messageP) {
+                            // Crear estructura completa si no existe
+                            errorContent.innerHTML = `
+                                <svg class="w-6 h-6 text-red-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                                </svg>
+                                <div class="flex-1">
+                                    <p class="text-gray-200">${error.message || 'Error al procesar la importación'}</p>
+                                </div>
+                            `;
+                        } else {
+                            messageP.textContent = error.message || 'Error al procesar la importación';
+                        }
+                    }
+                }
+            } else {
+                // Último recurso: alert
+                alert('Error: ' + (error.message || 'Error al procesar la importación'));
+            }
         }
     })
     .finally(() => {

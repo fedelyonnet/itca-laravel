@@ -19,21 +19,21 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
     </head>
-<body>
-        <!-- Sticky Bar -->
-        @if($stickyBar && $stickyBar->visible == true)
-        <div class="sticky-bar" style="background-color: {{ $stickyBar->color }} !important;">
-            <div class="container">
-                <div class="sticky-bar-content">
-                    <div class="sticky-bar-text-container">
-                        <span class="sticky-bar-text">{!! $stickyBar->getFormattedTextAttribute() !!}</span>
-                    </div>
+<body id="top">
+    <!-- Sticky Bar -->
+    @if($stickyBar && $stickyBar->visible == true)
+    <div class="sticky-bar" style="background-color: {{ $stickyBar->color }} !important;">
+        <div class="container">
+            <div class="sticky-bar-content">
+                <div class="sticky-bar-text-container">
+                    <span class="sticky-bar-text">{!! $stickyBar->getFormattedTextAttribute() !!}</span>
                 </div>
             </div>
         </div>
-        @endif
+    </div>
+    @endif
 
-        <!-- Header -->
+    <!-- Header -->
     <header class="header {{ $stickyBar && $stickyBar->visible == true ? 'header-with-sticky' : '' }}">
         <div class="container">
             <nav class="nav">
@@ -42,15 +42,32 @@
                 
                 <!-- Desktop Navigation -->
                 <ul class="nav-links">
-                    <li><a href="#" class="nav-link">Somos ITCA</a></li>
-                    <li><a href="/carreras" class="nav-link">Carreras</a></li>
-                    <li><a href="#" class="nav-link">Beneficios</a></li>
-                    <li><a href="#" class="nav-link">Contacto</a></li>
-                    </ul>
+                    <li>
+                        <a href="#top" class="nav-link" data-target="home">
+                            Somos ITCA
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('carreras') }}" class="nav-link" data-target="carreras">
+                            Carreras
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#beneficios" class="nav-link" data-target="beneficios">
+                            Beneficios
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#contacto" class="nav-link" data-target="contacto">
+                            Contacto
+                        </a>
+                    </li>
+                </ul>
                 
                 <!-- Mobile Hamburger Button -->
                 <button class="hamburger">
                     <span></span>
+
                     <span></span>
                     <span></span>
                 </button>
@@ -1042,7 +1059,7 @@
             </section>
 
             <!-- Contacto Section -->
-            <section class="contacto-section">
+            <section class="contacto-section" id="contacto">
                 <div class="contacto-content">
                     <!-- Tercio Izquierdo - Sedes -->
                     <div class="contacto-tercio contacto-sedes">
@@ -1193,6 +1210,6 @@
             });
         });
     </script>
-    
+    @include('partials.home-scroll-spy')
     </body>
 </html>

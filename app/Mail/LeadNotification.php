@@ -20,9 +20,13 @@ class LeadNotification extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(Lead $lead, Cursada $cursada)
+    public function __construct(Lead $lead, ?Cursada $cursada = null)
     {
         $this->lead = $lead;
+        // Si no se pasa la cursada, intentar buscarla por ID_Curso
+        if (!$cursada && $lead->cursada_id) {
+            $cursada = Cursada::where('ID_Curso', $lead->cursada_id)->first();
+        }
         $this->cursada = $cursada;
     }
 

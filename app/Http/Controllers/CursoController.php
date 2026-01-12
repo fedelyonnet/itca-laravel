@@ -940,8 +940,8 @@ class CursoController extends Controller
                 'Cta.Web' => 'Cta_Web',
                 'Sin IVA cta' => 'Sin_IVA_cta', // Nueva columna
                 'Dto.Cuota' => 'Dto_Cuota',
-                'cant. cuotas' => 'cuotas',
-                'cuotas' => 'cuotas', // Mantener por compatibilidad
+                'cuotas' => 'cuotas', // Nombre principal
+                'cant. cuotas' => 'cuotas', // Variante alternativa
                 'sede' => 'sede',
                 'Promo Mat-logo-' => 'Promo_Mat_logo',
                 'ver curso' => 'ver_curso', // Nueva columna
@@ -971,8 +971,29 @@ class CursoController extends Controller
             }
 
             // Verificar que se encontraron los headers esenciales
-            // En el nuevo formato, solo ID_Curso es requerido
-            $requiredFields = ['ID_Curso'];
+            // Columnas requeridas para el correcto funcionamiento
+            $requiredFields = [
+                'ID_Curso',
+                'carrera',
+                'Cod1',
+                'Fecha_Inicio',
+                'xDias',
+                'xModalidad',
+                'Régimen',
+                'xTurno',
+                'Horario',
+                'Vacantes',
+                'Matric_Base',
+                'Sin_iva_Mat',
+                'Cta_Web',
+                'Sin_IVA_cta',
+                'Dto_Cuota',
+                'cuotas',
+                'sede',
+                'Promo_Mat_logo',
+                'ver_curso'
+            ];
+            
             $missingFields = [];
             foreach ($requiredFields as $field) {
                 if (!isset($columnIndex[$field])) {
@@ -981,9 +1002,45 @@ class CursoController extends Controller
             }
 
             if (!empty($missingFields)) {
+                // Mapear nombres de campos a nombres exactos del Excel
+                // Para cada campo faltante, verificar cuál nombre del Excel realmente falta
+                $missingFieldsNames = [];
+                foreach ($missingFields as $field) {
+                    // Buscar en headerMap todos los nombres de Excel que mapean a este campo
+                    $excelNames = [];
+                    foreach ($headerMap as $excelHeader => $dbField) {
+                        if ($dbField === $field) {
+                            $excelNames[] = $excelHeader;
+                        }
+                    }
+                    
+                    // Verificar cuál de los nombres posibles realmente falta en los headers
+                    $foundName = null;
+                    foreach ($excelNames as $excelName) {
+                        foreach ($headers as $header) {
+                            if (strcasecmp(trim($header), trim($excelName)) === 0) {
+                                $foundName = $excelName;
+                                break 2; // Se encontró, salir de ambos loops
+                            }
+                        }
+                    }
+                    
+                    // Si no se encontró ninguno, usar el primero de la lista (más común)
+                    // Si se encontró alguno, significa que el campo no debería estar en missingFields
+                    // pero por seguridad, si está aquí, usamos el primero
+                    if (empty($excelNames)) {
+                        $missingFieldsNames[] = $field; // Fallback
+                    } else {
+                        // Usar el primero de la lista (el más común/esperado)
+                        $missingFieldsNames[] = $excelNames[0];
+                    }
+                }
+                
+                \Log::error('Columnas faltantes detectadas: ' . implode(', ', $missingFieldsNames));
+                
                 return response()->json([
                     'success' => false,
-                    'message' => 'Faltan columnas requeridas en el Excel: ' . implode(', ', $missingFields)
+                    'message' => 'Error: La estructura del archivo Excel no es válida. Faltan las siguientes columnas requeridas: ' . implode(', ', $missingFieldsNames) . '. Por favor, verifica que el archivo tenga todas las columnas necesarias.'
                 ], 400, ['Content-Type' => 'application/json']);
             }
 
@@ -1200,7 +1257,7 @@ class CursoController extends Controller
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error de validación: ' . implode(', ', $e->errors()['archivo_excel'] ?? ['Archivo inválido'])
+                'message' => 'Error: La estructura del archivo Excel no es válida. ' . implode(', ', $e->errors()['archivo_excel'] ?? ['Archivo inválido']) . '. Por favor, verifica que el archivo sea un Excel válido (.xlsx o .xls) y que no exceda 10MB.'
             ], 422, ['Content-Type' => 'application/json']);
         } catch (\Exception $e) {
             \Log::error('Error en storeImportacion: ' . $e->getMessage());
@@ -1208,7 +1265,7 @@ class CursoController extends Controller
             
             return response()->json([
                 'success' => false,
-                'message' => 'Error al procesar el archivo: ' . $e->getMessage()
+                'message' => 'Error: La estructura del archivo Excel no es válida. ' . ($e->getMessage() ?: 'Error al procesar el archivo') . '. Por favor, verifica que el archivo tenga el formato correcto.'
             ], 500, ['Content-Type' => 'application/json']);
         }
     }
