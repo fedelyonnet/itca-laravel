@@ -332,7 +332,7 @@
                                     <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header sortable-header" style="min-width: 100px; width: 120px;" data-sort="Dto_Cuota">
                                         <div class="flex items-center justify-between">
                                             <span class="flex items-center gap-1">
-                                                Dto.Cuota
+                                                Dto Cuota
                                                 <span class="sort-indicator"></span>
                                             </span>
                                             <div class="resizer"></div>

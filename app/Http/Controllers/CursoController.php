@@ -937,9 +937,9 @@ class CursoController extends Controller
                 'Vacantes' => 'Vacantes',
                 'Matric Base' => 'Matric_Base',
                 'Sin iva Mat' => 'Sin_iva_Mat', // Nueva columna
-                'Cta.Web' => 'Cta_Web',
+                'Cta Web' => 'Cta_Web',
                 'Sin IVA cta' => 'Sin_IVA_cta', // Nueva columna
-                'Dto.Cuota' => 'Dto_Cuota',
+                'Dto Cuota' => 'Dto_Cuota',
                 'cuotas' => 'cuotas', // Nombre principal
                 'cant. cuotas' => 'cuotas', // Variante alternativa
                 'sede' => 'sede',
