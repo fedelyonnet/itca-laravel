@@ -30,7 +30,7 @@
        class="relative inline-flex items-center text-white hover:text-gray-300 px-2 py-1">
         Panel
         @if($isActivePanel)
-            <img src="{{ asset('images/menu.png') }}" class="absolute -bottom-2 left-0 w-full h-auto" alt="active">
+            <div class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500"></div>
         @endif
     </a>
     
@@ -51,7 +51,7 @@
             </svg>
         </button>
         @if($isActiveCarreras)
-            <img src="{{ asset('images/menu.png') }}" class="absolute -bottom-2 left-0 w-full h-auto pointer-events-none" alt="active">
+            <div class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500"></div>
         @endif
 
         <div x-show="open" 
@@ -121,7 +121,7 @@
             </svg>
         </button>
         @if($isActiveCMS)
-            <img src="{{ asset('images/menu.png') }}" class="absolute -bottom-2 left-0 w-full h-auto pointer-events-none" alt="active">
+            <div class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500"></div>
         @endif
 
         <div x-show="open" 
@@ -196,7 +196,10 @@
     </div>
     
     <a href="{{ route('admin.leads') }}" 
-       class="inline-flex items-center text-white hover:text-gray-300 px-2 py-1">
+       class="relative inline-flex items-center text-white hover:text-gray-300 px-2 py-1">
         Leads
+        @if($isActiveLeads)
+            <div class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500"></div>
+        @endif
     </a>
 </nav>

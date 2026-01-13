@@ -2254,6 +2254,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Solo ejecutar si existe el contenedor
     if (!navLinksContainer) return;
     
+    // Evitar ejecutar en el admin panel (si el body tiene clase admin o la url contiene /admin)
+    if (document.body.classList.contains('admin') || window.location.pathname.includes('/admin')) {
+        return;
+    }
+    
     // Crear el elemento indicador
     // Verificamos si ya existe para evitar duplicados en reinicializaciones
     let indicator = navLinksContainer.querySelector('.nav-indicator');

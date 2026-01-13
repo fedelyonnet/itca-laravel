@@ -803,6 +803,7 @@ body {
         bottom: -5px;
         left: 0;
         height: 12px;
+        /* Volvemos a la ruta absoluta, es lo más seguro en Laravel + Vite si la imagen está en public/ */
         background-image: url('/images/menu.png');
         background-repeat: no-repeat;
         background-position: center bottom;
