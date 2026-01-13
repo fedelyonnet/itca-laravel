@@ -12,6 +12,7 @@ Route::get('/carreras/{curso}', [CursoController::class, 'show'])->name('carrera
 Route::get('/inscripcion/{curso}', [App\Http\Controllers\WelcomeController::class, 'inscripcion'])->name('inscripcion');
 Route::get('/api/inscripcion/{curso}/cursadas', [App\Http\Controllers\WelcomeController::class, 'getCursadas'])->name('api.inscripcion.cursadas');
 Route::post('/leads', [App\Http\Controllers\WelcomeController::class, 'storeLead'])->name('leads.store');
+Route::post('/leads/{id}/terms', [App\Http\Controllers\WelcomeController::class, 'updateLeadTerms'])->name('leads.terms.update');
 Route::post('/buscar-descuento', [App\Http\Controllers\CursoController::class, 'buscarDescuento'])->name('buscar.descuento')->middleware('web');
 
 

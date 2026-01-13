@@ -24,5 +24,17 @@ class AppServiceProvider extends ServiceProvider
         if (config('app.env') === 'production' || request()->isSecure()) {
             URL::forceScheme('https');
         }
+
+        // Log de consultas SQL lentas para depuración
+        if (config('app.debug')) {
+            \DB::listen(function ($query) {
+                if ($query->time > 100) { // Loguear consultas que tarden más de 100ms
+                    \Log::warning('Consulta lenta detectada: ' . $query->sql, [
+                        'bindings' => $query->bindings,
+                        'time' => $query->time
+                    ]);
+                }
+            });
+        }
     }
 }

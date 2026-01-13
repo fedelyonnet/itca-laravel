@@ -2249,15 +2249,15 @@ document.addEventListener('DOMContentLoaded', function() {
 // MENU ANIMADO (MAGIC LINE)
 // ========================================
 document.addEventListener('DOMContentLoaded', function() {
-    const navLinksContainer = document.querySelector('.nav-links');
-    
-    // Solo ejecutar si existe el contenedor
-    if (!navLinksContainer) return;
-    
     // Evitar ejecutar en el admin panel (si el body tiene clase admin o la url contiene /admin)
     if (document.body.classList.contains('admin') || window.location.pathname.includes('/admin')) {
         return;
     }
+
+    const navLinksContainer = document.querySelector('.nav-links');
+    
+    // Solo ejecutar si existe el contenedor
+    if (!navLinksContainer) return;
     
     // Crear el elemento indicador
     // Verificamos si ya existe para evitar duplicados en reinicializaciones

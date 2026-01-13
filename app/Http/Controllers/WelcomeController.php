@@ -478,6 +478,7 @@ class WelcomeController extends Controller
         // Esta ruta siempre devuelve JSON (solo se llama desde AJAX)
         try {
             $validated = $request->validate([
+                'id' => 'nullable|exists:leads,id',
                 'nombre' => 'required|string|max:255',
                 'apellido' => 'required|string|max:255',
                 'dni' => 'required|string|max:8|regex:/^[0-9]{7,8}$/',
@@ -491,50 +492,81 @@ class WelcomeController extends Controller
             // Obtener la cursada por ID_Curso
             $cursada = \App\Models\Cursada::where('ID_Curso', $validated['cursada_id'])->firstOrFail();
 
-            // Guardar el lead (cursada_id ahora contiene ID_Curso)
-            $lead = Lead::create($validated);
+            if (isset($validated['id']) && $validated['id']) {
+                // Actualizar lead existente
+                $lead = Lead::findOrFail($validated['id']);
+                $lead->update($validated);
+                $message = 'Lead actualizado correctamente';
+                // No enviamos notificación de email en actualización para no spamear
+            } else {
+                // Guardar nuevo lead (cursada_id ahora contiene ID_Curso)
+                $lead = Lead::create($validated);
+                $message = 'Lead guardado correctamente';
 
-            // Enviar email de notificación
-            try {
-                $toEmail = env('MAIL_TO_ADMIN', 'federico.lyonnet@gmail.com');
-                \Mail::to($toEmail)->send(new \App\Mail\LeadNotification($lead, $cursada));
-            } catch (\Exception $emailException) {
-                // Log del error de email pero no fallar el guardado del lead
-                \Log::error('Error al enviar email de notificación de lead', [
-                    'lead_id' => $lead->id,
-                    'error' => $emailException->getMessage(),
-                    'trace' => $emailException->getTraceAsString(),
-                ]);
+                // Enviar email de notificación solo al crear
+                try {
+                    $toEmail = env('MAIL_TO_ADMIN', 'federico.lyonnet@gmail.com');
+                    \Mail::to($toEmail)->send(new \App\Mail\LeadNotification($lead, $cursada));
+                } catch (\Exception $emailException) {
+                    // Log del error de email pero no fallar el guardado del lead
+                    \Log::error('Error al enviar email de notificación de lead', [
+                        'lead_id' => $lead->id,
+                        'error' => $emailException->getMessage(),
+                        'trace' => $emailException->getTraceAsString(),
+                    ]);
+                }
             }
 
-            return response()->json(['success' => true, 'message' => 'Lead guardado correctamente'], 200, [
+            return response()->json([
+                'success' => true, 
+                'message' => $message,
+                'lead_id' => $lead->id
+            ], 200, [
                 'Content-Type' => 'application/json'
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error de validación: ' . implode(', ', array_map(function($errors) {
-                    return is_array($errors) ? implode(', ', $errors) : $errors;
-                }, $e->errors()))
-            ], 422, [
-                'Content-Type' => 'application/json'
+            \Log::error('Error de validación al guardar lead', [
+                'errors' => $e->errors(),
+                'data' => $request->all()
             ]);
+            return response()->json(['success' => false, 'errors' => $e->errors()], 422);
         } catch (\Exception $e) {
-            \Log::error('Error al guardar lead', [
+            \Log::error('Error general al guardar lead', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'headers' => $request->headers->all(),
-                'ajax' => $request->ajax(),
-                'wantsJson' => $request->wantsJson(),
-                'xRequestedWith' => $request->header('X-Requested-With')
+                'trace' => $e->getTraceAsString()
             ]);
+            return response()->json(['success' => false, 'message' => 'Error interno del servidor'], 500);
+        }
+    }
+
+    public function updateLeadTerms(Request $request, $id)
+    {
+        try {
+            // Validar que el ID sea numérico
+            if (!is_numeric($id)) {
+                return response()->json(['success' => false, 'message' => 'ID inválido'], 400);
+            }
+
+            // Buscar el lead
+            $lead = Lead::findOrFail($id);
             
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al guardar los datos: ' . $e->getMessage()
-            ], 500, [
-                'Content-Type' => 'application/json'
+            // Actualizar el estado de acepto_terminos
+            $lead->update([
+                'acepto_terminos' => true
             ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Términos actualizados correctamente'
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['success' => false, 'message' => 'Lead no encontrado'], 404);
+        } catch (\Exception $e) {
+            \Log::error('Error al actualizar términos del lead', [
+                'lead_id' => $id,
+                'error' => $e->getMessage()
+            ]);
+            return response()->json(['success' => false, 'message' => 'Error interno del servidor'], 500);
         }
     }
 }

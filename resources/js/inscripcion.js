@@ -86,13 +86,13 @@
             // Variable global para promoBadgeInfo
             let globalPromoBadgeInfo = null;
             
-            // Constante para localStorage
+            // Constante para sessionStorage
             const STORAGE_KEY = 'inscripcion_form_data';
             
             // Funciones necesarias para restaurar el estado - definidas temprano
             function cargarDatosFormulario(cursadaId, intentos = 0) {
                 try {
-                    const datosGuardados = localStorage.getItem(STORAGE_KEY);
+                    const datosGuardados = sessionStorage.getItem(STORAGE_KEY);
                     if (!datosGuardados) {
                         return;
                     }
@@ -170,6 +170,21 @@
                         datosCargados = true;
                     }
                     
+                    // Restaurar leadId en el panel si existe
+                    if (datos.leadId) {
+                        let panel = document.getElementById('panel-' + cursadaId);
+                        if (!panel) {
+                            if (cursadaId.includes('cursada-')) {
+                                panel = document.getElementById('panel-' + cursadaId.replace('cursada-', ''));
+                            } else {
+                                panel = document.getElementById('panel-cursada-' + cursadaId);
+                            }
+                        }
+                        if (panel) {
+                            panel.setAttribute('data-lead-id', datos.leadId);
+                        }
+                    }
+                    
                     
                     // Actualizar el estado del botón después de cargar
                     // Pero solo si el formulario no está completado (no está readonly)
@@ -212,17 +227,43 @@
                     const telefono = formulario.querySelector('input[name="telefono"]');
                     const telefonoPrefijo = formulario.querySelector('select[name="telefono_prefijo"]');
                     
+                    // Obtener leadId del panel si existe
+                    let panel = document.getElementById('panel-' + cursadaId);
+                    if (!panel) {
+                        if (cursadaId.includes('cursada-')) {
+                            panel = document.getElementById('panel-' + cursadaId.replace('cursada-', ''));
+                        } else {
+                            panel = document.getElementById('panel-cursada-' + cursadaId);
+                        }
+                    }
+                    
+                    // Prioridad: 1. Panel, 2. SessionStorage
+                    let leadId = panel ? panel.getAttribute('data-lead-id') : null;
+                    
+                    if (!leadId) {
+                         try {
+                             const datosGuardados = sessionStorage.getItem(STORAGE_KEY);
+                             if (datosGuardados) {
+                                 const datos = JSON.parse(datosGuardados);
+                                 if (datos.leadId) {
+                                     leadId = datos.leadId;
+                                 }
+                             }
+                         } catch (e) {}
+                    }
+
                     const datos = {
                         nombre: nombre?.value?.trim() || '',
                         apellido: apellido?.value?.trim() || '',
                         dni: dni?.value?.trim() || '',
                         correo: correo?.value?.trim() || '',
                         telefono: telefono?.value?.trim() || '',
-                        telefonoPrefijo: telefonoPrefijo?.value || '+54'
+                        telefonoPrefijo: telefonoPrefijo?.value || '+54',
+                        leadId: leadId
                     };
                     
-                    // Guardar los datos en localStorage
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
+                    // Guardar los datos en sessionStorage
+                    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
                 } catch (error) {
                     console.error('guardarDatosFormulario: Error', error);
                 }
@@ -398,7 +439,7 @@
             // Definida temprano para que esté disponible cuando se necesite
             function verificarYRestaurarEstadoCompletado() {
                 try {
-                    const datosGuardados = localStorage.getItem(STORAGE_KEY);
+                    const datosGuardados = sessionStorage.getItem(STORAGE_KEY);
                     if (!datosGuardados) {
                         return false;
                     }
@@ -476,6 +517,12 @@
                                 botonContinuar.style.opacity = '0.6';
                                 botonContinuar.style.cursor = 'not-allowed';
                             });
+
+                            // Mostrar botón editar
+                            const btnEditar = document.getElementById('editar-form-' + cursadaId);
+                            if (btnEditar) {
+                                btnEditar.style.display = 'inline';
+                            }
                         }
                     });
                     
@@ -526,7 +573,7 @@
                         const formulario = document.getElementById('formulario-' + cursadaId);
                         if (formulario) {
                             // Solo actualizar tabindex, NO borrar los datos
-                            // Los datos se mantienen y se cargarán desde localStorage cuando se vuelva a abrir
+                            // Los datos se mantienen y se cargarán desde sessionStorage cuando se vuelva a abrir
                             const inputs = formulario.querySelectorAll('input, select');
                             inputs.forEach(input => {
                                 input.setAttribute('tabindex', '-1');
@@ -847,8 +894,101 @@
                                     tempFormulario.id = 'formulario-' + cursadaId;
                                     
                                     // Cargar datos guardados ANTES de actualizar IDs (usa name, así que funciona)
+                                    // También cargar el leadId desde sessionStorage si existe para asegurar que se usa en futuras ediciones
                                     if (typeof cargarDatosFormulario === 'function') {
                                         cargarDatosFormulario(cursadaId);
+                                    }
+                                    
+                                    // Restaurar leadId en el panel desde sessionStorage si existe
+                                    try {
+                                        const datosGuardados = sessionStorage.getItem(STORAGE_KEY);
+                                        if (datosGuardados) {
+                                            const datos = JSON.parse(datosGuardados);
+                                            if (datos.leadId) {
+                                                // Intentar encontrar el panel para setear el atributo
+                                                const formCursadaId = cursadaId.replace('cursada-', '');
+                                                let panel = document.getElementById('panel-' + formCursadaId);
+                                                if (!panel) {
+                                                    if (cursadaId.includes('cursada-')) {
+                                                        panel = document.getElementById('panel-' + cursadaId.replace('cursada-', ''));
+                                                    } else {
+                                                        panel = document.getElementById('panel-cursada-' + cursadaId);
+                                                    }
+                                                }
+                                                if (panel) {
+                                                    panel.setAttribute('data-lead-id', datos.leadId);
+                                                }
+                                            }
+                                        }
+                                    } catch(e) {}
+
+                                    // Restaurar estado del checkbox de términos si ya se aceptaron
+                                    const checkboxTerminosModal = modalBody.querySelector('#acepto-terminos-modal-' + cursadaId) || modalBody.querySelector('#acepto-terminos-' + cursadaId);
+                                    const btnReservar = modalBody.querySelector('.cursada-btn-reservar');
+                                    
+                                    // Verificar si ya se aceptaron los términos para este lead
+                                    // Esto se puede inferir si el botón reservar ya está habilitado o si hay algún indicador
+                                    // Por ahora, nos aseguramos de que el checkbox funcione correctamente
+                                    if (checkboxTerminosModal) {
+                                        checkboxTerminosModal.disabled = false; // Habilitar checkbox
+                                        
+                                        checkboxTerminosModal.addEventListener('change', function(e) {
+                                            if (this.checked) {
+                                                // Obtener el ID del lead desde el panel o atributo guardado
+                                                // Usar la misma lógica robusta que usamos para guardar
+                                                let leadId = null;
+                                                const formCursadaId = cursadaId.replace('cursada-', '');
+                                                
+                                                // 1. Panel
+                                                let panel = document.getElementById('panel-' + formCursadaId);
+                                                if (!panel) {
+                                                    if (cursadaId.includes('cursada-')) {
+                                                        panel = document.getElementById('panel-' + cursadaId.replace('cursada-', ''));
+                                                    } else {
+                                                        panel = document.getElementById('panel-cursada-' + cursadaId);
+                                                    }
+                                                }
+                                                if (panel) leadId = panel.getAttribute('data-lead-id');
+                                                
+                                                // 2. SessionStorage
+                                                if (!leadId) {
+                                                    try {
+                                                        const datosGuardados = sessionStorage.getItem(STORAGE_KEY);
+                                                        if (datosGuardados) {
+                                                            const datos = JSON.parse(datosGuardados);
+                                                            leadId = datos.leadId;
+                                                        }
+                                                    } catch(e) {}
+                                                }
+                                                
+                                                if (leadId) {
+                                                    fetch('/leads/' + leadId + '/terms', {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'Content-Type': 'application/json',
+                                                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                                                        }
+                                                    })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        if (data.success) {
+                                                            console.log('Términos aceptados guardados para lead (mobile):', leadId);
+                                                            if (btnReservar) {
+                                                                btnReservar.disabled = false;
+                                                            }
+                                                        }
+                                                    })
+                                                    .catch(error => console.error('Error al guardar términos (mobile):', error));
+                                                } else {
+                                                    console.error('No se encontró leadId para actualizar términos (mobile)');
+                                                }
+                                            } else {
+                                                // Si se desmarca, deshabilitar botón reservar
+                                                if (btnReservar) {
+                                                    btnReservar.disabled = true;
+                                                }
+                                            }
+                                        });
                                     }
                                     
                                     // Funciones helper locales (definidas antes de usarlas)
@@ -1229,6 +1369,80 @@
                                         });
                                     }
                                     
+                                    // Configurar botón editar form (mismo comportamiento que desktop)
+                                    const btnEditarModal = modalBody.querySelector('#editar-form-' + cursadaId);
+                                    if (btnEditarModal) {
+                                        btnEditarModal.addEventListener('click', function(e) {
+                                            e.preventDefault();
+                                            
+                                            // Habilitar inputs del formulario actual
+                                            const formInputs = tempFormulario.querySelectorAll('input, select');
+                                            formInputs.forEach(input => {
+                                                input.removeAttribute('readonly');
+                                                input.removeAttribute('disabled');
+                                                input.style.pointerEvents = 'auto';
+                                                input.style.opacity = '1';
+                                                input.style.cursor = input.tagName === 'SELECT' ? 'pointer' : 'text';
+                                            });
+                                            
+                                            // Habilitar botón continuar correspondiente
+                                            const botonContinuar = modalBody.querySelector('.cursada-btn-continuar');
+                                            if (botonContinuar) {
+                                                botonContinuar.disabled = false;
+                                                botonContinuar.style.opacity = '1';
+                                                botonContinuar.style.cursor = 'pointer';
+                                                // Re-validar para asegurar estado correcto del botón
+                                                if (typeof actualizarBotonLocal === 'function') {
+                                                    actualizarBotonLocal();
+                                                }
+                                            }
+                                            
+                                            // Ocultar este botón de editar
+                                            this.style.display = 'none';
+
+                                            // OCULTAR Y DESHABILITAR PANELES DERECHOS (Modo Edición - Mobile/Modal)
+                                            
+                                            // 1. Ocultar información de cuota y panel derecho
+                                            const cuotaInfo = modalBody.querySelector('#cuota-info-' + cursadaId);
+                                            if (cuotaInfo) {
+                                                cuotaInfo.style.display = 'none';
+                                                cuotaInfo.setAttribute('hidden', '');
+                                                cuotaInfo.classList.remove('visible');
+                                                cuotaInfo.classList.add('hidden');
+                                            }
+                                            
+                                            // 2. Deshabilitar checkbox de términos y desmarcarlo
+                                            const checkboxTerminos = modalBody.querySelector('#acepto-terminos-modal-' + cursadaId);
+                                            if (checkboxTerminos) {
+                                                // Primero desmarcar, luego deshabilitar
+                                                checkboxTerminos.checked = false;
+                                                checkboxTerminos.disabled = true;
+                                                
+                                                // Forzar actualización visual si es necesario (para algunos navegadores móviles)
+                                                checkboxTerminos.dispatchEvent(new Event('change', { bubbles: true }));
+                                            }
+                                            
+                                            // 3. Deshabilitar botón Reservar
+                                            const btnReservar = modalBody.querySelector('.cursada-btn-reservar');
+                                            if (btnReservar) {
+                                                btnReservar.disabled = true;
+                                            }
+
+                                            // 4. Deshabilitar link de código de descuento
+                                            const linkCodigo = modalBody.querySelector('#link-codigo-modal-' + cursadaId);
+                                            if (linkCodigo) {
+                                                linkCodigo.classList.add('cursada-link-disabled');
+                                            }
+
+                                            // 5. Ocultar input de código si estaba abierto
+                                            const codigoInputContainer = modalBody.querySelector('#codigo-input-modal-' + cursadaId);
+                                            if (codigoInputContainer) {
+                                                codigoInputContainer.classList.remove('input-visible');
+                                                codigoInputContainer.style.display = 'none';
+                                            }
+                                        });
+                                    }
+
                                     // Configurar botón "Continuar" (igual que desktop)
                                     // Buscar el botón continuar en el modal (puede tener cualquier data-cursada-id después del clone)
                                     let botonContinuar = modalBody.querySelector('.cursada-btn-continuar');
@@ -1327,6 +1541,41 @@
                                                 mostrarNotificacion('Error: No se pudo obtener el ID del curso. Por favor, recargá la página.', 'error');
                                                 return;
                                             }
+
+                                            // Obtener leadId para edición
+                                            // 1. Intentar desde el panel original (lugar más confiable)
+                                            const formCursadaId = cursadaIdBtn.replace('cursada-', '');
+                                            let leadId = null;
+                                            
+                                            // Buscar panel original
+                                            let panelOriginal = document.getElementById('panel-' + formCursadaId);
+                                            if (!panelOriginal) {
+                                                if (cursadaIdBtn.includes('cursada-')) {
+                                                    panelOriginal = document.getElementById('panel-' + cursadaIdBtn.replace('cursada-', ''));
+                                                } else {
+                                                    panelOriginal = document.getElementById('panel-cursada-' + cursadaIdBtn);
+                                                }
+                                            }
+                                            
+                                            if (panelOriginal) {
+                                                leadId = panelOriginal.getAttribute('data-lead-id');
+                                            }
+                                            
+                                            // 2. Si no, intentar desde sessionStorage
+                                            if (!leadId) {
+                                                const datosGuardados = sessionStorage.getItem(STORAGE_KEY);
+                                                if (datosGuardados) {
+                                                    try {
+                                                        const datos = JSON.parse(datosGuardados);
+                                                        if (datos.leadId) {
+                                                            leadId = datos.leadId;
+                                                        }
+                                                    } catch (e) {}
+                                                }
+                                            }
+                                            
+                                            // Verificar estado del checkbox
+                                            const aceptoTerminos = checkboxTerminosModal ? checkboxTerminosModal.checked : false;
                                             
                                             // Guardar lead (igual que desktop)
                                             fetch(window.inscripcionConfig.leadsStoreUrl, {
@@ -1338,6 +1587,7 @@
                                                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                                                 },
                                                 body: JSON.stringify({
+                                                    id: leadId, // Enviar ID si existe para actualizar
                                                     nombre: nombreModal.value.trim(),
                                                     apellido: apellidoModal.value.trim(),
                                                     dni: dniModal.value.trim(),
@@ -1345,7 +1595,7 @@
                                                     telefono: telefonoCompleto,
                                                     cursada_id: idCurso,
                                                     tipo: 'Lead',
-                                                    acepto_terminos: checkboxTerminosModal ? checkboxTerminosModal.checked : false
+                                                    acepto_terminos: aceptoTerminos
                                                 })
                                             })
                                             .then(async response => {
@@ -1385,6 +1635,32 @@
                                                 }
                                                 
                                                 if (data && data.success) {
+                                                    // Guardar el ID del lead en el panel correspondiente para usarlo después
+                                                    const panelId = 'panel-' + cursadaIdBtn.replace('cursada-', '');
+                                                    const panel = document.getElementById(panelId);
+                                                    if (panel && data.lead_id) {
+                                                        panel.setAttribute('data-lead-id', data.lead_id);
+                                                    }
+
+                                                    // También guardarlo en sessionStorage para persistencia
+                                                    if (typeof guardarDatosFormulario === 'function') {
+                                                        // Recuperar datos actuales y agregar leadId
+                                                        try {
+                                                            const datosGuardados = sessionStorage.getItem(STORAGE_KEY);
+                                                            if (datosGuardados) {
+                                                                const datos = JSON.parse(datosGuardados);
+                                                                datos.leadId = data.lead_id;
+                                                                sessionStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
+                                                            } else {
+                                                                // Si no hay datos, crear objeto con leadId (caso raro pero posible)
+                                                                const datos = { leadId: data.lead_id };
+                                                                sessionStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
+                                                            }
+                                                            // Forzar actualización inmediata del almacenamiento
+                                                            guardarDatosFormulario(cursadaIdBtn);
+                                                        } catch (e) {}
+                                                    }
+
                                                     // Verificar si el formulario ya estaba en modo readonly ANTES de aplicar readonly
                                                     const yaEstabaReadonly = tempFormulario.querySelector('input[readonly]') || tempFormulario.querySelector('input[disabled]');
                                                     
@@ -1439,6 +1715,18 @@
                                                                 botonContinuarFormModal.disabled = true;
                                                                 botonContinuarFormModal.style.opacity = '0.6';
                                                                 botonContinuarFormModal.style.cursor = 'not-allowed';
+                                                            }
+                                                            // Mostrar botón editar (intentar en modal y DOM normal)
+                                                            let btnEditarModal = null;
+                                                            if (modalBodyForReadonly) {
+                                                                btnEditarModal = modalBodyForReadonly.querySelector('#editar-form-' + formCursadaId);
+                                                            }
+                                                            if (!btnEditarModal) {
+                                                                btnEditarModal = document.getElementById('editar-form-' + formCursadaId);
+                                                            }
+                                                            
+                                                            if (btnEditarModal) {
+                                                                btnEditarModal.style.display = 'inline';
                                                             }
                                                         }
                                                     });
@@ -1962,6 +2250,23 @@
                         }
                     }
                     
+                    // Actualizar link de editar form para que tenga el estilo correcto (inline-style porque es dinámico en el template)
+                    const linkEditar = clone.querySelector('.cursada-editar-form-link');
+                    if (linkEditar) {
+                        linkEditar.textContent = "(Editar datos)";
+                        // Aplicar estilos inline para asegurar consistencia
+                        linkEditar.style.fontFamily = "'Montserrat', sans-serif";
+                        linkEditar.style.fontWeight = "600";
+                        linkEditar.style.textDecoration = "underline";
+                        linkEditar.style.color = "#65E09C";
+                        linkEditar.style.cursor = "pointer";
+                        linkEditar.style.transition = "opacity 0.2s, color 0.2s";
+                        linkEditar.style.textAlign = "left";
+                        linkEditar.style.flexShrink = "0";
+                        linkEditar.style.marginLeft = "10px";
+                        // El font-size clamp se mantiene desde el HTML/CSS o se aplica aquí si es necesario
+                    }
+
                     // Inicializar botón reservar como disabled
                     const btnReservar = clone.querySelector('.cursada-btn-reservar');
                     if (btnReservar) {
@@ -1976,6 +2281,39 @@
                     const checkboxTerminos = clone.querySelector('#acepto-terminos-' + cursadaId);
                     if (checkboxTerminos) {
                         checkboxTerminos.disabled = true;
+                        
+                        // Agregar listener para cuando se clickea el checkbox
+                        checkboxTerminos.addEventListener('change', function(e) {
+                            if (this.checked && !this.disabled) {
+                                // Obtener el ID del lead desde el panel o atributo guardado
+                                const panel = document.getElementById('panel-' + cursadaId);
+                                const leadId = panel ? panel.getAttribute('data-lead-id') : null;
+                                
+                                if (leadId) {
+                                    fetch('/leads/' + leadId + '/terms', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                                        }
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            console.log('Términos aceptados guardados para lead:', leadId);
+                                            // Habilitar botón reservar si existe
+                                            const btnReservar = document.querySelector('.cursada-btn-reservar[data-cursada-id="' + cursadaId + '"]');
+                                            if (btnReservar) {
+                                                btnReservar.disabled = false;
+                                            }
+                                        }
+                                    })
+                                    .catch(error => console.error('Error al guardar términos:', error));
+                                } else {
+                                    console.error('No se encontró leadId para actualizar términos');
+                                }
+                            }
+                        });
                     }
                     const linkVer = clone.querySelector('#link-ver-' + cursadaId);
                     if (linkVer) {
@@ -3412,7 +3750,7 @@
                 // Pero solo si el formulario no está ya completado
                 setTimeout(() => {
                     // Verificar si hay datos completos guardados
-                    const datosGuardados = localStorage.getItem(STORAGE_KEY);
+                    const datosGuardados = sessionStorage.getItem(STORAGE_KEY);
                     if (datosGuardados) {
                         const datos = JSON.parse(datosGuardados);
                         const formularioCompleto = datos.nombre && datos.apellido && datos.dni && 
@@ -3464,6 +3802,78 @@
                 setupCampoTexto(nombre, errorNombre, 'Este campo es obligatorio');
                 setupCampoTexto(apellido, errorApellido, 'Este campo es obligatorio');
                 setupCampoValidado(dni, errorDni, validarDni, 'El DNI debe tener entre 7 y 8 dígitos');
+
+                // Configurar botón editar form
+                const btnEditar = document.getElementById('editar-form-' + cursadaId);
+                if (btnEditar) {
+                    btnEditar.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        // Habilitar inputs del formulario actual
+                        const formInputs = formulario.querySelectorAll('input, select');
+                        formInputs.forEach(input => {
+                            input.removeAttribute('readonly');
+                            input.removeAttribute('disabled');
+                            input.style.pointerEvents = 'auto';
+                            input.style.opacity = '1';
+                            input.style.cursor = input.tagName === 'SELECT' ? 'pointer' : 'text';
+                        });
+                        
+                        // Habilitar botón continuar correspondiente
+                        const botonContinuar = document.querySelector('.cursada-btn-continuar[data-cursada-id="' + cursadaId + '"]');
+                        if (botonContinuar) {
+                            botonContinuar.disabled = false;
+                            botonContinuar.style.opacity = '1';
+                            botonContinuar.style.cursor = 'pointer';
+                            // Re-validar para asegurar estado correcto del botón
+                            actualizarEstadoBotonContinuar(cursadaId);
+                        }
+                        
+                        // Ocultar este botón de editar
+                        this.style.display = 'none';
+
+                        // OCULTAR Y DESHABILITAR PANELES DERECHOS (Modo Edición)
+                        
+                        // 1. Ocultar información de cuota y panel derecho
+                        const cuotaInfo = document.getElementById('cuota-info-' + cursadaId);
+                        if (cuotaInfo) {
+                            cuotaInfo.style.display = 'none';
+                            cuotaInfo.setAttribute('hidden', '');
+                            cuotaInfo.classList.remove('visible');
+                            cuotaInfo.classList.add('hidden');
+                        }
+                        
+                        // 2. Deshabilitar checkbox de términos y desmarcarlo
+                        // Buscar tanto en el DOM normal como en modal por si acaso
+                        const checkboxTerminos = document.getElementById('acepto-terminos-' + cursadaId) || 
+                                               document.getElementById('acepto-terminos-modal-' + cursadaId);
+                        if (checkboxTerminos) {
+                            checkboxTerminos.checked = false;
+                            checkboxTerminos.disabled = true;
+                        }
+                        
+                        // 3. Deshabilitar botón Reservar
+                        const btnReservar = document.querySelector('.cursada-btn-reservar[data-cursada-id="' + cursadaId + '"]');
+                        if (btnReservar) {
+                            btnReservar.disabled = true;
+                        }
+
+                        // 4. Deshabilitar link de código de descuento
+                        const linkCodigo = document.getElementById('link-codigo-' + cursadaId) || 
+                                         document.getElementById('link-codigo-modal-' + cursadaId);
+                        if (linkCodigo) {
+                            linkCodigo.classList.add('cursada-link-disabled');
+                        }
+
+                        // 5. Ocultar input de código si estaba abierto
+                        const codigoInputContainer = document.getElementById('codigo-input-' + cursadaId);
+                        if (codigoInputContainer) {
+                            codigoInputContainer.classList.remove('input-visible');
+                            codigoInputContainer.style.display = 'none';
+                        }
+                    });
+                }
+                
                 if (correo) {
                     correo.addEventListener('blur', function() {
                         if (!validarCorreo(this)) {
@@ -3568,6 +3978,20 @@
                         mostrarNotificacion('Error: No se pudo obtener el ID del curso. Por favor, recargá la página.', 'error');
                         return;
                     }
+
+                    // Verificar si ya existe un leadId para esta cursada (edición)
+                    // Intentar encontrar el panel con varias combinaciones de ID para ser robusto
+                    let panel = document.getElementById('panel-' + cursadaId);
+                    if (!panel) {
+                        // Si no lo encuentra, intentar quitando 'cursada-' si lo tiene, o agregándolo
+                        if (cursadaId.includes('cursada-')) {
+                            panel = document.getElementById('panel-' + cursadaId.replace('cursada-', ''));
+                        } else {
+                            panel = document.getElementById('panel-cursada-' + cursadaId);
+                        }
+                    }
+                    
+                    const existingLeadId = panel ? panel.getAttribute('data-lead-id') : null;
                     
                                 // Guardar lead
                                 fetch(window.inscripcionConfig.leadsStoreUrl, {
@@ -3579,6 +4003,7 @@
                                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                                     },
                                     body: JSON.stringify({
+                                        id: existingLeadId, // Enviar ID si existe para actualizar
                                         nombre: nombre.value.trim(),
                                         apellido: apellido.value.trim(),
                                         dni: dni.value.trim(),
@@ -3622,7 +4047,26 @@
                                 })
                                 .then(data => {
                                     if (data.success) {
-                            // Guardar los datos del formulario en localStorage después de guardar exitosamente
+                            // Guardar el ID del lead en el panel correspondiente para usarlo después
+                            let panel = document.getElementById('panel-' + cursadaId);
+                            if (!panel) {
+                                if (cursadaId.includes('cursada-')) {
+                                    panel = document.getElementById('panel-' + cursadaId.replace('cursada-', ''));
+                                } else {
+                                    panel = document.getElementById('panel-cursada-' + cursadaId);
+                                }
+                            }
+                            
+                            if (panel && data.lead_id) {
+                                panel.setAttribute('data-lead-id', data.lead_id);
+                            }
+                            
+                            // Habilitar el checkbox de términos si existe
+                            if (checkboxTerminos) {
+                                checkboxTerminos.disabled = false;
+                            }
+
+                            // Guardar los datos del formulario en sessionStorage después de guardar exitosamente
                             guardarDatosFormulario(cursadaId);
                             
                             // Desactivar TODOS los formularios después de guardar exitosamente
@@ -3671,6 +4115,12 @@
                                         botonContinuarForm.disabled = true;
                                         botonContinuarForm.style.opacity = '0.6';
                                         botonContinuarForm.style.cursor = 'not-allowed';
+                                    }
+                                    
+                                    // Mostrar botón editar
+                                    const btnEditar = document.getElementById('editar-form-' + formCursadaId);
+                                    if (btnEditar) {
+                                        btnEditar.style.display = 'inline';
                                     }
                                 }
                             });

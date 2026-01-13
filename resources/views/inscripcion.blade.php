@@ -684,6 +684,7 @@
                                                     <div class="cursada-formulario-titulo">
                                                         <img src="/images/desktop/student-v.png" alt="Student" class="cursada-formulario-icono">
                                                         <span class="cursada-formulario-texto">Completá <span class="cursada-formulario-texto-semibold">tus datos</span> para poder ver los valores:</span>
+                                                        <a href="#" class="cursada-editar-form-link" id="editar-form-{{ $cursadaId }}" data-cursada-id="{{ $cursadaId }}" style="display: none; margin-left: 10px; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: clamp(11px, calc(11px + (100vw - 1100px) * ((14 - 11) / (1920 - 1100))), 14px); text-decoration: underline; color: #65E09C; cursor: pointer; transition: opacity 0.2s, color 0.2s; text-align: left; flex-shrink: 0;">(Editar datos)</a>
                                                     </div>
                                                     <form class="cursada-formulario" id="formulario-{{ $cursadaId }}">
                                                         <div class="cursada-formulario-grid">
