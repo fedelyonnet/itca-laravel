@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Lead extends Model
 {
@@ -12,8 +13,13 @@ class Lead extends Model
         'dni',
         'correo',
         'telefono',
-        'cursada_id', // Ahora almacena ID_Curso (string) en lugar del id numérico
-        'tipo',
-        'acepto_terminos',
     ];
+
+    /**
+     * Obtener el historial de cursadas de este lead.
+     */
+    public function cursadas(): HasMany
+    {
+        return $this->hasMany(LeadCursada::class);
+    }
 }

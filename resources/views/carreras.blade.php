@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    @use('Illuminate\Support\Str')
+    {{-- 
+        @var \Illuminate\Database\Eloquent\Collection|\App\Models\Curso[] $carreras
+        @var \Illuminate\Database\Eloquent\Collection|\App\Models\Beneficio[] $beneficios
+        @var \Illuminate\Database\Eloquent\Collection|\App\Models\Partner[] $partners
+        @var \Illuminate\Database\Eloquent\Collection|\App\Models\Sede[] $sedes
+        @var \App\Models\StickyBar|null $stickyBar
+    --}}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
     <meta name="description" content="ITCA - Instituto Tecnológico de Capacitación Automotriz - Carreras">
@@ -22,7 +30,7 @@
 <body>
     <!-- Sticky Bar -->
     @if($stickyBar && $stickyBar->visible == true)
-    <div class="sticky-bar" style="background-color: {{ $stickyBar->color }} !important;">
+    <div class="sticky-bar" @style(['background-color: ' . $stickyBar->color . ' !important'])>
         <div class="container">
             <div class="sticky-bar-content">
                 <div class="sticky-bar-text-container">

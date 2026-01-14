@@ -15,6 +15,8 @@ use App\Models\Noticia;
 use App\Models\Cursada;
 use App\Models\Lead;
 use App\Models\PromoBadge;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class WelcomeController extends Controller
 {
@@ -116,8 +118,8 @@ class WelcomeController extends Controller
         $cacheKey = 'inscripcion_filtros_' . $curso->id;
         $cacheTTL = 30 * 60; // 30 minutos
         
-        $filtrosData = \Cache::remember($cacheKey, $cacheTTL, function () use ($curso, &$startTime) {
-            \Log::info('Inscripcion: Cache miss - generando datos', ['curso_id' => $curso->id]);
+        $filtrosData = cache()->remember($cacheKey, $cacheTTL, function () use ($curso, &$startTime) {
+            logger()->info('Inscripcion: Cache miss - generando datos', ['curso_id' => $curso->id]);
             $queryStart = microtime(true);
             // Obtener sedes disponibles para el footer
             $sedes = Sede::where('disponible', true)
@@ -179,7 +181,7 @@ class WelcomeController extends Controller
             }
             
             // Cargar TODOS los órdenes guardados en una sola consulta
-            $ordenesGuardados = \DB::table('filtro_orden')
+            $ordenesGuardados = DB::table('filtro_orden')
                 ->whereIn('categoria', ['carrera', 'sede', 'modalidad', 'turno', 'dia'])
                 ->orderBy('categoria')
                 ->orderBy('orden')
@@ -302,13 +304,13 @@ class WelcomeController extends Controller
         });
         
         $cacheTime = microtime(true) - $startTime;
-        \Log::info('Inscripcion: Tiempo total con cache', ['time' => round($cacheTime * 1000, 2) . 'ms', 'curso_id' => $curso->id]);
+        logger()->info('Inscripcion: Tiempo total con cache', ['time' => round($cacheTime * 1000, 2) . 'ms', 'curso_id' => $curso->id]);
         
         // Obtener el badge activo (no cachear porque puede cambiar)
         $badgeStart = microtime(true);
         $promoBadge = PromoBadge::getActive();
         $badgeTime = microtime(true) - $badgeStart;
-        \Log::info('Inscripcion: Badge cargado', ['time' => round($badgeTime * 1000, 2) . 'ms']);
+        logger()->info('Inscripcion: Badge cargado', ['time' => round($badgeTime * 1000, 2) . 'ms']);
         
         // Extraer datos del caché
         extract($filtrosData);
@@ -319,10 +321,10 @@ class WelcomeController extends Controller
         $viewStart = microtime(true);
         $view = view('inscripcion', compact('curso', 'sedes', 'stickyBar', 'carreras', 'sedesFiltro', 'modalidades', 'turnos', 'dias', 'cursadas', 'carreraSeleccionada', 'promoBadge'));
         $viewTime = microtime(true) - $viewStart;
-        \Log::info('Inscripcion: Vista renderizada', ['time' => round($viewTime * 1000, 2) . 'ms', 'cursadas_count' => 0]);
+        logger()->info('Inscripcion: Vista renderizada', ['time' => round($viewTime * 1000, 2) . 'ms', 'cursadas_count' => 0]);
         
         $totalTime = microtime(true) - $startTime;
-        \Log::info('Inscripcion: Tiempo TOTAL', ['time' => round($totalTime * 1000, 2) . 'ms']);
+        logger()->info('Inscripcion: Tiempo TOTAL', ['time' => round($totalTime * 1000, 2) . 'ms']);
         
         return $view;
     }
@@ -455,7 +457,7 @@ class WelcomeController extends Controller
             });
         
         $totalTime = microtime(true) - $startTime;
-        \Log::info('Inscripcion AJAX: Cursadas cargadas', ['count' => $cursadas->count(), 'time' => round($totalTime * 1000, 2) . 'ms']);
+        logger()->info('Inscripcion AJAX: Cursadas cargadas', ['count' => $cursadas->count(), 'time' => round($totalTime * 1000, 2) . 'ms']);
         
         // Preparar información del badge para el frontend
         $badgeInfo = null;
@@ -491,28 +493,73 @@ class WelcomeController extends Controller
 
             // Obtener la cursada por ID_Curso
             $cursada = \App\Models\Cursada::where('ID_Curso', $validated['cursada_id'])->firstOrFail();
-
+            
+            // 1. Identificar o Crear al Usuario (Lead)
+            $lead = null;
+            
+            // Prioridad 1: ID explícito (Sesión actual del navegador)
             if (isset($validated['id']) && $validated['id']) {
-                // Actualizar lead existente
-                $lead = Lead::findOrFail($validated['id']);
-                $lead->update($validated);
-                $message = 'Lead actualizado correctamente';
-                // No enviamos notificación de email en actualización para no spamear
-            } else {
-                // Guardar nuevo lead (cursada_id ahora contiene ID_Curso)
-                $lead = Lead::create($validated);
-                $message = 'Lead guardado correctamente';
+                $lead = Lead::find($validated['id']);
+            }
+            
+            // Prioridad 2: Búsqueda por Email (Usuario recurrente)
+            if (!$lead) {
+                $lead = Lead::where('correo', $validated['correo'])->first();
+            }
+            
+            // Datos personales para actualizar/crear
+            $personalData = [
+                'nombre' => $validated['nombre'],
+                'apellido' => $validated['apellido'],
+                'dni' => $validated['dni'],
+                'correo' => $validated['correo'],
+                'telefono' => $validated['telefono'],
+            ];
 
-                // Enviar email de notificación solo al crear
+            if ($lead) {
+                // Actualizar datos personales
+                $lead->update($personalData);
+                $message = 'Datos actualizados correctamente';
+            } else {
+                // Crear nuevo usuario
+                $lead = Lead::create($personalData);
+                $message = 'Lead guardado correctamente';
+            }
+
+            // 2. Registrar el Interés (LeadCursada)
+            // Verificar si ya existe una inscripción RECIENTE (últimos 5 min) para la MISMA cursada
+            // Esto evita duplicados por "doble click" o refresco
+            $lastInscripcion = $lead->cursadas()
+                                    ->where('cursada_id', $validated['cursada_id'])
+                                    ->latest()
+                                    ->first();
+
+            $shouldCreateInscripcion = true;
+            if ($lastInscripcion && $lastInscripcion->created_at->diffInMinutes(now()) < 5) {
+                // Si es la misma cursada hace menos de 5 min, solo actualizamos (si hiciera falta)
+                // y no creamos registro nuevo para no spamear
+                $lastInscripcion->update([
+                    'tipo' => $validated['tipo'] ?? 'Lead',
+                    'acepto_terminos' => $validated['acepto_terminos'] ?? false,
+                ]);
+                $shouldCreateInscripcion = false;
+            }
+
+            if ($shouldCreateInscripcion) {
+                $lead->cursadas()->create([
+                    'cursada_id' => $validated['cursada_id'],
+                    'tipo' => $validated['tipo'] ?? 'Lead',
+                    'acepto_terminos' => $validated['acepto_terminos'] ?? false,
+                ]);
+
+                // Enviar email de notificación (Solo si es una NUEVA intención)
                 try {
                     $toEmail = env('MAIL_TO_ADMIN', 'federico.lyonnet@gmail.com');
-                    \Mail::to($toEmail)->send(new \App\Mail\LeadNotification($lead, $cursada));
+                    Mail::to($toEmail)->send(new \App\Mail\LeadNotification($lead, $cursada));
                 } catch (\Exception $emailException) {
-                    // Log del error de email pero no fallar el guardado del lead
-                    \Log::error('Error al enviar email de notificación de lead', [
+                    logger()->error('Error al enviar email de notificación de lead', [
                         'lead_id' => $lead->id,
                         'error' => $emailException->getMessage(),
-                        'trace' => $emailException->getTraceAsString(),
                     ]);
                 }
             }
@@ -525,13 +572,13 @@ class WelcomeController extends Controller
                 'Content-Type' => 'application/json'
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            \Log::error('Error de validación al guardar lead', [
+            logger()->error('Error de validación al guardar lead', [
                 'errors' => $e->errors(),
                 'data' => $request->all()
             ]);
             return response()->json(['success' => false, 'errors' => $e->errors()], 422);
         } catch (\Exception $e) {
-            \Log::error('Error general al guardar lead', [
+            logger()->error('Error general al guardar lead', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -551,7 +598,8 @@ class WelcomeController extends Controller
             $lead = Lead::findOrFail($id);
             
             // Actualizar el estado de acepto_terminos
-            $lead->update([
+            // 1. En tabla LeadCursada (La última interacción)
+            $lead->cursadas()->latest()->first()?->update([
                 'acepto_terminos' => true
             ]);
 
@@ -562,7 +610,7 @@ class WelcomeController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['success' => false, 'message' => 'Lead no encontrado'], 404);
         } catch (\Exception $e) {
-            \Log::error('Error al actualizar términos del lead', [
+            logger()->error('Error al actualizar términos del lead', [
                 'lead_id' => $id,
                 'error' => $e->getMessage()
             ]);

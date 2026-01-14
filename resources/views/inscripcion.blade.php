@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    @use('Illuminate\Support\Str')
+    {{-- 
+        @var \App\Models\Curso $curso
+        @var \Illuminate\Database\Eloquent\Collection|\App\Models\Sede[] $sedes
+        @var \App\Models\StickyBar|null $stickyBar
+        @var array|\Illuminate\Support\Collection $carreras
+        @var array|\Illuminate\Support\Collection $sedesFiltro
+        @var array|\Illuminate\Support\Collection $modalidades
+        @var array|\Illuminate\Support\Collection $turnos
+        @var array|\Illuminate\Support\Collection $dias
+        @var \Illuminate\Database\Eloquent\Collection $cursadas
+        @var string|null $carreraSeleccionada
+        @var \App\Models\PromoBadge|null $promoBadge
+    --}}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -28,7 +42,7 @@
     
     <!-- Sticky Bar -->
     @if($stickyBar && $stickyBar->visible == true)
-    <div class="sticky-bar" style="background-color: {{ $stickyBar->color }} !important;">
+    <div class="sticky-bar" @style(['background-color: ' . $stickyBar->color . ' !important'])>
         <div class="container">
             <div class="sticky-bar-content">
                 <div class="sticky-bar-text-container">
@@ -1016,10 +1030,10 @@
     <script>
         // Configuración global para el JavaScript de inscripción
         window.inscripcionConfig = {
-            cursoId: {{ $curso->id }},
-            buscarDescuentoUrl: '{{ route("buscar.descuento") }}',
-            csrfToken: '{{ csrf_token() }}',
-            leadsStoreUrl: '{{ route("leads.store") }}'
+            "cursoId": "{{ $curso->id }}",
+            "buscarDescuentoUrl": "{{ route('buscar.descuento') }}",
+            "csrfToken": "{{ csrf_token() }}",
+            "leadsStoreUrl": "{{ route('leads.store') }}"
         };
     </script>
     @vite('resources/js/inscripcion.js')

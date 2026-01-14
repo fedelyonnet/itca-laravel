@@ -14,6 +14,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class CursoController extends Controller
 {
@@ -197,7 +198,7 @@ class CursoController extends Controller
             }
             return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            \Log::error('Error al crear carrera', [
+            logger()->error('Error al crear carrera', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -386,7 +387,7 @@ class CursoController extends Controller
             }
             return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            \Log::error('Error al actualizar carrera', [
+            logger()->error('Error al actualizar carrera', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -406,7 +407,7 @@ class CursoController extends Controller
         $curso = Curso::findOrFail($id);
         $featuredCount = Curso::where('featured', true)->count();
         
-        \Log::info('Toggle featured', [
+        logger()->info('Toggle featured', [
             'curso_id' => $curso->id,
             'curso_nombre' => $curso->nombre,
             'current_featured' => $curso->featured,
@@ -415,14 +416,14 @@ class CursoController extends Controller
         
         // Si está intentando seleccionar y ya hay 2 featured, no permitir
         if (!$curso->featured && $featuredCount >= 2) {
-            \Log::info('No se puede seleccionar - ya hay 2 destacadas');
+            logger()->info('No se puede seleccionar - ya hay 2 destacadas');
             return redirect()->route('admin.carreras')->with('error', 'Solo pueden haber máximo 2 carreras destacadas');
         }
         
         $curso->featured = !$curso->featured;
         $curso->save();
 
-        \Log::info('Featured toggled', [
+        logger()->info('Featured toggled', [
             'new_featured' => $curso->featured
         ]);
 
@@ -434,7 +435,7 @@ class CursoController extends Controller
     {
         $curso = Curso::findOrFail($id);
         
-        \Log::info('Intentando eliminar carrera', [
+        logger()->info('Intentando eliminar carrera', [
             'curso_id' => $curso->id,
             'curso_nombre' => $curso->nombre
         ]);
@@ -462,7 +463,7 @@ class CursoController extends Controller
             $nuevoOrden++;
         }
 
-        \Log::info('Carrera eliminada exitosamente y carreras reordenadas', [
+        logger()->info('Carrera eliminada exitosamente y carreras reordenadas', [
             'curso_id' => $id,
             'carreras_restantes' => $carrerasRestantes->count()
         ]);
@@ -481,7 +482,7 @@ class CursoController extends Controller
         $direccion = $request->direccion;
         $ordenActual = $curso->orden;
         
-        \Log::info('Moviendo curso', [
+        logger()->info('Moviendo curso', [
             'curso_id' => $curso->id,
             'curso_nombre' => $curso->nombre,
             'orden_actual' => $ordenActual,
@@ -495,14 +496,14 @@ class CursoController extends Controller
                             ->first();
             
             if (!$cursoAnterior) {
-                \Log::info('No hay curso anterior');
+                logger()->info('No hay curso anterior');
                 return response()->json([
                     'success' => false,
                     'message' => 'Ya está en la primera posición'
                 ], 422);
             }
             
-            \Log::info('Curso anterior encontrado', [
+            logger()->info('Curso anterior encontrado', [
                 'curso_anterior_id' => $cursoAnterior->id,
                 'curso_anterior_nombre' => $cursoAnterior->nombre,
                 'curso_anterior_orden' => $cursoAnterior->orden
@@ -512,7 +513,7 @@ class CursoController extends Controller
             $curso->update(['orden' => $cursoAnterior->orden]);
             $cursoAnterior->update(['orden' => $ordenActual]);
             
-            \Log::info('Intercambio completado', [
+            logger()->info('Intercambio completado', [
                 'curso_nuevo_orden' => $curso->fresh()->orden,
                 'curso_anterior_nuevo_orden' => $cursoAnterior->fresh()->orden
             ]);
@@ -524,14 +525,14 @@ class CursoController extends Controller
                               ->first();
             
             if (!$cursoSiguiente) {
-                \Log::info('No hay curso siguiente');
+                logger()->info('No hay curso siguiente');
                 return response()->json([
                     'success' => false,
                     'message' => 'Ya está en la última posición'
                 ], 422);
             }
             
-            \Log::info('Curso siguiente encontrado', [
+            logger()->info('Curso siguiente encontrado', [
                 'curso_siguiente_id' => $cursoSiguiente->id,
                 'curso_siguiente_nombre' => $cursoSiguiente->nombre,
                 'curso_siguiente_orden' => $cursoSiguiente->orden
@@ -541,7 +542,7 @@ class CursoController extends Controller
             $curso->update(['orden' => $cursoSiguiente->orden]);
             $cursoSiguiente->update(['orden' => $ordenActual]);
             
-            \Log::info('Intercambio completado', [
+            logger()->info('Intercambio completado', [
                 'curso_nuevo_orden' => $curso->fresh()->orden,
                 'curso_siguiente_nuevo_orden' => $cursoSiguiente->fresh()->orden
             ]);
@@ -810,7 +811,7 @@ class CursoController extends Controller
         }
 
         // Obtener el orden guardado desde la base de datos
-        $ordenGuardado = \DB::table('filtro_orden')
+        $ordenGuardado = DB::table('filtro_orden')
             ->where('categoria', $categoria)
             ->orderBy('orden')
             ->pluck('valor')
@@ -865,11 +866,11 @@ class CursoController extends Controller
         }
 
         // Eliminar el orden anterior de esta categoría
-        \DB::table('filtro_orden')->where('categoria', $categoria)->delete();
+        DB::table('filtro_orden')->where('categoria', $categoria)->delete();
 
         // Insertar el nuevo orden
         foreach ($orden as $index => $valor) {
-            \DB::table('filtro_orden')->insert([
+            DB::table('filtro_orden')->insert([
                 'categoria' => $categoria,
                 'valor' => $valor,
                 'orden' => $index,
@@ -885,7 +886,7 @@ class CursoController extends Controller
     public function storeImportacion(Request $request)
     {
         try {
-            \Log::info('storeImportacion llamado', [
+            logger()->info('storeImportacion llamado', [
                 'has_file' => $request->hasFile('archivo_excel'),
                 'is_ajax' => $request->ajax(),
                 'wants_json' => $request->wantsJson()
@@ -897,7 +898,7 @@ class CursoController extends Controller
 
             $file = $request->file('archivo_excel');
             
-            \Log::info('Archivo recibido', [
+            logger()->info('Archivo recibido', [
                 'name' => $file->getClientOriginalName(),
                 'size' => $file->getSize(),
                 'mime' => $file->getMimeType()
@@ -919,7 +920,7 @@ class CursoController extends Controller
             $headers = array_map('trim', $rows[0]);
             
             // Log para debug: mostrar todos los headers encontrados
-            \Log::info('Headers encontrados en Excel: ' . json_encode($headers));
+            logger()->info('Headers encontrados en Excel: ' . json_encode($headers));
             
             // Mapeo de headers del Excel a campos de la base de datos
             // Headers del Excel (con espacios/puntos) → Nombres de BD (con guiones bajos)
@@ -965,7 +966,7 @@ class CursoController extends Controller
                 } else {
                     // Log para debug si no se encuentra el header (solo para campos opcionales)
                     if ($dbField !== 'casilla_Promo') {
-                        \Log::warning("Header no encontrado en Excel: '{$excelHeader}' (buscando en: " . implode(', ', $headers) . ")");
+                        logger()->warning("Header no encontrado en Excel: '{$excelHeader}' (buscando en: " . implode(', ', $headers) . ")");
                     }
                 }
             }
@@ -1036,7 +1037,7 @@ class CursoController extends Controller
                     }
                 }
                 
-                \Log::error('Columnas faltantes detectadas: ' . implode(', ', $missingFieldsNames));
+                logger()->error('Columnas faltantes detectadas: ' . implode(', ', $missingFieldsNames));
                 
                 return response()->json([
                     'success' => false,
@@ -1048,7 +1049,7 @@ class CursoController extends Controller
             $deletedCount = Cursada::count();
             Cursada::truncate();
             
-            \Log::info("Se eliminaron {$deletedCount} registros existentes antes de la importación");
+            logger()->info("Se eliminaron {$deletedCount} registros existentes antes de la importación");
 
             $imported = 0;
             $errors = [];
@@ -1237,7 +1238,7 @@ class CursoController extends Controller
             }
 
             // Invalidar caché de filtros de inscripción (todos los cursos)
-            \Cache::flush(); // Flush completo porque no sabemos qué cursos están afectados
+            cache()->flush(); // Flush completo porque no sabemos qué cursos están afectados
             
             $message = "Se reemplazó el contenido de la base de datos. Se importaron {$imported} cursadas correctamente.";
             if ($deletedCount > 0) {
@@ -1260,8 +1261,8 @@ class CursoController extends Controller
                 'message' => 'Error: La estructura del archivo Excel no es válida. ' . implode(', ', $e->errors()['archivo_excel'] ?? ['Archivo inválido']) . '. Por favor, verifica que el archivo sea un Excel válido (.xlsx o .xls) y que no exceda 10MB.'
             ], 422, ['Content-Type' => 'application/json']);
         } catch (\Exception $e) {
-            \Log::error('Error en storeImportacion: ' . $e->getMessage());
-            \Log::error($e->getTraceAsString());
+            logger()->error('Error en storeImportacion: ' . $e->getMessage());
+            logger()->error($e->getTraceAsString());
             
             return response()->json([
                 'success' => false,
@@ -1580,7 +1581,7 @@ class CursoController extends Controller
     public function storeImportacionPromociones(Request $request)
     {
         try {
-            \Log::info('storeImportacionPromociones llamado', [
+            logger()->info('storeImportacionPromociones llamado', [
                 'has_file' => $request->hasFile('archivo_excel'),
                 'is_ajax' => $request->ajax(),
                 'wants_json' => $request->wantsJson()
@@ -1592,7 +1593,7 @@ class CursoController extends Controller
 
             $file = $request->file('archivo_excel');
             
-            \Log::info('Archivo recibido', [
+            logger()->info('Archivo recibido', [
                 'name' => $file->getClientOriginalName(),
                 'size' => $file->getSize(),
                 'mime' => $file->getMimeType()
@@ -1613,7 +1614,7 @@ class CursoController extends Controller
             // Obtener los headers de la primera fila
             $headers = array_map('trim', $rows[0]);
             
-            \Log::info('Headers encontrados en Excel: ' . json_encode($headers));
+            logger()->info('Headers encontrados en Excel: ' . json_encode($headers));
             
             // Mapeo de headers del Excel a campos de la base de datos
             $headerMap = [
@@ -1639,7 +1640,7 @@ class CursoController extends Controller
                 if ($index !== false) {
                     $columnIndex[$dbField] = $index;
                 } else {
-                    \Log::warning("Header no encontrado en Excel: '{$excelHeader}' (buscando en: " . implode(', ', $headers) . ")");
+                    logger()->warning("Header no encontrado en Excel: '{$excelHeader}' (buscando en: " . implode(', ', $headers) . ")");
                 }
             }
 
@@ -1647,7 +1648,7 @@ class CursoController extends Controller
             $deletedCount = Descuento::count();
             Descuento::truncate();
             
-            \Log::info("Se eliminaron {$deletedCount} registros existentes antes de la importación");
+            logger()->info("Se eliminaron {$deletedCount} registros existentes antes de la importación");
 
             $imported = 0;
             $errors = [];
@@ -1704,7 +1705,7 @@ class CursoController extends Controller
                         'fila' => $i + 1,
                         'mensaje' => $e->getMessage()
                     ];
-                    \Log::warning("Error en fila " . ($i + 1) . ": " . $e->getMessage());
+                    logger()->warning("Error en fila " . ($i + 1) . ": " . $e->getMessage());
                 }
             }
 
@@ -1726,8 +1727,8 @@ class CursoController extends Controller
                 'message' => 'Error de validación: ' . implode(', ', $e->errors()['archivo_excel'] ?? ['Archivo inválido'])
             ], 422, ['Content-Type' => 'application/json']);
         } catch (\Exception $e) {
-            \Log::error('Error en storeImportacionPromociones: ' . $e->getMessage());
-            \Log::error($e->getTraceAsString());
+            logger()->error('Error en storeImportacionPromociones: ' . $e->getMessage());
+            logger()->error($e->getTraceAsString());
             
             return response()->json([
                 'success' => false,
@@ -1771,7 +1772,7 @@ class CursoController extends Controller
                 'message' => 'El código es requerido'
             ], 200);
         } catch (\Exception $e) {
-            \Log::error('Error en buscarDescuento: ' . $e->getMessage());
+            logger()->error('Error en buscarDescuento: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Error al buscar el código de descuento. Por favor, intentá nuevamente.'
