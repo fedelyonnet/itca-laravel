@@ -133,7 +133,7 @@
                                     <span class="q3-profesion">en tu profesion</span>
                                 </div>
                             </div>
-                            <button class="q3-button">¡Inscribirme ahora!</button>
+                            <a href="{{ route('inscripcion', $cursoHero->id) }}" class="q3-button">¡Inscribirme ahora!</a>
                         </div>
                     </div>
                     

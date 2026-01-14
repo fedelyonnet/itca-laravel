@@ -72,6 +72,22 @@ class WelcomeController extends Controller
                                   ->where('visible', true)
                                   ->first();
         
+        // Obtener curso para el Hero por nombre
+        // Buscamos "Mecánica y Tecnologías del Automóvil" usando LIKE para ser flexible con acentos/espacios
+        $cursoHero = Curso::where('nombre', 'like', '%Mecánica y Tecnologías del Automóvil%')->first();
+        
+        // Fallback: Si no lo encuentra, buscar por palabras clave principales
+        if (!$cursoHero) {
+            $cursoHero = Curso::where('nombre', 'like', '%Mecánica%')
+                            ->where('nombre', 'like', '%Automóvil%')
+                            ->first();
+        }
+        
+        // Fallback final: primer curso destacado
+        if (!$cursoHero) {
+            $cursoHero = $cursosFeatured->first();
+        }
+
         return view('welcome', compact(
             'desktopImg1', 'desktopImg2', 'desktopVideo',
             'mobileImg1', 'mobileImg2', 'mobileVideo',
@@ -82,7 +98,8 @@ class WelcomeController extends Controller
             'partners',
             'video1', 'video3', 'video5', 'videosTablet', 'videosMobile',
             'stickyBar',
-            'noticiaDestacada'
+            'noticiaDestacada',
+            'cursoHero'
         ));
     }
 

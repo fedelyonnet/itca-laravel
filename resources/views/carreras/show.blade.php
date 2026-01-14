@@ -381,10 +381,14 @@
                             </div>
                             <div class="modalidad-mobile-panel">
                                 @if($tipos->count() > 0)
-                                    <div class="modalidad-mobile-columns">
+                                    <div class="modalidad-mobile-columns {{ $tipos->count() === 1 ? 'single-column' : '' }}">
                                         <!-- Columna Izquierda: Primer Tipo (Intensivo) -->
-                                        <div class="modalidad-mobile-column modalidad-mobile-column-left active">
-                                            <button class="modalidad-mobile-tab-btn active" data-tab="{{ Str::slug(strtolower($primerTipo->nombre)) }}">{{ $primerTipo->nombre }}</button>
+                                        <div class="modalidad-mobile-column modalidad-mobile-column-left active {{ $tipos->count() === 1 ? 'single-mode' : '' }}">
+                                            @if($tipos->count() > 1)
+                                                <button class="modalidad-mobile-tab-btn active" data-tab="{{ Str::slug(strtolower($primerTipo->nombre)) }}">{{ $primerTipo->nombre }}</button>
+                                            @else
+                                                <div class="modalidad-mobile-tab-placeholder"></div>
+                                            @endif
                                             <div class="modalidad-mobile-column-content">
                                                 @foreach($tipos as $tipo)
                                                     @php $tipoSlug = Str::slug(strtolower($tipo->nombre)); @endphp
@@ -402,6 +406,7 @@
                                             </div>
                                         </div>
                                         <!-- Columna Derecha: Segundo Tipo (Regular) -->
+                                        @if($tipos->count() > 1)
                                         <div class="modalidad-mobile-column modalidad-mobile-column-right">
                                             @if($segundoTipo)
                                                 <button class="modalidad-mobile-tab-btn" data-tab="{{ Str::slug(strtolower($segundoTipo->nombre)) }}">{{ $segundoTipo->nombre }}</button>
@@ -456,6 +461,51 @@
                                                 @endforeach
                                             </div>
                                         </div>
+                                        @else
+                                        <!-- Caso de una sola modalidad: Mostrar datos directamente en la columna derecha -->
+                                        <div class="modalidad-mobile-column modalidad-mobile-column-right single-mode">
+                                            <div class="modalidad-mobile-tab-placeholder"></div>
+                                            <div class="modalidad-mobile-column-content">
+                                                <div class="modalidad-mobile-tab-content active" data-content="{{ Str::slug(strtolower($primerTipo->nombre)) }}">
+                                                    <div class="modalidad-mobile-data-col">
+                                                        @foreach($columnas as $columna)
+                                                            @php
+                                                                $campoDato = $columna['campo_dato'] ?? $columna['campo'] ?? '';
+                                                                $valor = $primerTipo->$campoDato ?? '';
+                                                            @endphp
+                                                            <div class="modalidad-mobile-data-item">
+                                                                @if($valor)
+                                                                    @php
+                                                                        $esMultilinea = strpos($valor, 'cada') !== false;
+                                                                    @endphp
+                                                                    @if($esMultilinea)
+                                                                        @php
+                                                                            $partes = explode(' cada ', $valor);
+                                                                            if(count($partes) == 2) {
+                                                                                $lineas = [$partes[0], 'cada ' . $partes[1]];
+                                                                            } else {
+                                                                                $posCada = strpos($valor, 'cada');
+                                                                                if($posCada !== false) {
+                                                                                    $lineas = [trim(substr($valor, 0, $posCada)), trim(substr($valor, $posCada))];
+                                                                                } else {
+                                                                                    $lineas = [$valor];
+                                                                                }
+                                                                            }
+                                                                        @endphp
+                                                                        @foreach($lineas as $linea)
+                                                                            <span class="modalidad-mobile-data-text">{{ trim($linea) }}</span>
+                                                                        @endforeach
+                                                                    @else
+                                                                        <span class="modalidad-mobile-data-text">{{ $valor }}</span>
+                                                                    @endif
+                                                                @endif
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endif
                                     </div>
                                 @endif
                                 <!-- Sección especial mobile -->
