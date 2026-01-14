@@ -1,7 +1,6 @@
 <x-app-layout>
     
-    <link rel="stylesheet" href="{{ asset('build/assets/backoffice-eMmMkJb6.css') }}">
-    <script src="{{ asset('build/assets/backoffice-C_PPKbx3.js') }}"></script>
+    @vite(['resources/css/backoffice.css', 'resources/js/backoffice.js'])
 
     <div class="py-12">
         <div class="w-full px-6">
