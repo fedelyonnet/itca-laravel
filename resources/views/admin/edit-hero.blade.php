@@ -423,47 +423,30 @@
                                            value="{{ $stickyBar->url }}">
                                 </div>
                                 
-                                <!-- Fila 2: Selector de Color (80%) + Color Seleccionado (20%) -->
-                                <div class="space-y-2">
-                                    <label class="text-white text-sm">Selección de color:</label>
-                                    <div class="flex gap-4">
-                                        <!-- Selector de color (80%) -->
-                                        <div class="flex-1" style="width: 80%;">
-                                            <div class="relative">
-                                                <!-- Barra del espectro de colores -->
-                                                <div id="colorSlider" 
-                                                     class="w-full h-8 rounded-lg overflow-hidden cursor-pointer relative" 
-                                                     style="background: linear-gradient(to right, #ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0080, #ff0000);">
-                                                    
-                                                    <!-- Indicador circular -->
-                                                    <div id="colorIndicator" 
-                                                         class="absolute top-1/2 w-4 h-4 bg-white border-2 border-gray-800 rounded-full transform -translate-y-1/2 pointer-events-none"
-                                                         style="left: 50%; box-shadow: 0 0 0 1px rgba(0,0,0,0.3);">
-                                                    </div>
-                                                </div>
-                                                
-                                                <!-- Input hidden para el valor del color -->
-                                                <input type="hidden" name="color" id="selectedColor" value="{{ $stickyBar->color }}">
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Color seleccionado (20%) -->
-                                        <div class="flex flex-col justify-center" style="width: 20%;">
-                                            <div class="w-full h-8 rounded-lg border border-gray-400 relative flex items-center justify-center" 
-                                                 id="colorPreview"
-                                                 style="background-color: {{ $stickyBar->color }};">
-                                                <div class="text-white text-xs font-mono font-bold" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">{{ $stickyBar->color }}</div>
-                                            </div>
+                                <!-- Fila 4: Selectores de Color (Fondo y Texto) -->
+                                <div class="grid grid-cols-2 gap-4 mt-4">
+                                    <!-- Color de Fondo -->
+                                    <div class="space-y-2">
+                                        <label class="text-white text-sm">Selección color de fondo:</label>
+                                        <div class="flex items-center gap-3">
+                                            <input type="color" name="color" id="bgColorInput" 
+                                                   value="{{ $stickyBar->color }}" 
+                                                   class="h-10 w-20 rounded cursor-pointer border-0 p-0"
+                                                   oninput="document.getElementById('bgColorHex').textContent = this.value">
+                                            <span id="bgColorHex" class="text-white text-sm font-mono">{{ $stickyBar->color }}</span>
                                         </div>
                                     </div>
-                                </div>
-                                
-                                <!-- Color del Texto -->
-                                <div class="space-y-2">
-                                    <label class="text-white text-sm">Color del Texto:</label>
-                                    <div class="flex items-center gap-4">
-                                        <input type="color" name="text_color" value="{{ $stickyBar->text_color ?? '#ffffff' }}" class="h-10 w-20 rounded cursor-pointer border-0 p-0">
-                                        <span class="text-gray-400 text-xs">(Click para cambiar el color del texto)</span>
+
+                                    <!-- Color de Texto -->
+                                    <div class="space-y-2">
+                                        <label class="text-white text-sm">Selección color de texto:</label>
+                                        <div class="flex items-center gap-3">
+                                            <input type="color" name="text_color" id="textColorInput" 
+                                                   value="{{ $stickyBar->text_color ?? '#ffffff' }}" 
+                                                   class="h-10 w-20 rounded cursor-pointer border-0 p-0"
+                                                   oninput="document.getElementById('textColorHex').textContent = this.value">
+                                            <span id="textColorHex" class="text-white text-sm font-mono">{{ $stickyBar->text_color ?? '#ffffff' }}</span>
+                                        </div>
                                     </div>
                                 </div>
                                 
@@ -476,8 +459,6 @@
                             </form>
                             
                             <script>
-                                let isDragging = false;
-                                
                                 // Sincronizar checkbox del header con input hidden del formulario
                                 function syncVisibleCheckbox() {
                                     const headerCheckbox = document.getElementById('visible');
@@ -495,145 +476,6 @@
                                         headerCheckbox.addEventListener('change', syncVisibleCheckbox);
                                         // Sincronizar estado inicial
                                         syncVisibleCheckbox();
-                                    }
-                                });
-                                
-                                // Función para obtener el color del gradiente en una posición específica
-                                function getColorFromPosition(x, width) {
-                                    const percentage = x / width;
-                                    
-                                    // Colores del gradiente en orden
-                                    const colors = [
-                                        {pos: 0, r: 255, g: 0, b: 0},     // Rojo
-                                        {pos: 0.083, r: 255, g: 128, b: 0}, // Naranja
-                                        {pos: 0.167, r: 255, g: 255, b: 0}, // Amarillo
-                                        {pos: 0.25, r: 128, g: 255, b: 0},  // Verde amarillo
-                                        {pos: 0.333, r: 0, g: 255, b: 0},   // Verde
-                                        {pos: 0.417, r: 0, g: 255, b: 128}, // Verde cian
-                                        {pos: 0.5, r: 0, g: 255, b: 255},   // Cian
-                                        {pos: 0.583, r: 0, g: 128, b: 255}, // Azul cian
-                                        {pos: 0.667, r: 0, g: 0, b: 255},   // Azul
-                                        {pos: 0.75, r: 128, g: 0, b: 255},  // Violeta
-                                        {pos: 0.833, r: 255, g: 0, b: 255}, // Magenta
-                                        {pos: 0.917, r: 255, g: 0, b: 128}, // Rosa
-                                        {pos: 1, r: 255, g: 0, b: 0}        // Rojo
-                                    ];
-                                    
-                                    // Encontrar los dos colores entre los que está el porcentaje
-                                    for (let i = 0; i < colors.length - 1; i++) {
-                                        if (percentage >= colors[i].pos && percentage <= colors[i + 1].pos) {
-                                            const t = (percentage - colors[i].pos) / (colors[i + 1].pos - colors[i].pos);
-                                            const r = Math.round(colors[i].r + t * (colors[i + 1].r - colors[i].r));
-                                            const g = Math.round(colors[i].g + t * (colors[i + 1].g - colors[i].g));
-                                            const b = Math.round(colors[i].b + t * (colors[i + 1].b - colors[i].b));
-                                            return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
-                                        }
-                                    }
-                                    
-                                    return '#ff0000'; // Fallback
-                                }
-                                
-                                function updateColorFromSlider(event) {
-                                    const slider = document.getElementById('colorSlider');
-                                    const rect = slider.getBoundingClientRect();
-                                    const x = event.clientX - rect.left;
-                                    const width = rect.width;
-                                    
-                                    // Limitar x entre 0 y width
-                                    const clampedX = Math.max(0, Math.min(x, width));
-                                    
-                                    // Actualizar posición del indicador
-                                    const indicator = document.getElementById('colorIndicator');
-                                    const percentage = (clampedX / width) * 100;
-                                    indicator.style.left = percentage + '%';
-                                    
-                                    // Obtener color del gradiente
-                                    const color = getColorFromPosition(clampedX, width);
-                                    
-                                    // Actualizar valores
-                                    document.getElementById('selectedColor').value = color;
-                                    document.getElementById('colorPreview').style.backgroundColor = color;
-                                    document.querySelector('#colorPreview .text-xs.font-mono').textContent = color;
-                                }
-                                
-                                // Event listeners para el slider
-                                document.addEventListener('DOMContentLoaded', function() {
-                                    const slider = document.getElementById('colorSlider');
-                                    
-                                    // Mouse down para iniciar drag
-                                    slider.addEventListener('mousedown', function(e) {
-                                        e.preventDefault();
-                                        isDragging = true;
-                                        updateColorFromSlider(e);
-                                    });
-                                    
-                                    // Mouse move durante drag (solo cuando está arrastrando)
-                                    document.addEventListener('mousemove', function(e) {
-                                        if (isDragging) {
-                                            e.preventDefault();
-                                            updateColorFromSlider(e);
-                                        }
-                                    });
-                                    
-                                    // Mouse up para terminar drag
-                                    document.addEventListener('mouseup', function(e) {
-                                        if (isDragging) {
-                                            isDragging = false;
-                                        }
-                                    });
-                                    
-                                    // Click para posicionar (sin drag)
-                                    slider.addEventListener('click', function(e) {
-                                        if (!isDragging) {
-                                            updateColorFromSlider(e);
-                                        }
-                                    });
-                                    
-                                    // Posicionar indicador según color actual
-                                    const currentColor = '{{ $stickyBar->color }}';
-                                    if (currentColor) {
-                                        // Convertir color hex a RGB
-                                        const hex = currentColor.replace('#', '');
-                                        const r = parseInt(hex.substr(0, 2), 16);
-                                        const g = parseInt(hex.substr(2, 2), 16);
-                                        const b = parseInt(hex.substr(4, 2), 16);
-                                        
-                                        // Calcular posición aproximada basada en el color
-                                        let position = 50; // Default center
-                                        
-                                        // Lógica para determinar posición basada en RGB
-                                        if (r > 200 && g < 100 && b < 100) {
-                                            // Rojo
-                                            position = 0;
-                                        } else if (r > 200 && g > 100 && b < 100) {
-                                            // Naranja/Amarillo
-                                            position = 15;
-                                        } else if (r > 200 && g > 200 && b < 100) {
-                                            // Amarillo
-                                            position = 25;
-                                        } else if (r < 100 && g > 200 && b < 100) {
-                                            // Verde
-                                            position = 40;
-                                        } else if (r < 100 && g > 200 && b > 200) {
-                                            // Cian
-                                            position = 50;
-                                        } else if (r < 100 && g < 200 && b > 200) {
-                                            // Azul
-                                            position = 70;
-                                        } else if (r > 200 && g < 100 && b > 200) {
-                                            // Magenta
-                                            position = 85;
-                                        } else if (r > 200 && g < 200 && b < 200) {
-                                            // Rosa
-                                            position = 95;
-                                        }
-                                        
-                                        const indicator = document.getElementById('colorIndicator');
-                                        indicator.style.left = position + '%';
-                                        
-                                        // Actualizar el preview del color
-                                        document.getElementById('colorPreview').style.backgroundColor = currentColor;
-                                        document.querySelector('#colorPreview .text-xs.font-mono').textContent = currentColor;
                                     }
                                 });
                             </script>
