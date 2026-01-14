@@ -32,6 +32,7 @@ class StickyBarController extends Controller
             'texto_url' => 'nullable|max:100',
             'url' => 'nullable|url|max:255',
             'color' => 'required|regex:/^#[0-9A-Fa-f]{6}$/',
+            'text_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
             'visible' => 'boolean'
         ]);
         
@@ -43,7 +44,8 @@ class StickyBarController extends Controller
                 'texto' => '¡Oferta especial! 🎉 **50% descuento** //hasta agotar stock//',
                 'texto_url' => 'más info',
                 'url' => null,
-                'color' => '#1f2937'
+                'color' => '#1f2937',
+                'text_color' => '#ffffff'
             ]);
         }
         
@@ -54,6 +56,11 @@ class StickyBarController extends Controller
         // Solo actualizar color si se proporciona
         if ($request->has('color')) {
             $updateData['color'] = $request->color;
+        }
+
+        // Solo actualizar color de texto si se proporciona
+        if ($request->has('text_color')) {
+            $updateData['text_color'] = $request->text_color;
         }
         
         // Solo actualizar texto si se proporciona

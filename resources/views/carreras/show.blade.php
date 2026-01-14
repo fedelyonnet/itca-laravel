@@ -23,7 +23,7 @@
         <div class="container">
             <div class="sticky-bar-content">
                 <div class="sticky-bar-text-container">
-                    <span class="sticky-bar-text">{!! $stickyBar->getFormattedTextAttribute() !!}</span>
+                    <span class="sticky-bar-text" @style(['color: ' . ($stickyBar->text_color ?? '#ffffff') . ' !important'])>{!! $stickyBar->getFormattedTextAttribute() !!}</span>
                 </div>
             </div>
         </div>

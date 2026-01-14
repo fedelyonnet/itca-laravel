@@ -383,6 +383,7 @@
                                         <label for="visible" class="text-white text-sm">Visible</label>
                                         <input type="hidden" name="texto" value="{{ $stickyBar->texto }}">
                                         <input type="hidden" name="color" value="{{ $stickyBar->color }}">
+                                        <input type="hidden" name="text_color" value="{{ $stickyBar->text_color ?? '#ffffff' }}">
                                     </div>
                                 </form>
                             </div>
@@ -454,6 +455,15 @@
                                                 <div class="text-white text-xs font-mono font-bold" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">{{ $stickyBar->color }}</div>
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Color del Texto -->
+                                <div class="space-y-2">
+                                    <label class="text-white text-sm">Color del Texto:</label>
+                                    <div class="flex items-center gap-4">
+                                        <input type="color" name="text_color" value="{{ $stickyBar->text_color ?? '#ffffff' }}" class="h-10 w-20 rounded cursor-pointer border-0 p-0">
+                                        <span class="text-gray-400 text-xs">(Click para cambiar el color del texto)</span>
                                     </div>
                                 </div>
                                 

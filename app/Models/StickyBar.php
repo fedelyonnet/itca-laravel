@@ -11,7 +11,8 @@ class StickyBar extends Model
         'texto',
         'texto_url',
         'url',
-        'color'
+        'color',
+        'text_color'
     ];
 
     protected $casts = [
