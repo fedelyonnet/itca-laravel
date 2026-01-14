@@ -9,6 +9,7 @@ use App\Models\FotosCarrera;
 use App\Models\Cursada;
 use App\Models\PromoBadge;
 use App\Models\Descuento;
+use App\Models\StickyBar;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
@@ -604,7 +605,11 @@ class CursoController extends Controller
         } catch (\Exception $e) {
             $certificados = null;
         }
-        return view('carreras.show', compact('curso', 'partners', 'sedes', 'sedesPorZona', 'anios', 'modalidades', 'testimonios', 'videosMobile', 'dudas', 'fotos', 'videoTestimonios', 'certificados'));
+
+        // Obtener Sticky Bar
+        $stickyBar = StickyBar::first();
+
+        return view('carreras.show', compact('curso', 'partners', 'sedes', 'sedesPorZona', 'anios', 'modalidades', 'testimonios', 'videosMobile', 'dudas', 'fotos', 'videoTestimonios', 'certificados', 'stickyBar'));
     }
 
     public function test()

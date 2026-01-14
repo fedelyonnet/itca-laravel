@@ -261,7 +261,9 @@
     flex-direction: row;
     align-items: center;
     justify-content: flex-end;
-    gap: clamp(100px, calc(100px + (100vw - 1366px) * ((260 - 100) / (1920 - 1366))), 260px);
+    /* Reducimos el gap para evitar saltos de línea en laptops (1366px-1440px). 
+       Antes forzaba ~100px en 1366px, ahora será aprox 55px en 1370px */
+    gap: clamp(30px, calc((100vw - 1000px) * 0.15), 200px);
     padding-right: clamp(0px, calc((100vw - 1100px) * (50 / 820)), 50px);
     flex-wrap: wrap;
 }

@@ -17,7 +17,20 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
 </head>
 <body>
-    <header class="header">
+    <!-- Sticky Bar -->
+    @if($stickyBar && $stickyBar->visible == true)
+    <div class="sticky-bar" @style(['background-color: ' . $stickyBar->color . ' !important'])>
+        <div class="container">
+            <div class="sticky-bar-content">
+                <div class="sticky-bar-text-container">
+                    <span class="sticky-bar-text">{!! $stickyBar->getFormattedTextAttribute() !!}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <header class="header {{ $stickyBar && $stickyBar->visible == true ? 'header-with-sticky' : '' }}">
         <div class="container">
             <nav class="nav">
                 <!-- Logo -->
