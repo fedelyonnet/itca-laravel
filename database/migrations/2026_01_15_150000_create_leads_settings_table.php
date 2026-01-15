@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('leads_settings', function (Blueprint $table) {
             $table->id();
-            $table->string('key')->unique();
+            $table->string('key_name')->unique();
             $table->text('value')->nullable();
             $table->string('description')->nullable();
             $table->timestamps();
@@ -22,7 +22,7 @@ return new class extends Migration
 
         // Insertar configuración inicial por defecto
         DB::table('leads_settings')->insert([
-            'key' => 'notification_email',
+            'key_name' => 'notification_email',
             'value' => 'federico.lyonnet@gmail.com',
             'description' => 'Email donde se reciben las notificaciones de nuevos leads',
             'created_at' => now(),
