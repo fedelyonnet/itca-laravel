@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CursoController;
+use Illuminate\Support\Facades\Mail;
 
 Route::get('/', [App\Http\Controllers\WelcomeController::class, 'index']);
 Route::get('/carreras', [App\Http\Controllers\WelcomeController::class, 'carreras'])->name('carreras');
@@ -177,6 +178,8 @@ Route::middleware('auth')->group(function () {
         
         // Rutas de leads
         Route::get('/leads', [App\Http\Controllers\LeadController::class, 'index'])->name('admin.leads');
+        Route::get('/leads/config', [App\Http\Controllers\LeadController::class, 'config'])->name('admin.leads.config');
+        Route::post('/leads/config', [App\Http\Controllers\LeadController::class, 'updateConfig'])->name('admin.leads.config.update');
         Route::get('/leads/export', [App\Http\Controllers\LeadController::class, 'export'])->name('admin.leads.export');
     });
 });

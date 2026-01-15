@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Lead;
 use App\Models\LeadCursada;
+use App\Models\LeadSetting;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
@@ -124,6 +125,29 @@ class LeadController extends Controller
         $writer->save('php://output');
         exit;
     }
+
+    public function config()
+    {
+        $emailSetting = LeadSetting::where('key_name', 'notification_email')->first();
+        $currentEmail = $emailSetting ? $emailSetting->value : env('MAIL_TO_ADMIN');
+        
+        return view('admin.leads-config', compact('currentEmail'));
+    }
+
+    public function updateConfig(Request $request)
+    {
+        $request->validate([
+            'notification_email' => 'required|email'
+        ]);
+
+        LeadSetting::updateOrCreate(
+            ['key_name' => 'notification_email'],
+            [
+                'value' => $request->notification_email,
+                'description' => 'Email de notificaciones de leads'
+            ]
+        );
+
+        return redirect()->back()->with('success', 'Configuración actualizada correctamente');
+    }
 }
-
-
