@@ -194,7 +194,13 @@
                             </button>
                         </div>
                         <div class="q4-right">
-                            <img src="/images/desktop/llavero.png" alt="Llavero ITCA" class="q4-image" loading="lazy" />
+                            @if($desktopImg2 && $desktopImg2->url)
+                                <img src="{{ asset('storage/' . $desktopImg2->url) }}" alt="Imagen Secundaria" class="q4-image" loading="lazy" />
+                            @else
+                                <div class="q4-image" style="background-color: #4b5563; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                                    <!-- Placeholder gris -->
+                                </div>
+                            @endif
                             <button class="q4-promo-button">¡Ver más promos!</button>
                         </div>
                     </div>

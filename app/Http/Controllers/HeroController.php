@@ -42,19 +42,26 @@ class HeroController extends Controller
                 ]);
             }
             
-            // Eliminar archivo anterior si existe
-            if ($hero->url && Storage::disk('public')->exists($hero->url)) {
-                Storage::disk('public')->delete($hero->url);
+            // 1. Subir nuevo archivo primero
+            $file = $request->file('file');
+            $newPath = $file->store('hero', 'public');
+            
+            // 2. Guardar ruta vieja para borrar después
+            $oldPath = $hero->url;
+            
+            // 3. Actualizar BD con la nueva ruta
+            $hero->url = $newPath;
+            $hero->save();
+            
+            // 4. Borrar archivo anterior solo si la actualización fue exitosa
+            if ($oldPath && $oldPath !== $newPath && Storage::disk('public')->exists($oldPath)) {
+                Storage::disk('public')->delete($oldPath);
             }
             
-            // Subir nuevo archivo
-            $file = $request->file('file');
-            $path = $file->store('hero', 'public');
-            $hero->url = $path;
-            $hero->save();
+            return redirect()->route('admin.edit-hero')->with('success', 'Archivo subido correctamente');
         }
         
-        return redirect()->route('admin.edit-hero')->with('success', 'Archivo subido correctamente');
+        return redirect()->route('admin.edit-hero')->with('error', 'No se seleccionó ningún archivo o hubo un error en la subida');
     }
 
     public function destroy($id)
