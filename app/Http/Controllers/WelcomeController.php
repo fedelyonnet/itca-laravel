@@ -510,10 +510,12 @@ class WelcomeController extends Controller
             ]);
 
             // Validar reCAPTCHA v3
+            // Solo validamos si NO estamos en entorno local para evitar bloqueos durante desarrollo
+            $isLocal = app()->environment('local');
             $recaptchaToken = $request->input('g-recaptcha-response');
             $recaptchaSecret = env('RECAPTCHA_SECRET_KEY');
 
-            if ($recaptchaSecret && $recaptchaToken) {
+            if (!$isLocal && $recaptchaSecret && $recaptchaToken) {
                 try {
                     $response = \Illuminate\Support\Facades\Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
                         'secret' => $recaptchaSecret,

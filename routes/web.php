@@ -181,6 +181,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/leads/config', [App\Http\Controllers\LeadController::class, 'config'])->name('admin.leads.config');
         Route::post('/leads/config', [App\Http\Controllers\LeadController::class, 'updateConfig'])->name('admin.leads.config.update');
         Route::get('/leads/export', [App\Http\Controllers\LeadController::class, 'export'])->name('admin.leads.export');
+
+        // Rutas de inscriptos
+        Route::get('/inscriptos', [App\Http\Controllers\InscripcionController::class, 'index'])->name('admin.inscriptos');
     });
 });
 

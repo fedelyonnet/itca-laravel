@@ -27,6 +27,8 @@
         'admin.leads.config',
     ];
     $isActiveLeads = request()->routeIs($leadsRoutes);
+    
+    $isActiveInscriptos = request()->routeIs('admin.inscriptos');
 @endphp
 
 <nav class="flex items-center space-x-6">
@@ -247,4 +249,12 @@
             </div>
         </div>
     </div>
+
+    <a href="{{ route('admin.inscriptos') }}" 
+       class="relative inline-flex items-center text-white hover:text-gray-300 px-2 py-1">
+        Inscriptos
+        @if($isActiveInscriptos)
+            <div class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500"></div>
+        @endif
+    </a>
 </nav>
