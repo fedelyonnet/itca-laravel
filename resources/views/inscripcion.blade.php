@@ -1027,13 +1027,15 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js" defer></script>
     
     <!-- JavaScript para desplegable de sedes y filtrado de cursadas -->
+    <script src="https://www.google.com/recaptcha/api.js?render={{ env('RECAPTCHA_SITE_KEY') }}"></script>
     <script>
         // Configuración global para el JavaScript de inscripción
         window.inscripcionConfig = {
             "cursoId": "{{ $curso->id }}",
             "buscarDescuentoUrl": "{{ route('buscar.descuento') }}",
             "csrfToken": "{{ csrf_token() }}",
-            "leadsStoreUrl": "{{ route('leads.store') }}"
+            "leadsStoreUrl": "{{ route('leads.store') }}",
+            "recaptchaSiteKey": "{{ env('RECAPTCHA_SITE_KEY') }}"
         };
     </script>
     @vite('resources/js/inscripcion.js')

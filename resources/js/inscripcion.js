@@ -50,6 +50,31 @@
                 }, 4000);
             }
             
+            // Función Helper para reCAPTCHA
+            function executeRecaptcha() {
+                return new Promise((resolve) => {
+                    const siteKey = window.inscripcionConfig.recaptchaSiteKey;
+                    if (!siteKey || typeof grecaptcha === 'undefined') {
+                        console.warn('reCAPTCHA no configurado o no cargado');
+                        resolve(null); // Si no hay key o script, continuar sin token
+                        return;
+                    }
+                    try {
+                        grecaptcha.ready(function() {
+                            grecaptcha.execute(siteKey, {action: 'submit'}).then(function(token) {
+                                resolve(token);
+                            }).catch(err => {
+                                console.error('reCAPTCHA Error:', err);
+                                resolve(null);
+                            });
+                        });
+                    } catch (e) {
+                        console.error('reCAPTCHA Exception:', e);
+                        resolve(null);
+                    }
+                });
+            }
+
             // Función para inicializar la carga de cursadas
             function init() {
                 // Cargar cursadas vía AJAX
@@ -1578,25 +1603,28 @@
                                             const aceptoTerminos = checkboxTerminosModal ? checkboxTerminosModal.checked : false;
                                             
                                             // Guardar lead (igual que desktop)
-                                            fetch(window.inscripcionConfig.leadsStoreUrl, {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Content-Type': 'application/json',
-                                                    'Accept': 'application/json',
-                                                    'X-Requested-With': 'XMLHttpRequest',
-                                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-                                                },
-                                                body: JSON.stringify({
-                                                    id: leadId, // Enviar ID si existe para actualizar
-                                                    nombre: nombreModal.value.trim(),
-                                                    apellido: apellidoModal.value.trim(),
-                                                    dni: dniModal.value.trim(),
-                                                    correo: correoModal.value.trim(),
-                                                    telefono: telefonoCompleto,
-                                                    cursada_id: idCurso,
-                                                    tipo: 'Lead',
-                                                    acepto_terminos: aceptoTerminos
-                                                })
+                                            executeRecaptcha().then(recaptchaToken => {
+                                                return fetch(window.inscripcionConfig.leadsStoreUrl, {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Content-Type': 'application/json',
+                                                        'Accept': 'application/json',
+                                                        'X-Requested-With': 'XMLHttpRequest',
+                                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                                                    },
+                                                    body: JSON.stringify({
+                                                        id: leadId, // Enviar ID si existe para actualizar
+                                                        nombre: nombreModal.value.trim(),
+                                                        apellido: apellidoModal.value.trim(),
+                                                        dni: dniModal.value.trim(),
+                                                        correo: correoModal.value.trim(),
+                                                        telefono: telefonoCompleto,
+                                                        cursada_id: idCurso,
+                                                        tipo: 'Lead',
+                                                        acepto_terminos: aceptoTerminos,
+                                                        'g-recaptcha-response': recaptchaToken
+                                                    })
+                                                });
                                             })
                                             .then(async response => {
                                                 // Leer la respuesta una sola vez
@@ -3994,25 +4022,28 @@
                     const existingLeadId = panel ? panel.getAttribute('data-lead-id') : null;
                     
                                 // Guardar lead
-                                fetch(window.inscripcionConfig.leadsStoreUrl, {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'Accept': 'application/json',
-                                        'X-Requested-With': 'XMLHttpRequest',
-                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-                                    },
-                                    body: JSON.stringify({
-                                        id: existingLeadId, // Enviar ID si existe para actualizar
-                                        nombre: nombre.value.trim(),
-                                        apellido: apellido.value.trim(),
-                                        dni: dni.value.trim(),
-                                        correo: correo.value.trim(),
-                                        telefono: telefonoCompleto,
-                                        cursada_id: idCurso,
-                                        tipo: 'Lead',
-                                        acepto_terminos: checkboxTerminos ? checkboxTerminos.checked : false
-                                    })
+                                executeRecaptcha().then(recaptchaToken => {
+                                    return fetch(window.inscripcionConfig.leadsStoreUrl, {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'Accept': 'application/json',
+                                            'X-Requested-With': 'XMLHttpRequest',
+                                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                                        },
+                                        body: JSON.stringify({
+                                            id: existingLeadId, // Enviar ID si existe para actualizar
+                                            nombre: nombre.value.trim(),
+                                            apellido: apellido.value.trim(),
+                                            dni: dni.value.trim(),
+                                            correo: correo.value.trim(),
+                                            telefono: telefonoCompleto,
+                                            cursada_id: idCurso,
+                                            tipo: 'Lead',
+                                            acepto_terminos: checkboxTerminos ? checkboxTerminos.checked : false,
+                                            'g-recaptcha-response': recaptchaToken
+                                        })
+                                    });
                                 })
                                 .then(async response => {
                                     // Verificar el Content-Type antes de intentar parsear

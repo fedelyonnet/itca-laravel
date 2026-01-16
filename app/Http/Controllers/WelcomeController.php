@@ -506,7 +506,39 @@ class WelcomeController extends Controller
                 'cursada_id' => 'required|string|max:50|exists:cursadas,ID_Curso',
                 'tipo' => 'nullable|string|max:255',
                 'acepto_terminos' => 'boolean',
+                'g-recaptcha-response' => 'nullable|string',
             ]);
+
+            // Validar reCAPTCHA v3
+            $recaptchaToken = $request->input('g-recaptcha-response');
+            $recaptchaSecret = env('RECAPTCHA_SECRET_KEY');
+
+            if ($recaptchaSecret && $recaptchaToken) {
+                try {
+                    $response = \Illuminate\Support\Facades\Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                        'secret' => $recaptchaSecret,
+                        'response' => $recaptchaToken,
+                        'remoteip' => $request->ip(),
+                    ]);
+
+                    $result = $response->json();
+
+                    if (!($result['success'] ?? false) || ($result['score'] ?? 0) < 0.5) {
+                         logger()->warning('Lead rechazado por reCAPTCHA bajo score', [
+                             'score' => $result['score'] ?? 'N/A',
+                             'ip' => $request->ip(),
+                             'email' => $request->input('correo')
+                         ]);
+                         
+                         return response()->json([
+                             'success' => false, 
+                             'message' => 'Validación de seguridad fallida. Por favor recargue la página e intente nuevamente.'
+                         ], 422);
+                    }
+                } catch (\Exception $e) {
+                    logger()->error('Error conectando con Google reCAPTCHA', ['error' => $e->getMessage()]);
+                }
+            }
 
             // Obtener la cursada por ID_Curso
             $cursada = \App\Models\Cursada::where('ID_Curso', $validated['cursada_id'])->firstOrFail();
