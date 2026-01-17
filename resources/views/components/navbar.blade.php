@@ -19,6 +19,7 @@
         'admin.partners',
         'admin.en-accion',
         'admin.noticias',
+        'admin.contacto',
     ];
     $isActiveCMS = request()->routeIs($cmsRoutes);
     
@@ -196,6 +197,13 @@
                    class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
                    role="menuitem">
                     Edición Noticias
+                </a>
+                
+                <a href="{{ route('admin.contacto') }}" 
+                   @keydown.enter="window.location.href = '{{ route('admin.contacto') }}'"
+                   class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
+                   role="menuitem">
+                    Edición Contacto
                 </a>
             </div>
         </div>

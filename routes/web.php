@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Mail;
 
 Route::get('/', [App\Http\Controllers\WelcomeController::class, 'index']);
 Route::get('/carreras', [App\Http\Controllers\WelcomeController::class, 'carreras'])->name('carreras');
+Route::get('/somos-itca', [App\Http\Controllers\WelcomeController::class, 'somosItca'])->name('somos-itca');
 // Carrera individual (por id por ahora)
 Route::get('/carreras/{curso}', [CursoController::class, 'show'])->name('carreras.show');
 // Inscripción/Compra
@@ -163,6 +164,13 @@ Route::middleware('auth')->group(function () {
         Route::put('/en-accion/{id}', [App\Http\Controllers\EnAccionController::class, 'update'])->name('admin.en-accion.update');
         Route::post('/en-accion/mover', [App\Http\Controllers\EnAccionController::class, 'mover'])->name('admin.en-accion.mover');
         Route::delete('/en-accion/{id}', [App\Http\Controllers\EnAccionController::class, 'destroy'])->name('admin.en-accion.destroy');
+        
+        // Rutas de contacto
+        Route::get('/contacto', [App\Http\Controllers\DatoContactoController::class, 'index'])->name('admin.contacto');
+        Route::post('/contacto', [App\Http\Controllers\DatoContactoController::class, 'store'])->name('admin.contacto.store');
+        Route::get('/contacto/{id}/data', [App\Http\Controllers\DatoContactoController::class, 'getData'])->name('admin.contacto.data');
+        Route::put('/contacto/{id}', [App\Http\Controllers\DatoContactoController::class, 'update'])->name('admin.contacto.update');
+        Route::delete('/contacto/{id}', [App\Http\Controllers\DatoContactoController::class, 'destroy'])->name('admin.contacto.destroy');
         
         // Rutas de noticias
         Route::get('/noticias', [App\Http\Controllers\NoticiaController::class, 'index'])->name('admin.noticias');

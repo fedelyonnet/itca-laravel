@@ -88,6 +88,10 @@ class WelcomeController extends Controller
             $cursoHero = $cursosFeatured->first();
         }
 
+        // Obtener datos de contacto
+        $contactosInfo = \App\Models\DatoContacto::info()->get();
+        $contactosSocial = \App\Models\DatoContacto::social()->get();
+
         return view('welcome', compact(
             'desktopImg1', 'desktopImg2', 'desktopVideo',
             'mobileImg1', 'mobileImg2', 'mobileVideo',
@@ -99,7 +103,9 @@ class WelcomeController extends Controller
             'video1', 'video3', 'video5', 'videosTablet', 'videosMobile',
             'stickyBar',
             'noticiaDestacada',
-            'cursoHero'
+            'cursoHero',
+            'contactosInfo',
+            'contactosSocial'
         ));
     }
 
@@ -122,8 +128,33 @@ class WelcomeController extends Controller
         
         // Obtener Sticky Bar
         $stickyBar = StickyBar::first();
+
+        // Obtener datos de contacto
+        $contactosInfo = \App\Models\DatoContacto::info()->get();
+        $contactosSocial = \App\Models\DatoContacto::social()->get();
         
-        return view('carreras', compact('carreras', 'beneficios', 'partners', 'sedes', 'stickyBar'));
+        return view('carreras', compact('carreras', 'beneficios', 'partners', 'sedes', 'stickyBar', 'contactosInfo', 'contactosSocial'));
+    }
+
+    public function somosItca()
+    {
+        // Obtener Sticky Bar
+        $stickyBar = StickyBar::first();
+        
+        // Obtener partners ordenados
+        $partners = Partner::ordered()->get();
+        
+        // Obtener sedes disponibles para contacto
+        $sedes = Sede::where('disponible', true)
+                    ->whereNotIn('nombre', ['online', 'Online', 'ONLINE', 'próximamente', 'Proximamente', 'PROXIMAMENTE'])
+                    ->ordered()
+                    ->get();
+        
+        // Obtener datos de contacto
+        $contactosInfo = \App\Models\DatoContacto::info()->get();
+        $contactosSocial = \App\Models\DatoContacto::social()->get();
+        
+        return view('somos-itca', compact('stickyBar', 'partners', 'sedes', 'contactosInfo', 'contactosSocial'));
     }
 
     public function inscripcion(Curso $curso)

@@ -423,23 +423,94 @@
                     <div class="contacto-contacto-wrapper">
                         <h3 class="contacto-tercio-title">Contacto</h3>
                         <div class="contacto-info-content">
-                            <div class="contacto-info-item">
-                                <span class="contacto-info-label">Tel: </span>
-                                <span class="contacto-info-value">0810-220-4822</span>
-                            </div>
-                            <div class="contacto-info-item">
-                                <span class="contacto-info-label">WhatsApp: </span>
-                                <span class="contacto-info-value">11-2267-4822</span>
-                            </div>
-                            <div class="contacto-info-item">
-                                <span class="contacto-info-label">Mail: </span>
-                                <span class="contacto-info-value"><a href="mailto:inscripciones@itca.edu.ar">inscripciones@itca.edu.ar</a></span>
-                            </div>
+                            @if(isset($contactosInfo) && $contactosInfo->count() > 0)
+                                @foreach($contactosInfo as $contacto)
+                                    <div class="contacto-info-item">
+                                        <span class="contacto-info-label">{{ $contacto->descripcion }} </span>
+                                        <span class="contacto-info-value">
+                                            @if(Str::contains(Str::lower($contacto->descripcion), ['mail', 'email']))
+                                                <a href="mailto:{{ $contacto->contenido }}">{{ $contacto->contenido }}</a>
+                                            @elseif(Str::contains(Str::lower($contacto->descripcion), ['whatsapp']))
+                                                <a href="https://wa.me/549{{ Str::of($contacto->contenido)->replace(['-', ' '], '') }}" target="_blank">{{ $contacto->contenido }}</a>
+                                            @else
+                                                {{ $contacto->contenido }}
+                                            @endif
+                                        </span>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="contacto-info-item">
+                                    <span class="contacto-info-label">Tel: </span>
+                                    <span class="contacto-info-value">0810-220-4822</span>
+                                </div>
+                                <div class="contacto-info-item">
+                                    <span class="contacto-info-label">WhatsApp: </span>
+                                    <span class="contacto-info-value">11-2267-4822</span>
+                                </div>
+                                <div class="contacto-info-item">
+                                    <span class="contacto-info-label">Mail: </span>
+                                    <span class="contacto-info-value"><a href="mailto:inscripciones@itca.edu.ar">inscripciones@itca.edu.ar</a></span>
+                                </div>
+                            @endif
                         </div>
                         
                         <!-- Redes Sociales (visible solo en desktop) -->
                         <h4 class="contacto-redes-title contacto-redes-desktop">Redes Sociales</h4>
                         <div class="contacto-redes-icons contacto-redes-desktop">
+                            @if(isset($contactosSocial) && $contactosSocial->count() > 0)
+                                @foreach($contactosSocial as $social)
+                                    <a href="{{ $social->contenido }}" target="_blank" class="contacto-redes-link">
+                                        @if($social->icono)
+                                            @if(Str::startsWith($social->icono, 'images/'))
+                                                <img src="{{ asset($social->icono) }}" alt="{{ $social->descripcion }}" class="contacto-redes-icon">
+                                            @else
+                                                <img src="{{ asset('storage/' . $social->icono) }}" alt="{{ $social->descripcion }}" class="contacto-redes-icon">
+                                            @endif
+                                        @else
+                                            <span class="contacto-redes-text">{{ $social->descripcion }}</span>
+                                        @endif
+                                    </a>
+                                @endforeach
+                            @else
+                                <a href="https://www.instagram.com/itca.oficial/?hl=en" target="_blank" class="contacto-redes-link">
+                                    <img src="/images/social/ig.png" alt="Instagram" class="contacto-redes-icon">
+                                </a>
+                                <a href="https://www.tiktok.com/@itca.oficial" target="_blank" class="contacto-redes-link">
+                                    <img src="/images/social/tik.png" alt="TikTok" class="contacto-redes-icon">
+                                </a>
+                                <a href="https://www.facebook.com/ITCAoficial/" target="_blank" class="contacto-redes-link">
+                                    <img src="/images/social/fb.png" alt="Facebook" class="contacto-redes-icon">
+                                </a>
+                                <a href="https://www.linkedin.com/school/itca-oficial/" target="_blank" class="contacto-redes-link">
+                                    <img src="/images/social/lin.png" alt="LinkedIn" class="contacto-redes-icon">
+                                </a>
+                                <a href="https://www.youtube.com/canalITCAoficial" target="_blank" class="contacto-redes-link">
+                                    <img src="/images/social/yt.png" alt="YouTube" class="contacto-redes-icon">
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tercio Redes Sociales (solo visible en mobile) -->
+                <div class="contacto-tercio contacto-redes">
+                    <h4 class="contacto-redes-title">Redes Sociales</h4>
+                    <div class="contacto-redes-icons">
+                        @if(isset($contactosSocial) && $contactosSocial->count() > 0)
+                            @foreach($contactosSocial as $social)
+                                <a href="{{ $social->contenido }}" target="_blank" class="contacto-redes-link">
+                                    @if($social->icono)
+                                        @if(Str::startsWith($social->icono, 'images/'))
+                                            <img src="{{ asset($social->icono) }}" alt="{{ $social->descripcion }}" class="contacto-redes-icon">
+                                        @else
+                                            <img src="{{ asset('storage/' . $social->icono) }}" alt="{{ $social->descripcion }}" class="contacto-redes-icon">
+                                        @endif
+                                    @else
+                                        <span class="contacto-redes-text">{{ $social->descripcion }}</span>
+                                    @endif
+                                </a>
+                            @endforeach
+                        @else
                             <a href="https://www.instagram.com/itca.oficial/?hl=en" target="_blank" class="contacto-redes-link">
                                 <img src="/images/social/ig.png" alt="Instagram" class="contacto-redes-icon">
                             </a>
@@ -455,29 +526,7 @@
                             <a href="https://www.youtube.com/canalITCAoficial" target="_blank" class="contacto-redes-link">
                                 <img src="/images/social/yt.png" alt="YouTube" class="contacto-redes-icon">
                             </a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Tercio Redes Sociales (solo visible en mobile) -->
-                <div class="contacto-tercio contacto-redes">
-                    <h4 class="contacto-redes-title">Redes Sociales</h4>
-                    <div class="contacto-redes-icons">
-                        <a href="https://www.instagram.com/itca.oficial/?hl=en" target="_blank" class="contacto-redes-link">
-                            <img src="/images/social/ig.png" alt="Instagram" class="contacto-redes-icon">
-                        </a>
-                        <a href="https://www.tiktok.com/@itca.oficial" target="_blank" class="contacto-redes-link">
-                            <img src="/images/social/tik.png" alt="TikTok" class="contacto-redes-icon">
-                        </a>
-                        <a href="https://www.facebook.com/ITCAoficial/" target="_blank" class="contacto-redes-link">
-                            <img src="/images/social/fb.png" alt="Facebook" class="contacto-redes-icon">
-                        </a>
-                        <a href="https://www.linkedin.com/school/itca-oficial/" target="_blank" class="contacto-redes-link">
-                            <img src="/images/social/lin.png" alt="LinkedIn" class="contacto-redes-icon">
-                        </a>
-                        <a href="https://www.youtube.com/canalITCAoficial" target="_blank" class="contacto-redes-link">
-                            <img src="/images/social/yt.png" alt="YouTube" class="contacto-redes-icon">
-                        </a>
+                        @endif
                     </div>
                 </div>
                 
