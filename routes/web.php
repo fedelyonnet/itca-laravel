@@ -195,4 +195,11 @@ Route::middleware('auth')->group(function () {
     });
 });
 
+
+// Rutas de Mercado Pago
+Route::post('/mp/create_preference', [App\Http\Controllers\MercadoPagoController::class, 'createPreference'])->name('mp.create_preference');
+Route::get('/mp/success', [App\Http\Controllers\MercadoPagoController::class, 'success'])->name('mp.success');
+Route::get('/mp/failure', [App\Http\Controllers\MercadoPagoController::class, 'failure'])->name('mp.failure');
+Route::get('/mp/pending', [App\Http\Controllers\MercadoPagoController::class, 'pending'])->name('mp.pending');
+
 require __DIR__.'/auth.php';

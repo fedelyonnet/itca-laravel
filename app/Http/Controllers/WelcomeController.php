@@ -635,28 +635,31 @@ class WelcomeController extends Controller
                 ]);
 
                 // Enviar email de notificación (Solo si es una NUEVA intención)
-                try {
-                    // Obtener email desde BD o usar fallback
-                    $emailSetting = \App\Models\LeadSetting::where('key_name', 'notification_email')->first();
-                    $toEmail = $emailSetting ? $emailSetting->value : env('MAIL_TO_ADMIN', 'federico.lyonnet@gmail.com');
-                    
-                    Mail::to($toEmail)->send(new \App\Mail\LeadNotification($lead, $cursada));
-
-                    // --- DEBUG TECNOM ADF ---
+                // CONTROL: Poner SEND_LEAD_EMAILS=false en .env para desactivar
+                if (env('SEND_LEAD_EMAILS', true)) {
                     try {
-                        $tecnomService = new \App\Services\TecnomService();
-                        $adfJson = $tecnomService->generateAdfJson($lead, $cursada);
-                        // Enviar a tu correo personal para revisar
-                        Mail::to('fedelyonnet@gmail.com')->send(new \App\Mail\DebugAdfMail($adfJson));
-                    } catch (\Exception $e) {
-                        logger()->error('Error enviando debug ADF: ' . $e->getMessage());
+                        // Obtener email desde BD o usar fallback
+                        $emailSetting = \App\Models\LeadSetting::where('key_name', 'notification_email')->first();
+                        $toEmail = $emailSetting ? $emailSetting->value : env('MAIL_TO_ADMIN', 'federico.lyonnet@gmail.com');
+                        
+                        Mail::to($toEmail)->send(new \App\Mail\LeadNotification($lead, $cursada));
+
+                        // --- DEBUG TECNOM ADF ---
+                        try {
+                            $tecnomService = new \App\Services\TecnomService();
+                            $adfJson = $tecnomService->generateAdfJson($lead, $cursada);
+                            // Enviar a tu correo personal para revisar
+                            Mail::to('fedelyonnet@gmail.com')->send(new \App\Mail\DebugAdfMail($adfJson));
+                        } catch (\Exception $e) {
+                            logger()->error('Error enviando debug ADF: ' . $e->getMessage());
+                        }
+                        // ------------------------
+                    } catch (\Exception $emailException) {
+                        logger()->error('Error al enviar email de notificación de lead', [
+                            'lead_id' => $lead->id,
+                            'error' => $emailException->getMessage(),
+                        ]);
                     }
-                    // ------------------------
-                } catch (\Exception $emailException) {
-                    logger()->error('Error al enviar email de notificación de lead', [
-                        'lead_id' => $lead->id,
-                        'error' => $emailException->getMessage(),
-                    ]);
                 }
             }
 
