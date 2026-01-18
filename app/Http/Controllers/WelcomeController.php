@@ -617,7 +617,8 @@ class WelcomeController extends Controller
                                     ->first();
 
             $shouldCreateInscripcion = true;
-            if ($lastInscripcion && $lastInscripcion->created_at->diffInMinutes(now()) < 5) {
+            // Si es la misma cursada hace menos de 2 min, solo actualizamos (si hiciera falta)
+            if ($lastInscripcion && $lastInscripcion->created_at->diffInMinutes(now()) < 2) {
                 // Si es la misma cursada hace menos de 5 min, solo actualizamos (si hiciera falta)
                 // y no creamos registro nuevo para no spamear
                 $lastInscripcion->update([

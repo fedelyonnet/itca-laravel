@@ -4,7 +4,44 @@
             <div class="bg-gray-800 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-100 dark:text-gray-100">
                     <h1 class="text-2xl font-bold mb-4">Panel de administración</h1>
-                    <p class="mb-6">Versión subida el: 18/01/2026 14:33</p>
+                    @php
+                        $lastUpdate = null;
+                        
+                        // 1. Intentar obtener fecha de Git
+                        try {
+                            if (is_dir(base_path('.git'))) {
+                                $gitDate = shell_exec('cd ' . base_path() . ' && git log -1 --format=%cd --date=format:"%d/%m/%Y %H:%M"');
+                                if ($gitDate) {
+                                    $lastUpdate = trim($gitDate);
+                                }
+                            }
+                        } catch (\Exception $e) {}
+
+                        // 2. Fallback: Fecha de modificación de archivos clave (Composer o este archivo)
+                        if (!$lastUpdate) {
+                            $filesToCheck = [
+                                base_path('composer.json'),
+                                base_path('package.json'),
+                                __FILE__ // El propio archivo dashboard
+                            ];
+                            
+                            $latestTime = 0;
+                            foreach ($filesToCheck as $file) {
+                                if (file_exists($file)) {
+                                    $time = filemtime($file);
+                                    if ($time > $latestTime) {
+                                        $latestTime = $time;
+                                    }
+                                }
+                            }
+                            
+                            if ($latestTime > 0) {
+                                // Ajustar a zona horaria local (-3 para AR, o usar configuración de Laravel)
+                                $lastUpdate = date('d/m/Y H:i', $latestTime);
+                            }
+                        }
+                    @endphp
+                    <p class="mb-6">Versión del sistema: {{ $lastUpdate ?? date('d/m/Y H:i') }}</p>
                     
                     <div class="bg-blue-900/30 dark:bg-blue-900/30 p-4 rounded-lg mb-6 border border-blue-700">
                         <h2 class="text-lg font-semibold mb-2 text-blue-200">Panel de administración</h2>
