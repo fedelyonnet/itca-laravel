@@ -25,15 +25,26 @@ class MercadoPagoController extends Controller
     {
         try {
             $validated = $request->validate([
-                'lead_id' => 'required|exists:leads,id',
-                'cursada_id' => 'required|exists:cursadas,ID_Curso', 
+                'lead_id' => 'required',
+                'cursada_id' => 'required', 
             ]);
             
             // Buscar Lead
             $lead = Lead::findOrFail($request->lead_id);
             
-            // Buscar Cursada por ID_Curso
-            $cursada = Cursada::where('ID_Curso', $request->cursada_id)->firstOrFail();
+            // Buscar Cursada
+            // Intentamos primero por ID_Curso (string) que es el identificador externo
+            $cursada = Cursada::where('ID_Curso', $request->cursada_id)->first();
+            
+            // Si no se encuentra, intentamos por el id interno (integer)
+            if (!$cursada) {
+                $cursada = Cursada::find($request->cursada_id);
+            }
+
+            if (!$cursada) {
+                Log::error('Cursada no encontrada con ID: ' . $request->cursada_id);
+                return response()->json(['error' => 'Curso no encontrado'], 404);
+            }
 
             // Calcular precio de matrícula
             // Por defecto usamos Matric_Base.
@@ -41,6 +52,7 @@ class MercadoPagoController extends Controller
             $price = (float) $cursada->Matric_Base;
             
             if ($price <= 0) {
+                 Log::error('Precio inválido para Cursada ID: ' . $cursada->id . ' (Matric_Base: ' . $cursada->Matric_Base . ')');
                  return response()->json(['error' => 'El precio de la matrícula es inválido (0)'], 400);
             }
 

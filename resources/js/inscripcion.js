@@ -2053,6 +2053,7 @@
                 item.setAttribute('data-dia', cursada.xDias || '');
                 item.setAttribute('data-promocion', pre.tieneDescuento ? 'con_descuento' : 'sin_descuento');
                 item.setAttribute('data-id-curso', cursada.ID_Curso || '');
+                item.setAttribute('data-internal-id', cursada.id);
 
                 const cursadaId = 'cursada-' + cursada.id;
 
@@ -4260,10 +4261,21 @@
                         }
 
                         // ID de Cursada
-                        let idCursoToSend = cursadaId; // Fallback
+                        let idCursoToSend = null;
                         const cursadaItem = this.closest('.cursada-item') || (panel ? panel.closest('.cursada-item') : null);
-                        if (cursadaItem && cursadaItem.dataset.idCurso) {
-                            idCursoToSend = cursadaItem.dataset.idCurso;
+
+                        if (cursadaItem) {
+                            if (cursadaItem.dataset.idCurso) {
+                                idCursoToSend = cursadaItem.dataset.idCurso;
+                            } else if (cursadaItem.dataset.internalId) {
+                                idCursoToSend = cursadaItem.dataset.internalId;
+                            }
+                        }
+
+                        // Fallback final (aunque idealmente no se debería usar)
+                        if (!idCursoToSend) {
+                            // Intentar limpiar el cursadaId si tiene prefijo
+                            idCursoToSend = cursadaId.replace('cursada-', '');
                         }
 
                         const leadId = panel ? panel.getAttribute('data-lead-id') : null;
@@ -4288,7 +4300,29 @@
                                 cursada_id: idCursoToSend
                             })
                         })
-                            .then(response => response.json())
+                            .then(async response => {
+                                const contentType = response.headers.get('content-type');
+                                const isJson = contentType && contentType.includes('application/json');
+
+                                if (!response.ok) {
+                                    const text = await response.text();
+                                    console.error('Error Response:', text);
+                                    // Intentar extraer mensaje si es HTML (e.g. Laravel debug page)
+                                    let message = 'Error del servidor (' + response.status + ').';
+                                    if (text.includes('SQLSTATE')) message += ' Error de base de datos.';
+                                    else if (text.length < 200) message += ' ' + text;
+                                    else message += ' Revisa la consola para más detalles.';
+                                    throw new Error(message);
+                                }
+
+                                if (isJson) {
+                                    return response.json();
+                                } else {
+                                    const text = await response.text();
+                                    console.error('Respuesta no JSON:', text);
+                                    throw new Error('Respuesta inesperada del servidor.');
+                                }
+                            })
                             .then(data => {
                                 if (data.init_point) {
                                     // Redireccionar a MP
