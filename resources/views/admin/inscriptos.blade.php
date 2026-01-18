@@ -7,7 +7,7 @@
             <div class="bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-100">
                     <div class="mb-6 flex justify-between items-center">
-                        <h1 class="text-2xl font-bold">Inscriptos (Pagos)</h1>
+                        <h1 class="text-2xl font-bold">Listado de Inscripciones</h1>
                         <!-- <a href="#" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 flex items-center gap-2">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -18,7 +18,7 @@
 
                     <!-- Grilla de inscriptos -->
                     <div class="overflow-hidden rounded-xl border border-gray-700 shadow-lg">
-                        <div class="overflow-x-auto" style="max-height: calc(100vh - 250px);">
+                        <div class="overflow-auto" style="max-height: calc(100vh - 250px);">
                             <table id="tablaInscriptos" class="min-w-full border-collapse bg-gray-900 text-left text-sm text-gray-300">
                                 <thead class="bg-gray-800 text-xs font-medium uppercase tracking-wider text-gray-400 sticky top-0 z-10 shadow-sm">
                                     <tr>
@@ -56,8 +56,8 @@
                                         <tr class="hover:bg-gray-800 transition-colors duration-150 cursor-pointer group" onclick="toggleAccordion('{{ $inscripcion->id }}')">
                                             <td class="px-4 py-3 text-center align-middle">
                                                 <div class="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold border 
-                                                    {{ $inscripcion->estado === 'pagado' ? 'bg-green-900/30 text-green-400 border-green-800' : 
-                                                       ($inscripcion->estado === 'pendiente' ? 'bg-yellow-900/30 text-yellow-400 border-yellow-800' : 
+                                                    {{ ($inscripcion->estado === 'pagado' || $inscripcion->estado === 'approved') ? 'bg-green-900/30 text-green-400 border-green-800' : 
+                                                       ($inscripcion->estado === 'pendiente' || $inscripcion->estado === 'pending' ? 'bg-yellow-900/30 text-yellow-400 border-yellow-800' : 
                                                        'bg-red-900/30 text-red-400 border-red-800') }}">
                                                     {{ ucfirst($inscripcion->estado) }}
                                                 </div>

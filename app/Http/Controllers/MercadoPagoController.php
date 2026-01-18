@@ -102,15 +102,19 @@ class MercadoPagoController extends Controller
 
             // Crear registro de inscripción PENDIENTE
             // O actualizar si ya existe una pendiente para este usuario y curso
+            // Crear registro de inscripción PENDIENTE
+            // Buscamos si ya existe una inscripción PENDIENTE para este lead y este curso
+            // Si ya existe una pagada/aprobada, NO debemos pisarla, sino crear una nueva si fuera el caso (aunque raro)
+            // Aquí asumimos que si el usuario reintenta, actualizamos la pendiente.
             Inscripcion::updateOrCreate(
                 [
                     'lead_id' => $lead->id,
-                    'cursada_id' => $cursada->ID_Curso, // Usamos ID_Curso string para mantener referencia
-                    'estado' => 'pending' // Estado inicial
+                    'cursada_id' => $cursada->ID_Curso, 
+                    'estado' => 'pending' // Clave: Solo actualizamos si está en estado pendiente
                 ],
                 [
                     'monto_matricula' => $price,
-                    'preference_id' => $preference->id,
+                    'preference_id' => $preference->id, // Actualizamos con la nueva preferencia
                     // collection_id, payment_type, etc se llenan al volver
                 ]
             );
