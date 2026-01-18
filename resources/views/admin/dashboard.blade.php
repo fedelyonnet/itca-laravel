@@ -4,7 +4,7 @@
             <div class="bg-gray-800 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-100 dark:text-gray-100">
                     <h1 class="text-2xl font-bold mb-4">Panel de administración</h1>
-                    <p class="mb-6">Versión subida el: 18/01/2026 11:10</p>
+                    <p class="mb-6">Versión subida el: 18/01/2026 12:40</p>
                     
                     <div class="bg-blue-900/30 dark:bg-blue-900/30 p-4 rounded-lg mb-6 border border-blue-700">
                         <h2 class="text-lg font-semibold mb-2 text-blue-200">Panel de administración</h2>

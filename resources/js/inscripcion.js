@@ -4235,82 +4235,77 @@
                 checkboxTerminos.dataset.listenerAdded = 'true';
 
                 // Listener para el botón de reservar (PAGO)
-                btnReservar.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
+                // MODIFICADO: Buscar TODOS los botones (desktop y mobile/modal)
+                const allReservarBtns = document.querySelectorAll('.cursada-btn-reservar[data-cursada-id="' + cursadaId + '"]');
 
-                    if (this.disabled) return;
+                allReservarBtns.forEach(btn => {
+                    if (btn.dataset.paymentListenerAdded === 'true') return;
 
-                    const originalText = this.textContent;
-                    this.textContent = 'Procesando...';
-                    this.disabled = true;
+                    btn.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
 
-                    // Obtener leadId
-                    let panel = document.getElementById('panel-' + cursadaId);
-                    if (!panel && cursadaId.includes('cursada-')) {
-                        panel = document.getElementById('panel-' + cursadaId.replace('cursada-', ''));
-                    } else if (!panel) {
-                        panel = document.getElementById('panel-cursada-' + cursadaId);
-                    }
+                        if (this.disabled) return;
 
-                    // ID de Cursada
-                    // El botón tiene data-cursada-id que suele ser un ID numérico o string 'cursada-ID'.
-                    // El backend espera 'cursada_id' (que debe coincidir con lo que espera el controller: ID o ID_Curso).
-                    // En MercadoPagoController usamos findOrFail($request->cursada_id).
-                    // WelcomeController::getCursadas retorna id (numérico) y ID_Curso (string).
-                    // El template usa 'cursadaId' que es 'TEMPLATE_ID' reemplazado.
-                    // Revisemos cómo se genera cursadaId en renderCursadas.
+                        const originalText = this.textContent;
+                        this.textContent = 'Procesando...';
+                        this.disabled = true;
 
-                    // En inscripcion.js, renderCursadas usa 'cursada.id' o 'cursada.ID_Curso'?
-                    // Necesitamos asegurar que enviamos el ID correcto.
-                    // Trataremos de obtener ID_Curso string del data attribute del item si es posible.
+                        // Obtener leadId
+                        let panel = document.getElementById('panel-' + cursadaId);
+                        if (!panel && cursadaId.includes('cursada-')) {
+                            panel = document.getElementById('panel-' + cursadaId.replace('cursada-', ''));
+                        } else if (!panel) {
+                            panel = document.getElementById('panel-cursada-' + cursadaId);
+                        }
 
-                    let idCursoToSend = cursadaId; // Fallback
-                    const cursadaItem = this.closest('.cursada-item') || (panel ? panel.closest('.cursada-item') : null);
-                    if (cursadaItem && cursadaItem.dataset.idCurso) {
-                        idCursoToSend = cursadaItem.dataset.idCurso;
-                    }
+                        // ID de Cursada
+                        let idCursoToSend = cursadaId; // Fallback
+                        const cursadaItem = this.closest('.cursada-item') || (panel ? panel.closest('.cursada-item') : null);
+                        if (cursadaItem && cursadaItem.dataset.idCurso) {
+                            idCursoToSend = cursadaItem.dataset.idCurso;
+                        }
 
-                    const leadId = panel ? panel.getAttribute('data-lead-id') : null;
+                        const leadId = panel ? panel.getAttribute('data-lead-id') : null;
 
-                    if (!leadId) {
-                        alert('Error: No se ha identificado al usuario. Por favor complete el formulario nuevamente.');
-                        this.textContent = originalText;
-                        this.disabled = false;
-                        return;
-                    }
-
-                    // Llamada a Mercado Pago
-                    fetch('/mp/create_preference', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-                        },
-                        body: JSON.stringify({
-                            lead_id: leadId,
-                            cursada_id: idCursoToSend
-                        })
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.init_point) {
-                                // Redireccionar a MP
-                                // Usar sandbox_init_point si estamos en pruebas (pero el controller devuelve ambos, usaremos init_point que decide el backend o sandbox si preferred)
-                                // El controller devuelve init_point y sandbox_init_point.
-                                // Idealmente usar init_point (que será sandbox si el access token es de sandbox).
-                                window.location.href = data.init_point;
-                            } else {
-                                throw new Error(data.error || 'Error al obtener link de pago');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error pago:', error);
-                            alert('Hubo un error al iniciar el pago: ' + error.message);
+                        if (!leadId) {
+                            alert('Error: No se ha identificado al usuario. Por favor complete el formulario nuevamente.');
                             this.textContent = originalText;
                             this.disabled = false;
-                        });
+                            return;
+                        }
+
+                        // Llamada a Mercado Pago
+                        fetch('/mp/create_preference', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                            },
+                            body: JSON.stringify({
+                                lead_id: leadId,
+                                cursada_id: idCursoToSend
+                            })
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.init_point) {
+                                    // Redireccionar a MP
+                                    window.location.href = data.init_point;
+                                } else {
+                                    throw new Error(data.error || 'Error al obtener link de pago');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error pago:', error);
+                                alert('Hubo un error al iniciar el pago: ' + error.message);
+                                this.textContent = originalText;
+                                this.disabled = false;
+                            });
+                    });
+
+                    btn.dataset.paymentListenerAdded = 'true';
                 });
             }
         }

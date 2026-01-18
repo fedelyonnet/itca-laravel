@@ -1268,5 +1268,43 @@
         });
     </script>
     @include('partials.home-scroll-spy')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for status in URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+            const paymentId = urlParams.get('payment_id');
+
+            if (status === 'success') {
+                Swal.fire({
+                    title: '¡Pago Exitoso!',
+                    text: 'Tu inscripción se ha realizado correctamente. Te enviamos un email con los detalles.',
+                    icon: 'success',
+                    confirmButtonText: 'Genial',
+                    confirmButtonColor: '#d62828'
+                }).then(() => {
+                    // Clean URL
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                });
+            } else if (status === 'failure') {
+                Swal.fire({
+                    title: 'Hubo un problema',
+                    text: 'El pago no se pudo procesar. Por favor, intentá nuevamente.',
+                    icon: 'error',
+                    confirmButtonText: 'Ok',
+                    confirmButtonColor: '#d62828'
+                });
+            } else if (status === 'pending') {
+                Swal.fire({
+                    title: 'Pago Pendiente',
+                    text: 'Tu pago está procesándose. Te avisaremos cuando se confirme.',
+                    icon: 'info',
+                    confirmButtonText: 'Entendido',
+                    confirmButtonColor: '#d62828'
+                });
+            }
+        });
+    </script>
     </body>
 </html>
