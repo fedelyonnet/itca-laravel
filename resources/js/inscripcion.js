@@ -3952,7 +3952,21 @@
                     }
 
                     const cursadaId = this.getAttribute('data-cursada-id');
-                    const formulario = document.getElementById('formulario-' + cursadaId);
+
+                    // FIX: Seleccionar el formulario correcto (Modal vs Desktop) para evitar IDs duplicados
+                    let formulario = null;
+                    const modalBody = document.getElementById('cursada-modal-body');
+                    const modalOverlay = document.getElementById('cursada-modal-overlay');
+                    const isInModal = modalOverlay && modalOverlay.classList.contains('cursada-modal-open');
+
+                    if (isInModal && modalBody) {
+                        formulario = modalBody.querySelector('#formulario-' + cursadaId);
+                    }
+
+                    // Fallback al DOM normal si no se encontró en el modal
+                    if (!formulario) {
+                        formulario = document.getElementById('formulario-' + cursadaId);
+                    }
 
                     if (!formulario) return;
 
@@ -3961,20 +3975,24 @@
                         return; // No debería pasar, pero por seguridad
                     }
 
-                    const nombre = formulario.querySelector('#nombre-' + cursadaId);
-                    const apellido = formulario.querySelector('#apellido-' + cursadaId);
-                    const dni = formulario.querySelector('#dni-' + cursadaId);
-                    const correo = formulario.querySelector('#correo-' + cursadaId);
-                    const telefono = formulario.querySelector('#telefono-' + cursadaId);
-                    const telefonoPrefijo = formulario.querySelector('#telefono-prefijo-' + cursadaId);
-                    const checkboxTerminos = formulario.querySelector('#acepto-terminos-' + cursadaId);
+                    // Selectores relativos al formulario encontrado
+                    const nombre = formulario.querySelector('input[name="nombre"]');
+                    const apellido = formulario.querySelector('input[name="apellido"]');
+                    const dni = formulario.querySelector('input[name="dni"]');
+                    const correo = formulario.querySelector('input[name="correo"]');
+                    const telefono = formulario.querySelector('input[name="telefono"]');
+                    const telefonoPrefijo = formulario.querySelector('select[name="telefono_prefijo"]');
+                    const checkboxTerminos = formulario.querySelector('input[type="checkbox"]'); // Generic selector for checkbox
 
                     // Limpiar todos los errores antes de enviar
-                    const errorNombre = document.getElementById('error-nombre-' + cursadaId);
-                    const errorApellido = document.getElementById('error-apellido-' + cursadaId);
-                    const errorDni = document.getElementById('error-dni-' + cursadaId);
-                    const errorCorreo = document.getElementById('error-correo-' + cursadaId);
-                    const errorTelefono = document.getElementById('error-telefono-' + cursadaId);
+                    // Nota: Los errores pueden estar fuera del formulario en la estructura actual, buscamos por ID con cuidado
+                    // Si estamos en modal, buscamos dentro del modal
+                    const container = isInModal ? modalBody : document;
+                    const errorNombre = container.querySelector('#error-nombre-' + cursadaId);
+                    const errorApellido = container.querySelector('#error-apellido-' + cursadaId);
+                    const errorDni = container.querySelector('#error-dni-' + cursadaId);
+                    const errorCorreo = container.querySelector('#error-correo-' + cursadaId);
+                    const errorTelefono = container.querySelector('#error-telefono-' + cursadaId);
 
                     ocultarError(nombre, errorNombre);
                     ocultarError(apellido, errorApellido);
@@ -3991,16 +4009,30 @@
                     if (cursadaItem) {
                         idCurso = cursadaItem.getAttribute('data-id-curso');
                     }
+
                     // Si no se encuentra en el item, intentar obtenerlo del panel
                     if (!idCurso) {
                         const formCursadaId = cursadaId.replace('cursada-', '');
-                        const panel = document.getElementById('panel-' + formCursadaId);
+                        // Intentar buscar panel en modal o normal
+                        let panel = null;
+                        if (isInModal && modalBody) {
+                            panel = modalBody.querySelector('.cursada-valores-panel');
+                        }
+                        if (!panel) {
+                            panel = document.getElementById('panel-' + formCursadaId);
+                        }
+
                         if (panel) {
                             const panelItem = panel.closest('.cursada-item');
                             if (panelItem) {
                                 idCurso = panelItem.getAttribute('data-id-curso');
                             }
                         }
+                    }
+
+                    // Fix para Mobile/Modal: Si estamos en el modal, el modalBody tiene el data-id-curso
+                    if (!idCurso && isInModal && modalBody && modalBody.dataset.idCurso) {
+                        idCurso = modalBody.dataset.idCurso;
                     }
 
                     if (!idCurso) {
@@ -4269,6 +4301,15 @@
                                 idCursoToSend = cursadaItem.dataset.idCurso;
                             } else if (cursadaItem.dataset.internalId) {
                                 idCursoToSend = cursadaItem.dataset.internalId;
+                            }
+                        }
+
+                        // Fix para Mobile/Modal: Si estamos en el modal, el closest('.cursada-item') puede fallar
+                        // Pero el modalBody tiene el data-id-curso guardado al abrirse
+                        if (!idCursoToSend) {
+                            const modalBody = this.closest('#cursada-modal-body');
+                            if (modalBody && modalBody.dataset.idCurso) {
+                                idCursoToSend = modalBody.dataset.idCurso;
                             }
                         }
 
