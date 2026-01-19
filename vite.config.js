@@ -15,6 +15,7 @@ export default defineConfig({
                 'resources/js/carreras-test.js',
                 'resources/js/importacion-cursos.js',
                 'resources/js/importacion-promociones.js',
+                'resources/css/ret-mp.css',
                 'resources/js/inscripcion.js'
             ],
             refresh: true,
