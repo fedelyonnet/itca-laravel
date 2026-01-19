@@ -9,6 +9,7 @@ use MercadoPago\Exceptions\MPApiException;
 use App\Models\Lead;
 use App\Models\Cursada;
 use App\Models\Inscripcion;
+use App\Models\Descuento;
 use Illuminate\Support\Facades\Log;
 
 class MercadoPagoController extends Controller
@@ -26,7 +27,8 @@ class MercadoPagoController extends Controller
         try {
             $validated = $request->validate([
                 'lead_id' => 'required',
-                'cursada_id' => 'required', 
+                'cursada_id' => 'required',
+                'coupon_code' => 'nullable|string',
             ]);
             
             // Buscar Lead
@@ -51,9 +53,33 @@ class MercadoPagoController extends Controller
             // TODO: Revisar si hay descuentos aplicables a la matrícula.
             $price = (float) $cursada->Matric_Base;
             
+            // Validar precio base
             if ($price <= 0) {
                  Log::error('Precio inválido para Cursada ID: ' . $cursada->id . ' (Matric_Base: ' . $cursada->Matric_Base . ')');
                  return response()->json(['error' => 'El precio de la matrícula es inválido (0)'], 400);
+            }
+
+            // Aplicar descuento si existe cupón
+            $descuentoAplicado = null;
+            if ($request->has('coupon_code') && $request->coupon_code) {
+                $codigo = trim($request->coupon_code);
+                // Búsqueda case-sensitive exacta usando BINARY (similar a CursoController)
+                $descuento = Descuento::whereRaw('BINARY codigo_web = ?', [$codigo])
+                        ->orWhereRaw('BINARY Codigo_Promocion = ?', [$codigo])
+                        ->first();
+
+                if ($descuento) {
+                     // Calcular descuento (Porcentaje sobre la matrícula)
+                     $porcentaje = (float) $descuento->Porcentaje;
+                     $montoDescuento = $price * ($porcentaje / 100);
+                     $price = max(0, $price - $montoDescuento); // Evitar precios negativos
+                     
+                     Log::info("Descuento aplicado: {$codigo} - {$porcentaje}% - Monto desc: {$montoDescuento} - Nuevo precio: {$price}");
+                     $descuentoAplicado = $descuento;
+                } else {
+                     Log::warning("Cupón enviado pero no encontrado: {$codigo}");
+                     // Continuamos con el precio sin descuento
+                }
             }
 
             // Crear el objeto de preferencia

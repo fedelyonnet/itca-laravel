@@ -225,11 +225,11 @@
     .backoffice-stats {
         grid-template-columns: 1fr;
     }
-    
+
     .backoffice-table {
         font-size: 0.875rem;
     }
-    
+
     .backoffice-table th,
     .backoffice-table td {
         padding: 0.75rem;
@@ -271,7 +271,8 @@
 
 /* Ajuste del contenido para evitar solapamiento con la barra */
 .hero-content {
-    padding-bottom: 40px; /* Base padding for 1366px */
+    padding-bottom: 40px;
+    /* Base padding for 1366px */
 }
 
 @media (min-width: 1367px) {
@@ -306,7 +307,8 @@
 
 /* Panel mobile con altura fluida */
 .mobile-panel {
-    max-height: calc(300px + (100vw - 1366px) * 0.199); /* 300px en 1366, 410px en 1920 */
+    max-height: calc(300px + (100vw - 1366px) * 0.199);
+    /* 300px en 1366, 410px en 1920 */
     overflow-y: auto;
 }
 

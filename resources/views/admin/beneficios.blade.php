@@ -38,11 +38,10 @@
                             <table class="min-w-full divide-y divide-gray-700">
                                 <thead class="bg-gray-700">
                                     <tr>
-                                        <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Orden</th>
+                                        <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider text-center w-16">Orden</th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Desktop</th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Mobile</th>
-                                        <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Título Línea 1</th>
-                                        <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Título Línea 2</th>
+                                        <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Títulos</th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Descripción</th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Link</th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Acciones</th>
@@ -52,20 +51,21 @@
                                     @foreach($beneficios->sortBy('orden') as $beneficio)
                                         <tr>
                                             <!-- Orden -->
-                                            <td class="px-4 py-4">
-                                                <div class="flex flex-col items-center space-y-1">
+                                            <td class="px-4 py-4 align-middle">
+                                                <div class="flex flex-col items-center justify-center space-y-1">
                                                     <button onclick="moverBeneficio({{ $beneficio->id }}, 'up')" 
-                                                            class="mover-btn bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-xs transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed"
+                                                            class="mover-btn bg-blue-500 hover:bg-blue-600 text-white px-2 py-0.5 rounded text-[10px] transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed"
                                                             title="Mover arriba">
                                                         ↑
                                                     </button>
                                                     <button onclick="moverBeneficio({{ $beneficio->id }}, 'down')" 
-                                                            class="mover-btn bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-xs transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed"
+                                                            class="mover-btn bg-blue-500 hover:bg-blue-600 text-white px-2 py-0.5 rounded text-[10px] transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed"
                                                             title="Mover abajo">
                                                         ↓
                                                     </button>
                                                 </div>
                                             </td>
+
                                             <!-- Desktop Thumbnail -->
                                             <td class="px-4 py-4">
                                                 <div class="relative group" 
@@ -86,30 +86,17 @@
                                                         @endif
                                                     </div>
                                                     
-                                                    <!-- Tooltip con imagen -->
+                                                    <!-- Tooltip -->
                                                     <div x-show="showTooltip" 
                                                          x-cloak
-                                                         x-transition:enter="transition ease-out duration-200"
-                                                         x-transition:enter-start="opacity-0 scale-95"
-                                                         x-transition:enter-end="opacity-100 scale-100"
-                                                         x-transition:leave="transition ease-in duration-150"
-                                                         x-transition:leave-start="opacity-100 scale-100"
-                                                         x-transition:leave-end="opacity-0 scale-95"
-                                                         class="fixed bottom-auto left-1/2 transform -translate-x-1/2 mb-2 bg-white rounded-lg shadow-2xl border border-gray-200 overflow-hidden pointer-events-none"
-                                                         style="z-index: 9999; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                                                         class="fixed z-50 bg-white rounded-lg shadow-2xl border border-gray-200 p-1 pointer-events-none" 
+                                                         style="top: 50%; left: 50%; transform: translate(-50%, -50%);">
                                                         @if($beneficio->imagen_desktop)
                                                             <img src="{{ asset('storage/' . $beneficio->imagen_desktop) }}" 
                                                                  alt="Desktop Preview" 
                                                                  class="max-w-xs max-h-64 object-contain">
                                                         @else
-                                                            <div class="w-64 h-40 bg-gray-100 flex items-center justify-center">
-                                                                <div class="text-center text-gray-500">
-                                                                    <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                                                    </svg>
-                                                                    <div class="text-sm">Sin imagen desktop</div>
-                                                                </div>
-                                                            </div>
+                                                            <div class="p-2 text-sm text-gray-500">Sin imagen desktop</div>
                                                         @endif
                                                     </div>
                                                 </div>
@@ -135,48 +122,33 @@
                                                         @endif
                                                     </div>
                                                     
-                                                    <!-- Tooltip con imagen -->
+                                                    <!-- Tooltip -->
                                                     <div x-show="showTooltip" 
                                                          x-cloak
-                                                         x-transition:enter="transition ease-out duration-200"
-                                                         x-transition:enter-start="opacity-0 scale-95"
-                                                         x-transition:enter-end="opacity-100 scale-100"
-                                                         x-transition:leave="transition ease-in duration-150"
-                                                         x-transition:leave-start="opacity-100 scale-100"
-                                                         x-transition:leave-end="opacity-0 scale-95"
-                                                         class="fixed bottom-auto left-1/2 transform -translate-x-1/2 mb-2 bg-white rounded-lg shadow-2xl border border-gray-200 overflow-hidden pointer-events-none"
-                                                         style="z-index: 9999; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                                                         class="fixed z-50 bg-white rounded-lg shadow-2xl border border-gray-200 p-1 pointer-events-none" 
+                                                         style="top: 50%; left: 50%; transform: translate(-50%, -50%);">
                                                         @if($beneficio->imagen_mobile)
                                                             <img src="{{ asset('storage/' . $beneficio->imagen_mobile) }}" 
                                                                  alt="Mobile Preview" 
                                                                  class="max-w-xs max-h-64 object-contain">
                                                         @else
-                                                            <div class="w-64 h-40 bg-gray-100 flex items-center justify-center">
-                                                                <div class="text-center text-gray-500">
-                                                                    <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                                                    </svg>
-                                                                    <div class="text-sm">Sin imagen mobile</div>
-                                                                </div>
-                                                            </div>
+                                                            <div class="p-2 text-sm text-gray-500">Sin imagen mobile</div>
                                                         @endif
                                                     </div>
                                                 </div>
                                             </td>
                                             
-                                            <!-- Título Línea 1 -->
+                                            <!-- Títulos -->
                                             <td class="px-4 py-4">
-                                                <div class="text-sm font-medium text-white">{{ $beneficio->titulo_linea1 }}</div>
-                                            </td>
-                                            
-                                            <!-- Título Línea 2 -->
-                                            <td class="px-4 py-4">
-                                                <div class="text-sm font-medium text-white">{{ $beneficio->titulo_linea2 }}</div>
+                                                <div class="flex flex-col">
+                                                    <div class="text-sm font-bold text-white leading-tight">{{ $beneficio->titulo_linea1 }}</div>
+                                                    <div class="text-xs text-gray-300 leading-tight mt-1">{{ $beneficio->titulo_linea2 }}</div>
+                                                </div>
                                             </td>
                                             
                                             <!-- Descripción -->
                                             <td class="px-4 py-4">
-                                                <div class="text-sm text-gray-300 max-w-xs overflow-hidden text-ellipsis whitespace-nowrap">
+                                                <div class="text-sm text-gray-300 max-w-xs overflow-hidden text-ellipsis whitespace-nowrap" title="{{ strip_tags($beneficio->descripcion) }}">
                                                     {!! preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', e($beneficio->descripcion)) !!}
                                                 </div>
                                             </td>
@@ -185,74 +157,45 @@
                                             <td class="px-4 py-4">
                                                 <div class="text-sm text-gray-300">
                                                     @if($beneficio->tipo_accion === 'link' && $beneficio->url && $beneficio->texto_boton)
-                                                        <!-- Es un link con texto personalizado -->
                                                         <div>
-                                                            <div class="text-gray-300">
-                                                                <span class="text-gray-400">Texto visible: </span>{{ $beneficio->texto_boton }}
-                                                            </div>
-                                                            <div class="text-xs text-gray-400 mt-1">{{ Str::limit($beneficio->url, 40) }}</div>
+                                                            <div class="text-white">{{ $beneficio->texto_boton }}</div>
+                                                            <div class="text-gray-400 text-xs">{{ Str::limit($beneficio->url, 20) }}</div>
                                                         </div>
                                                     @elseif($beneficio->tipo_accion === 'button' && $beneficio->url)
-                                                        <!-- Es un botón -->
                                                         <div>
-                                                            <div class="text-gray-300">Botón</div>
-                                                            <div class="text-xs text-gray-400 mt-1">{{ Str::limit($beneficio->url, 40) }}</div>
+                                                            <span class="bg-gray-700 px-2 py-0.5 rounded text-xs">Botón</span>
+                                                            <div class="text-gray-400 text-xs mt-0.5">{{ Str::limit($beneficio->url, 20) }}</div>
                                                         </div>
                                                     @elseif($beneficio->tipo_accion === 'none')
-                                                        <!-- Sin link -->
-                                                        <span class="text-gray-500">Sin link</span>
+                                                        <span class="text-gray-500 italic">Sin link</span>
                                                     @else
-                                                        <!-- Fallback para datos legacy -->
-                                                        @if($beneficio->url && $beneficio->link)
-                                                            <div>
-                                                                <div class="text-gray-300">
-                                                                    <span class="text-gray-400">Texto visible: </span>{{ $beneficio->link }}
-                                                                </div>
-                                                                <div class="text-xs text-gray-400 mt-1">{{ Str::limit($beneficio->url, 40) }}</div>
-                                                            </div>
-                                                        @elseif($beneficio->url && !$beneficio->link)
-                                                            <div>
-                                                                <div class="text-gray-300">Botón</div>
-                                                                <div class="text-xs text-gray-400 mt-1">{{ Str::limit($beneficio->url, 40) }}</div>
-                                                            </div>
-                                                        @else
-                                                            <span class="text-gray-500">Sin link</span>
-                                                        @endif
+                                                        <!-- Fallback legacy -->
+                                                        <span class="text-gray-500">{{ Str::limit($beneficio->url ?? '-', 20) }}</span>
                                                     @endif
                                                 </div>
                                             </td>
                                             
                                             <!-- Acciones -->
                                             <td class="px-4 py-4">
-                                                <div class="flex space-x-2">
-                                                    <!-- Editar -->
-                                                    <div class="relative group">
-                                                        <button onclick="editBeneficio({{ $beneficio->id }})" 
-                                                                class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded text-sm transition-colors">
-                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                <div class="flex items-center space-x-2">
+                                                    <button onclick="editBeneficio({{ $beneficio->id }})" 
+                                                            class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded transition-colors"
+                                                            title="Editar">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                        </svg>
+                                                    </button>
+                                                    
+                                                    <form action="{{ route('admin.beneficios.destroy', $beneficio->id) }}" method="POST" onsubmit="return confirmDelete(event)" class="inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white p-2 rounded transition-colors"
+                                                                title="Eliminar">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                                             </svg>
                                                         </button>
-                                                        <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
-                                                            Editar Beneficio
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <!-- Eliminar -->
-                                                    <div class="relative group">
-                                                        <form action="{{ route('admin.beneficios.destroy', $beneficio->id) }}" method="POST" onsubmit="return confirmDelete(event)" class="inline">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded text-sm transition-colors">
-                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                                                </svg>
-                                                            </button>
-                                                        </form>
-                                                        <div class="absolute bottom-full right-0 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
-                                                            Eliminar Beneficio
-                                                        </div>
-                                                    </div>
+                                                    </form>
                                                 </div>
                                             </td>
                                         </tr>
