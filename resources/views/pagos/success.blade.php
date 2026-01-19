@@ -162,7 +162,7 @@
                                         <div class="receipt-info">
                                             <p class="receipt-item-title">Fecha de inicio</p>
                                             <p class="receipt-item-subtitle">
-                                                @if(isset($cursada->Fecha_Inicio))
+                                                @if(isset($cursada) && isset($cursada->Fecha_Inicio))
                                                     {{ \Carbon\Carbon::parse($cursada->Fecha_Inicio)->translatedFormat('F Y') }}
                                                 @else
                                                     Fecha no disponible
@@ -187,17 +187,17 @@
                             <div class="payment-info-content">
                                 <h3>¡Tu pago fue procesado <span class="semibold">con éxito!</span></h3>
                                 <ul class="payment-meta-list">
-                                    <li>Código de compra: #{{ $inscripcion->collection_id ?? 'n/d' }}</li>
+                                    <li>Código de compra: #{{ $inscripcion?->collection_id ?? 'n/d' }}</li>
                                     <li>Fecha: {{ $inscripcion ? \Carbon\Carbon::parse($inscripcion->created_at)->translatedFormat('j M Y – H:i') . ' hs' : now()->translatedFormat('j M Y – H:i') . ' hs' }}</li>
                                     <li>Estado del pago: <span class="status-approved">Aprobado</span></li>
                                 </ul>
                                 
                                 <div class="payment-price-breakdown">
                                     @php
-                                        $finalPaid = (float) ($inscripcion->monto_matricula ?? 0);
-                                        $discountAmount = (float) ($inscripcion->monto_descuento ?? 0);
+                                        $finalPaid = (float) ($inscripcion?->monto_matricula ?? 0);
+                                        $discountAmount = (float) ($inscripcion?->monto_descuento ?? 0);
                                         $subtotal = $finalPaid + $discountAmount;
-                                        $couponCode = $inscripcion->codigo_descuento ?? null;
+                                        $couponCode = $inscripcion?->codigo_descuento ?? null;
                                     @endphp
 
                                     <div class="price-row">
