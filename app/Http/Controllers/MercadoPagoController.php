@@ -58,6 +58,8 @@ class MercadoPagoController extends Controller
             $descuentoId = null;
             $codigoAplicado = null;
 
+            Log::info("Iniciando preferencia - Lead: {$lead->id}, Curso: {$cursada->ID_Curso}, Precio Base: {$originalPrice}");
+
             // Procesar Descuento si existe
             if ($request->codigo_descuento) {
                 $codigo = trim($request->codigo_descuento);
@@ -71,6 +73,9 @@ class MercadoPagoController extends Controller
                     $finalPrice = $originalPrice - $montoDescuento;
                     $descuentoId = $descuento->id;
                     $codigoAplicado = $codigo;
+                    Log::info("Descuento aplicado: {$codigo}, Porcentaje: {$porcentaje}%, Nuevo Precio: {$finalPrice}");
+                } else {
+                    Log::warning("Código de descuento enviado pero no encontrado: {$codigo}");
                 }
             }
             
@@ -114,6 +119,9 @@ class MercadoPagoController extends Controller
             $preference = $client->create($preferenceData);
 
             // Crear o actualizar registro de inscripción PENDIENTE
+            $ratio = ($originalPrice > 0) ? ($finalPrice / $originalPrice) : 1;
+            $valSinIva = $cursada->Sin_iva_Mat ? ($cursada->Sin_iva_Mat * $ratio) : null;
+
             Inscripcion::updateOrCreate(
                 [
                     'lead_id' => $lead->id,
@@ -123,12 +131,14 @@ class MercadoPagoController extends Controller
                 [
                     'monto_matricula' => $finalPrice,
                     'monto_descuento' => $montoDescuento,
-                    'monto_sin_iva' => $cursada->Sin_iva_Mat ? ($cursada->Sin_iva_Mat * ($finalPrice / $originalPrice)) : null,
+                    'monto_sin_iva' => $valSinIva,
                     'descuento_id' => $descuentoId,
                     'codigo_descuento' => $codigoAplicado,
                     'preference_id' => $preference->id,
                 ]
             );
+
+            Log::info("Preferencia creada: {$preference->id} para Lead {$lead->id}");
 
             return response()->json([
                 'preference_id' => $preference->id,
@@ -184,8 +194,22 @@ class MercadoPagoController extends Controller
         $merchantOrderId = $request->get('merchant_order_id');
 
         // Intentar buscar la inscripción
-        // Podemos buscar por preference_id si es único
+        // Primero por preference_id
         $inscripcion = Inscripcion::where('preference_id', $preferenceId)->first();
+        
+        // Si no se encuentra, intentar por external_reference (format: LEAD_X_CURSO_Y)
+        if (!$inscripcion && $externalRef) {
+            $parts = explode('_', $externalRef);
+            if (count($parts) >= 4) {
+                $leadId = $parts[1];
+                $cursadaId = $parts[3];
+                $inscripcion = Inscripcion::where('lead_id', $leadId)
+                    ->where('cursada_id', $cursadaId)
+                    ->where('estado', 'pending')
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+            }
+        }
         
         if ($inscripcion) {
             $inscripcion->update([
@@ -194,6 +218,9 @@ class MercadoPagoController extends Controller
                 'payment_type' => $paymentType,
                 'merchant_order_id' => $merchantOrderId
             ]);
+            Log::info("Inscripción #{$inscripcion->id} actualizada a estado: {$status} para el pago {$paymentId}");
+        } else {
+            Log::error("No se pudo encontrar inscripción para actualizar. PrefID: {$preferenceId}, ExtRef: {$externalRef}, Status: {$status}");
         }
     }
 

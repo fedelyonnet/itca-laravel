@@ -4334,15 +4334,22 @@
                         const modalBody = this.closest('#cursada-modal-body');
                         const isInModal = !!modalBody;
 
+                        const cleanId = cursadaId.replace('cursada-', '');
                         let elemDescuento = null;
+
                         if (isInModal) {
-                            elemDescuento = modalBody.querySelector('#descuento-aplicado-' + cursadaId);
+                            elemDescuento = modalBody.querySelector('#descuento-aplicado-' + cleanId) ||
+                                modalBody.querySelector('#descuento-aplicado-' + cursadaId);
                         } else {
-                            elemDescuento = document.getElementById('descuento-aplicado-' + cursadaId);
+                            elemDescuento = document.getElementById('descuento-aplicado-' + cleanId) ||
+                                document.getElementById('descuento-aplicado-' + cursadaId);
                         }
 
                         if (elemDescuento) {
                             codigoDescuento = elemDescuento.getAttribute('data-codigo-aplicado');
+                            console.log('Descuento encontrado para ' + cleanId + ':', codigoDescuento);
+                        } else {
+                            console.log('No se encontró elemento de descuento para ID: ' + cleanId + ' o ' + cursadaId);
                         }
 
                         // Llamada a Mercado Pago

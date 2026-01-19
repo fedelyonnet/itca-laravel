@@ -131,7 +131,7 @@
                                         </div>
                                         <div class="receipt-info">
                                             <p class="receipt-item-title">Carrera</p>
-                                            <p class="receipt-item-subtitle">{{ $cursada->carrera ?? $nombre_curso ?? 'Carrera no especificada' }}</p>
+                                            <p class="receipt-item-subtitle">{{ $cursada?->carrera ?? $nombre_curso ?? 'Carrera no especificada' }}</p>
                                         </div>
                                     </div>
 
@@ -141,7 +141,7 @@
                                         </div>
                                         <div class="receipt-info">
                                             <p class="receipt-item-title">Sede</p>
-                                            <p class="receipt-item-subtitle">{{ $cursada->sede ?? 'Sede no especificada' }}</p>
+                                            <p class="receipt-item-subtitle">{{ $cursada?->sede ?? 'Sede no especificada' }}</p>
                                         </div>
                                     </div>
 
@@ -151,7 +151,7 @@
                                         </div>
                                         <div class="receipt-info">
                                             <p class="receipt-item-title">Modalidad</p>
-                                            <p class="receipt-item-subtitle">{{ $cursada->xModalidad ?? 'Modalidad no especificada' }}</p>
+                                            <p class="receipt-item-subtitle">{{ $cursada?->xModalidad ?? 'Modalidad no especificada' }}</p>
                                         </div>
                                     </div>
 
@@ -177,7 +177,7 @@
                                         </div>
                                         <div class="receipt-info">
                                             <p class="receipt-item-title">Turno</p>
-                                            <p class="receipt-item-subtitle">{{ $cursada->xTurno ?? 'Turno no especificado' }}</p>
+                                            <p class="receipt-item-subtitle">{{ $cursada?->xTurno ?? 'Turno no especificado' }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -226,7 +226,7 @@
                                             // Priorizamos el valor guardado en la inscripción (que ya tiene el descuento aplicado si correspondía)
                                             // Si no existe (compras viejas), usamos el de la cursada.
                                             // El usuario mencionó Sin_IVA_cta, así que lo usamos como fallback si Sin_iva_Mat no está.
-                                            $valSinIva = $inscripcion->monto_sin_iva ?? ($cursada->Sin_iva_Mat ?? ($cursada->Sin_IVA_cta ?? 0));
+                                            $valSinIva = $inscripcion?->monto_sin_iva ?? ($cursada?->Sin_iva_Mat ?? ($cursada?->Sin_IVA_cta ?? 0));
                                         @endphp
                                         Precio total sin impuestos nacionales: ARS $ {{ number_format($valSinIva, 2, ',', '.') }}
                                     </p>
@@ -247,7 +247,14 @@
                         <p class="footer-text-2">No te preocupes te comunicamos con un asesor:</p>
                         
                         <div class="footer-contact-actions">
-                            <a href="#" class="btn-whatsapp-footer">
+                            @php
+                                $whatsapp = $contactosInfo->filter(function($c) {
+                                    return Str::contains(Str::lower($c->descripcion), 'whatsapp');
+                                })->first();
+                                $waNumber = $whatsapp ? Str::of($whatsapp->contenido)->replace(['-', ' ', '+'], '') : '1122674822';
+                                $waLink = "https://wa.me/549" . $waNumber;
+                            @endphp
+                            <a href="{{ $waLink }}" target="_blank" class="btn-whatsapp-footer">
                                 <strong>Chatear</strong> con un asesor de inscripción
                             </a>
                         </div>
