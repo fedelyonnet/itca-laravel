@@ -1,0 +1,377 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Backoffice CSS - Estilos para la zona de administración */
+
+/* Variables CSS para el backoffice */
+:root {
+    --backoffice-primary: #1e40af;
+    --backoffice-secondary: #64748b;
+    --backoffice-success: #059669;
+    --backoffice-warning: #d97706;
+    --backoffice-danger: #dc2626;
+    --backoffice-light: #f8fafc;
+    --backoffice-dark: #1e293b;
+}
+
+/* Estilos base para el backoffice */
+.backoffice-container {
+    background-color: var(--backoffice-light);
+    min-height: 100vh;
+}
+
+.backoffice-header {
+    background: linear-gradient(135deg, var(--backoffice-primary) 0%, #3b82f6 100%);
+    color: white;
+    padding: 1rem 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.backoffice-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+}
+
+.backoffice-card:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.backoffice-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.backoffice-btn-primary {
+    background-color: var(--backoffice-primary);
+    color: white;
+}
+
+.backoffice-btn-primary:hover {
+    background-color: #1d4ed8;
+    color: white;
+}
+
+.backoffice-btn-success {
+    background-color: var(--backoffice-success);
+    color: white;
+}
+
+.backoffice-btn-success:hover {
+    background-color: #047857;
+    color: white;
+}
+
+.backoffice-btn-danger {
+    background-color: var(--backoffice-danger);
+    color: white;
+}
+
+.backoffice-btn-danger:hover {
+    background-color: #b91c1c;
+    color: white;
+}
+
+/* Estilos para tablas del backoffice */
+.backoffice-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.backoffice-table th {
+    background-color: var(--backoffice-primary);
+    color: white;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+}
+
+.backoffice-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.backoffice-table tr:hover {
+    background-color: #f8fafc;
+}
+
+/* Estilos para formularios del backoffice */
+.backoffice-form {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.backoffice-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.backoffice-form-label {
+    display: block;
+    font-weight: 500;
+    color: var(--backoffice-dark);
+    margin-bottom: 0.5rem;
+}
+
+.backoffice-form-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+}
+
+.backoffice-form-input:focus {
+    outline: none;
+    border-color: var(--backoffice-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Estilos para alertas del backoffice */
+.backoffice-alert {
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+.backoffice-alert-success {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.backoffice-alert-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+.backoffice-alert-warning {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+/* Estilos para la navegación del backoffice */
+.backoffice-nav {
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0;
+}
+
+.backoffice-nav-item {
+    padding: 1rem 1.5rem;
+    color: var(--backoffice-secondary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border-bottom: 2px solid transparent;
+}
+
+.backoffice-nav-item:hover,
+.backoffice-nav-item.active {
+    color: var(--backoffice-primary);
+    border-bottom-color: var(--backoffice-primary);
+    background-color: #f8fafc;
+}
+
+/* Estilos para estadísticas del backoffice */
+.backoffice-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.backoffice-stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid var(--backoffice-primary);
+}
+
+.backoffice-stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--backoffice-primary);
+    margin-bottom: 0.5rem;
+}
+
+.backoffice-stat-label {
+    color: var(--backoffice-secondary);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Responsive design para backoffice */
+@media (max-width: 768px) {
+    .backoffice-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .backoffice-table {
+        font-size: 0.875rem;
+    }
+
+    .backoffice-table th,
+    .backoffice-table td {
+        padding: 0.75rem;
+    }
+}
+
+/* Regla específica para py-12 */
+.py-12 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+/* Barra blanca transparente para hero */
+.hero-bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 0 0 6px 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Escalado proporcional para pantallas más grandes */
+@media (min-width: 1367px) {
+    .hero-bottom-bar {
+        height: calc(40px + (100vw - 1366px) * 0.072);
+    }
+}
+
+@media (min-width: 1920px) {
+    .hero-bottom-bar {
+        height: 80px;
+    }
+}
+
+/* Ajuste del contenido para evitar solapamiento con la barra */
+.hero-content {
+    padding-bottom: 40px;
+    /* Base padding for 1366px */
+}
+
+@media (min-width: 1367px) {
+    .hero-content {
+        padding-bottom: calc(40px + (100vw - 1366px) * 0.072);
+    }
+}
+
+@media (min-width: 1920px) {
+    .hero-content {
+        padding-bottom: 80px;
+    }
+}
+
+/* Contenedores mobile con proporción 417/462 */
+.mobile-hero-container {
+    aspect-ratio: 417/462;
+}
+
+/* Contenedores desktop con proporciones específicas */
+.desktop-hero-img1 {
+    aspect-ratio: 768/206;
+}
+
+.desktop-hero-img2 {
+    aspect-ratio: 376/418;
+}
+
+.desktop-hero-video {
+    aspect-ratio: 376/418;
+}
+
+/* Panel mobile con altura fluida */
+.mobile-panel {
+    max-height: calc(300px + (100vw - 1366px) * 0.199);
+    /* 300px en 1366, 410px en 1920 */
+    overflow-y: auto;
+}
+
+/* Fix z-index for dropdown menus to appear above hero badges */
+.dropdown-menu {
+    z-index: 100 !important;
+}
+
+/* Ensure hero badges stay below dropdown menus */
+.hero-badge {
+    z-index: 10 !important;
+}
+
+/* SweetAlert2 Dark Theme - Elegant and Compact */
+.swal2-popup-dark {
+    background-color: #1f2937 !important;
+    border: 1px solid #374151 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+}
+
+.swal2-title-dark {
+    color: #ffffff !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    margin-bottom: 8px !important;
+}
+
+.swal2-content-dark {
+    color: #d1d5db !important;
+    font-size: 14px !important;
+    margin-bottom: 20px !important;
+}
+
+.swal2-confirm-dark {
+    background-color: #dc2626 !important;
+    border-color: #dc2626 !important;
+    border-radius: 6px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    padding: 8px 16px !important;
+    margin-right: 8px !important;
+}
+
+.swal2-confirm-dark:hover {
+    background-color: #b91c1c !important;
+    border-color: #b91c1c !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3) !important;
+}
+
+.swal2-cancel-dark {
+    background-color: #6b7280 !important;
+    border-color: #6b7280 !important;
+    border-radius: 6px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    padding: 8px 16px !important;
+}
+
+.swal2-cancel-dark:hover {
+    background-color: #4b5563 !important;
+    border-color: #4b5563 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3) !important;
+}
