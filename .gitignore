@@ -34,3 +34,6 @@ yarn-error.log
 # Tu regla personalizada para el storage público
 /storage/app/public/*
 !/storage/app/public/.gitignore
+
+/storage
+INSTALL_PDF_GUIDE.md
