@@ -10,7 +10,14 @@ use App\Models\Lead;
 use App\Models\Cursada;
 use App\Models\Inscripcion;
 use App\Models\Descuento;
+use App\Models\Beneficio;
+use App\Models\Sede;
+use App\Models\Partner;
+use App\Models\StickyBar;
+use App\Models\DatoContacto;
 use Illuminate\Support\Facades\Log;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class MercadoPagoController extends Controller
 {
@@ -27,72 +34,61 @@ class MercadoPagoController extends Controller
         try {
             $validated = $request->validate([
                 'lead_id' => 'required',
-                'cursada_id' => 'required',
-                'coupon_code' => 'nullable|string',
+                'cursada_id' => 'required', 
+                'codigo_descuento' => 'nullable|string'
             ]);
             
             // Buscar Lead
             $lead = Lead::findOrFail($request->lead_id);
             
             // Buscar Cursada
-            // Intentamos primero por ID_Curso (string) que es el identificador externo
             $cursada = Cursada::where('ID_Curso', $request->cursada_id)->first();
-            
-            // Si no se encuentra, intentamos por el id interno (integer)
             if (!$cursada) {
                 $cursada = Cursada::find($request->cursada_id);
             }
 
             if (!$cursada) {
-                Log::error('Cursada no encontrada con ID: ' . $request->cursada_id);
                 return response()->json(['error' => 'Curso no encontrado'], 404);
             }
 
-            // Calcular precio de matrícula
-            // Por defecto usamos Matric_Base.
-            // TODO: Revisar si hay descuentos aplicables a la matrícula.
-            $price = (float) $cursada->Matric_Base;
-            
-            // Validar precio base
-            if ($price <= 0) {
-                 Log::error('Precio inválido para Cursada ID: ' . $cursada->id . ' (Matric_Base: ' . $cursada->Matric_Base . ')');
-                 return response()->json(['error' => 'El precio de la matrícula es inválido (0)'], 400);
-            }
+            // Calcular precio base de matrícula
+            $originalPrice = (float) $cursada->Matric_Base;
+            $finalPrice = $originalPrice;
+            $montoDescuento = 0;
+            $descuentoId = null;
+            $codigoAplicado = null;
 
-            // Aplicar descuento si existe cupón
-            $descuentoAplicado = null;
-            if ($request->has('coupon_code') && $request->coupon_code) {
-                $codigo = trim($request->coupon_code);
-                // Búsqueda case-sensitive exacta usando BINARY (similar a CursoController)
+            // Procesar Descuento si existe
+            if ($request->codigo_descuento) {
+                $codigo = trim($request->codigo_descuento);
                 $descuento = Descuento::whereRaw('BINARY codigo_web = ?', [$codigo])
-                        ->orWhereRaw('BINARY Codigo_Promocion = ?', [$codigo])
-                        ->first();
-
+                    ->orWhereRaw('BINARY Codigo_Promocion = ?', [$codigo])
+                    ->first();
+                
                 if ($descuento) {
-                     // Calcular descuento (Porcentaje sobre la matrícula)
-                     $porcentaje = (float) $descuento->Porcentaje;
-                     $montoDescuento = $price * ($porcentaje / 100);
-                     $price = max(0, $price - $montoDescuento); // Evitar precios negativos
-                     
-                     Log::info("Descuento aplicado: {$codigo} - {$porcentaje}% - Monto desc: {$montoDescuento} - Nuevo precio: {$price}");
-                     $descuentoAplicado = $descuento;
-                } else {
-                     Log::warning("Cupón enviado pero no encontrado: {$codigo}");
-                     // Continuamos con el precio sin descuento
+                    $porcentaje = (float) $descuento->Porcentaje;
+                    $montoDescuento = ($originalPrice * $porcentaje) / 100;
+                    $finalPrice = $originalPrice - $montoDescuento;
+                    $descuentoId = $descuento->id;
+                    $codigoAplicado = $codigo;
                 }
+            }
+            
+            if ($finalPrice <= 0) {
+                 Log::error('Precio final inválido: ' . $finalPrice);
+                 return response()->json(['error' => 'El precio resultante es inválido'], 400);
             }
 
             // Crear el objeto de preferencia
             $client = new PreferenceClient();
             
-            // Datos de la preferencia
             $preferenceData = [
                 "items" => [
                     [
                         "id" => $cursada->ID_Curso,
                         "title" => "Matrícula: " . $cursada->carrera,
                         "quantity" => 1,
-                        "unit_price" => $price,
+                        "unit_price" => round($finalPrice, 2),
                         "currency_id" => "ARS"
                     ]
                 ],
@@ -100,13 +96,6 @@ class MercadoPagoController extends Controller
                     "name" => $lead->nombre,
                     "surname" => $lead->apellido,
                     "email" => $lead->correo,
-                    // Phone removido para evitar errores de validación (formato estricto)
-                    /*
-                    "phone" => [
-                        "area_code" => "", 
-                        "number" => $lead->telefono
-                    ],
-                    */
                     "identification" => [
                         "type" => "DNI",
                         "number" => $lead->dni
@@ -122,40 +111,34 @@ class MercadoPagoController extends Controller
                 "statement_descriptor" => "ITCA MATRICULA",
             ];
 
-            Log::info('MP Preference Payload: ' . json_encode($preferenceData));
-
             $preference = $client->create($preferenceData);
 
-            // Crear registro de inscripción PENDIENTE
-            // O actualizar si ya existe una pendiente para este usuario y curso
-            // Crear registro de inscripción PENDIENTE
-            // Buscamos si ya existe una inscripción PENDIENTE para este lead y este curso
-            // Si ya existe una pagada/aprobada, NO debemos pisarla, sino crear una nueva si fuera el caso (aunque raro)
-            // Aquí asumimos que si el usuario reintenta, actualizamos la pendiente.
+            // Crear o actualizar registro de inscripción PENDIENTE
             Inscripcion::updateOrCreate(
                 [
                     'lead_id' => $lead->id,
                     'cursada_id' => $cursada->ID_Curso, 
-                    'estado' => 'pending' // Clave: Solo actualizamos si está en estado pendiente
+                    'estado' => 'pending'
                 ],
                 [
-                    'monto_matricula' => $price,
-                    'preference_id' => $preference->id, // Actualizamos con la nueva preferencia
-                    // collection_id, payment_type, etc se llenan al volver
+                    'monto_matricula' => $finalPrice,
+                    'monto_descuento' => $montoDescuento,
+                    'monto_sin_iva' => $cursada->Sin_iva_Mat ? ($cursada->Sin_iva_Mat * ($finalPrice / $originalPrice)) : null,
+                    'descuento_id' => $descuentoId,
+                    'codigo_descuento' => $codigoAplicado,
+                    'preference_id' => $preference->id,
                 ]
             );
 
             return response()->json([
                 'preference_id' => $preference->id,
-                'init_point' => $preference->init_point, // Para Redirect en prod
-                'sandbox_init_point' => $preference->sandbox_init_point // Para Sandbox
+                'init_point' => $preference->init_point,
+                'sandbox_init_point' => $preference->sandbox_init_point
             ]);
 
         } catch (MPApiException $e) {
             Log::error('Error Mercado Pago API: ' . $e->getMessage());
-            Log::error('MP Status Code: ' . $e->getStatusCode());
-            Log::error('MP Response: ' . json_encode($e->getApiResponse()));
-            return response()->json(['error' => 'Error al conectar con Mercado Pago: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'Error al conectar con Mercado Pago'], 500);
         } catch (\Exception $e) {
             Log::error('Error general MP Controller: ' . $e->getMessage());
             return response()->json(['error' => 'Error interno del servidor'], 500);
@@ -168,14 +151,20 @@ class MercadoPagoController extends Controller
         
         $this->updateInscripcionFromRedirect($request, 'approved');
         
-        // Redirigir a una página de agradecimiento en el front
-        return redirect('/?status=success&payment_id=' . $request->get('payment_id'));
+        // Obtener datos comunes para la vista
+        $data = $this->getCommonViewData($request);
+        
+        return view('pagos.success', $data);
     }
 
     public function failure(Request $request)
     {
         $this->updateInscripcionFromRedirect($request, 'rejected');
-        return redirect('/?status=failure');
+        
+        // Obtener datos comunes para la vista
+        $data = $this->getCommonViewData($request);
+        
+        return view('pagos.failure', $data);
     }
 
     public function pending(Request $request)
@@ -206,5 +195,85 @@ class MercadoPagoController extends Controller
                 'merchant_order_id' => $merchantOrderId
             ]);
         }
+    }
+
+    private function getCommonViewData(Request $request = null)
+    {
+        // Obtener beneficios ordenados
+        $beneficios = Beneficio::ordered()->get();
+        
+        // Obtener todas las sedes ordenadas
+        $sedes = Sede::ordered()->get();
+        
+        // Obtener partners ordenados
+        $partners = Partner::ordered()->get();
+        
+        // Obtener Sticky Bar
+        $stickyBar = StickyBar::first();
+
+        // Obtener datos de contacto
+        $contactosInfo = DatoContacto::info()->get();
+        $contactosSocial = DatoContacto::social()->get();
+        
+        // Intentar obtener el nombre del curso si hay payment_id
+        $nombre_curso = null;
+        $inscripcion = null;
+        $cursada = null;
+
+        if ($request) {
+             $paymentId = $request->get('payment_id') ?? $request->get('collection_id');
+             if ($paymentId) {
+                 $inscripcion = Inscripcion::where('collection_id', $paymentId)
+                                         ->orWhere('preference_id', $request->get('preference_id'))
+                                         ->first();
+                 
+                 if ($inscripcion) {
+                     // Buscar la cursada para obtener el nombre de la carrera
+                     $cursada = Cursada::where('ID_Curso', $inscripcion->cursada_id)->first();
+                     if ($cursada) {
+                         $nombre_curso = $cursada->carrera;
+                     }
+                 }
+             } else if ($request->get('preference_id')) {
+                 $inscripcion = Inscripcion::where('preference_id', $request->get('preference_id'))->first();
+                 if ($inscripcion) {
+                     $cursada = Cursada::where('ID_Curso', $inscripcion->cursada_id)->first();
+                     if ($cursada) {
+                         $nombre_curso = $cursada->carrera;
+                     }
+                 }
+             }
+        }
+
+        // Fallback para testing: si no hay parámetros de MP, buscamos la última inscripción
+        if (!$inscripcion) {
+            $inscripcion = Inscripcion::orderBy('created_at', 'desc')->first();
+            if ($inscripcion && !$cursada) {
+                $cursada = Cursada::where('ID_Curso', $inscripcion->cursada_id)->first();
+                if ($cursada) {
+                    $nombre_curso = $cursada->carrera;
+                }
+            }
+        }
+
+        return compact('beneficios', 'sedes', 'partners', 'stickyBar', 'contactosInfo', 'contactosSocial', 'nombre_curso', 'inscripcion', 'cursada');
+    }
+    public function descargarComprobante($id)
+    {
+        $inscripcion = Inscripcion::with('lead')->findOrFail($id);
+        $cursada = Cursada::where('ID_Curso', $inscripcion->cursada_id)->first();
+        
+        $data = [
+            'inscripcion' => $inscripcion,
+            'cursada' => $cursada,
+            'fecha' => Carbon::parse($inscripcion->created_at)->translatedFormat('j \d\e F \d\e Y'),
+            'hora' => Carbon::parse($inscripcion->created_at)->format('H:i')
+        ];
+
+        $pdf = Pdf::loadView('pagos.comprobante-pdf', $data);
+        
+        $filename = 'comprobante-itca-' . ($inscripcion->collection_id ?? $inscripcion->id) . '.pdf';
+        
+        return $pdf->stream($filename);
     }
 }

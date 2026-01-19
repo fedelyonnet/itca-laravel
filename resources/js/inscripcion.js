@@ -3507,7 +3507,7 @@
                             descuentoAplicado.setAttribute('data-porcentaje', porcentaje);
                             descuentoAplicado.setAttribute('data-valor-descuento', descuentoCalculado);
                             descuentoAplicado.setAttribute('data-valor-final', valorFinal);
-                            descuentoAplicado.setAttribute('data-applied-code', codigo);
+                            descuentoAplicado.setAttribute('data-codigo-aplicado', codigo);
                         }
 
                         // Actualizar el total aplicado (matrícula - descuento)
@@ -4329,32 +4329,20 @@
                             return;
                         }
 
-                        // Obtener código de descuento aplicado si existe
-                        let couponCode = null;
+                        // Buscar si hay un código de descuento aplicado
+                        let codigoDescuento = null;
+                        const modalBody = this.closest('#cursada-modal-body');
+                        const isInModal = !!modalBody;
 
-                        // Buscar elemento de descuento (modal o normal)
-                        const modalBody = document.getElementById('cursada-modal-body');
-                        const isInModal = document.getElementById('cursada-modal-overlay')?.classList.contains('cursada-modal-open');
-
-                        let descuentoAplicadoEl = null;
-
-                        if (isInModal && modalBody) {
-                            descuentoAplicadoEl = modalBody.querySelector('#descuento-aplicado-' + cursadaId);
+                        let elemDescuento = null;
+                        if (isInModal) {
+                            elemDescuento = modalBody.querySelector('#descuento-aplicado-' + cursadaId);
+                        } else {
+                            elemDescuento = document.getElementById('descuento-aplicado-' + cursadaId);
                         }
 
-                        // Fallback a DOM normal si no se encontró en modal
-                        if (!descuentoAplicadoEl) {
-                            descuentoAplicadoEl = document.getElementById('descuento-aplicado-' + cursadaId);
-                        }
-
-                        // Verificar si tiene el código guardado y si el descuento es visible (tiene valor negativo)
-                        if (descuentoAplicadoEl) {
-                            const valorDescuento = descuentoAplicadoEl.querySelector('.cursada-descuento-valor');
-                            const descuentoText = valorDescuento ? valorDescuento.textContent.trim() : '';
-                            // Si hay un descuento negativo mostrado y tenemos el código guardado
-                            if (descuentoText && descuentoText !== 'n/d' && descuentoText !== '$0,00' && descuentoText.includes('-')) {
-                                couponCode = descuentoAplicadoEl.getAttribute('data-applied-code');
-                            }
+                        if (elemDescuento) {
+                            codigoDescuento = elemDescuento.getAttribute('data-codigo-aplicado');
                         }
 
                         // Llamada a Mercado Pago
@@ -4368,7 +4356,7 @@
                             body: JSON.stringify({
                                 lead_id: leadId,
                                 cursada_id: idCursoToSend,
-                                coupon_code: couponCode
+                                codigo_descuento: codigoDescuento
                             })
                         })
                             .then(async response => {

@@ -16,7 +16,11 @@ class Inscripcion extends Model
         'preference_id',
         'collection_id',
         'payment_type',
-        'merchant_order_id'
+        'merchant_order_id',
+        'descuento_id',
+        'codigo_descuento',
+        'monto_descuento',
+        'monto_sin_iva'
     ];
 
     // Relación con el alumno/lead

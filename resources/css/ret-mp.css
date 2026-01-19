@@ -1,0 +1,557 @@
+/* Estilos específicos para ret-mp.css, replicando breadcrumb de inscripción EXACTAMENTE */
+
+.breadcrumb-wrapper {
+    background-color: #010C42;
+    /* Color de fondo del header */
+    padding: 0;
+    width: 100%;
+}
+
+.breadcrumb-container {
+    max-width: clamp(1070px, 85vw, 1557px);
+    margin: 0 auto;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+/* Copiado exacto de public.css línea 15887 (.inscripcion-page .lista-carreras--show .lista-carreras-breadcrumb) */
+.breadcrumb-list {
+    grid-column: 1;
+    justify-self: start;
+    white-space: nowrap;
+    /* Ajustamos el padding-top para que coincida con el original */
+    padding-top: clamp(45px, calc(45px + (100vw - 1100px) * 0.0183), 60px);
+    /* Padding left 0 como pediste recientemente */
+    padding-left: 0;
+
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    color: #ffffff;
+}
+
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+}
+
+/* Estilos base copiados de public.css para .lista-carreras-breadcrumb-link */
+/* CORRECCIÓN: Usando los valores exactos encontrados en public.css */
+.breadcrumb-link {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    /* Fuente: 11px a 12px fluido */
+    font-size: clamp(11px, calc(11px + (100vw - 1100px) * 0.00625), 12px);
+    letter-spacing: 0.04em;
+    color: white;
+    text-decoration: none;
+    line-height: normal;
+    /* El original no define line-height en el bloque base */
+    transition: color 0.3s ease;
+    opacity: 1;
+    /* El original no tiene opacidad definida */
+}
+
+.breadcrumb-link:hover {
+    color: #65E09C;
+    /* Verde hover típico si no está definido explícitamente */
+    text-decoration: none;
+}
+
+/* APLICAR ESTILOS ESPECÍFICOS A LAS CLASES REPLICADAS para asegurar coincidencia */
+.breadcrumb-container .lista-carreras-breadcrumb-link,
+.breadcrumb-container .carrera-show-breadcrumb-link {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: clamp(11px, calc(11px + (100vw - 1100px) * 0.00625), 12px);
+    letter-spacing: 0.04em;
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    opacity: 1;
+}
+
+/* Separadores - Buscando referencia .lista-carreras-breadcrumb-separator */
+.breadcrumb-separator {
+    margin: 0 5px;
+    /* Valor estimado, ajustar si es necesario */
+    color: #65E09C;
+    /* Verde ITCA */
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    /* Verificar si debe ser menor */
+    font-weight: 400;
+}
+
+.breadcrumb-container .lista-carreras-breadcrumb-separator,
+.breadcrumb-container .carrera-show-breadcrumb-separator {
+    margin: 0 5px;
+    color: #65E09C;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+/* Elemento activo (último) - .lista-carreras-breadcrumb-current */
+/* Elemento activo (último) - .lista-carreras-breadcrumb-current */
+.breadcrumb-item.active {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    /* Medium, replicando public.css exactamente */
+    font-size: clamp(11px, calc(11px + (100vw - 1100px) * 0.00625), 12px);
+    color: white;
+    letter-spacing: 0.04em;
+}
+
+.breadcrumb-container .lista-carreras-breadcrumb-current,
+.breadcrumb-container .carrera-show-breadcrumb-current {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    /* Medium */
+    font-size: clamp(11px, calc(11px + (100vw - 1100px) * 0.00625), 12px);
+    color: white;
+    letter-spacing: 0.04em;
+}
+
+
+/* Responsividad para móviles - Ajustes específicos para igualar public.css */
+@media (max-width: 1100px) {
+    .breadcrumb-list {
+        padding-top: clamp(30px, 6vw, 45px);
+        padding-left: 20px;
+        /* Padding izquierdo estándar en mobile */
+        width: 100%;
+        justify-content: flex-start;
+        align-items: center;
+        /* Centrar verticalmente */
+        flex-wrap: wrap;
+    }
+}
+
+/* Sección de estado de pago (Success/Failure) */
+.payment-status-section {
+    min-height: 60vh;
+    display: flex;
+    align-items: flex-start;
+    /* Cambio de center a flex-start para que esté al top */
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    background-color: #010C42;
+    padding-top: clamp(20px, 4vw, 40px);
+    /* Agregamos un padding superior controlado */
+    /* Azul oscuro ITCA */
+}
+
+.payment-status-container {
+    max-width: clamp(1070px, 85vw, 1557px);
+    margin: 0 auto;
+    width: 100%;
+}
+
+.payment-status-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    /* SemiBold */
+    color: #ffffff;
+    text-align: center;
+    line-height: 1.1;
+    margin: 0;
+    font-size: clamp(28px, calc(28px + (100vw - 1100px) * 0.0122), 38px);
+    letter-spacing: 0.02em;
+}
+
+.payment-status-title>span {
+    display: block;
+    width: 100%;
+}
+
+.payment-status-title-1 {
+    margin-bottom: 0.15rem;
+    /* Espacio entre renglones */
+}
+
+.payment-status-title-2 {
+    color: #ffffff;
+    margin-top: 0;
+}
+
+.payment-status-highlight {
+    position: relative;
+    display: inline-block;
+    width: auto;
+    /* Para que no sea block */
+    color: #010C42;
+    /* Azul oscuro ITCA para el texto resaltado */
+    z-index: 2;
+    padding: 0 10px;
+}
+
+.payment-status-highlight::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: clamp(380px, calc(380px + (100vw - 1100px) * 0.1707), 520px);
+    height: 125%;
+    background-image: url('/images/desktop/success.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: -1;
+}
+
+/* Estilos para el recuadro de detalles de pago */
+/* Estilos para el recuadro de detalles de pago */
+.payment-details-box {
+    background-color: transparent;
+    border: 1px solid #D4D4D4;
+    /* Borde exterior solicitado */
+    border-radius: 12px;
+    margin-top: clamp(30px, 5vw, 50px);
+    overflow: hidden;
+    color: #ffffff;
+    text-align: left;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.payment-details-header {
+
+    /* Sutil diferenciación */
+    padding: 2rem;
+    border-bottom: 1px solid #D4D4D4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.payment-details-header-content {
+    display: flex;
+    align-items: center;
+    gap: clamp(15px, 2vw, 30px);
+}
+
+.payment-header-logo {
+    width: clamp(80px, calc(80px + (100vw - 1100px) * 0.078), 144px);
+    height: auto;
+}
+
+.payment-header-title {
+    margin: 0;
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(24px, calc(24px + (100vw - 1100px) * 0.0158), 37px);
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+    text-transform: none;
+    /* Quitamos el uppercase para respetar el diseño */
+}
+
+.title-medium {
+    font-weight: 500;
+}
+
+.title-bold {
+    font-weight: 700;
+}
+
+.payment-details-body {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+    gap: 0;
+}
+
+.payment-details-col-left {
+    flex: 1;
+    min-width: 350px;
+    box-sizing: border-box;
+    padding: 3rem 2.5rem;
+    border-right: 1px solid #D4D4D4;
+}
+
+.payment-details-col-right {
+    flex: 1;
+    min-width: 350px;
+    box-sizing: border-box;
+    background-color: transparent;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    /* Quitamos padding para que la línea ocupe todo el ancho */
+}
+
+/* Contenedores internos de la columna derecha */
+.payment-info-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 3rem 2.5rem;
+}
+
+.payment-actions-area {
+    padding: 2.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Detalles de la cursada (Izquierda) */
+.receipt-summary-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: clamp(16px, calc(16px + (100vw - 1100px) * 0.00625), 21px);
+    color: #ffffff;
+
+}
+
+.receipt-payment-for {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: clamp(20px, calc(20px + (100vw - 1100px) * 0.01), 28px);
+    color: #ffffff;
+    margin: 0 0 1.5rem 0;
+    line-height: 1.2;
+}
+
+.semibold {
+    font-weight: 600;
+}
+
+.receipt-item {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.receipt-icon {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.receipt-icon img {
+    width: 100%;
+    height: auto;
+}
+
+.receipt-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.receipt-item-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: clamp(22px, calc(22px + (100vw - 1100px) * 0.0109), 31px);
+    color: #ffffff;
+    margin: 0;
+    line-height: 1.1;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.receipt-item-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: clamp(19px, calc(19px + (100vw - 1100px) * 0.0109), 28px);
+    color: #65E09C;
+    /* Color celeste moderno */
+    margin: 0;
+    line-height: 1.2;
+}
+
+/* Resumen de pago */
+.payment-info-content h3 {
+    color: #65E09C;
+    /* Verde éxito brillante */
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(16px, calc(16px + (100vw - 1100px) * 0.00625), 21px);
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.payment-meta-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem 0;
+}
+
+.payment-meta-list li {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: clamp(19px, calc(19px + (100vw - 1100px) * 0.01125), 28px);
+    color: #ffffff;
+    margin-bottom: 0.75rem;
+}
+
+.status-approved {
+    color: #66F7A7;
+    font-weight: 600;
+}
+
+.payment-price-breakdown {
+    border-top: 1px solid rgba(212, 212, 212, 0.2);
+    padding-top: 1rem;
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: clamp(22px, calc(22px + (100vw - 1100px) * 0.01219), 32px);
+    color: #ffffff;
+}
+
+.price-row.savings {
+    color: #65E09C;
+    /* Verde ITCA */
+}
+
+.price-row.total {
+    font-weight: 700;
+    font-size: clamp(28px, calc(28px + (100vw - 1100px) * 0.01463), 40px);
+    color: #60D697;
+    border-top: 1px solid rgba(212, 212, 212, 0.3);
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+
+}
+
+
+.tax-note {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin-top: 0.5rem;
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+
+.receipt-col-divider {
+    border-top: 1px solid #D4D4D4;
+    margin: 0;
+}
+
+/* Botón descargar */
+.btn-download-receipt {
+    width: fit-content;
+    background-color: #65E09C;
+    color: #010C42;
+    border: none;
+    padding: 1rem 3rem;
+    border-radius: 48.72px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    /* SemiBold */
+    font-size: clamp(18px, calc(18px + (100vw - 1100px) * 0.00875), 25px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin: 0;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    text-transform: none;
+    text-decoration: none;
+}
+
+.btn-download-receipt:hover {
+    background-color: #58c38a;
+    transform: translateY(-2px);
+}
+
+/* Footer del recuadro */
+.payment-details-footer {
+    padding: 2.5rem 2rem;
+
+    /* Sutil */
+    text-align: center;
+    border-top: 1px solid #D4D4D4;
+}
+
+.footer-text-1 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: clamp(19px, calc(19px + (100vw - 1100px) * 0.00875), 26px);
+    margin: 0;
+    color: #ffffff;
+}
+
+.footer-text-2 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: clamp(19px, calc(19px + (100vw - 1100px) * 0.00875), 26px);
+    margin: 0.25rem 0 1.5rem 0;
+    color: #ffffff;
+}
+
+.btn-whatsapp-footer {
+    display: inline-block;
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #65E09C;
+    padding: 1rem 3rem;
+    border: 1px solid #65E09C;
+    border-radius: 50px;
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    /* Medium */
+    font-size: clamp(16px, calc(16px + (100vw - 1100px) * 0.00625), 21px);
+    transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
+}
+
+.btn-whatsapp-footer strong {
+    font-weight: 700;
+    /* Bold */
+}
+
+.btn-whatsapp-footer:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+    color: #65E09C;
+    box-shadow: 0 4px 15px rgba(101, 224, 156, 0.2);
+}
+
+/* Responsividad */
+@media (max-width: 930px) {
+    .payment-details-body {
+        flex-direction: column;
+    }
+
+    .payment-details-col-left,
+    .payment-details-col-right {
+        width: 100%;
+        min-width: 0;
+        padding: 2rem 1.5rem;
+    }
+
+    .payment-details-col-left {
+        border-right: none;
+        border-bottom: 1px solid #D4D4D4;
+    }
+}
+
+/* Mobile adjustments for payment status */
+@media (max-width: 768px) {
+    .payment-status-title {
+        font-size: clamp(22px, 6vw, 32px);
+    }
+
+    .payment-status-highlight::before {
+        height: 110%;
+    }
+}

@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CursoController;
 use Illuminate\Support\Facades\Mail;
 
-Route::get('/', [App\Http\Controllers\WelcomeController::class, 'index']);
+Route::get('/', [App\Http\Controllers\WelcomeController::class, 'index'])->name('home');
 Route::get('/carreras', [App\Http\Controllers\WelcomeController::class, 'carreras'])->name('carreras');
 Route::get('/somos-itca', [App\Http\Controllers\WelcomeController::class, 'somosItca'])->name('somos-itca');
 // Carrera individual (por id por ahora)
@@ -201,5 +201,6 @@ Route::post('/mp/create_preference', [App\Http\Controllers\MercadoPagoController
 Route::get('/mp/success', [App\Http\Controllers\MercadoPagoController::class, 'success'])->name('mp.success');
 Route::get('/mp/failure', [App\Http\Controllers\MercadoPagoController::class, 'failure'])->name('mp.failure');
 Route::get('/mp/pending', [App\Http\Controllers\MercadoPagoController::class, 'pending'])->name('mp.pending');
+Route::get('/mp/comprobante/{id}', [App\Http\Controllers\MercadoPagoController::class, 'descargarComprobante'])->name('mp.comprobante');
 
 require __DIR__.'/auth.php';
