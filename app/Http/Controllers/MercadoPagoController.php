@@ -164,6 +164,10 @@ class MercadoPagoController extends Controller
         // Obtener datos comunes para la vista
         $data = $this->getCommonViewData($request);
         
+        if (!$data['inscripcion']) {
+            abort(404);
+        }
+        
         return view('pagos.success', $data);
     }
 
@@ -173,6 +177,10 @@ class MercadoPagoController extends Controller
         
         // Obtener datos comunes para la vista
         $data = $this->getCommonViewData($request);
+        
+        if (!$data['inscripcion']) {
+            abort(404);
+        }
         
         return view('pagos.failure', $data);
     }
@@ -272,16 +280,7 @@ class MercadoPagoController extends Controller
              }
         }
 
-        // Fallback para testing: si no hay parámetros de MP, buscamos la última inscripción
-        if (!$inscripcion) {
-            $inscripcion = Inscripcion::orderBy('created_at', 'desc')->first();
-            if ($inscripcion && !$cursada) {
-                $cursada = Cursada::where('ID_Curso', $inscripcion->cursada_id)->first();
-                if ($cursada) {
-                    $nombre_curso = $cursada->carrera;
-                }
-            }
-        }
+
 
         return compact('beneficios', 'sedes', 'partners', 'stickyBar', 'contactosInfo', 'contactosSocial', 'nombre_curso', 'inscripcion', 'cursada');
     }

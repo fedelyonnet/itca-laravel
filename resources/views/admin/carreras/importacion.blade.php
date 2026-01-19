@@ -296,7 +296,7 @@
                                     <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header sortable-header" style="min-width: 120px; width: 140px;" data-sort="Matric_Base">
                                         <div class="flex items-center justify-between">
                                             <span class="flex items-center gap-1">
-                                                Matric Base
+                                                Matrícula Base
                                                 <span class="sort-indicator"></span>
                                             </span>
                                             <div class="resizer"></div>
@@ -305,7 +305,7 @@
                                     <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header sortable-header" style="min-width: 100px; width: 120px;" data-sort="Sin_iva_Mat">
                                         <div class="flex items-center justify-between">
                                             <span class="flex items-center gap-1">
-                                                Sin iva Mat
+                                                Matrícula sin IVA
                                                 <span class="sort-indicator"></span>
                                             </span>
                                             <div class="resizer"></div>
@@ -314,7 +314,7 @@
                                     <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header sortable-header" style="min-width: 100px; width: 120px;" data-sort="Cta_Web">
                                         <div class="flex items-center justify-between">
                                             <span class="flex items-center gap-1">
-                                                Cta.Web
+                                                Cuota
                                                 <span class="sort-indicator"></span>
                                             </span>
                                             <div class="resizer"></div>
@@ -323,7 +323,7 @@
                                     <th class="border border-gray-500 px-3 py-2 text-left text-xs font-semibold text-gray-200 whitespace-nowrap resizable-header sortable-header" style="min-width: 100px; width: 120px;" data-sort="Sin_IVA_cta">
                                         <div class="flex items-center justify-between">
                                             <span class="flex items-center gap-1">
-                                                Sin IVA cta
+                                                Cuota sin IVA
                                                 <span class="sort-indicator"></span>
                                             </span>
                                             <div class="resizer"></div>

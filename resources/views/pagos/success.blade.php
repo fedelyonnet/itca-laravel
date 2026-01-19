@@ -163,7 +163,7 @@
                                             <p class="receipt-item-title">Fecha de inicio</p>
                                             <p class="receipt-item-subtitle">
                                                 @if(isset($cursada) && isset($cursada->Fecha_Inicio))
-                                                    {{ \Carbon\Carbon::parse($cursada->Fecha_Inicio)->translatedFormat('F Y') }}
+                                                    {{ \Carbon\Carbon::parse($cursada->Fecha_Inicio)->format('d/m/Y') }}
                                                 @else
                                                     Fecha no disponible
                                                 @endif
@@ -223,10 +223,8 @@
 
                                     <p class="tax-note">
                                         @php
-                                            // Priorizamos el valor guardado en la inscripción (que ya tiene el descuento aplicado si correspondía)
-                                            // Si no existe (compras viejas), usamos el de la cursada.
-                                            // El usuario mencionó Sin_IVA_cta, así que lo usamos como fallback si Sin_iva_Mat no está.
-                                            $valSinIva = $inscripcion?->monto_sin_iva ?? ($cursada?->Sin_iva_Mat ?? ($cursada?->Sin_IVA_cta ?? 0));
+                                            // Mostramos estrictamente el valor de Sin_iva_Mat de la tabla cursadas
+                                            $valSinIva = $cursada?->Sin_iva_Mat ?? 0;
                                         @endphp
                                         Precio total sin impuestos nacionales: ARS $ {{ number_format($valSinIva, 2, ',', '.') }}
                                     </p>

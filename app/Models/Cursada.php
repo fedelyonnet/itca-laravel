@@ -28,13 +28,6 @@ class Cursada extends Model
         'sede',
         'Promo_Mat_logo',
         'ver_curso', // Nueva columna del Excel
-        // Columnas antiguas (mantener por compatibilidad si existen en producción)
-        'Sin_IVA',
-        'casilla_Promo',
-        'Promo_ctas',
-        'Proximamente',
-        'avisar',
-        'Avisar_link',
     ];
     
     protected $casts = [
@@ -46,8 +39,5 @@ class Cursada extends Model
         'Dto_Cuota' => 'decimal:2', // Porcentaje
         'Vacantes' => 'integer',
         'cuotas' => 'integer', // Asegurar que cuotas sea un entero
-        'casilla_Promo' => 'boolean',
-        // Mantener cast antiguo por compatibilidad
-        'Sin_IVA' => 'decimal:2',
     ];
 }

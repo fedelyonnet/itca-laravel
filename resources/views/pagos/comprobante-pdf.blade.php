@@ -155,7 +155,7 @@
                 <td class="label">Fecha Inicio:</td>
                 <td class="value">
                     @if(isset($cursada->Fecha_Inicio))
-                        {{ \Carbon\Carbon::parse($cursada->Fecha_Inicio)->translatedFormat('F Y') }}
+                        {{ \Carbon\Carbon::parse($cursada->Fecha_Inicio)->format('d/m/Y') }}
                     @else
                         No disponible
                     @endif
@@ -187,14 +187,16 @@
             </tr>
         </table>
         <p style="font-size: 11px; color: #777; margin-top: 15px; font-style: italic;">
-            * Precio total sin impuestos nacionales: ARS $ {{ number_format($inscripcion->monto_sin_iva ?? 0, 2, ',', '.') }}
+            @php
+                $valSinIva = $cursada?->Sin_iva_Mat ?? 0;
+            @endphp
+            * Precio total sin impuestos nacionales: ARS $ {{ number_format($valSinIva, 2, ',', '.') }}
         </p>
     </div>
 
     <div class="footer">
         <strong>Instituto Tecnológico de Capacitación Automotriz (ITCA)</strong><br>
-        Este es un comprobante oficial de pago generado automáticamente.<br>
-        Para cualquier consulta, por favor contactanos a través de nuestros canales oficiales.
+        Este es un comprobante oficial de pago generado automáticamente.
     </div>
 </body>
 </html>

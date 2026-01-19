@@ -969,10 +969,8 @@ class CursoController extends Controller
                 if ($index !== false) {
                     $columnIndex[$dbField] = $index;
                 } else {
-                    // Log para debug si no se encuentra el header (solo para campos opcionales)
-                    if ($dbField !== 'casilla_Promo') {
-                        logger()->warning("Header no encontrado en Excel: '{$excelHeader}' (buscando en: " . implode(', ', $headers) . ")");
-                    }
+                    // Log para debug si no se encuentra el header
+                    logger()->warning("Header no encontrado en Excel: '{$excelHeader}' (buscando en: " . implode(', ', $headers) . ")");
                 }
             }
 
