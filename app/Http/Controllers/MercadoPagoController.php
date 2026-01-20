@@ -295,33 +295,37 @@ class MercadoPagoController extends Controller
 
     private function getDummyData($data, $status)
     {
-        $cursada = new Cursada([
-            'carrera' => 'Carrera de Prueba (Modo Test)',
-            'sede' => 'Sede Central ITCA',
-            'xModalidad' => 'Presencial',
-            'Fecha_Inicio' => now()->addDays(30)->format('Y-m-d'),
-            'xTurno' => 'Mañana (09:00 a 12:00 hs)',
-            'Sin_iva_Mat' => 15000.00
-        ]);
+        // Crear objeto Cursada dummy
+        $cursada = new Cursada();
+        $cursada->id = 0;
+        $cursada->ID_Curso = 0;
+        $cursada->carrera = 'Carrera de Prueba (Modo Test)';
+        $cursada->sede = 'Sede Central ITCA';
+        $cursada->xModalidad = 'Presencial';
+        $cursada->Fecha_Inicio = now()->addDays(30);
+        $cursada->xTurno = 'Mañana (09:00 a 12:00 hs)';
+        $cursada->Sin_iva_Mat = 15000.00;
+        $cursada->Matric_Base = 18000.00;
+
+        // Crear objeto Inscripción dummy
+        $inscripcion = new Inscripcion();
+        $inscripcion->id = 0;
+        $inscripcion->collection_id = 'TEST-123456789';
+        $inscripcion->estado = $status;
+        $inscripcion->monto_matricula = 18000.00;
+        $inscripcion->monto_descuento = 3000.00;
+        $inscripcion->codigo_descuento = 'CUPONTEST';
+        $inscripcion->created_at = now();
         
-        $inscripcion = new Inscripcion([
-            'collection_id' => 'TEST-123456789',
-            'estado' => $status,
-            'monto_matricula' => 18000.00,
-            'monto_descuento' => 3000.00,
-            'codigo_descuento' => 'CUPONTEST',
-            'created_at' => now(),
-        ]);
-        $inscripcion->id = 0; // ID ficticio
+        // Asociar un Lead dummy
+        $lead = new Lead();
+        $lead->id = 0;
+        $lead->nombre = 'Juan';
+        $lead->apellido = 'Pérez';
+        $lead->correo = 'juan@ejemplo.com';
+        $lead->dni = '12345678';
         
-        // Cargamos una relación de Lead ficticia para evitar errores en las vistas
-        $inscripcion->setRelation('lead', new Lead([
-            'id' => 0,
-            'nombre' => 'Juan',
-            'apellido' => 'Pérez',
-            'correo' => 'juan@ejemplo.com',
-            'dni' => '12345678'
-        ]));
+        $inscripcion->setRelation('lead', $lead);
 
         $data['cursada'] = $cursada;
         $data['inscripcion'] = $inscripcion;
