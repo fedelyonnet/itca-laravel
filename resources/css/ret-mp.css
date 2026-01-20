@@ -205,6 +205,18 @@
     z-index: -1;
 }
 
+/* Breakpoint para el rango intermedio (1099px a 600px) */
+@media (max-width: 1099px) and (min-width: 600px) {
+    .payment-status-title {
+        font-size: clamp(22px, calc(22px + (100vw - 600px) * 0.012), 28px);
+    }
+
+    .payment-status-highlight::before {
+        /* Fluidez: 310px en 600px hasta 400px en 1099px */
+        width: clamp(310px, calc(310px + (100vw - 600px) * 0.1804), 400px);
+    }
+}
+
 /* Estilos para el recuadro de detalles de pago */
 /* Estilos para el recuadro de detalles de pago */
 .payment-details-box {
@@ -526,32 +538,144 @@
     box-shadow: 0 4px 15px rgba(101, 224, 156, 0.2);
 }
 
-/* Responsividad */
-@media (max-width: 930px) {
-    .payment-details-body {
-        flex-direction: column;
+
+/* Breakpoint para móviles (599px a 320px) */
+@media (max-width: 599px) {
+    .breadcrumb-wrapper {
+        display: none;
     }
 
-    .payment-details-col-left,
-    .payment-details-col-right {
-        width: 100%;
-        min-width: 0;
-        padding: 2rem 1.5rem;
+    .payment-status-section {
+        padding: 2.5rem 1rem;
     }
 
-    .payment-details-col-left {
-        border-right: none;
-        border-bottom: 1px solid #D4D4D4;
-    }
-}
-
-/* Mobile adjustments for payment status */
-@media (max-width: 768px) {
     .payment-status-title {
-        font-size: clamp(22px, 6vw, 32px);
+        /* Conecta con los 22px del rango intermedio */
+        font-size: clamp(19px, calc(19px + (100vw - 320px) * 0.0107), 22px);
     }
 
     .payment-status-highlight::before {
-        height: 110%;
+        height: 105%;
+        /* Conecta con los 310px del rango intermedio */
+        width: clamp(280px, calc(280px + (100vw - 320px) * 0.1075), 310px);
+    }
+
+    .payment-details-box {
+        margin-top: 25px;
+        border-radius: 8px;
+    }
+
+    .payment-details-header {
+        padding: 1.5rem 1rem;
+    }
+
+    .payment-header-logo {
+        width: 90px;
+    }
+
+    .payment-header-title {
+        font-size: 21px;
+    }
+
+    .payment-info-content,
+    .payment-details-col-left {
+        /* Quitamos padding lateral del contenedor para que la línea llegue a los bordes */
+        padding: 1.5rem 0;
+        border-right: 0px solid #D4D4D4;
+    }
+
+    .receipt-summary-title {
+        font-size: 15px;
+        margin-bottom: 0.1rem;
+        text-align: center;
+        padding: 0 1.25rem;
+        /* Padding aplicado al hijo */
+    }
+
+    .receipt-payment-for {
+        font-size: 19px;
+        margin-top: 0;
+        margin-bottom: 1.2rem;
+        text-align: center;
+        padding: 0 1.25rem;
+        /* Padding aplicado al hijo */
+    }
+
+    .receipt-item {
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        padding: 0 1.25rem;
+        /* Padding aplicado al hijo */
+    }
+
+    .receipt-icon {
+        width: 32px;
+        height: 32px;
+    }
+
+    .receipt-item-title {
+        font-size: 19px;
+    }
+
+    .receipt-item-subtitle {
+        font-size: 17px;
+    }
+
+    .payment-info-content h3 {
+        font-size: 17px;
+        padding: 0 1.25rem;
+    }
+
+    .payment-meta-list {
+        padding: 0 1.25rem;
+    }
+
+    .payment-meta-list li {
+        font-size: 17px;
+        /* Padding ya aplicado en la lista padre */
+    }
+
+    .price-row {
+        font-size: 19px;
+        padding: 0 1.25rem;
+        box-sizing: border-box;
+        /* Asegurar que el padding no rompa el ancho */
+    }
+
+    .tax-note {
+        padding: 0 1.25rem;
+    }
+
+    .price-row.total {
+        font-size: 24px;
+    }
+
+    .btn-download-receipt {
+        width: 100%;
+        padding: 1rem 0.5rem;
+        /* 16px en 430px, reduciendo hacia 340px */
+        font-size: clamp(14px, calc(14px + (100vw - 340px) * 0.0222), 16px);
+    }
+
+    .footer-text-1,
+    .footer-text-2 {
+        font-size: 17px;
+    }
+
+    .btn-whatsapp-footer {
+        width: 100%;
+        padding: 0.8rem 1.5rem;
+        font-size: 15px;
+    }
+
+    .receipt-col-divider {
+        margin: 0;
+        width: 100%;
+    }
+}
+/* Línea separadora específica para el rango 430px - 599px */
+@media (max-width: 599px) and (min-width: 430px) {
+    .payment-details-col-left {
+        border-bottom: 1px solid #D4D4D4;
     }
 }

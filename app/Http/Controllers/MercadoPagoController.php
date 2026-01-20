@@ -318,8 +318,8 @@ class MercadoPagoController extends Controller
         $inscripcion->collection_id = 'TEST-123456789';
         $inscripcion->estado = $status;
         $inscripcion->monto_matricula = 18000.00;
-        $inscripcion->monto_descuento = 3000.00;
-        $inscripcion->codigo_descuento = 'CUPONTEST';
+        $inscripcion->monto_descuento = 2.00;
+        $inscripcion->codigo_descuento = 'TEST';
         $inscripcion->created_at = now();
         
         // Asociar un Lead dummy
