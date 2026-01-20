@@ -664,7 +664,7 @@
 
     .btn-whatsapp-footer {
         width: 100%;
-        padding: 0.8rem 1.5rem;
+        padding: 0.8rem 0.5rem;
         /* 15px en 430px, reduciendo hacia 14px en 340px */
         font-size: clamp(14px, calc(14px + (100vw - 340px) * 0.0111), 15px);
     }
