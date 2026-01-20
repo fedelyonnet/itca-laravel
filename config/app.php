@@ -163,4 +163,6 @@ return [
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
+    'mp_test_mode' => env('MP_TEST_MODE', false),
+
 ];

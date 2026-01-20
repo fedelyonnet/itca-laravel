@@ -165,7 +165,11 @@ class MercadoPagoController extends Controller
         $data = $this->getCommonViewData($request);
         
         if (!$data['inscripcion']) {
-            abort(404);
+            if (config('app.mp_test_mode')) {
+                $data = $this->getDummyData($data, 'approved');
+            } else {
+                abort(404);
+            }
         }
         
         return view('pagos.success', $data);
@@ -179,7 +183,11 @@ class MercadoPagoController extends Controller
         $data = $this->getCommonViewData($request);
         
         if (!$data['inscripcion']) {
-            abort(404);
+            if (config('app.mp_test_mode')) {
+                $data = $this->getDummyData($data, 'rejected');
+            } else {
+                abort(404);
+            }
         }
         
         return view('pagos.failure', $data);
@@ -284,10 +292,52 @@ class MercadoPagoController extends Controller
 
         return compact('beneficios', 'sedes', 'partners', 'stickyBar', 'contactosInfo', 'contactosSocial', 'nombre_curso', 'inscripcion', 'cursada');
     }
+
+    private function getDummyData($data, $status)
+    {
+        $cursada = new Cursada([
+            'carrera' => 'Carrera de Prueba (Modo Test)',
+            'sede' => 'Sede Central ITCA',
+            'xModalidad' => 'Presencial',
+            'Fecha_Inicio' => now()->addDays(30)->format('Y-m-d'),
+            'xTurno' => 'Mañana (09:00 a 12:00 hs)',
+            'Sin_iva_Mat' => 15000.00
+        ]);
+        
+        $inscripcion = new Inscripcion([
+            'collection_id' => 'TEST-123456789',
+            'estado' => $status,
+            'monto_matricula' => 18000.00,
+            'monto_descuento' => 3000.00,
+            'codigo_descuento' => 'CUPONTEST',
+            'created_at' => now(),
+        ]);
+        $inscripcion->id = 0; // ID ficticio
+
+        $data['cursada'] = $cursada;
+        $data['inscripcion'] = $inscripcion;
+        $data['nombre_curso'] = $cursada->carrera;
+        
+        return $data;
+    }
     public function descargarComprobante($id)
     {
-        $inscripcion = Inscripcion::with('lead')->findOrFail($id);
-        $cursada = Cursada::where('ID_Curso', $inscripcion->cursada_id)->first();
+        if ($id == 0 && config('app.mp_test_mode')) {
+            $data = $this->getDummyData([], 'approved');
+            $inscripcion = $data['inscripcion'];
+            $cursada = $data['cursada'];
+            
+            // Agregar un lead dummy para la relación
+            $inscripcion->setRelation('lead', new Lead([
+                'nombre' => 'Juan',
+                'apellido' => 'Pérez',
+                'correo' => 'juan@ejemplo.com',
+                'dni' => '12345678'
+            ]));
+        } else {
+            $inscripcion = Inscripcion::with('lead')->findOrFail($id);
+            $cursada = Cursada::where('ID_Curso', $inscripcion->cursada_id)->first();
+        }
         
         $data = [
             'inscripcion' => $inscripcion,
