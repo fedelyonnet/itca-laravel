@@ -665,7 +665,8 @@
     .btn-whatsapp-footer {
         width: 100%;
         padding: 0.8rem 1.5rem;
-        font-size: 15px;
+        /* 15px en 430px, reduciendo hacia 14px en 340px */
+        font-size: clamp(14px, calc(14px + (100vw - 340px) * 0.0111), 15px);
     }
 
     .receipt-col-divider {
@@ -673,6 +674,7 @@
         width: 100%;
     }
 }
+
 /* Línea separadora específica para el rango 430px - 599px */
 @media (max-width: 599px) and (min-width: 430px) {
     .payment-details-col-left {
