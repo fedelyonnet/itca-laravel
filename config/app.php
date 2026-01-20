@@ -164,5 +164,6 @@ return [
     ])->toArray(),
 
     'mp_test_mode' => env('MP_TEST_MODE', false),
+    'mp_access_token' => env('MP_ACCESS_TOKEN'),
 
 ];

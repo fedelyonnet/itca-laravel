@@ -23,10 +23,15 @@ class MercadoPagoController extends Controller
 {
     public function __construct()
     {
-        // Configurar el SDK de Mercado Pago con el token del .env
-        $accessToken = config('services.mercadopago.access_token', env('MP_ACCESS_TOKEN'));
-        Log::info('Configurando Mercado Pago con token: ' . substr($accessToken, 0, 10) . '...');
-        MercadoPagoConfig::setAccessToken($accessToken);
+        // Configurar el SDK de Mercado Pago con el token del config (seguro para cache)
+        $accessToken = config('app.mp_access_token');
+        
+        if ($accessToken) {
+            Log::info('Configurando Mercado Pago con token: ' . substr($accessToken, 0, 10) . '...');
+            MercadoPagoConfig::setAccessToken($accessToken);
+        } else {
+            Log::warning('Mercado Pago Access Token no configurado en el servidor.');
+        }
     }
 
     public function createPreference(Request $request)
