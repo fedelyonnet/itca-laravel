@@ -313,6 +313,15 @@ class MercadoPagoController extends Controller
             'created_at' => now(),
         ]);
         $inscripcion->id = 0; // ID ficticio
+        
+        // Cargamos una relación de Lead ficticia para evitar errores en las vistas
+        $inscripcion->setRelation('lead', new Lead([
+            'id' => 0,
+            'nombre' => 'Juan',
+            'apellido' => 'Pérez',
+            'correo' => 'juan@ejemplo.com',
+            'dni' => '12345678'
+        ]));
 
         $data['cursada'] = $cursada;
         $data['inscripcion'] = $inscripcion;
