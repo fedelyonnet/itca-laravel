@@ -102,6 +102,78 @@
     <main>
         <!-- Failure Message Section -->
         <section class="payment-status-section">
+            <div class="payment-status-container">
+                <h1 class="payment-status-title">
+                    <span class="payment-status-title-1">
+                        <span class="payment-status-highlight-failure">Tu pago fue rechazado,</span> 
+                        pero no dejes
+                    </span>
+                    <span class="payment-status-title-2">que una pequeña falla frene tu camino</span>
+                </h1>
+
+                <!-- Tarjeta de detalles del pago fallido -->
+                <div class="payment-details-box">
+                    <div class="payment-details-header">
+                        <div class="payment-details-header-content">
+                            <img src="{{ asset('images/logo.png') }}" alt="ITCA Logo" class="payment-header-logo">
+                            <h2 class="payment-header-title">
+                                <span class="title-medium">Resumen de</span> <span class="title-bold">compra</span>
+                            </h2>
+                        </div>
+                    </div>
+
+                    <div class="payment-details-body">
+                        <!-- Columna Izquierda: Detalles del Curso -->
+                        <div class="payment-details-col-left">
+                            <div class="receipt-summary-title">Resumen de compra</div>
+                            <h3 class="receipt-payment-for">Pago de matrícula para:</h3>
+
+                            <div class="receipt-item">
+                                <div class="receipt-icon">
+                                    <img src="/images/desktop/course-icon.svg" alt="Curso">
+                                </div>
+                                <div class="receipt-info">
+                                    <h4 class="receipt-item-title">{{ $cursada->carrera ?? 'Mecánica y Tecnologías del Automóvil' }}</h4>
+                                    <p class="receipt-item-subtitle">{{ $cursada->sede ?? 'Sede Central' }} / {{ $cursada->xModalidad ?? 'Presencial' }}</p>
+                                </div>
+                            </div>
+                            
+                            <hr class="receipt-col-divider">
+
+                            <div class="price-row total">
+                                <span>Total</span>
+                                <span>${{ number_format($inscripcion->monto_matricula ?? 0, 0, ',', '.') }}</span>
+                            </div>
+                            <div class="tax-note">*Todos los precios incluyen IVA</div>
+                        </div>
+
+                        <!-- Columna Derecha: Estado y Acciones -->
+                        <div class="payment-details-col-right">
+                            <div class="payment-info-content">
+                                <h3>Estado del pago</h3>
+                                <ul class="payment-meta-list">
+                                    <li>Estado: <span style="color: #ff6b6b; font-weight: 600;">Rechazado</span></li>
+                                    <li>Fecha: {{ \Carbon\Carbon::parse($inscripcion->created_at ?? now())->format('d/m/Y') }}</li>
+                                    <li>ID Transacción: #{{ $inscripcion->collection_id ?? '---' }}</li>
+                                </ul>
+
+                                <a href="https://wa.me/5491122674822" target="_blank" class="btn-download-receipt" style="background-color: transparent; border: 1px solid #ff6b6b; color: #ff6b6b; margin-top: 1rem;">
+                                    <span>Contactar Soporte</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Footer del Recuadro -->
+                    <div class="payment-details-footer">
+                        <p class="footer-text-1">¿Necesitás ayuda con tu pago?</p>
+                        <p class="footer-text-2">Nuestro equipo de asesores está disponible para ayudarte a resolverlo.</p>
+                        <a href="https://wa.me/5491122674822" target="_blank" class="btn-whatsapp-footer">
+                            <strong>Chatear con un asesor</strong>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- Beneficios Section -->

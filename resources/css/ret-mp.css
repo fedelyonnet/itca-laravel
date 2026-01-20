@@ -681,3 +681,45 @@
         border-bottom: 1px solid #D4D4D4;
     }
 }
+
+/* Estilos específicos para la página de fallo */
+.payment-status-highlight-failure {
+    position: relative;
+    display: inline-block;
+    width: auto;
+    color: #010C42;
+    z-index: 2;
+    padding: 0 10px;
+}
+
+.payment-status-highlight-failure::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* Ancho inicial para desktop: 380px en 1100px -> 500px en 1920px */
+    width: clamp(380px, calc(380px + (100vw - 1100px) * 0.1463), 500px);
+    height: 125%;
+    background-image: url('/images/desktop/failure.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: -1;
+}
+
+/* Breakpoint intermedio para failure */
+@media (max-width: 1099px) and (min-width: 600px) {
+    .payment-status-highlight-failure::before {
+        /* Lógica similar a success pero adaptada */
+        width: clamp(330px, calc(330px + (100vw - 600px) * 0.18), 420px);
+    }
+}
+
+/* Breakpoint móvil para failure */
+@media (max-width: 599px) {
+    .payment-status-highlight-failure::before {
+        height: 105%;
+        width: clamp(300px, calc(300px + (100vw - 320px) * 0.11), 330px);
+    }
+}
