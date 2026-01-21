@@ -259,7 +259,8 @@
     font-size: clamp(24px, calc(24px + (100vw - 1100px) * 0.0158), 37px);
     letter-spacing: 0.02em;
     display: flex;
-    align-items: center;
+    align-items: baseline;
+    /* Changed from center to baseline for text alignment */
     gap: 0.3em;
     text-transform: none;
     /* Quitamos el uppercase para respetar el diseño */
@@ -284,8 +285,10 @@
     flex: 1;
     min-width: 350px;
     box-sizing: border-box;
-    padding: 3rem 2.5rem;
+    padding: 0;
     border-right: 1px solid #D4D4D4;
+    display: flex;
+    flex-direction: column;
 }
 
 .payment-details-col-right {
@@ -296,16 +299,27 @@
     display: flex;
     flex-direction: column;
     padding: 0;
-    /* Quitamos padding para que la línea ocupe todo el ancho */
 }
 
-/* Contenedores internos de la columna derecha */
-.payment-info-content {
+/* Contenedores de contenido principal que empujan el footer hacia abajo */
+.receipt-info-content,
+.payment-info-content,
+.course-info-card {
     flex: 1;
+    /* Ocupa el espacio disponible */
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
+    /* Alineación superior natural */
     padding: 3rem 2.5rem;
+    /* Padding original trasladado aquí */
+}
+
+/* Ajuste específico para centrar verticalmente el contenido de la derecha si es necesario, 
+   o dejarlo en flex-start para consistencia. Por defecto en success parecía centrado? 
+   Si el diseño original tenía justify-content: center en payment-info-content, lo mantenemos solo para ese */
+.payment-info-content {
+    justify-content: center;
 }
 
 .payment-actions-area {
@@ -313,7 +327,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    /* Aseguramos que no se expanda innecesariamente, altura dada por contenido + padding */
+    flex-shrink: 0;
 }
+
+
 
 /* Detalles de la cursada (Izquierda) */
 .receipt-summary-title {
@@ -574,7 +592,8 @@
     }
 
     .payment-header-title {
-        font-size: 21px;
+        /* Fluida: 18px en 430px, achicando hacia 340px */
+        font-size: clamp(16px, calc(16px + (100vw - 340px) * 0.0222), 18px);
     }
 
     .payment-info-content,
@@ -614,11 +633,13 @@
     }
 
     .receipt-item-title {
-        font-size: 19px;
+        /* Fluida: 19px en 430px, bajando a 16px en 340px */
+        font-size: clamp(16px, calc(16px + (100vw - 340px) * 0.0333), 19px);
     }
 
     .receipt-item-subtitle {
-        font-size: 17px;
+        /* Fluida: 17px en 430px, bajando a 14px en 340px */
+        font-size: clamp(14px, calc(14px + (100vw - 340px) * 0.0333), 17px);
     }
 
     .payment-info-content h3 {
@@ -711,8 +732,8 @@
 /* Breakpoint intermedio para failure */
 @media (max-width: 1099px) and (min-width: 600px) {
     .payment-status-highlight-failure::before {
-        /* Lógica similar a success pero adaptada */
-        width: clamp(330px, calc(330px + (100vw - 600px) * 0.18), 420px);
+        /* Fluidez: 290px en 600px hasta 380px en 1099px */
+        width: clamp(290px, calc(290px + (100vw - 600px) * 0.1804), 380px);
     }
 }
 
@@ -720,6 +741,342 @@
 @media (max-width: 599px) {
     .payment-status-highlight-failure::before {
         height: 105%;
-        width: clamp(300px, calc(300px + (100vw - 320px) * 0.11), 330px);
+        /* Fluida: 220px en 340px -> 250px en 430px */
+        width: clamp(220px, calc(220px + (100vw - 340px) * 0.3333), 250px);
+    }
+
+    .failure-modification-container {
+        padding: 1rem 1.25rem 0 1.25rem;
+    }
+
+    .btn-modify-choice {
+        width: 100%;
+        padding: 0.8rem 0.5rem;
+        /* Reducción en mobile: 16px en 430px reduciendo hacia 340px */
+        font-size: clamp(14px, calc(14px + (100vw - 340px) * 0.0222), 16px);
+    }
+}
+
+/* Contenedor y Botón de Modificar Elección (Failure) */
+.failure-modification-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+    width: 100%;
+}
+
+.btn-modify-choice {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #27305E;
+    /* Fondo solicitado */
+    color: #65E09C;
+    /* Color texto solicitado */
+    border: 1px solid #65E09C;
+    /* Borde solicitado */
+    padding: 1rem 3rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    /* Bold */
+    /* Fuente: 21 en 1920px -> reduce hacia 16px en 1100px aproximadamente */
+    font-size: clamp(16px, calc(16px + (100vw - 1100px) * 0.0061), 21px);
+    transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    gap: 0.75rem;
+    /* Espacio entre icono y texto */
+}
+
+.btn-modify-choice:hover {
+    background-color: #3b457b;
+    /* Un poco mas claro al hover */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(101, 224, 156, 0.2);
+}
+
+.btn-modify-icon {
+    /* 19px ancho / 21px fuente base ~= 0.9em */
+    width: 0.9em;
+    /* 15px alto / 21px fuente base ~= 0.71em */
+    height: 0.71em;
+    object-fit: contain;
+    /* Asegura que la imagen escale correctamente con el texto */
+}
+
+.payment-info-content .failure-right-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    /* Medium */
+    color: #ffffff;
+    margin-top: 0;
+    margin-bottom: 2rem;
+    line-height: 1.2;
+    /* Fluido: de 17px en 600px a 21px en 1920px (aprox) */
+    font-size: clamp(17px, calc(17px + (100vw - 1100px) * 0.005), 21px);
+}
+
+@media (max-width: 599px) {
+    .failure-right-title {
+        font-size: clamp(16px, calc(16px + (100vw - 320px) * 0.01), 18px);
+        text-align: center;
+    }
+}
+
+.failure-retry-text {
+    font-family: 'Montserrat', sans-serif;
+    color: #ffffff;
+    font-weight: 400;
+    /* Regular */
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    /* Copied fluid font size from title */
+    font-size: clamp(17px, calc(17px + (100vw - 1100px) * 0.005), 21px);
+}
+
+.failure-retry-text strong {
+    font-weight: 700;
+    /* Bold */
+}
+
+@media (max-width: 599px) {
+    .failure-retry-text {
+        font-size: clamp(16px, calc(16px + (100vw - 320px) * 0.01), 18px);
+        text-align: center;
+    }
+}
+
+.tax-note-failure {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin-top: 0.5rem;
+    font-style: italic;
+    margin-bottom: 0;
+}
+
+.failure-matricula-note {
+    font-family: 'Montserrat', sans-serif;
+    color: #ffffff;
+    font-weight: 400;
+    /* Regular */
+    margin-top: 0;
+    margin-bottom: 2rem;
+    line-height: 1.4;
+    /* Fluid font size: 14px at 600px -> 16px at 1920px (approx) */
+    font-size: clamp(14px, calc(14px + (100vw - 600px) * 0.0015), 16px);
+}
+
+.failure-matricula-note strong {
+    font-weight: 700;
+    /* Bold */
+}
+
+@media (max-width: 599px) {
+    .failure-matricula-note {
+        text-align: center;
+        /* Slightly smaller on mobile if needed, or keep same base */
+        font-size: 14px;
+    }
+}
+
+.failure-payment-btn-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.btn-pay-matricula {
+    width: fit-content;
+    background-color: #65E09C;
+    color: #010C42;
+    border: none;
+    padding: 1rem 3rem;
+    border-radius: 48.72px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    /* SemiBold */
+    font-size: clamp(18px, calc(18px + (100vw - 1100px) * 0.00875), 25px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin: 0;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
+}
+
+.btn-pay-matricula:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(101, 224, 156, 0.4);
+}
+
+@media (max-width: 599px) {
+    .btn-pay-matricula {
+        width: 100%;
+        padding: 0.8rem 0.5rem;
+        font-size: clamp(16px, calc(16px + (100vw - 340px) * 0.0222), 20px);
+    }
+}
+
+.failure-course-info-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* =========================================
+   Reglas específicas para FAILURE por Breakpoints
+   ========================================= */
+
+/* Desktop & Tablet (600px - 1920px+) - Estilos unificados por ahora */
+@media (min-width: 600px) {
+    .payment-info-content .failure-right-title {
+        /* Ajustes específicos para desktop/tablet si necesario */
+    }
+
+    .failure-retry-text {
+        text-align: left;
+    }
+
+    .failure-matricula-note {
+        text-align: left;
+    }
+}
+
+/* Tablet / Laptop Pequeña (600px - 1099px) - Reservado para futuros ajustes específicos */
+@media (max-width: 1099px) and (min-width: 600px) {
+
+    .btn-modify-choice,
+    .btn-pay-matricula {
+        padding: 0.8rem 1rem;
+        /* Ajustar padding para que quepa mejor */
+        font-size: clamp(13px, calc(13px + (100vw - 600px) * 0.006), 16px);
+    }
+}
+
+/* Mobile (340px - 599px) */
+@media (max-width: 599px) {
+    /* Ya existen reglas mobile arriba, aquí consolidamos específicas de failure */
+
+    .receipt-info-content,
+    .payment-info-content {
+        padding: 1.5rem 1rem;
+        /* Padding más compacto en móviles */
+    }
+
+    .payment-info-content .failure-right-title {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .failure-retry-text {
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+
+    .failure-matricula-note {
+        text-align: center;
+    }
+
+    .payment-actions-area {
+        padding: 1.5rem;
+        /* Menos padding en área de botones mobile */
+    }
+
+    /* Estilos específicos para el título de fallo en mobile (3 líneas) */
+    .failure-main-title span {
+        display: block;
+        font-weight: 600;
+        /* Semibold */
+        line-height: 1.1;
+        /* Reducido de 1.3 */
+        font-size: clamp(16px, calc(16px + (100vw - 340px) * 0.0222), 18px);
+        /* De 16px en 340px a 18px en 430px+ */
+    }
+
+    .failure-line-1 {
+        color: #010C42;
+        /* Azul oscuro */
+        margin-bottom: 0;
+        /* Eliminado margen */
+        /* El highlight background ya viene por la clase payment-status-highlight */
+    }
+
+    /* Ajuste estructural para evitar roturas en pantallas pequeñas (< 350px) */
+    .payment-details-col-left,
+    .payment-details-col-right {
+        min-width: 100%;
+        /* Permitir que se achique ajustándose al contenedor */
+        width: 100%;
+        border-right: none;
+        /* Quitar división vertical */
+        border-bottom: 1px solid #D4D4D4;
+        /* Agregar división horizontal */
+    }
+
+    .payment-details-col-right {
+        border-bottom: none;
+        /* El último no necesita borde abajo */
+    }
+
+    .failure-line-2,
+    .failure-line-3 {
+        color: #ffffff;
+        /* Blanco */
+    }
+}
+
+/* Regla específica solicitada: Padding 0 en mobile (hasta 599px) */
+@media (max-width: 599px) {
+
+    .receipt-info-content,
+    .course-info-card {
+        padding: 0;
+    }
+
+    .payment-info-content {
+        padding: 20px;
+    }
+
+    /* Ajuste botón Modificar Elección en mobile */
+    .btn-modify-choice {
+        /* Fluida: 16px en 430px, terminando en 12px en 340px */
+        font-size: clamp(12px, calc(12px + (100vw - 340px) * 0.0444), 16px);
+        padding: 0.8rem 1.5rem;
+        /* Padding reducido para evitar quiebre de línea */
+        white-space: nowrap;
+        /* Forzar una línea */
+    }
+
+    /* Fuentes fluidas exclusivas para Failure Panel Derecho (340px <-> 430px) */
+    .failure-right-content .failure-right-title {
+        font-size: clamp(16px, calc(16px + (100vw - 340px) * 0.0222), 18px);
+    }
+
+    .failure-right-content .cursada-formulario-input,
+    .failure-right-content .cursada-telefono-prefijo {
+        font-size: clamp(13px, calc(13px + (100vw - 340px) * 0.0333), 16px);
+    }
+
+    .failure-right-content .failure-retry-text {
+        font-size: clamp(14px, calc(14px + (100vw - 340px) * 0.0444), 18px);
+    }
+
+    .failure-right-content .price-row span,
+    .failure-right-content .price-value {
+        font-size: clamp(13px, calc(13px + (100vw - 340px) * 0.0333), 16px);
+    }
+
+    .failure-right-content .tax-note-failure {
+        font-size: clamp(10px, calc(10px + (100vw - 340px) * 0.0222), 12px);
+    }
+
+    .failure-right-content .failure-matricula-note {
+        font-size: clamp(12px, calc(12px + (100vw - 340px) * 0.0222), 14px);
     }
 }

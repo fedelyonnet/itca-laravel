@@ -140,6 +140,7 @@ class MercadoPagoController extends Controller
                     'descuento_id' => $descuentoId,
                     'codigo_descuento' => $codigoAplicado,
                     'preference_id' => $preference->id,
+                    'acepto_terminos' => true,
                 ]
             );
 

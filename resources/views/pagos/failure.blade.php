@@ -103,21 +103,19 @@
         <!-- Failure Message Section -->
         <section class="payment-status-section">
             <div class="payment-status-container">
-                <h1 class="payment-status-title">
-                    <span class="payment-status-title-1">
-                        <span class="payment-status-highlight-failure">Tu pago fue rechazado,</span> 
-                        pero no dejes
-                    </span>
-                    <span class="payment-status-title-2">que una pequeña falla frene tu camino</span>
+                <h1 class="payment-status-title failure-main-title">
+                    <span class="failure-line-1 payment-status-highlight payment-status-highlight-failure">Tu pago fue rechazado</span> 
+                    <span class="failure-line-2">pero no dejes que una pequeña</span>
+                    <span class="failure-line-3">falla frene tu camino</span>
                 </h1>
 
                 <!-- Tarjeta de detalles del pago fallido -->
                 <div class="payment-details-box">
                     <div class="payment-details-header">
                         <div class="payment-details-header-content">
-                            <img src="{{ asset('images/logo.png') }}" alt="ITCA Logo" class="payment-header-logo">
+                            <img src="{{ asset('images/logoblue.png') }}" alt="ITCA Logo" class="payment-header-logo">
                             <h2 class="payment-header-title">
-                                <span class="title-medium">Resumen de</span> <span class="title-bold">compra</span>
+                                <span class="title-medium">¡Pago</span> <span class="title-bold">rechazado!</span>
                             </h2>
                         </div>
                     </div>
@@ -125,43 +123,180 @@
                     <div class="payment-details-body">
                         <!-- Columna Izquierda: Detalles del Curso -->
                         <div class="payment-details-col-left">
-                            <div class="receipt-summary-title">Resumen de compra</div>
-                            <h3 class="receipt-payment-for">Pago de matrícula para:</h3>
+                            <div class="receipt-info-content">
+                                <div class="receipt-summary-title">Resumen de compra</div>
+                                <h3 class="receipt-payment-for">Pago de <span class="semibold">matrícula</span> para:</h3>
+                                <div class="failure-course-info-list">
+                                    <div class="receipt-item">
+                                        <div class="receipt-icon">
+                                            <img src="{{ asset('images/desktop/success/wrench.png') }}" alt="">
+                                        </div>
+                                        <div class="receipt-info">
+                                            <p class="receipt-item-title">Carrera</p>
+                                            <p class="receipt-item-subtitle">{{ $cursada?->carrera ?? $nombre_curso ?? 'Carrera no especificada' }}</p>
+                                        </div>
+                                    </div>
 
-                            <div class="receipt-item">
-                                <div class="receipt-icon">
-                                    <img src="/images/desktop/course-icon.svg" alt="Curso">
-                                </div>
-                                <div class="receipt-info">
-                                    <h4 class="receipt-item-title">{{ $cursada->carrera ?? 'Mecánica y Tecnologías del Automóvil' }}</h4>
-                                    <p class="receipt-item-subtitle">{{ $cursada->sede ?? 'Sede Central' }} / {{ $cursada->xModalidad ?? 'Presencial' }}</p>
+                                    <div class="receipt-item">
+                                        <div class="receipt-icon">
+                                            <img src="{{ asset('images/desktop/success/spot.png') }}" alt="">
+                                        </div>
+                                        <div class="receipt-info">
+                                            <p class="receipt-item-title">Sede</p>
+                                            <p class="receipt-item-subtitle">{{ $cursada?->sede ?? 'Sede no especificada' }}</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="receipt-item">
+                                        <div class="receipt-icon">
+                                            <img src="{{ asset('images/desktop/success/gear.png') }}" alt="">
+                                        </div>
+                                        <div class="receipt-info">
+                                            <p class="receipt-item-title">Modalidad</p>
+                                            <p class="receipt-item-subtitle">{{ $cursada?->xModalidad ?? 'Modalidad no especificada' }}</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="receipt-item">
+                                        <div class="receipt-icon">
+                                            <img src="{{ asset('images/desktop/success/calendar.png') }}" alt="">
+                                        </div>
+                                        <div class="receipt-info">
+                                            <p class="receipt-item-title">Fecha de inicio</p>
+                                            <p class="receipt-item-subtitle">
+                                                @if(isset($cursada) && isset($cursada->Fecha_Inicio))
+                                                    {{ \Carbon\Carbon::parse($cursada->Fecha_Inicio)->format('d/m/Y') }}
+                                                @else
+                                                    Fecha no disponible
+                                                @endif
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="receipt-item">
+                                        <div class="receipt-icon">
+                                            <img src="{{ asset('images/desktop/success/clock.png') }}" alt="">
+                                        </div>
+                                        <div class="receipt-info">
+                                            <p class="receipt-item-title">Turno</p>
+                                            <p class="receipt-item-subtitle">{{ $cursada?->xTurno ?? 'Turno no especificado' }}</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             
-                            <hr class="receipt-col-divider">
-
-                            <div class="price-row total">
-                                <span>Total</span>
-                                <span>${{ number_format($inscripcion->monto_matricula ?? 0, 0, ',', '.') }}</span>
+                            <div class="payment-actions-area">
+                                <div class="failure-modification-container" style="margin-top: 0;"> <!-- Remove margin-top as area has padding -->
+                                    <a href="{{ route('carreras') }}" class="btn-modify-choice">
+                                        <img src="{{ asset('images/arrow-left.png') }}" class="btn-modify-icon" alt="Volver">
+                                        Modificar mi elección
+                                    </a>
+                                </div>
                             </div>
-                            <div class="tax-note">*Todos los precios incluyen IVA</div>
                         </div>
 
-                        <!-- Columna Derecha: Estado y Acciones -->
+                        <!-- Columna Derecha: Formulario (Restaurada) -->
                         <div class="payment-details-col-right">
-                            <div class="payment-info-content">
-                                <h3>Estado del pago</h3>
-                                <ul class="payment-meta-list">
-                                    <li>Estado: <span style="color: #ff6b6b; font-weight: 600;">Rechazado</span></li>
-                                    <li>Fecha: {{ \Carbon\Carbon::parse($inscripcion->created_at ?? now())->format('d/m/Y') }}</li>
-                                    <li>ID Transacción: #{{ $inscripcion->collection_id ?? '---' }}</li>
-                                </ul>
+                            <div class="payment-info-content failure-right-content">
+                                <h3 class="failure-right-title">Completá tus datos nuevamente para continuar:</h3>
+                                
+                                <form class="cursada-formulario failure-form" id="formulario-retry">
+                                    <div class="cursada-formulario-grid">
+                                        <div class="cursada-formulario-columna-izq">
+                                            <div class="cursada-formulario-campo">
+                                                <input type="text" name="nombre" id="nombre-retry" placeholder="Nombre *" class="cursada-formulario-input" tabindex="1">
+                                            </div>
+                                            <div class="cursada-formulario-campo">
+                                                <input type="text" name="dni" id="dni-retry" placeholder="DNI *" class="cursada-formulario-input" maxlength="8" pattern="[0-9]{7,8}" inputmode="numeric" tabindex="3">
+                                            </div>
+                                            <div class="cursada-formulario-campo cursada-formulario-campo-telefono">
+                                                <div class="cursada-telefono-wrapper">
+                                                    <div class="cursada-telefono-prefijo-container">
+                                                        <select name="telefono_prefijo" id="telefono-prefijo-retry" class="cursada-telefono-prefijo" tabindex="-1">
+                                                            <option value="+54" selected>+54</option>
+                                                            <option value="+1">+1</option>
+                                                            <option value="+52">+52</option>
+                                                            <option value="+55">+55</option>
+                                                            <option value="+34">+34</option>
+                                                            <option value="+33">+33</option>
+                                                            <option value="+39">+39</option>
+                                                            <option value="+49">+49</option>
+                                                        </select>
+                                                        <span class="cursada-telefono-chevron">▼</span>
+                                                    </div>
+                                                    <input type="tel" name="telefono" id="telefono-retry" placeholder="Teléfono *" class="cursada-formulario-input cursada-telefono-input" maxlength="14" pattern="[0-9]{8,14}" inputmode="numeric" tabindex="5">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="cursada-formulario-columna-der">
+                                            <div class="cursada-formulario-campo">
+                                                <input type="text" name="apellido" id="apellido-retry" placeholder="Apellido *" class="cursada-formulario-input" tabindex="2">
+                                            </div>
+                                            <div class="cursada-formulario-campo">
+                                                <input type="email" name="correo" id="correo-retry" placeholder="Correo electrónico *" class="cursada-formulario-input" tabindex="4">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
 
-                                <a href="https://wa.me/5491122674822" target="_blank" class="btn-download-receipt" style="background-color: transparent; border: 1px solid #ff6b6b; color: #ff6b6b; margin-top: 1rem;">
-                                    <span>Contactar Soporte</span>
+                                <p class="failure-retry-text">
+                                    <strong>Intentá nuevamente</strong> procesar el pago:
+                                </p>
+                                
+                                <div class="payment-price-breakdown">
+                                    @php
+                                        $finalPaid = (float) ($inscripcion?->monto_matricula ?? 0);
+                                        $discountAmount = (float) ($inscripcion?->monto_descuento ?? 0);
+                                        $subtotal = $finalPaid + $discountAmount;
+                                        $couponCode = $inscripcion?->codigo_descuento ?? null;
+                                    @endphp
+
+                                    <div class="price-row">
+                                        <span>Subtotal:</span>
+                                        <span class="price-value">${{ number_format($subtotal, 2, ',', '.') }}</span>
+                                    </div>
+                                    
+                                    <div class="price-row {{ $discountAmount > 0 ? 'savings' : '' }}">
+                                        <span>Descuento{{ $couponCode ? ' ('.$couponCode.')' : '' }}:</span>
+                                        <span class="price-value">
+                                            @if($discountAmount > 0)
+                                                -${{ number_format($discountAmount, 2, ',', '.') }}
+                                            @else
+                                                $0,00
+                                            @endif
+                                        </span>
+                                    </div>
+
+                                    <div class="price-row total">
+                                        <span>Total:</span>
+                                        <span class="price-value">${{ number_format($finalPaid, 2, ',', '.') }}</span>
+                                    </div>
+
+                                    <p class="tax-note-failure">
+                                        @php
+                                            // Mostramos estrictamente el valor de Sin_iva_Mat de la tabla cursadas
+                                            $valSinIva = $cursada?->Sin_iva_Mat ?? 0;
+                                        @endphp
+                                        Precio total sin impuestos nacionales: ARS $ {{ number_format($valSinIva, 2, ',', '.') }}
+                                    </p>
+                                </div>
+
+                                <p class="failure-matricula-note">
+                                    <strong>Ahora solo debés pagar la matrícula</strong> para poder reservar tu vacante
+                                </p>
+                            </div>
+
+                            <div class="receipt-col-divider"></div>
+
+                            <div class="payment-actions-area">
+                                <a href="#" class="btn-pay-matricula" id="btn-retry-payment"> <!-- ID para identificarlo si se necesita JS luego -->
+                                    Ir a pagar matrícula
                                 </a>
                             </div>
                         </div>
+
+                        <!-- Columna Derecha: Estado y Acciones -->
+
                     </div>
                     
                     <!-- Footer del Recuadro -->

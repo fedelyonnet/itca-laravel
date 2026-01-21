@@ -43,6 +43,9 @@
                                                 <svg class="w-3 h-3 text-gray-600 group-hover:text-blue-400 transition-colors opacity-0 group-hover:opacity-100" fill="currentColor" viewBox="0 0 24 24"><path d="M8 16H4l6 6V2H8zm6-11v17h2V8h4l-6-6z"/></svg>
                                             </div>
                                         </th>
+                                        <th scope="col" class="px-4 py-3 text-center cursor-pointer hover:text-white transition-colors group">
+                                            Acepto términos
+                                        </th>
                                         <th scope="col" class="px-4 py-3 text-right cursor-pointer hover:text-white transition-colors group" data-sort="created_at">
                                             <div class="flex items-center justify-end gap-1">
                                                 Fecha
@@ -76,6 +79,17 @@
                                             <td class="px-4 py-3 font-mono text-gray-300">
                                                 ${{ number_format($inscripcion->monto_matricula, 2, ',', '.') }}
                                             </td>
+                                            <td class="px-4 py-3 text-center">
+                                                @if($inscripcion->acepto_terminos)
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                                                        Sí
+                                                    </span>
+                                                @else
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
+                                                        No
+                                                    </span>
+                                                @endif
+                                            </td>
                                             <td class="px-4 py-3 text-right">
                                                 <div class="flex flex-col items-end">
                                                     <span class="text-sm text-gray-300 font-medium">
@@ -87,7 +101,7 @@
 
                                         <!-- Fila Secundaria (Detalle Técnico - Oculta) -->
                                         <tr id="accordion-{{ $inscripcion->id }}" class="hidden bg-gray-900 shadow-inner">
-                                            <td colspan="5" class="px-0 py-0 border-t border-gray-800">
+                                            <td colspan="6" class="px-0 py-0 border-t border-gray-800">
                                                 <div class="px-6 py-4 bg-gray-900/50 shadow-inner border-y border-gray-800">
                                                     <div class="grid grid-cols-2 gap-4 text-xs text-gray-400">
                                                         <div>
@@ -112,7 +126,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="5" class="px-6 py-12 text-center">
+                                            <td colspan="6" class="px-6 py-12 text-center">
                                                 <div class="flex flex-col items-center justify-center text-gray-500">
                                                     <span class="text-lg font-medium">No hay inscripciones registradas aún</span>
                                                 </div>

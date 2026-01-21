@@ -112,7 +112,7 @@
                 <div class="payment-details-box">
                     <div class="payment-details-header">
                         <div class="payment-details-header-content">
-                            <img src="{{ asset('images/logo.png') }}" alt="ITCA Logo" class="payment-header-logo">
+                            <img src="{{ asset('images/logoblue.png') }}" alt="ITCA Logo" class="payment-header-logo">
                             <h2 class="payment-header-title">
                                 <span class="title-medium">¡Compra </span>
                                 <span class="title-bold">confirmada!</span>

@@ -1269,6 +1269,5 @@
     </script>
     @include('partials.home-scroll-spy')
 
-    <!-- START Botmaker Webchat--> <script> (function () { let js = document.createElement('script'); js.type = 'text/javascript'; js.async = 1; js.src = 'https://go.botmaker.com/rest/webchat/p/3IFCIOEH4F/init.js'; document.body.appendChild(js); })(); </script> <!-- END Botmaker Webchat-->
     </body>
 </html>

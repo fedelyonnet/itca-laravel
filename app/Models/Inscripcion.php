@@ -20,7 +20,8 @@ class Inscripcion extends Model
         'descuento_id',
         'codigo_descuento',
         'monto_descuento',
-        'monto_sin_iva'
+        'monto_sin_iva',
+        'acepto_terminos'
     ];
 
     // Relación con el alumno/lead
