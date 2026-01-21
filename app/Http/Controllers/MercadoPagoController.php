@@ -216,8 +216,10 @@ class MercadoPagoController extends Controller
         $merchantOrderId = $request->get('merchant_order_id');
 
         // Intentar buscar la inscripción
-        // Primero por preference_id
-        $inscripcion = Inscripcion::where('preference_id', $preferenceId)->first();
+        // Primero por preference_id (debería ser único, pero tomamos el último por seguridad)
+        $inscripcion = Inscripcion::where('preference_id', $preferenceId)
+            ->orderBy('id', 'desc')
+            ->first();
         
         // Si no se encuentra, intentar por external_reference (format: LEAD_X_CURSO_Y)
         if (!$inscripcion && $externalRef) {
@@ -225,10 +227,11 @@ class MercadoPagoController extends Controller
             if (count($parts) >= 4) {
                 $leadId = $parts[1];
                 $cursadaId = $parts[3];
+                // Buscamos la última inscripción pendiente para este lead y cursada
                 $inscripcion = Inscripcion::where('lead_id', $leadId)
                     ->where('cursada_id', $cursadaId)
                     ->where('estado', 'pending')
-                    ->orderBy('created_at', 'desc')
+                    ->orderBy('id', 'desc')
                     ->first();
             }
         }
@@ -270,28 +273,40 @@ class MercadoPagoController extends Controller
         $cursada = null;
 
         if ($request) {
-             $paymentId = $request->get('payment_id') ?? $request->get('collection_id');
-             if ($paymentId) {
-                 $inscripcion = Inscripcion::where('collection_id', $paymentId)
-                                         ->orWhere('preference_id', $request->get('preference_id'))
-                                         ->first();
-                 
-                 if ($inscripcion) {
-                     // Buscar la cursada para obtener el nombre de la carrera
-                     $cursada = Cursada::where('ID_Curso', $inscripcion->cursada_id)->first();
-                     if ($cursada) {
-                         $nombre_curso = $cursada->carrera;
-                     }
-                 }
-             } else if ($request->get('preference_id')) {
-                 $inscripcion = Inscripcion::where('preference_id', $request->get('preference_id'))->first();
-                 if ($inscripcion) {
-                     $cursada = Cursada::where('ID_Curso', $inscripcion->cursada_id)->first();
-                     if ($cursada) {
-                         $nombre_curso = $cursada->carrera;
-                     }
-                 }
-             }
+            $preferenceId = $request->get('preference_id');
+            $paymentId = $request->get('payment_id') ?? $request->get('collection_id');
+            
+            // Log para seguimiento en producción
+            Log::info("MP_CALLBACK: Buscando inscripción para Pref: {$preferenceId}, Pay: {$paymentId}");
+
+            // 1. Prioridad Absoluta: Preference ID (Vínculo directo con el intento de compra actual)
+            if ($preferenceId) {
+                $inscripcion = Inscripcion::where('preference_id', $preferenceId)
+                    ->orderBy('id', 'desc')
+                    ->first();
+            }
+
+            // 2. Fallback: Payment ID (Collection ID)
+            if (!$inscripcion && $paymentId) {
+                $inscripcion = Inscripcion::where('collection_id', $paymentId)
+                    ->orderBy('id', 'desc')
+                    ->first();
+            }
+
+            if ($inscripcion) {
+                // Cargar explícitamente la relación del lead para evitar datos huérfanos
+                $inscripcion->load('lead');
+                
+                // Buscar la cursada para obtener el nombre de la carrera
+                $cursada = Cursada::where('ID_Curso', $inscripcion->cursada_id)->first();
+                if ($cursada) {
+                    $nombre_curso = $cursada->carrera;
+                }
+                
+                Log::info("MP_CALLBACK: Inscripción hallada: #{$inscripcion->id}, Lead: {$inscripcion->lead_id}, Estado: {$inscripcion->estado}");
+            } else {
+                Log::warning("MP_CALLBACK: No se encontró inscripción vinculada a los IDs recibidos.");
+            }
         }
 
 

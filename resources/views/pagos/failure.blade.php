@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="ITCA - Pago Fallido">
     <title>Problema con el Pago - ITCA</title>
 
@@ -668,34 +669,130 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <!-- Slick Carousel JS -->
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
     
-    <!-- JavaScript para desplegable de sedes -->
+    <script src="https://www.google.com/recaptcha/api.js?render={{ env('RECAPTCHA_SITE_KEY') }}"></script>
+    
     <script>
-        // Funcionalidad de sedes - Acordeón
         document.addEventListener('DOMContentLoaded', function() {
+            // 1. Acordeón de sedes
             const sedeRows = document.querySelectorAll('.contacto-sede-row[data-sede]');
-            
             sedeRows.forEach(row => {
                 row.addEventListener('click', function() {
                     const sedeId = this.getAttribute('data-sede');
                     const content = document.getElementById(sedeId + '-content');
-                    
-                    // Cerrar todos los otros contenidos
                     document.querySelectorAll('.contacto-sede-content').forEach(otherContent => {
-                        if (otherContent !== content) {
-                            otherContent.classList.remove('active');
-                        }
+                        if (otherContent !== content) otherContent.classList.remove('active');
                     });
-                    
-                    // Toggle del contenido actual
-                    if (content) {
-                        content.classList.toggle('active');
-                    }
+                    if (content) content.classList.toggle('active');
                 });
             });
+
+            // 2. Lógica de Reintento de Pago
+            const btnRetry = document.getElementById('btn-retry-payment');
+            const formRetry = document.getElementById('formulario-retry');
+
+            if (btnRetry && formRetry) {
+                btnRetry.addEventListener('click', async function(e) {
+                    e.preventDefault();
+                    
+                    if (btnRetry.disabled) return;
+
+                    // Limpiar errores previos
+                    formRetry.querySelectorAll('.cursada-formulario-input').forEach(i => i.style.borderColor = '');
+
+                    // Validación básica
+                    const nombre = document.getElementById('nombre-retry').value.trim();
+                    const apellido = document.getElementById('apellido-retry').value.trim();
+                    const dni = document.getElementById('dni-retry').value.trim();
+                    const correo = document.getElementById('correo-retry').value.trim();
+                    const telefono = document.getElementById('telefono-retry').value.trim();
+
+                    let hasError = false;
+                    if (!nombre) { document.getElementById('nombre-retry').style.borderColor = 'red'; hasError = true; }
+                    if (!apellido) { document.getElementById('apellido-retry').style.borderColor = 'red'; hasError = true; }
+                    if (!dni || dni.length < 7) { document.getElementById('dni-retry').style.borderColor = 'red'; hasError = true; }
+                    if (!correo || !correo.includes('@')) { document.getElementById('correo-retry').style.borderColor = 'red'; hasError = true; }
+                    if (!telefono) { document.getElementById('telefono-retry').style.borderColor = 'red'; hasError = true; }
+
+                    if (hasError) {
+                        alert('Por favor, complete todos los campos obligatorios correctamente.');
+                        return;
+                    }
+
+                    const originalText = btnRetry.textContent;
+                    btnRetry.textContent = 'Procesando...';
+                    btnRetry.disabled = true;
+                    btnRetry.style.opacity = '0.7';
+
+                    try {
+                        // A. Ejecutar reCAPTCHA
+                        let recaptchaToken = null;
+                        if (typeof grecaptcha !== 'undefined') {
+                            recaptchaToken = await new Promise((resolve) => {
+                                grecaptcha.ready(() => {
+                                    grecaptcha.execute('{{ env("RECAPTCHA_SITE_KEY") }}', {action: 'submit'}).then(resolve);
+                                });
+                            });
+                        }
+
+                        // B. Guardar/Actualizar Lead
+                        const leadResponse = await fetch('{{ route("leads.store") }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            },
+                            body: JSON.stringify({
+                                nombre,
+                                apellido,
+                                dni,
+                                correo,
+                                telefono: document.getElementById('telefono-prefijo-retry').value + ' ' + telefono,
+                                cursada_id: '{{ $cursada?->ID_Curso }}',
+                                tipo: 'Retry',
+                                'g-recaptcha-response': recaptchaToken
+                            })
+                        });
+
+                        const leadData = await leadResponse.json();
+                        if (!leadData.success) {
+                            throw new Error(leadData.message || 'Error al guardar los datos del alumno.');
+                        }
+
+                        // C. Crear Preferencia de Mercado Pago
+                        const mpResponse = await fetch('/mp/create_preference', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            },
+                            body: JSON.stringify({
+                                lead_id: leadData.lead_id,
+                                cursada_id: '{{ $cursada?->ID_Curso }}',
+                                codigo_descuento: '{{ $inscripcion?->codigo_descuento }}'
+                            })
+                        });
+
+                        const mpData = await mpResponse.json();
+                        if (mpData.init_point) {
+                            window.location.href = mpData.init_point;
+                        } else {
+                            throw new Error(mpData.error || 'No se pudo generar el link de pago.');
+                        }
+
+                    } catch (error) {
+                        console.error('Retry Error:', error);
+                        alert('Hubo un problema: ' + error.message);
+                        btnRetry.textContent = originalText;
+                        btnRetry.disabled = false;
+                        btnRetry.style.opacity = '1';
+                    }
+                });
+            }
         });
     </script>
 </body>
