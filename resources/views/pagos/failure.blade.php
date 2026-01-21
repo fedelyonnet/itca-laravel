@@ -204,36 +204,49 @@
                                     <div class="cursada-formulario-grid">
                                         <div class="cursada-formulario-columna-izq">
                                             <div class="cursada-formulario-campo">
-                                                <input type="text" name="nombre" id="nombre-retry" placeholder="Nombre *" class="cursada-formulario-input" tabindex="1">
+                                                <input type="text" name="nombre" id="nombre-retry" placeholder="Nombre *" 
+                                                    value="{{ $inscripcion?->lead?->nombre }}"
+                                                    class="cursada-formulario-input" tabindex="1">
                                             </div>
                                             <div class="cursada-formulario-campo">
-                                                <input type="text" name="dni" id="dni-retry" placeholder="DNI *" class="cursada-formulario-input" maxlength="8" pattern="[0-9]{7,8}" inputmode="numeric" tabindex="3">
+                                                <input type="text" name="dni" id="dni-retry" placeholder="DNI *" 
+                                                    value="{{ $inscripcion?->lead?->dni }}"
+                                                    class="cursada-formulario-input" maxlength="8" pattern="[0-9]{7,8}" inputmode="numeric" tabindex="3">
                                             </div>
                                             <div class="cursada-formulario-campo cursada-formulario-campo-telefono">
                                                 <div class="cursada-telefono-wrapper">
                                                     <div class="cursada-telefono-prefijo-container">
+                                                        @php
+                                                            $prefijo = $inscripcion?->lead?->telefono_prefijo ?? '+54';
+                                                        @endphp
                                                         <select name="telefono_prefijo" id="telefono-prefijo-retry" class="cursada-telefono-prefijo" tabindex="-1">
-                                                            <option value="+54" selected>+54</option>
-                                                            <option value="+1">+1</option>
-                                                            <option value="+52">+52</option>
-                                                            <option value="+55">+55</option>
-                                                            <option value="+34">+34</option>
-                                                            <option value="+33">+33</option>
-                                                            <option value="+39">+39</option>
-                                                            <option value="+49">+49</option>
+                                                            <option value="+54" {{ $prefijo == '+54' ? 'selected' : '' }}>+54</option>
+                                                            <option value="+1" {{ $prefijo == '+1' ? 'selected' : '' }}>+1</option>
+                                                            <option value="+52" {{ $prefijo == '+52' ? 'selected' : '' }}>+52</option>
+                                                            <option value="+55" {{ $prefijo == '+55' ? 'selected' : '' }}>+55</option>
+                                                            <option value="+34" {{ $prefijo == '+34' ? 'selected' : '' }}>+34</option>
+                                                            <option value="+33" {{ $prefijo == '+33' ? 'selected' : '' }}>+33</option>
+                                                            <option value="+39" {{ $prefijo == '+39' ? 'selected' : '' }}>+39</option>
+                                                            <option value="+49" {{ $prefijo == '+49' ? 'selected' : '' }}>+49</option>
                                                         </select>
                                                         <span class="cursada-telefono-chevron">▼</span>
                                                     </div>
-                                                    <input type="tel" name="telefono" id="telefono-retry" placeholder="Teléfono *" class="cursada-formulario-input cursada-telefono-input" maxlength="14" pattern="[0-9]{8,14}" inputmode="numeric" tabindex="5">
+                                                    <input type="tel" name="telefono" id="telefono-retry" placeholder="Teléfono *" 
+                                                        value="{{ $inscripcion?->lead?->telefono }}"
+                                                        class="cursada-formulario-input cursada-telefono-input" maxlength="14" pattern="[0-9]{8,14}" inputmode="numeric" tabindex="5">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="cursada-formulario-columna-der">
                                             <div class="cursada-formulario-campo">
-                                                <input type="text" name="apellido" id="apellido-retry" placeholder="Apellido *" class="cursada-formulario-input" tabindex="2">
+                                                <input type="text" name="apellido" id="apellido-retry" placeholder="Apellido *" 
+                                                    value="{{ $inscripcion?->lead?->apellido }}"
+                                                    class="cursada-formulario-input" tabindex="2">
                                             </div>
                                             <div class="cursada-formulario-campo">
-                                                <input type="email" name="correo" id="correo-retry" placeholder="Correo electrónico *" class="cursada-formulario-input" tabindex="4">
+                                                <input type="email" name="correo" id="correo-retry" placeholder="Correo electrónico *" 
+                                                    value="{{ $inscripcion?->lead?->correo }}"
+                                                    class="cursada-formulario-input" tabindex="4">
                                             </div>
                                         </div>
                                     </div>
