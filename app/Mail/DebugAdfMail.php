@@ -37,7 +37,9 @@ class DebugAdfMail extends Mailable implements ShouldQueue
         }
 
         return new Content(
-            htmlString: '<pre>' . htmlspecialchars($content, ENT_QUOTES, 'UTF-8') . '</pre>'
+            text: function () use ($content) {
+                return $content;
+            },
         );
     }
 }
