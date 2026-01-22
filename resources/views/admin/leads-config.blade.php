@@ -22,7 +22,7 @@
                                     Email para recibir notificaciones
                                 </label>
                                 <div class="flex gap-2">
-                                    <input type="email" 
+                                    <input type="text" 
                                            name="notification_email" 
                                            id="notification_email" 
                                            value="{{ old('notification_email', $currentEmail) }}"

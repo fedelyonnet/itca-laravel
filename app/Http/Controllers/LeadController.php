@@ -137,7 +137,7 @@ class LeadController extends Controller
     public function updateConfig(Request $request)
     {
         $request->validate([
-            'notification_email' => 'required|email'
+            'notification_email' => 'required|string'
         ]);
 
         LeadSetting::updateOrCreate(
