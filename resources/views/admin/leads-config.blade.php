@@ -6,7 +6,7 @@
                     <h1 class="text-2xl font-bold mb-6">Configuración de Leads</h1>
                     
                     @if(session('success'))
-                        <div class="bg-green-500/10 border border-green-500 text-green-500 px-4 py-3 rounded mb-6">
+                        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)" class="bg-green-500/10 border border-green-500 text-green-500 px-4 py-3 rounded mb-6 transition-opacity duration-500" x-transition:leave.duration.500ms>
                             {{ session('success') }}
                         </div>
                     @endif
