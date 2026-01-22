@@ -30,16 +30,23 @@ class DebugAdfMail extends Mailable implements ShouldQueue
 
     public function content(): Content
     {
+        return new Content(
+            text: 'emails.adf',
+            with: ['content' => 'ADF XML attached'],
+        );
+    }
+
+    public function attachments(): array
+    {
         if (is_array($this->data)) {
             $content = json_encode($this->data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         } else {
             $content = $this->data;
         }
 
-        return new Content(
-            text: function () use ($content) {
-                return $content;
-            },
-        );
+        return [
+            \Illuminate\Mail\Mailables\Attachment::fromData(fn () => $content, 'lead.adf')
+                ->withMime('text/plain'),
+        ];
     }
 }

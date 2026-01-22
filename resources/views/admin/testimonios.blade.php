@@ -50,6 +50,7 @@
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Sede</th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Carrera</th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Tiempo</th>
+                                        <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Calificación</th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Estado</th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Acciones</th>
                                     </tr>
@@ -112,6 +113,11 @@
                                             
                                             <!-- Tiempo -->
                                             <td class="px-4 py-4 text-sm text-gray-300">{{ $testimonio->tiempo_testimonio }} meses</td>
+
+                                            <!-- Calificación -->
+                                            <td class="px-4 py-4 text-sm text-gray-300">
+                                                {{ $testimonio->calificacion }} <span class="text-yellow-400">★</span>
+                                            </td>
                                             
                                             <!-- Estado -->
                                             <td class="px-4 py-4">
@@ -258,6 +264,19 @@
                     </div>
                 </div>
 
+                <!-- Calificación (Nueva fila) -->
+                <div>
+                     <label class="block text-xs font-medium text-gray-300 mb-1">Calificación (Estrellas) <span class="text-red-400">*</span></label>
+                     <select id="modalCalificacion" name="calificacion" 
+                             class="w-full px-2 py-1.5 bg-gray-600 border border-gray-500 rounded text-white focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm">
+                         <option value="5">5 Estrellas (Excelente)</option>
+                         <option value="4">4 Estrellas (Muy Bueno)</option>
+                         <option value="3">3 Estrellas (Bueno)</option>
+                         <option value="2">2 Estrellas (Regular)</option>
+                         <option value="1">1 Estrella (Malo)</option>
+                     </select>
+                </div>
+
                 <!-- Tercera fila: Texto del Testimonio -->
                 <div>
                     <label class="block text-xs font-medium text-gray-300 mb-1">Texto del Testimonio <span class="text-red-400">*</span></label>
@@ -320,6 +339,7 @@
         function resetModal() {
             document.getElementById('testimonioForm').reset();
             document.getElementById('testimonioId').value = '';
+            document.getElementById('modalCalificacion').value = '5'; // Reset default
             isEditMode = false;
         }
 
@@ -342,6 +362,7 @@
                     document.getElementById('modalCarrera').value = data.carrera;
                     document.getElementById('modalTexto').value = data.texto;
                     document.getElementById('modalTiempo').value = data.tiempo_testimonio;
+                    document.getElementById('modalCalificacion').value = data.calificacion ?? 5; // Default 5 if null
                     
                     // Actualizar ayuda de imágenes para modo edición
                     document.getElementById('avatarHelp').innerHTML = '80 × 80 px<br><small class="text-gray-500">Opcional - mantiene la imagen actual si no se selecciona</small>';
@@ -439,7 +460,7 @@
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
+                },
             })
             .then(response => response.json())
             .then(data => {
@@ -473,6 +494,7 @@
             const carrera = document.querySelector('input[name="carrera"]').value.trim();
             const texto = document.querySelector('textarea[name="texto"]').value.trim();
             const tiempo = document.querySelector('input[name="tiempo_testimonio"]').value;
+            const calificacion = document.querySelector('select[name="calificacion"]').value;
             const avatar = document.querySelector('input[name="avatar"]').files.length;
             const icono = document.querySelector('input[name="icono"]').files.length;
             
@@ -501,6 +523,12 @@
             const tiempoNum = parseInt(tiempo);
             if (isNaN(tiempoNum) || tiempoNum < 1 || tiempoNum > 24) {
                 showValidationModal("Error", "El tiempo debe ser un número entre 1 y 24 meses");
+                return false;
+            }
+
+            const califNum = parseInt(calificacion);
+            if (isNaN(califNum) || califNum < 1 || califNum > 5) {
+                showValidationModal("Error", "La calificación debe ser entre 1 y 5");
                 return false;
             }
             if (texto.length < 50) {

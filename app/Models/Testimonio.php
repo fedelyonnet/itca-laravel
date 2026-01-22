@@ -15,12 +15,14 @@ class Testimonio extends Model
         'nombre',
         'carrera',
         'icono',
+        'calificacion',
         'orden'
     ];
 
     protected $casts = [
         'visible' => 'boolean',
         'tiempo_testimonio' => 'integer',
+        'calificacion' => 'integer',
         'orden' => 'integer'
     ];
 

@@ -1053,7 +1053,11 @@
                                         
                                         <!-- Bottom -->
                                         <div class="testimonios-carrera-card-bottom">
-                                            <img src="/images/desktop/comunidad/stars.png" alt="Stars" class="testimonios-carrera-card-stars" loading="lazy">
+                                            <div class="testimonios-carrera-card-stars-container" style="display: flex; gap: 2px;">
+                                                @for($i = 0; $i < ($testimonio->calificacion ?? 5); $i++)
+                                                    <img src="/images/star.png" alt="Star" class="testimonios-carrera-card-star" style="width: 14px; height: 14px;">
+                                                @endfor
+                                            </div>
                                             <img src="{{ asset('storage/' . $testimonio->icono) }}" 
                                                  alt="Icono" class="testimonios-carrera-card-google" loading="lazy">
                                         </div>
@@ -1094,7 +1098,11 @@
                                 <p class="testimonios-carrera-card-texto">{{ $testimonio->texto }}</p>
                             </div>
                             <div class="testimonios-carrera-card-bottom">
-                                <img src="/images/desktop/comunidad/stars.png" alt="Stars" class="testimonios-carrera-card-stars" loading="lazy">
+                                <div class="testimonios-carrera-card-stars-container" style="display: flex; gap: 2px;">
+                                    @for($i = 0; $i < ($testimonio->calificacion ?? 5); $i++)
+                                        <img src="/images/star.png" alt="Star" class="testimonios-carrera-card-star" style="width: 14px; height: 14px;">
+                                    @endfor
+                                </div>
                                 <img src="{{ asset('storage/' . $testimonio->icono) }}" alt="Icono" class="testimonios-carrera-card-google" loading="lazy">
                             </div>
                         </div>

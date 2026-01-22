@@ -22,6 +22,7 @@ class TestimonioController extends Controller
             'carrera' => 'required|string|max:200',
             'texto' => 'required|string|min:50|max:500',
             'tiempo_testimonio' => 'required|integer|min:1|max:24',
+            'calificacion' => 'required|integer|min:1|max:5',
             'avatar' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'icono' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'visible' => 'boolean',
@@ -41,6 +42,7 @@ class TestimonioController extends Controller
             'carrera' => $request->carrera,
             'texto' => $request->texto,
             'tiempo_testimonio' => $request->tiempo_testimonio,
+            'calificacion' => $request->calificacion,
             'avatar' => $avatarPath,
             'icono' => $iconoPath,
             'visible' => false, // No visible por defecto
@@ -60,6 +62,7 @@ class TestimonioController extends Controller
             'carrera' => $testimonio->carrera,
             'texto' => $testimonio->texto,
             'tiempo_testimonio' => $testimonio->tiempo_testimonio,
+            'calificacion' => $testimonio->calificacion,
             'visible' => $testimonio->visible,
         ]);
     }
@@ -74,6 +77,7 @@ class TestimonioController extends Controller
             'carrera' => 'required|string|max:200',
             'texto' => 'required|string|min:50|max:500',
             'tiempo_testimonio' => 'required|integer|min:1|max:24',
+            'calificacion' => 'required|integer|min:1|max:5',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'icono' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'visible' => 'boolean',
@@ -85,6 +89,7 @@ class TestimonioController extends Controller
             'carrera' => $request->carrera,
             'texto' => $request->texto,
             'tiempo_testimonio' => $request->tiempo_testimonio,
+            'calificacion' => $request->calificacion,
         ];
 
         if ($request->hasFile('avatar')) {
