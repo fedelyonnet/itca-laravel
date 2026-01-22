@@ -33,8 +33,8 @@ class WelcomeController extends Controller
         $mobileImg2 = $heroes->where('version', 'mobile')->where('type', 'img2')->first();
         $mobileVideo = $heroes->where('version', 'mobile')->where('type', 'video')->first();
         
-        // Obtener cursos destacados
-        $cursosFeatured = Curso::where('featured', true)->get();
+        // Obtener cursos destacados ordenados
+        $cursosFeatured = Curso::where('featured', true)->ordered()->get();
         
         // Obtener beneficios ordenados
         $beneficios = Beneficio::ordered()->get();
@@ -648,9 +648,9 @@ class WelcomeController extends Controller
                         // --- INTEGRACION CRM (ADF) ---
                         try {
                             $tecnomService = new \App\Services\TecnomService();
-                            $adfJson = $tecnomService->generateAdfJson($lead, $cursada);
+                            $adfData = $tecnomService->generateAdfXml($lead, $cursada);
                             // Enviar a la dirección configurada
-                            Mail::to($toEmail)->send(new \App\Mail\DebugAdfMail($adfJson));
+                            Mail::to($toEmail)->send(new \App\Mail\DebugAdfMail($adfData));
                         } catch (\Exception $e) {
                             logger()->error('Error enviando ADF Mail: ' . $e->getMessage());
                         }

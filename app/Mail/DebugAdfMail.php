@@ -14,24 +14,30 @@ class DebugAdfMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public $jsonData;
+    public $data;
 
-    public function __construct(array $jsonData)
+    public function __construct($data)
     {
-        $this->jsonData = $jsonData;
+        $this->data = $data;
     }
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'DEBUG: JSON ADF para Tecnom',
+            subject: 'DEBUG: ADF Lead (XML/JSON)',
         );
     }
 
     public function content(): Content
     {
+        if (is_array($this->data)) {
+            $content = json_encode($this->data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        } else {
+            $content = $this->data;
+        }
+
         return new Content(
-            htmlString: '<pre>' . json_encode($this->jsonData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . '</pre>'
+            htmlString: '<pre>' . htmlspecialchars($content, ENT_QUOTES, 'UTF-8') . '</pre>'
         );
     }
 }
