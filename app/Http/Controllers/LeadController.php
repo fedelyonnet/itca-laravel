@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Lead;
 use App\Models\LeadCursada;
 use App\Models\LeadSetting;
+use App\Models\Configuration;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
@@ -131,13 +132,16 @@ class LeadController extends Controller
         $emailSetting = LeadSetting::where('key_name', 'notification_email')->first();
         $currentEmail = $emailSetting ? $emailSetting->value : env('MAIL_TO_ADMIN');
         
-        return view('admin.leads-config', compact('currentEmail'));
+        $abandonedCartDelay = Configuration::get('abandoned_cart_delay_seconds', 600);
+
+        return view('admin.leads-config', compact('currentEmail', 'abandonedCartDelay'));
     }
 
     public function updateConfig(Request $request)
     {
         $request->validate([
-            'notification_email' => 'required|string'
+            'notification_email' => 'required|string',
+            'abandoned_cart_delay_seconds' => 'nullable|integer|min:0'
         ]);
 
         LeadSetting::updateOrCreate(
@@ -147,6 +151,14 @@ class LeadController extends Controller
                 'description' => 'Email de notificaciones de leads'
             ]
         );
+
+        if ($request->has('abandoned_cart_delay_seconds')) {
+            Configuration::set(
+                'abandoned_cart_delay_seconds', 
+                $request->abandoned_cart_delay_seconds, 
+                'Tiempo de espera en segundos antes de enviar el email de recuperación de carrito.'
+            );
+        }
 
         return redirect()->back()->with('success', 'Configuración actualizada correctamente');
     }

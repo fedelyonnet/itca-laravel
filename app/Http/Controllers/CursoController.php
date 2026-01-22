@@ -33,6 +33,7 @@ class CursoController extends Controller
             
             $validationRules = [
                 'nombre' => 'required|string|max:255',
+                'Cod1' => 'nullable|string|max:10',
                 'descripcion' => 'nullable|string|max:1000',
                 'fecha_inicio' => 'required|date',
                 'modalidad_online' => 'nullable',
@@ -91,6 +92,7 @@ class CursoController extends Controller
 
         $curso = new Curso();
         $curso->nombre = $request->nombre;
+        $curso->Cod1 = $request->Cod1;
         $curso->descripcion = $request->descripcion;
         $curso->modalidad_online = $request->has('modalidad_online');
         $curso->modalidad_presencial = $request->has('modalidad_presencial');
@@ -233,6 +235,7 @@ class CursoController extends Controller
             
             $request->validate([
                 'nombre' => $soloImagenes ? 'nullable' : 'required|string|max:255',
+                'Cod1' => 'nullable|string|max:10',
                 'descripcion' => 'nullable|string|max:1000',
                 'fecha_inicio' => $soloImagenes ? 'nullable' : 'required|date',
                 'modalidad_online' => 'nullable',
@@ -282,8 +285,9 @@ class CursoController extends Controller
                     }
                     return redirect()->back()->withErrors(['modalidades' => 'Debes seleccionar al menos una modalidad.'])->withInput();
                 }
-
+                
                 $curso->nombre = $request->nombre;
+                $curso->Cod1 = $request->Cod1;
                 $curso->descripcion = $request->descripcion;
                 $curso->modalidad_online = $request->has('modalidad_online');
                 $curso->modalidad_presencial = $request->has('modalidad_presencial');

@@ -17,6 +17,7 @@ use App\Models\Lead;
 use App\Models\PromoBadge;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class WelcomeController extends Controller
 {
@@ -155,6 +156,99 @@ class WelcomeController extends Controller
         $contactosSocial = \App\Models\DatoContacto::social()->get();
         
         return view('somos-itca', compact('stickyBar', 'partners', 'sedes', 'contactosInfo', 'contactosSocial'));
+    }
+
+    public function retomarInscripcion(Request $request)
+    {
+        $cursadaId = $request->get('retomar');
+        $leadId = $request->get('lead');
+
+        if (!$cursadaId) {
+            return redirect()->route('carreras');
+        }
+
+        // Buscar la cursada para saber a qué curso pertenece
+        $cursada = Cursada::where('ID_Curso', $cursadaId)->first();
+
+        if (!$cursada) {
+            return redirect()->route('carreras')->with('error', 'El curso seleccionado no está disponible.');
+        }
+
+        // Buscar el curso por nombre
+        // La cursada tiene el nombre exacto de la carrera (ej: 'Mecánica y Tecnologías del Automóvil')
+        // El slug se genera automáticamente en la llamada a route, pero necesitamos el objeto Curso para la vista inscripcion
+        // El array de rutas espera un parametro {curso} que debe coincidir con el id o el route-model-binding
+        
+        // Estrategia de búsqueda inteligente basada en el código "Cod1"
+        // M1 -> Mecánica de Motos
+        // C1 -> Mecánica del Automóvil
+        // EEA1 -> Electricidad del Automóvil
+        
+        $keywords = [];
+        $cod = strtoupper(trim($cursada->Cod1));
+
+        if (str_starts_with($cod, 'M1')) {
+            $keywords = ['moto', 'motocicleta'];
+        } elseif (str_starts_with($cod, 'C1')) {
+            $keywords = ['mecanica', 'tecnologia', 'automovil']; 
+            // Excluir 'moto' para asegurar que no confunda
+        } elseif (str_starts_with($cod, 'EEA')) {
+            $keywords = ['electricidad', 'electronica'];
+        }
+
+        $curso = null;
+        
+        if (!empty($keywords)) {
+            // Buscar el curso que contenga alguna de las keywords en su nombre
+            // Priorizamos el que tenga MÁS coincidencias
+            $cursos = Curso::all();
+            
+            $bestMatch = null;
+            $maxScore = 0;
+
+            foreach ($cursos as $c) {
+                $slug = Str::slug($c->nombre);
+                $score = 0;
+                
+                foreach ($keywords as $kw) {
+                    if (str_contains($slug, $kw)) {
+                        $score++;
+                    }
+                }
+
+                // Penalización para desambiguar (ej: evitar que C1 matchee con M1 si ambos tienen 'mecanica')
+                if (str_starts_with($cod, 'C1') && str_contains($slug, 'moto')) {
+                    $score = -1; // Descartar
+                }
+
+                if ($score > $maxScore) {
+                    $maxScore = $score;
+                    $bestMatch = $c;
+                }
+            }
+            $curso = $bestMatch;
+        }
+
+        // Fallback: Si la estrategia Cod1 falla, usar comparación directa de nombres
+        if (!$curso) {
+             $slugCursada = Str::slug($cursada->carrera);
+             $curso = Curso::all()->first(function($c) use ($slugCursada) {
+                 return str_contains($slugCursada, Str::slug($c->nombre)) || 
+                        str_contains(Str::slug($c->nombre), $slugCursada);
+             });
+        }
+
+        if (!$curso) {
+            // Fallback si no encontramos el curso padre
+             return redirect()->route('carreras')->with('error', 'No se encontró la información detallada del curso.');
+        }
+
+        // Redirigir a la ruta correcta de inscripción, preservando los parámetros
+        return redirect()->route('inscripcion', [
+            'curso' => $curso->id, // Usamos el ID del curso para el binding
+            'retomar' => $cursadaId,
+            'lead' => $leadId
+        ]);
     }
 
     public function inscripcion(Curso $curso)
@@ -668,6 +762,21 @@ class WelcomeController extends Controller
                         ]);
                     }
                 }
+
+                // --- PROGRAMAR RECUPERO CARRITO ---
+                try {
+                    $delaySeconds = \App\Models\Configuration::get('abandoned_cart_delay_seconds', 600);
+                    // Agendar solo si el delay es positivo
+                    if ($delaySeconds > 0) {
+                        \App\Jobs\CheckAbandonedCart::dispatch($lead, $cursada)
+                            ->delay(now()->addSeconds((int)$delaySeconds));
+                        
+                        logger()->info("Job CheckAbandonedCart agendado para Lead {$lead->id}, Cursada {$cursada->ID_Curso} en {$delaySeconds} segundos.");
+                    }
+                } catch (\Exception $e) {
+                    logger()->error('Error agendando CheckAbandonedCart: ' . $e->getMessage());
+                }
+                // ----------------------------------
             }
 
             return response()->json([
@@ -721,6 +830,32 @@ class WelcomeController extends Controller
                 'error' => $e->getMessage()
             ]);
             return response()->json(['success' => false, 'message' => 'Error interno del servidor'], 500);
+        }
+    }
+    public function getLeadData($id)
+    {
+        try {
+            if (!is_numeric($id)) {
+                return response()->json(['success' => false, 'message' => 'ID inválido'], 400);
+            }
+
+            $lead = Lead::findOrFail($id);
+            
+            return response()->json([
+                'success' => true,
+                'lead' => [
+                    'id' => $lead->id,
+                    'nombre' => $lead->nombre,
+                    'apellido' => $lead->apellido,
+                    'dni' => $lead->dni,
+                    'correo' => $lead->correo, // Para compatibilidad
+                    'email' => $lead->correo,  // Para compatibilidad
+                    'telefono' => $lead->telefono,
+                    'leadId' => $lead->id // Redundancia para el JS
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Lead no encontrado'], 404);
         }
     }
 }

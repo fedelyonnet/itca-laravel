@@ -24,7 +24,7 @@ class DebugAdfMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'DEBUG: ADF Lead (XML/JSON)',
+            subject: 'Nuevo Lead Ingresado desde Web ITCA',
         );
     }
 

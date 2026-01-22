@@ -935,9 +935,7 @@
 
 /* Desktop & Tablet (600px - 1920px+) - Estilos unificados por ahora */
 @media (min-width: 600px) {
-    .payment-info-content .failure-right-title {
-        /* Ajustes específicos para desktop/tablet si necesario */
-    }
+
 
     .failure-retry-text {
         text-align: left;

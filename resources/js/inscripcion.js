@@ -2338,6 +2338,7 @@
                 setTimeout(() => {
                     initializeFiltering();
                     initializeOrdenar();
+
                     // Inicializar formularios después de renderizar
                     if (typeof initializeFormularios === 'function') {
                         initializeFormularios();
@@ -4395,4 +4396,118 @@
     if (stickyBar) {
         observer.observe(stickyBar, { attributes: true, attributeFilter: ['style', 'class'] });
     }
+    // Función para verificar si se debe retomar una inscripción (desde email de carrito abandonado)
+    // Función para verificar si se debe retomar una inscripción (desde email de carrito abandonado)
+    function checkRetomarInscripcion(attempts = 0) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const retomarId = urlParams.get('retomar');
+        const leadId = urlParams.get('lead');
+
+        if (!retomarId) return;
+
+        // Log inicial solo la primera vez
+        if (attempts === 0) {
+            console.log('Iniciando búsqueda de curso para retomar:', retomarId);
+        }
+
+        // Si viene con leadId y es el primer intento, cargar datos del lead desde el servidor
+        if (leadId && attempts === 0) {
+            fetch(`/leads/${leadId}/data`)
+                .then(response => response.json())
+                .then(responseData => {
+                    if (responseData.success && responseData.lead) {
+                        console.log('Datos del lead recuperados:', responseData.lead);
+
+                        // Guardar en sessionStorage
+                        let data = {};
+                        try {
+                            data = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || '{}');
+                        } catch (e) { data = {}; }
+
+                        // Actualizar con los datos del servidor
+                        data = { ...data, ...responseData.lead };
+                        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+
+                        // Forzar recarga de formularios si ya están visibles
+                        if (typeof cargarDatosEnTodosLosFormularios === 'function') {
+                            cargarDatosEnTodosLosFormularios();
+                        }
+                    }
+                })
+                .catch(err => console.error('Error recuperando datos del lead:', err));
+        }
+
+        const cursadaElement = document.querySelector(`.cursada-item[data-id-curso="${retomarId}"]`);
+
+        // Si no encuentra el elemento, intentar de nuevo (polling)
+        if (!cursadaElement) {
+            if (attempts < 50) { // Aumentamos a 50 intentos (10 segundos)
+                console.log(`Intento ${attempts + 1}/50: Curso ${retomarId} no encontrado aún...`);
+                setTimeout(() => checkRetomarInscripcion(attempts + 1), 200);
+            } else {
+                console.error('TIMEOUT: No se encontró el curso', retomarId, 'después de 10 segundos.');
+            }
+            return;
+        }
+
+        console.log('¡ELEMENTO ENCONTRADO!', cursadaElement);
+
+        // Verificar vacantes
+        if (cursadaElement.classList.contains('sin-vacantes')) {
+            console.log('Curso sin vacantes');
+            Swal.fire({
+                icon: 'error',
+                title: '¡Lo sentimos!',
+                text: 'El curso seleccionado ya no tiene vacantes disponibles. Te invitamos a ver otras fechas u horarios.',
+                confirmButtonColor: '#1a56db',
+                footer: '<a href="/carreras" style="color: #1a56db; text-decoration: none; font-weight: bold;">Ver otros cursos disponibles</a>'
+            });
+            // Limpiar URL
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, newUrl);
+            return;
+        }
+
+        // Si hay vacantes, abrir el acordeón
+        // Intentar varios selectores para el header
+        // Si hay vacantes, abrir el acordeón
+        // El botón real que abre el acordeón es .cursada-btn-ver-valores
+        const btnAbrir = cursadaElement.querySelector('.cursada-btn-ver-valores');
+
+        // Fallback al header si no encuentra el botón (por si acaso cambia el diseño)
+        const elementToClick = btnAbrir ||
+            cursadaElement.querySelector('.cursada-header') ||
+            cursadaElement.firstElementChild; // Fallback al primer hijo
+
+        if (elementToClick) {
+            console.log('Abriendo acordeón clickeando en:', elementToClick.className);
+
+            // Forzar apertura incluso si parece abierto, para asegurar
+            setTimeout(() => {
+                elementToClick.click();
+                console.log('Click disparado en botón');
+
+                setTimeout(() => {
+                    cursadaElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    console.log('Scroll disparado');
+
+                    // Limpiar query params solo al final del éxito
+                    const newUrl = window.location.pathname;
+                    window.history.replaceState({}, document.title, newUrl);
+                }, 300);
+            }, 100);
+        } else {
+            console.error('No se encontró el .cursada-header dentro del elemento');
+        }
+    }
+
+    // Iniciar chequeo cuando el documento esté listo
+    if (document.readyState === 'complete') {
+        checkRetomarInscripcion();
+    } else {
+        window.addEventListener('load', () => {
+            checkRetomarInscripcion();
+        });
+    }
+
 })(); // IIFE - se ejecuta inmediatamente

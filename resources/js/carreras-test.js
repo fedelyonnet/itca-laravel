@@ -6,33 +6,33 @@ function showNotify(type, message) {
         console.error('Toast container no encontrado');
         return;
     }
-    
+
     // Remover mensajes existentes del mismo tipo
     const existingMessage = document.getElementById(type === 'success' ? 'success-message' : 'error-message');
     if (existingMessage) {
         existingMessage.remove();
     }
-    
+
     // Crear nuevo toast
     const toastDiv = document.createElement('div');
     toastDiv.id = type === 'success' ? 'success-message' : 'error-message';
-    toastDiv.className = type === 'success' 
+    toastDiv.className = type === 'success'
         ? 'bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg border-l-4 border-green-400 flex items-center transform translate-x-full transition-transform duration-300 ease-in-out'
         : 'bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg border-l-4 border-red-400 flex items-center transform translate-x-full transition-transform duration-300 ease-in-out';
-    
+
     // Icono
     const iconSvg = type === 'success'
         ? '<svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>'
         : '<svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>';
-    
+
     toastDiv.innerHTML = iconSvg + '<span>' + message + '</span>';
     container.appendChild(toastDiv);
-    
+
     // Animar entrada
     setTimeout(() => {
         toastDiv.classList.remove('translate-x-full');
     }, 100);
-    
+
     // Auto-cerrar solo para success después de 5 segundos
     if (type === 'success') {
         setTimeout(() => {
@@ -85,7 +85,7 @@ function openModalAnio(cursoId) {
 
 function editAnio(anioId) {
     resetAnioModal();
-    
+
     fetch(window.routes.admin.programas.anios.data.replace(':id', anioId))
         .then(response => {
             if (!response.ok) {
@@ -100,12 +100,12 @@ function editAnio(anioId) {
             document.getElementById('anioId').value = data.id;
             document.getElementById('anioCursoId').value = data.curso_id;
             document.getElementById('anioForm').action = window.routes.admin.programas.anios.update.replace(':id', data.id);
-            
+
             // Llenar los campos del formulario
             document.getElementById('anioAnio').value = data.año || '';
             document.getElementById('anioTitulo').value = data.titulo || '';
             document.getElementById('anioNivel').value = data.nivel || '';
-            
+
             document.getElementById('anioErrors').classList.add('hidden');
             document.getElementById('anioModal').classList.remove('hidden');
         })
@@ -132,11 +132,11 @@ function handleAnioFormSubmit(event) {
     event.preventDefault();
     const form = event.target;
     const formData = new FormData(form);
-    
+
     if (document.getElementById('anioMethodField').value === 'PUT') {
         formData.append('_method', 'PUT');
     }
-    
+
     fetch(form.action, {
         method: 'POST',
         headers: {
@@ -144,26 +144,26 @@ function handleAnioFormSubmit(event) {
         },
         body: formData
     })
-    .then(response => {
-        if (response.ok || response.redirected) {
-            showNotify('success', 'Año guardado correctamente');
-            closeAnioModal();
-            setTimeout(() => {
-                const url = new URL(window.location);
-                url.searchParams.set('tab', 'programa');
-                window.location.href = url.toString();
-            }, 1000);
-        } else {
-            return response.text().then(text => {
-                throw new Error(text);
-            });
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showNotify('error', 'Error al guardar el año. Verifica los datos.');
-    });
-    
+        .then(response => {
+            if (response.ok || response.redirected) {
+                showNotify('success', 'Año guardado correctamente');
+                closeAnioModal();
+                setTimeout(() => {
+                    const url = new URL(window.location);
+                    url.searchParams.set('tab', 'programa');
+                    window.location.href = url.toString();
+                }, 1000);
+            } else {
+                return response.text().then(text => {
+                    throw new Error(text);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotify('error', 'Error al guardar el año. Verifica los datos.');
+        });
+
     return false;
 }
 
@@ -177,22 +177,22 @@ function deleteAnio(id) {
         },
         body: JSON.stringify({ _method: 'DELETE' })
     })
-    .then(response => {
-        if (response.ok || response.redirected) {
-            showNotify('success', 'Año eliminado correctamente');
-            setTimeout(() => {
-                const url = new URL(window.location);
-                url.searchParams.set('tab', 'programa');
-                window.location.href = url.toString();
-            }, 1000);
-        } else {
+        .then(response => {
+            if (response.ok || response.redirected) {
+                showNotify('success', 'Año eliminado correctamente');
+                setTimeout(() => {
+                    const url = new URL(window.location);
+                    url.searchParams.set('tab', 'programa');
+                    window.location.href = url.toString();
+                }, 1000);
+            } else {
+                showNotify('error', 'Error al eliminar el año');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
             showNotify('error', 'Error al eliminar el año');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showNotify('error', 'Error al eliminar el año');
-    });
+        });
 }
 
 // ========== FUNCIONES PARA UNIDADES ==========
@@ -210,7 +210,7 @@ function openModalUnidad(cursoAnioId) {
 
 function editUnidad(unidadId) {
     resetUnidadModal();
-    
+
     fetch(window.routes.admin.programas.unidades.data.replace(':id', unidadId))
         .then(response => {
             if (!response.ok) {
@@ -225,12 +225,12 @@ function editUnidad(unidadId) {
             document.getElementById('unidadId').value = data.id;
             document.getElementById('unidadCursoAnioId').value = data.curso_anio_id;
             document.getElementById('unidadForm').action = window.routes.admin.programas.unidades.update.replace(':id', data.id);
-            
+
             // Llenar los campos del formulario
             document.getElementById('unidadNumero').value = data.numero || '';
             document.getElementById('unidadTitulo').value = data.titulo || '';
             document.getElementById('unidadSubtitulo').value = data.subtitulo || '';
-            
+
             document.getElementById('unidadErrors').classList.add('hidden');
             document.getElementById('unidadModal').classList.remove('hidden');
         })
@@ -257,11 +257,11 @@ function handleUnidadFormSubmit(event) {
     event.preventDefault();
     const form = event.target;
     const formData = new FormData(form);
-    
+
     if (document.getElementById('unidadMethodField').value === 'PUT') {
         formData.append('_method', 'PUT');
     }
-    
+
     fetch(form.action, {
         method: 'POST',
         headers: {
@@ -269,26 +269,26 @@ function handleUnidadFormSubmit(event) {
         },
         body: formData
     })
-    .then(response => {
-        if (response.ok || response.redirected) {
-            showNotify('success', 'Unidad guardada correctamente');
-            closeUnidadModal();
-            setTimeout(() => {
-                const url = new URL(window.location);
-                url.searchParams.set('tab', 'programa');
-                window.location.href = url.toString();
-            }, 1000);
-        } else {
-            return response.text().then(text => {
-                throw new Error(text);
-            });
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showNotify('error', 'Error al guardar la unidad. Verifica los datos.');
-    });
-    
+        .then(response => {
+            if (response.ok || response.redirected) {
+                showNotify('success', 'Unidad guardada correctamente');
+                closeUnidadModal();
+                setTimeout(() => {
+                    const url = new URL(window.location);
+                    url.searchParams.set('tab', 'programa');
+                    window.location.href = url.toString();
+                }, 1000);
+            } else {
+                return response.text().then(text => {
+                    throw new Error(text);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotify('error', 'Error al guardar la unidad. Verifica los datos.');
+        });
+
     return false;
 }
 
@@ -302,22 +302,22 @@ function deleteUnidad(id) {
         },
         body: JSON.stringify({ _method: 'DELETE' })
     })
-    .then(response => {
-        if (response.ok || response.redirected) {
-            showNotify('success', 'Unidad eliminada correctamente');
-            setTimeout(() => {
-                const url = new URL(window.location);
-                url.searchParams.set('tab', 'programa');
-                window.location.href = url.toString();
-            }, 1000);
-        } else {
+        .then(response => {
+            if (response.ok || response.redirected) {
+                showNotify('success', 'Unidad eliminada correctamente');
+                setTimeout(() => {
+                    const url = new URL(window.location);
+                    url.searchParams.set('tab', 'programa');
+                    window.location.href = url.toString();
+                }, 1000);
+            } else {
+                showNotify('error', 'Error al eliminar la unidad');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
             showNotify('error', 'Error al eliminar la unidad');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showNotify('error', 'Error al eliminar la unidad');
-    });
+        });
 }
 
 // ========== FUNCIONES PARA MODALIDADES ==========
@@ -335,7 +335,7 @@ function openModalidadCreate(cursoId) {
 
 function editModalidad(modalidadId) {
     resetModalidadModal();
-    
+
     fetch(window.routes.admin.modalidades.data.replace(':id', modalidadId))
         .then(response => {
             if (!response.ok) {
@@ -352,12 +352,12 @@ function editModalidad(modalidadId) {
             const carreraId = document.querySelector('[x-data]')?._x_dataStack?.[0]?.carreraId || window.carreraSeleccionadaData?.id;
             document.getElementById('modalidadCursoId').value = data.curso_id || carreraId;
             document.getElementById('modalidadForm').action = window.routes.admin.modalidades.update.replace(':id', data.id);
-            
+
             // Llenar los campos del formulario
             document.getElementById('modalidadNombreLinea1').value = data.nombre_linea1 || '';
             document.getElementById('modalidadNombreLinea2').value = data.nombre_linea2 || '';
             document.getElementById('modalidadTextoInfo').value = data.texto_info || '';
-            
+
             document.getElementById('modalidadErrors').classList.add('hidden');
             document.getElementById('modalidadModal').classList.remove('hidden');
         })
@@ -382,21 +382,21 @@ function resetModalidadModal() {
 
 function handleModalidadFormSubmit(event) {
     event.preventDefault();
-    
+
     const form = event.target;
     const formData = new FormData(form);
-    
+
     // Agregar from_test para indicar que viene de la vista test
     formData.append('from_test', '1');
-    
+
     // Obtener el curso_id del formulario
     const cursoId = document.getElementById('modalidadCursoId').value;
-    
+
     // Si es PUT, agregar _method
     if (document.getElementById('modalidadMethodField').value === 'PUT') {
         formData.append('_method', 'PUT');
     }
-    
+
     fetch(form.action, {
         method: 'POST',
         headers: {
@@ -404,30 +404,30 @@ function handleModalidadFormSubmit(event) {
         },
         body: formData
     })
-    .then(response => {
-        if (response.ok || response.redirected) {
-            showNotify('success', 'Modalidad guardada correctamente');
-            closeModalidadModal();
-            // Recargar la página manteniendo el curso_id y la pestaña activa
-            setTimeout(() => {
-                const url = new URL(window.routes.admin.carreras.test);
-                if (cursoId) {
-                    url.searchParams.set('curso_id', cursoId);
-                }
-                url.searchParams.set('tab', 'modalidades');
-                window.location.href = url.toString();
-            }, 1000);
-        } else {
-            return response.text().then(text => {
-                throw new Error(text);
-            });
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showNotify('error', 'Error al guardar la modalidad. Verifica los datos.');
-    });
-    
+        .then(response => {
+            if (response.ok || response.redirected) {
+                showNotify('success', 'Modalidad guardada correctamente');
+                closeModalidadModal();
+                // Recargar la página manteniendo el curso_id y la pestaña activa
+                setTimeout(() => {
+                    const url = new URL(window.routes.admin.carreras.test);
+                    if (cursoId) {
+                        url.searchParams.set('curso_id', cursoId);
+                    }
+                    url.searchParams.set('tab', 'modalidades');
+                    window.location.href = url.toString();
+                }, 1000);
+            } else {
+                return response.text().then(text => {
+                    throw new Error(text);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotify('error', 'Error al guardar la modalidad. Verifica los datos.');
+        });
+
     return false;
 }
 
@@ -436,14 +436,14 @@ function deleteModalidadFromTest(id) {
         showNotify('error', 'ID de modalidad no válido');
         return;
     }
-    
+
     if (!window.routes || !window.routes.admin || !window.routes.admin.modalidades || !window.routes.admin.modalidades.destroy) {
         showNotify('error', 'Error: Ruta de eliminación no configurada');
         return;
     }
-    
+
     const url = window.routes.admin.modalidades.destroy.replace(':id', id);
-    
+
     fetch(url, {
         method: 'POST',
         headers: {
@@ -455,29 +455,29 @@ function deleteModalidadFromTest(id) {
         },
         body: JSON.stringify({ _method: 'DELETE', from_test: '1' })
     })
-    .then(response => {
-        if (response.ok) {
-            return response.json().then(data => {
-                showNotify('success', data.message || 'Modalidad eliminada correctamente');
-                // Recargar la página para actualizar la lista
-                setTimeout(() => {
-                    const url = new URL(window.location);
-                    url.searchParams.set('tab', 'modalidades');
-                    window.location.href = url.toString();
-                }, 1000);
-            });
-        } else {
-            return response.json().then(data => {
-                showNotify('error', data.message || 'Error al eliminar la modalidad');
-            }).catch(() => {
-                showNotify('error', 'Error al eliminar la modalidad');
-            });
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showNotify('error', 'Error al eliminar la modalidad: ' + error.message);
-    });
+        .then(response => {
+            if (response.ok) {
+                return response.json().then(data => {
+                    showNotify('success', data.message || 'Modalidad eliminada correctamente');
+                    // Recargar la página para actualizar la lista
+                    setTimeout(() => {
+                        const url = new URL(window.location);
+                        url.searchParams.set('tab', 'modalidades');
+                        window.location.href = url.toString();
+                    }, 1000);
+                });
+            } else {
+                return response.json().then(data => {
+                    showNotify('error', data.message || 'Error al eliminar la modalidad');
+                }).catch(() => {
+                    showNotify('error', 'Error al eliminar la modalidad');
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotify('error', 'Error al eliminar la modalidad: ' + error.message);
+        });
 }
 
 // ========== ALPINE.JS COMPONENTS ==========
@@ -545,6 +545,7 @@ function carreraManager() {
                 this.carreraId = carrera.id || '';
                 this.formData = {
                     nombre: carrera.nombre || '',
+                    Cod1: carrera.Cod1 || '',
                     descripcion: carrera.descripcion || '',
                     fecha_inicio: carrera.fecha_inicio ? formatearFechaParaMostrar(carrera.fecha_inicio) : '',
                     orden: carrera.orden || 1,
@@ -563,7 +564,7 @@ function carreraManager() {
                 };
             }
             // featuredCount ya viene calculado del servidor (excluyendo la carrera actual si está destacada)
-            
+
             // Restaurar pestaña activa desde URL si existe
             const urlParams = new URLSearchParams(window.location.search);
             const tab = urlParams.get('tab');
@@ -571,12 +572,12 @@ function carreraManager() {
                 this.tabActiva = tab;
             }
         },
-        
+
         initToasts() {
             // Inicializar toasts existentes (de session)
             const successMessage = document.getElementById('success-message');
             const errorMessage = document.getElementById('error-message');
-            
+
             if (successMessage) {
                 setTimeout(() => {
                     successMessage.classList.remove('translate-x-full');
@@ -585,7 +586,7 @@ function carreraManager() {
                     }, 5000);
                 }, 100);
             }
-            
+
             if (errorMessage) {
                 setTimeout(() => {
                     errorMessage.classList.remove('translate-x-full');
@@ -606,6 +607,7 @@ function carreraManager() {
         limpiarFormulario() {
             this.formData = {
                 nombre: '',
+                Cod1: '',
                 descripcion: '',
                 fecha_inicio: '',
                 orden: 1,
@@ -656,17 +658,17 @@ function carreraManager() {
                 showNotify('error', 'El nombre de la carrera es obligatorio');
                 return;
             }
-            
+
             if (!this.formData.fecha_inicio || this.formData.fecha_inicio.trim() === '') {
                 showNotify('error', 'La fecha de inicio es obligatoria');
                 return;
             }
-            
+
             if (!this.formData.modalidad_online && !this.formData.modalidad_presencial) {
                 showNotify('error', 'Debes seleccionar al menos una modalidad');
                 return;
             }
-            
+
             // Validar featured antes de enviar
             // featuredCount = cuántas otras carreras están destacadas (excluyendo esta)
             // Si esta carrera se marca como destacada, el total sería featuredCount + 1
@@ -676,22 +678,23 @@ function carreraManager() {
                 this.formData.featured = false;
                 return;
             }
-            
+
             // Mantener la pestaña activa
             const tabActivaActual = this.tabActiva;
 
             const formData = new FormData();
             formData.append('nombre', this.formData.nombre);
+            formData.append('Cod1', this.formData.Cod1);
             formData.append('descripcion', this.formData.descripcion);
             // Convertir fecha de dd/mm/aaaa a aaaa-mm-dd para el backend
             const fechaParaBackend = convertirFechaParaBackend(this.formData.fecha_inicio);
-            
+
             // Validar que la fecha convertida sea válida
             if (!fechaParaBackend || fechaParaBackend.trim() === '' || !fechaParaBackend.match(/^\d{4}-\d{2}-\d{2}$/)) {
                 showNotify('error', 'La fecha de inicio debe tener el formato dd/mm/aaaa');
                 return;
             }
-            
+
             formData.append('fecha_inicio', fechaParaBackend);
             formData.append('orden', this.formData.orden);
             if (this.formData.modalidad_online) formData.append('modalidad_online', '1');
@@ -700,7 +703,7 @@ function carreraManager() {
             formData.append('featured', this.formData.featured ? '1' : '0');
             formData.append('from_test', '1'); // Indicar que viene de la vista test
 
-            const url = this.carreraId 
+            const url = this.carreraId
                 ? window.routes.admin.carreras.update.replace(':id', this.carreraId)
                 : window.routes.admin.carreras.store;
 
@@ -860,7 +863,7 @@ function carreraManager() {
             // Siempre enviar featured para mantener su valor actual
             formData.append('featured', this.formData.featured ? '1' : '0');
             formData.append('from_test', '1'); // Indicar que viene de la vista test
-            
+
             // Agregar sedes seleccionadas - siempre enviar el campo sedes para que el backend sepa que se está actualizando
             // Si hay sedes seleccionadas, agregarlas
             if (this.formData.sedes && this.formData.sedes.length > 0) {
@@ -938,10 +941,10 @@ function carreraManager() {
                         if (inputElement._flatpickr) {
                             inputElement._flatpickr.destroy();
                         }
-                        
+
                         // Obtener el valor actual del input (ya en formato dd/mm/aaaa)
                         const valorActual = this.formData.fecha_inicio;
-                        
+
                         // Inicializar flatpickr con locale español
                         const fp = flatpickr(inputElement, {
                             dateFormat: 'd/m/Y',
@@ -952,7 +955,7 @@ function carreraManager() {
                                 this.formData.fecha_inicio = dateStr || '';
                             }
                         });
-                        
+
                         // Si hay un valor inicial, establecerlo
                         if (valorActual) {
                             fp.setDate(valorActual, false);
@@ -991,13 +994,13 @@ function carreraManager() {
         editarUnidad(unidadId) {
             editUnidad(unidadId);
         },
-        
+
         eliminarUnidad(unidadId) {
             showConfirm('Eliminar Unidad', '¿Estás seguro de eliminar esta unidad? Esta acción no se puede deshacer.', () => {
                 deleteUnidad(unidadId);
             });
         },
-        
+
 
         abrirModalModalidad() {
             if (!this.carreraId) {
@@ -1019,23 +1022,23 @@ function carreraManager() {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                 }
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Actualizar el estado en el array de modalidades
-                    const modalidad = this.formData.modalidades.find(m => m.id == modalidadId);
-                    if (modalidad) {
-                        modalidad.activo = data.activo;
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Actualizar el estado en el array de modalidades
+                        const modalidad = this.formData.modalidades.find(m => m.id == modalidadId);
+                        if (modalidad) {
+                            modalidad.activo = data.activo;
+                        }
+                        showNotify('success', data.message);
+                    } else {
+                        showNotify('error', 'Error al cambiar el estado de la modalidad');
                     }
-                    showNotify('success', data.message);
-                } else {
+                })
+                .catch(error => {
+                    console.error('Error:', error);
                     showNotify('error', 'Error al cambiar el estado de la modalidad');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showNotify('error', 'Error al cambiar el estado de la modalidad');
-            });
+                });
         },
 
         eliminarModalidad(id) {
@@ -1057,11 +1060,11 @@ function carreraManager() {
                 showNotify('error', 'No hay carrera seleccionada para eliminar');
                 return;
             }
-            
+
             const nombreCarrera = this.formData.nombre || 'esta carrera';
             showConfirm(
-                'Eliminar Carrera', 
-                `¿Estás seguro de eliminar "${nombreCarrera}"? Esta acción eliminará permanentemente la carrera, sus años, unidades, modalidades y todas sus relaciones. Esta acción no se puede deshacer.`, 
+                'Eliminar Carrera',
+                `¿Estás seguro de eliminar "${nombreCarrera}"? Esta acción eliminará permanentemente la carrera, sus años, unidades, modalidades y todas sus relaciones. Esta acción no se puede deshacer.`,
                 () => {
                     this.confirmarEliminacionCarrera();
                 }
@@ -1121,20 +1124,20 @@ function modalidadManager(modalidad) {
         draggedCampoDato: null,
         horarios: [],
         guardarHorariosDebounce: null,
-        
+
         init() {
             // Inicializar tipos vacíos si no hay
             if (this.tipos.length === 0) {
                 this.tipos = [];
             }
-            
+
             // Asegurar que todos los tipos tengan un _tempId para mantener el key estable
             this.tipos.forEach((tipo, index) => {
                 if (!tipo._tempId && !tipo.id) {
                     tipo._tempId = `temp-${Date.now()}-${index}-${Math.random().toString(36).substr(2, 9)}`;
                 }
             });
-            
+
             // Si hay columnas existentes en la modalidad, usar esas como seleccionadas
             // Filtrar horas_presenciales y horas_virtuales ya que no son columnas visibles
             if (modalidad.columnas_visibles && modalidad.columnas_visibles.length > 0) {
@@ -1145,11 +1148,11 @@ function modalidadManager(modalidad) {
                 // Si no hay columnas_visibles, dejar vacío (sin columnas seleccionadas)
                 this.columnasSeleccionadas = [];
             }
-            
+
             // Inicializar horarios
             this.inicializarHorarios(modalidad.horarios_visibles);
         },
-        
+
         inicializarHorarios(horariosVisibles) {
             // Horarios fijos con sus iconos y labels
             const horariosFijos = [
@@ -1157,15 +1160,15 @@ function modalidadManager(modalidad) {
                 { nombre: 'Tarde', icono: '/images/desktop/sun.png', orden: 2 },
                 { nombre: 'Noche', icono: '/images/desktop/night.png', orden: 3 }
             ];
-            
+
             // Si hay horarios guardados, usarlos; sino, crear los fijos
             if (horariosVisibles && Array.isArray(horariosVisibles) && horariosVisibles.length > 0) {
                 // Mapear los horarios guardados a los fijos
                 this.horarios = horariosFijos.map(horarioFijo => {
-                    const horarioGuardado = horariosVisibles.find(h => 
+                    const horarioGuardado = horariosVisibles.find(h =>
                         h.nombre && h.nombre.toLowerCase() === horarioFijo.nombre.toLowerCase()
                     );
-                    
+
                     if (horarioGuardado) {
                         // Usar SOLO el campo horas directamente, sin construir nada
                         return {
@@ -1189,20 +1192,20 @@ function modalidadManager(modalidad) {
                 }));
             }
         },
-        
+
         guardarHorarios() {
             // Limpiar timeout anterior si existe
             if (this.guardarHorariosDebounce) {
                 clearTimeout(this.guardarHorariosDebounce);
             }
-            
+
             // Usar debounce para no guardar en cada blur
             this.guardarHorariosDebounce = setTimeout(async () => {
                 await this.guardarHorariosReal();
                 this.guardarHorariosDebounce = null;
             }, 500);
         },
-        
+
         async guardarHorariosReal() {
             // Guardar el string completo de horas tal como está, sin parsear
             // SOLO guardar horarios que tengan horas no vacías
@@ -1216,13 +1219,13 @@ function modalidadManager(modalidad) {
                         orden: horario.orden
                     };
                 });
-            
+
             // Guardar en la base de datos
             const formData = new FormData();
             formData.append('horarios_visibles', JSON.stringify(horariosParaGuardar));
             formData.append('_method', 'PUT');
             formData.append('from_test', '1');
-            
+
             try {
                 const response = await fetch(window.routes.admin.modalidades.update.replace(':id', this.modalidadId), {
                     method: 'POST',
@@ -1232,11 +1235,11 @@ function modalidadManager(modalidad) {
                     },
                     body: formData
                 });
-                
+
                 if (response.ok) {
                     const result = await response.json();
                     // Los horarios ya están actualizados localmente, no necesitamos actualizar nada más
-                    
+
                     // Actualizar también en el componente padre
                     const carreraManager = this.$root;
                     if (carreraManager && carreraManager.formData && carreraManager.formData.modalidades) {
@@ -1261,23 +1264,23 @@ function modalidadManager(modalidad) {
                 showNotify('error', 'Error al guardar los horarios: ' + error.message);
             }
         },
-        
+
         // Computed: mostrar primero las columnas seleccionadas en su orden, luego las no seleccionadas
         get columnasOrdenadas() {
             // Primero, obtener las columnas seleccionadas en el orden de columnasSeleccionadas
             const seleccionadas = this.columnasSeleccionadas
                 .map(campoDato => this.columnasFijas.find(c => c.campo_dato === campoDato))
                 .filter(c => c !== undefined);
-            
+
             // Luego, obtener las columnas no seleccionadas en el orden original
             const noSeleccionadas = this.columnasFijas.filter(
                 c => !this.columnasSeleccionadas.includes(c.campo_dato)
             );
-            
+
             // Combinar: primero las seleccionadas (en su orden), luego las no seleccionadas
             return [...seleccionadas, ...noSeleccionadas];
         },
-        
+
         getIconoPorDefecto(campoDato) {
             const iconos = {
                 'duracion': '/images/desktop/clock.png',
@@ -1291,7 +1294,7 @@ function modalidadManager(modalidad) {
             };
             return iconos[campoDato] || '/images/desktop/gear.png';
         },
-        
+
         // Validar selección de columnas: Teoría y Práctica es mutuamente excluyente con Teoría o Práctica
         validarSeleccionColumnas(campoDato, estaSeleccionado) {
             // Si se está seleccionando "Teoría y Práctica"
@@ -1308,7 +1311,7 @@ function modalidadManager(modalidad) {
                     c => c !== 'teoria_practica'
                 );
             }
-            
+
             // Validar máximo de 6 columnas
             if (this.columnasSeleccionadas.length > 6) {
                 showNotify('warning', 'Máximo 6 columnas permitidas');
@@ -1322,7 +1325,7 @@ function modalidadManager(modalidad) {
                 });
             }
         },
-        
+
         async sincronizarColumnas() {
             // Construir el array de columnas_visibles desde los checkboxes seleccionados
             // Filtrar horas_presenciales y horas_virtuales ya que no son columnas visibles
@@ -1337,7 +1340,7 @@ function modalidadManager(modalidad) {
                         orden: index + 1
                     };
                 });
-            
+
             // Actualizar directamente el campo columnas_visibles de la modalidad
             try {
                 const response = await fetch(window.routes.admin.modalidades.update.replace(':id', this.modalidadId), {
@@ -1353,16 +1356,16 @@ function modalidadManager(modalidad) {
                         from_test: '1'
                     })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (!response.ok) {
                     showNotify('error', 'Error al guardar columnas: ' + (data.message || 'Error desconocido'));
                     // Revertir el cambio si falla
                     await this.recargarModalidad();
                     return;
                 }
-                
+
                 // Actualizar la modalidad en el contexto padre para reflejar los cambios
                 this.actualizarModalidadEnPadre(columnasVisibles);
             } catch (error) {
@@ -1372,7 +1375,7 @@ function modalidadManager(modalidad) {
                 await this.recargarModalidad();
             }
         },
-        
+
         actualizarModalidadEnPadre(columnasVisibles) {
             // Actualizar la modalidad en el array formData.modalidades del componente padre
             const carreraManager = this.$root;
@@ -1383,12 +1386,12 @@ function modalidadManager(modalidad) {
                 }
             }
         },
-        
+
         // Funciones para drag and drop de columnas
         getSelectedIndex(campoDato) {
             return this.columnasSeleccionadas.indexOf(campoDato);
         },
-        
+
         dragStart(event, index) {
             if (index === -1) {
                 event.preventDefault();
@@ -1399,7 +1402,7 @@ function modalidadManager(modalidad) {
             event.dataTransfer.effectAllowed = 'move';
             event.dataTransfer.setData('text/plain', index.toString());
         },
-        
+
         dragOver(event, index) {
             // Solo permitir drop sobre columnas seleccionadas
             if (index === -1 || this.draggedIndex === null || this.draggedIndex === index) {
@@ -1407,20 +1410,20 @@ function modalidadManager(modalidad) {
             }
             event.preventDefault();
             event.dataTransfer.dropEffect = 'move';
-            
+
             // Agregar indicador visual
             const target = event.currentTarget;
             if (!target.classList.contains('border-blue-500')) {
                 target.classList.add('border-blue-500', 'bg-blue-900');
             }
         },
-        
+
         dragLeave(event) {
             // Limpiar estilos cuando el mouse sale del elemento
             const target = event.currentTarget;
             target.classList.remove('border-blue-500', 'bg-blue-900');
         },
-        
+
         drop(event, dropIndex) {
             // Solo permitir drop sobre columnas seleccionadas
             if (dropIndex === -1 || this.draggedIndex === null || this.draggedIndex === dropIndex) {
@@ -1428,30 +1431,30 @@ function modalidadManager(modalidad) {
                 this.draggedCampoDato = null;
                 return;
             }
-            
+
             event.preventDefault();
             event.stopPropagation();
-            
+
             // Reordenar el array columnasSeleccionadas
             const items = [...this.columnasSeleccionadas];
             const draggedItem = items[this.draggedIndex];
             items.splice(this.draggedIndex, 1);
             items.splice(dropIndex, 0, draggedItem);
-            
+
             // Actualizar el array - esto actualizará automáticamente columnasOrdenadas
             this.columnasSeleccionadas = items;
-            
+
             // Guardar automáticamente el nuevo orden
             this.sincronizarColumnas();
-            
+
             // Limpiar estilos
             const target = event.currentTarget;
             target.classList.remove('border-blue-500', 'bg-blue-900');
-            
+
             this.draggedIndex = null;
             this.draggedCampoDato = null;
         },
-        
+
         dragEnd(event) {
             // Limpiar estilos de todos los elementos
             const grid = event.currentTarget.closest('.grid');
@@ -1461,19 +1464,19 @@ function modalidadManager(modalidad) {
                     el.classList.remove('border-blue-500', 'bg-blue-900');
                 });
             }
-            
+
             this.draggedIndex = null;
             this.draggedCampoDato = null;
         },
-        
+
         isDraggingOver(index) {
             return this.draggedIndex !== null && this.draggedIndex !== index && index !== -1;
         },
-        
+
         async recargarModalidad() {
             // Obtener carreraId del contexto padre
             const carreraId = this.$root.carreraId || window.carreraSeleccionadaData?.id;
-            
+
             // Recargar los datos de la carrera completa para actualizar las columnas
             if (carreraId) {
                 try {
@@ -1483,7 +1486,7 @@ function modalidadManager(modalidad) {
                             'X-Requested-With': 'XMLHttpRequest'
                         }
                     });
-                    
+
                     if (response.ok) {
                         // Recargar la página para reflejar los cambios
                         window.location.reload();
@@ -1500,12 +1503,12 @@ function modalidadManager(modalidad) {
                 window.location.reload();
             }
         },
-        
+
         getNombreColumna(campoDato) {
             const columna = this.columnasFijas.find(c => c.campo_dato === campoDato);
             return columna ? columna.nombre : campoDato;
         },
-        
+
         agregarTipo() {
             // Generar un ID temporal único para mantener el key estable
             const tempId = `temp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -1523,47 +1526,47 @@ function modalidadManager(modalidad) {
                 mes_inicio: ''
             });
         },
-        
+
         guardarTipoDebounce: null,
-        
+
         handleTabKey(event, tipo) {
             // No hacer nada aquí, solo permitir que Tab se ejecute normalmente
             // El guardado se hará en focusout con un delay apropiado
         },
-        
+
         async guardarTipo(tipo, event) {
             if (!tipo.nombre || tipo.nombre.trim() === '') {
                 return; // No guardar si no tiene nombre
             }
-            
+
             // Si el evento es focusout y el relatedTarget es otro input de la tabla,
             // significa que se está navegando con Tab dentro de la misma fila
             // En este caso, esperar más tiempo para que Tab pueda mover el foco primero
-            const isNavigatingToAnotherInput = event && 
-                                                event.relatedTarget && 
-                                                event.relatedTarget.tagName === 'INPUT' &&
-                                                event.relatedTarget.closest('tr') === event.target.closest('tr');
-            
+            const isNavigatingToAnotherInput = event &&
+                event.relatedTarget &&
+                event.relatedTarget.tagName === 'INPUT' &&
+                event.relatedTarget.closest('tr') === event.target.closest('tr');
+
             const delay = isNavigatingToAnotherInput ? 1000 : 100;
-            
+
             // Limpiar timeout anterior si existe
             if (this.guardarTipoDebounce) {
                 clearTimeout(this.guardarTipoDebounce);
             }
-            
+
             // Usar debounce para no bloquear la navegación por Tab
             this.guardarTipoDebounce = setTimeout(async () => {
                 await this.guardarTipoReal(tipo);
                 this.guardarTipoDebounce = null;
             }, delay);
         },
-        
+
         async guardarTipoReal(tipo) {
             const formData = new FormData();
             formData.append('modalidad_id', this.modalidadId);
             formData.append('nombre', tipo.nombre);
             formData.append('from_test', '1'); // Indicar que viene de la vista test
-            
+
             // Agregar todos los campos (pueden estar vacíos)
             formData.append('duracion', tipo.duracion || '');
             formData.append('dedicacion', tipo.dedicacion || '');
@@ -1573,7 +1576,7 @@ function modalidadManager(modalidad) {
             formData.append('horas_teoria', tipo.horas_teoria || '');
             formData.append('horas_practica', tipo.horas_practica || '');
             formData.append('mes_inicio', tipo.mes_inicio || '');
-            
+
             let url, method;
             if (tipo.id) {
                 // Actualizar
@@ -1585,7 +1588,7 @@ function modalidadManager(modalidad) {
                 url = window.routes.admin.modalidades.tipos.store;
                 method = 'POST';
             }
-            
+
             try {
                 const response = await fetch(url, {
                     method: method,
@@ -1595,7 +1598,7 @@ function modalidadManager(modalidad) {
                     },
                     body: formData
                 });
-                
+
                 if (response.ok) {
                     const result = await response.json();
                     if (result.success && result.id) {
@@ -1605,7 +1608,7 @@ function modalidadManager(modalidad) {
                         // Mantener _tempId para que el key siga siendo estable
                         // El key usa: tipo._tempId || tipo.id || `temp-${tIndex}`
                         // Así que si tiene _tempId, ese será el key y no cambiará
-                        
+
                         // Asegurar que la pestaña de modalidades se mantenga activa
                         if (this.$root) {
                             this.$root.tabActiva = 'modalidades';
@@ -1631,16 +1634,16 @@ function modalidadManager(modalidad) {
                 showNotify('error', 'Error al guardar el tipo');
             }
         },
-        
+
         // Método real que hace el guardado
-        
+
         async eliminarTipo(tipoId, index) {
             if (!tipoId) {
                 // Si no tiene ID, solo eliminar de la lista
                 this.tipos.splice(index, 1);
                 return;
             }
-            
+
             showConfirm('Eliminar Tipo', '¿Estás seguro de eliminar este tipo?', () => {
                 fetch(window.routes.admin.modalidades.tipos.destroy.replace(':id', tipoId), {
                     method: 'POST',
@@ -1651,18 +1654,18 @@ function modalidadManager(modalidad) {
                     },
                     body: JSON.stringify({ _method: 'DELETE' })
                 })
-                .then(response => {
-                    if (response.ok || response.redirected) {
-                        this.tipos.splice(index, 1);
-                        showNotify('success', 'Tipo eliminado');
-                    } else {
+                    .then(response => {
+                        if (response.ok || response.redirected) {
+                            this.tipos.splice(index, 1);
+                            showNotify('success', 'Tipo eliminado');
+                        } else {
+                            showNotify('error', 'Error al eliminar el tipo');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
                         showNotify('error', 'Error al eliminar el tipo');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showNotify('error', 'Error al eliminar el tipo');
-                });
+                    });
             });
         }
     }
@@ -1698,26 +1701,26 @@ function toggleModalidadActivo(modalidadId, currentActivo) {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
         }
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Actualizar el estado en el componente Alpine
-            const carreraManager = document.querySelector('[x-data]')?._x_dataStack?.[0];
-            if (carreraManager && carreraManager.formData && carreraManager.formData.modalidades) {
-                const modalidad = carreraManager.formData.modalidades.find(m => m.id == modalidadId);
-                if (modalidad) {
-                    modalidad.activo = data.activo;
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Actualizar el estado en el componente Alpine
+                const carreraManager = document.querySelector('[x-data]')?._x_dataStack?.[0];
+                if (carreraManager && carreraManager.formData && carreraManager.formData.modalidades) {
+                    const modalidad = carreraManager.formData.modalidades.find(m => m.id == modalidadId);
+                    if (modalidad) {
+                        modalidad.activo = data.activo;
+                    }
                 }
+                showNotify('success', data.message);
+            } else {
+                showNotify('error', 'Error al cambiar el estado de la modalidad');
             }
-            showNotify('success', data.message);
-        } else {
+        })
+        .catch(error => {
+            console.error('Error:', error);
             showNotify('error', 'Error al cambiar el estado de la modalidad');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showNotify('error', 'Error al cambiar el estado de la modalidad');
-    });
+        });
 }
 
 // ========== GESTIÓN DE ORDEN DE CARRERAS ==========
@@ -1727,15 +1730,15 @@ let carrerasOrdenadas = [];
 function abrirModalOrdenCarreras() {
     const modal = document.getElementById('modalOrdenCarreras');
     const lista = document.getElementById('listaCarrerasOrden');
-    
+
     // Obtener todas las carreras ordenadas desde el selector del formulario
     const select = document.querySelector('select[name="curso_id"]');
-    
+
     if (!select) {
         showNotify('error', 'No se pudieron cargar las carreras');
         return;
     }
-    
+
     // Obtener las carreras del selector (ya vienen ordenadas por orden)
     const carrerasDelSelector = Array.from(select.options)
         .filter(option => option.value !== '')
@@ -1744,7 +1747,7 @@ function abrirModalOrdenCarreras() {
             nombre: option.textContent.trim(),
             orden: index + 1 // El selector ya muestra las carreras en orden
         }));
-    
+
     // Hacer fetch para obtener el orden real de cada carrera desde el backend
     // Necesitamos obtener los datos completos de las carreras para tener el orden correcto
     fetch(window.routes.admin.carreras.test, {
@@ -1753,47 +1756,47 @@ function abrirModalOrdenCarreras() {
             'X-Requested-With': 'XMLHttpRequest'
         }
     })
-    .then(response => response.text())
-    .then(html => {
-        // Parsear el HTML para extraer las carreras del selector (que ya vienen ordenadas)
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        const selectFromHtml = doc.querySelector('select[name="curso_id"]');
-        
-        if (selectFromHtml) {
-            carrerasOrdenadas = Array.from(selectFromHtml.options)
-                .filter(option => option.value !== '')
-                .map((option, index) => ({
-                    id: option.value,
-                    nombre: option.textContent.trim(),
-                    orden: index + 1
-                }));
-        } else {
+        .then(response => response.text())
+        .then(html => {
+            // Parsear el HTML para extraer las carreras del selector (que ya vienen ordenadas)
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const selectFromHtml = doc.querySelector('select[name="curso_id"]');
+
+            if (selectFromHtml) {
+                carrerasOrdenadas = Array.from(selectFromHtml.options)
+                    .filter(option => option.value !== '')
+                    .map((option, index) => ({
+                        id: option.value,
+                        nombre: option.textContent.trim(),
+                        orden: index + 1
+                    }));
+            } else {
+                // Fallback: usar las carreras del selector actual
+                carrerasOrdenadas = carrerasDelSelector;
+            }
+
+            renderizarListaCarreras();
+            modal.classList.remove('hidden');
+        })
+        .catch(error => {
+            console.error('Error al cargar carreras:', error);
             // Fallback: usar las carreras del selector actual
             carrerasOrdenadas = carrerasDelSelector;
-        }
-        
-        renderizarListaCarreras();
-        modal.classList.remove('hidden');
-    })
-    .catch(error => {
-        console.error('Error al cargar carreras:', error);
-        // Fallback: usar las carreras del selector actual
-        carrerasOrdenadas = carrerasDelSelector;
-        renderizarListaCarreras();
-        modal.classList.remove('hidden');
-    });
+            renderizarListaCarreras();
+            modal.classList.remove('hidden');
+        });
 }
 
 function actualizarOrdenEnFormulario() {
     // Obtener el orden actual desde el selector de la página
     const select = document.querySelector('select[name="curso_id"]');
     if (!select) return;
-    
+
     // Obtener el ID de la carrera seleccionada
     const carreraIdSeleccionada = select.value;
     if (!carreraIdSeleccionada) return;
-    
+
     // Calcular el orden basado en la posición en el selector
     const carrerasActualizadas = Array.from(select.options)
         .filter(option => option.value !== '')
@@ -1802,14 +1805,14 @@ function actualizarOrdenEnFormulario() {
             nombre: option.textContent.trim(),
             orden: index + 1
         }));
-    
+
     const carreraActual = carrerasActualizadas.find(c => c.id == carreraIdSeleccionada);
     if (!carreraActual) return;
-    
+
     // Buscar el componente Alpine.js carreraManager
     const carreraManagerElement = document.querySelector('[x-data*="carreraManager"]');
     if (!carreraManagerElement) return;
-    
+
     // Intentar diferentes formas de acceder al componente Alpine.js
     let carreraManager = null;
     if (carreraManagerElement.__x) {
@@ -1817,12 +1820,12 @@ function actualizarOrdenEnFormulario() {
     } else if (carreraManagerElement._x_dataStack && carreraManagerElement._x_dataStack[0]) {
         carreraManager = carreraManagerElement._x_dataStack[0];
     }
-    
+
     if (!carreraManager || carreraManager.carreraId != carreraIdSeleccionada) return;
-    
+
     // Actualizar el orden en el componente Alpine.js
     carreraManager.formData.orden = carreraActual.orden;
-    
+
     // También actualizar directamente el input si existe
     const inputOrden = document.querySelector('input[x-model="formData.orden"]');
     if (inputOrden) {
@@ -1835,7 +1838,7 @@ function actualizarOrdenEnFormulario() {
 function cerrarModalOrden() {
     const modal = document.getElementById('modalOrdenCarreras');
     modal.classList.add('hidden');
-    
+
     // Actualizar el campo orden en el formulario
     actualizarOrdenEnFormulario();
 }
@@ -1843,7 +1846,7 @@ function cerrarModalOrden() {
 function renderizarListaCarreras() {
     const lista = document.getElementById('listaCarrerasOrden');
     lista.innerHTML = '';
-    
+
     carrerasOrdenadas.forEach((carrera, index) => {
         const item = document.createElement('div');
         item.className = 'flex items-center justify-between p-3 bg-gray-700 rounded-md hover:bg-gray-600 transition-colors';
@@ -1877,7 +1880,7 @@ function moverCarreraOrden(carreraId, direccion) {
     // Deshabilitar todos los botones temporalmente
     const botones = document.querySelectorAll('.mover-orden-btn');
     botones.forEach(btn => btn.disabled = true);
-    
+
     fetch('/admin/carreras/mover', {
         method: 'POST',
         headers: {
@@ -1889,73 +1892,73 @@ function moverCarreraOrden(carreraId, direccion) {
             direccion: direccion
         })
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Recargar la lista desde el servidor para obtener el orden actualizado
-            // Esto asegura que tenemos el orden correcto después del cambio
-            fetch(window.routes.admin.carreras.test, {
-                headers: {
-                    'Accept': 'text/html',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => response.text())
-            .then(html => {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const selectFromHtml = doc.querySelector('select[name="curso_id"]');
-                
-                if (selectFromHtml) {
-                    carrerasOrdenadas = Array.from(selectFromHtml.options)
-                        .filter(option => option.value !== '')
-                        .map((option, index) => ({
-                            id: option.value,
-                            nombre: option.textContent.trim(),
-                            orden: index + 1
-                        }));
-                }
-                
-                // Actualizar el selector principal si existe
-                const selectPrincipal = document.querySelector('select[name="curso_id"]');
-                if (selectPrincipal) {
-                    // Reordenar las opciones del selector según el nuevo orden
-                    carrerasOrdenadas.forEach((carrera, index) => {
-                        const option = selectPrincipal.querySelector(`option[value="${carrera.id}"]`);
-                        if (option && option.parentNode) {
-                            // Mover la opción a su nueva posición
-                            selectPrincipal.insertBefore(option, selectPrincipal.children[index + 1] || null);
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Recargar la lista desde el servidor para obtener el orden actualizado
+                // Esto asegura que tenemos el orden correcto después del cambio
+                fetch(window.routes.admin.carreras.test, {
+                    headers: {
+                        'Accept': 'text/html',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                    .then(response => response.text())
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const selectFromHtml = doc.querySelector('select[name="curso_id"]');
+
+                        if (selectFromHtml) {
+                            carrerasOrdenadas = Array.from(selectFromHtml.options)
+                                .filter(option => option.value !== '')
+                                .map((option, index) => ({
+                                    id: option.value,
+                                    nombre: option.textContent.trim(),
+                                    orden: index + 1
+                                }));
                         }
+
+                        // Actualizar el selector principal si existe
+                        const selectPrincipal = document.querySelector('select[name="curso_id"]');
+                        if (selectPrincipal) {
+                            // Reordenar las opciones del selector según el nuevo orden
+                            carrerasOrdenadas.forEach((carrera, index) => {
+                                const option = selectPrincipal.querySelector(`option[value="${carrera.id}"]`);
+                                if (option && option.parentNode) {
+                                    // Mover la opción a su nueva posición
+                                    selectPrincipal.insertBefore(option, selectPrincipal.children[index + 1] || null);
+                                }
+                            });
+                        }
+
+                        // Re-renderizar la lista
+                        renderizarListaCarreras();
+
+                        // Actualizar el campo orden en el formulario inmediatamente
+                        setTimeout(() => {
+                            actualizarOrdenEnFormulario();
+                        }, 100);
+                    })
+                    .catch(error => {
+                        console.error('Error al recargar carreras:', error);
+                        // Si falla, al menos re-renderizar con los datos actuales
+                        renderizarListaCarreras();
                     });
-                }
-                
-                // Re-renderizar la lista
-                renderizarListaCarreras();
-                
-                // Actualizar el campo orden en el formulario inmediatamente
-                setTimeout(() => {
-                    actualizarOrdenEnFormulario();
-                }, 100);
-            })
-            .catch(error => {
-                console.error('Error al recargar carreras:', error);
-                // Si falla, al menos re-renderizar con los datos actuales
-                renderizarListaCarreras();
-            });
-            
-            showNotify('success', 'Orden actualizado correctamente');
-        } else {
-            showNotify('error', data.message || 'Error al mover la carrera');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showNotify('error', 'Error al mover la carrera');
-    })
-    .finally(() => {
-        // Rehabilitar botones
-        botones.forEach(btn => btn.disabled = false);
-    });
+
+                showNotify('success', 'Orden actualizado correctamente');
+            } else {
+                showNotify('error', data.message || 'Error al mover la carrera');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotify('error', 'Error al mover la carrera');
+        })
+        .finally(() => {
+            // Rehabilitar botones
+            botones.forEach(btn => btn.disabled = false);
+        });
 }
 
 window.toggleModalidadActivo = toggleModalidadActivo;

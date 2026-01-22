@@ -16,9 +16,11 @@ Route::get('/somos-itca', [App\Http\Controllers\WelcomeController::class, 'somos
 // Carrera individual (por id por ahora)
 Route::get('/carreras/{curso}', [CursoController::class, 'show'])->name('carreras.show');
 // Inscripción/Compra
+Route::get('/inscripcion', [App\Http\Controllers\WelcomeController::class, 'retomarInscripcion'])->name('inscripcion.retomar');
 Route::get('/inscripcion/{curso}', [App\Http\Controllers\WelcomeController::class, 'inscripcion'])->name('inscripcion');
 Route::get('/api/inscripcion/{curso}/cursadas', [App\Http\Controllers\WelcomeController::class, 'getCursadas'])->name('api.inscripcion.cursadas');
 Route::post('/leads', [App\Http\Controllers\WelcomeController::class, 'storeLead'])->name('leads.store');
+Route::get('/leads/{id}/data', [App\Http\Controllers\WelcomeController::class, 'getLeadData'])->name('leads.data'); // Recuperar datos del lead
 Route::post('/leads/{id}/terms', [App\Http\Controllers\WelcomeController::class, 'updateLeadTerms'])->name('leads.terms.update');
 Route::post('/buscar-descuento', [App\Http\Controllers\CursoController::class, 'buscarDescuento'])->name('buscar.descuento')->middleware('web');
 
