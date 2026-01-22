@@ -4,6 +4,11 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CursoController;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\DevAccessController;
+
+// Rutas de Acceso Dev (Protección del sitio en desarrollo)
+Route::get('/dev-login', [DevAccessController::class, 'showLoginForm'])->name('dev-login');
+Route::post('/dev-login', [DevAccessController::class, 'login'])->name('dev-login.store');
 
 Route::get('/', [App\Http\Controllers\WelcomeController::class, 'index'])->name('home');
 Route::get('/carreras', [App\Http\Controllers\WelcomeController::class, 'carreras'])->name('carreras');
