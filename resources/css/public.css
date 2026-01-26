@@ -8964,7 +8964,6 @@ section h2 {
     font-size: clamp(30px, calc(30px + (100vw - 1100px) * 0.0317), 56px);
     font-weight: 400;
     color: white;
-    letter-spacing: 0.02em;
     line-height: 1.1;
 }
 
