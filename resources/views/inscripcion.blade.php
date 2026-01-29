@@ -700,7 +700,7 @@
                                                         <span class="cursada-formulario-texto">Completá <span class="cursada-formulario-texto-semibold">tus datos</span> para poder ver los valores:</span>
                                                         <a href="#" class="cursada-editar-form-link" id="editar-form-{{ $cursadaId }}" data-cursada-id="{{ $cursadaId }}" style="display: none; margin-left: 10px; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: clamp(11px, calc(11px + (100vw - 1100px) * ((14 - 11) / (1920 - 1100))), 14px); text-decoration: underline; color: #65E09C; cursor: pointer; transition: opacity 0.2s, color 0.2s; text-align: left; flex-shrink: 0;">(Editar datos)</a>
                                                     </div>
-                                                    <form class="cursada-formulario" id="formulario-{{ $cursadaId }}">
+                                                    <form class="cursada-formulario" id="formulario-{{ $cursadaId }}" onsubmit="event.preventDefault(); return false;">
                                                         <div class="cursada-formulario-grid">
                                                             <div class="cursada-formulario-columna-izq">
                                                                 <div class="cursada-formulario-campo">
@@ -808,7 +808,7 @@
                                                                 </div>
                                                                 <div class="cursada-formulario-boton-continuar-container">
                                                                     <img src="/images/mobile/arrow-insc.png" alt="Arrow" class="cursada-arrow-insc">
-                                                                    <button type="button" class="cursada-btn-continuar" data-cursada-id="{{ $cursadaId }}" tabindex="6">Continuar</button>
+                                                                    <button type="button" class="cursada-btn-continuar" data-cursada-id="{{ $cursadaId }}" tabindex="6" onclick="event.preventDefault();">Continuar</button>
                                                                 </div>
                                                             </div>
                                                         </div>

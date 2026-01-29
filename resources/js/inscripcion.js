@@ -1,6 +1,43 @@
 // Funcionalidad de sedes - Acordeón
 // Optimización: ejecutar inmediatamente si el DOM ya está listo
 (function () {
+    // DEBUGGING: Track page loads and reloads
+    const pageLoadTime = new Date().toISOString();
+    const isReload = performance.navigation.type === 1;
+    const isBfcache = performance.getEntriesByType('navigation')[0]?.type === 'back_forward';
+
+    console.log('=== INSCRIPCION.JS INIT ===');
+    console.log('Timestamp:', pageLoadTime);
+    console.log('Is Reload:', isReload);
+    console.log('Is Bfcache:', isBfcache);
+    console.log('Performance navigation type:', performance.navigation.type);
+
+    // Global error handler to catch any JS errors that might cause issues
+    window.addEventListener('error', function (e) {
+        console.error('GLOBAL ERROR DETECTED:', e.message, e.filename, e.lineno, e.colno);
+        console.error('Error object:', e.error);
+        // Don't let errors propagate and potentially cause reloads
+        return true;
+    });
+
+    // Catch unhandled promise rejections
+    window.addEventListener('unhandledrejection', function (e) {
+        console.error('UNHANDLED PROMISE REJECTION:', e.reason);
+        e.preventDefault(); // Prevent default handling
+    });
+
+    // Track navigation events for debugging
+    window.addEventListener('beforeunload', function (e) {
+        console.log('BEFOREUNLOAD event triggered');
+        const panelVisible = document.querySelector('.cursada-valores-panel.panel-visible');
+        if (panelVisible) {
+            console.log('Panel abierto al salir:', panelVisible.id);
+        }
+    });
+
+    window.addEventListener('unload', function (e) {
+        console.log('UNLOAD event triggered');
+    });
     // Variables globales para el scope de la función
     let cursadasContainer = null;
     let loadingIndicator = null;
@@ -459,10 +496,20 @@
 
     // Función para verificar si hay datos completos guardados y restaurar el estado
     // Definida temprano para que esté disponible cuando se necesite
+    let restaurandoEstado = false; // Flag to prevent concurrent executions
+
     function verificarYRestaurarEstadoCompletado() {
         try {
+            // Prevent concurrent executions
+            if (restaurandoEstado) {
+                console.log('verificarYRestaurarEstadoCompletado ya en ejecución, saltando...');
+                return false;
+            }
+            restaurandoEstado = true;
+
             const datosGuardados = sessionStorage.getItem(STORAGE_KEY);
             if (!datosGuardados) {
+                restaurandoEstado = false;
                 return false;
             }
 
@@ -473,7 +520,16 @@
                 datos.correo && datos.telefono;
 
             if (!formularioCompleto) {
+                restaurandoEstado = false;
                 return false;
+            }
+
+            // CRITICAL: Check if there's a panel currently open - log it
+            const panelAbierto = document.querySelector('.cursada-valores-panel.panel-visible');
+            const cursadaIdAbierta = panelAbierto ? panelAbierto.id.replace('panel-', '') : null;
+
+            if (cursadaIdAbierta) {
+                console.log('Restaurando estado con panel abierto:', cursadaIdAbierta);
             }
 
             // Si el formulario está completo, restaurar el estado
@@ -496,6 +552,7 @@
             }
 
             if (todosLosFormularios.length === 0) {
+                restaurandoEstado = false;
                 return false;
             }
 
@@ -534,9 +591,11 @@
                 }, 0);
             });
 
+            restaurandoEstado = false;
             return true;
         } catch (error) {
             console.error('Error restaurando estado:', error);
+            restaurandoEstado = false;
             return false;
         }
     }
@@ -3808,6 +3867,18 @@
                 setupCampoTexto(apellido, errorApellido, 'Este campo es obligatorio');
                 setupCampoValidado(dni, errorDni, validarDni, 'El DNI debe tener entre 7 y 8 dígitos');
 
+                // Prevenir envío con Enter en todos los campos
+                [nombre, apellido, dni, correo, telefono].forEach(input => {
+                    if (input) {
+                        input.addEventListener('keydown', function (e) {
+                            if (e.key === 'Enter') {
+                                e.preventDefault();
+                                return false;
+                            }
+                        });
+                    }
+                });
+
                 // Configurar botón editar form
                 const btnEditar = document.getElementById('editar-form-' + cursadaId);
                 if (btnEditar) {
@@ -3919,10 +3990,16 @@
                 boton.classList.remove('activo');
 
                 boton.addEventListener('click', function (e) {
+                    // Prevent default inmediatemente y log
                     e.preventDefault();
                     e.stopPropagation();
+                    console.log('Click en botón continuar procesado por JS');
 
-                    if (!this.classList.contains('activo')) return;
+                    if (!this.classList.contains('activo') || this.disabled) {
+                        console.log('Click ignorado: inactivo o disabled');
+                        return;
+                    }
+                    this.disabled = true; // Disable immediately to prevent double clicks
 
                     const cursadaId = this.getAttribute('data-cursada-id');
 
@@ -4026,10 +4103,37 @@
                         })
                         .catch(error => {
                             console.error('Error background lead store:', error);
-                            // No molestamos al usuario a menos que sea crítico, 
-                            // pero si falla, al menos el lead no se guardó en el servidor.
-                            // Podríamos re-habilitar el form si es un error fatal, pero
-                            // mejor dejar que el usuario intente pagar; mp/create_preference fallará si no hay lead.
+                            // Revertir UI optimista si hay error
+                            if (formulario) {
+                                formulario.querySelectorAll('input, select').forEach(input => {
+                                    input.removeAttribute('readonly');
+                                    input.removeAttribute('disabled');
+                                    input.style.opacity = '1';
+                                    input.style.pointerEvents = 'auto';
+                                });
+                            }
+                            if (boton) {
+                                boton.disabled = false;
+                                boton.classList.add('activo');
+                                boton.style.opacity = '1';
+                            }
+                            const btnEditar = document.getElementById('editar-form-' + cursadaId);
+                            if (btnEditar) btnEditar.style.display = 'none';
+
+                            // Log detallado del error
+                            console.error('Error type:', error.name);
+                            console.error('Error message:', error.message);
+                            console.error('Error stack:', error.stack);
+
+                            // Mensaje de error más específico
+                            let errorMsg = 'Hubo un error al guardar tus datos. Por favor intentá nuevamente.';
+                            if (error.message && error.message.includes('JSON')) {
+                                errorMsg += ' (Error de formato en respuesta del servidor)';
+                            } else if (error.message && error.message.includes('network')) {
+                                errorMsg = 'Error de conexión. Verificá tu internet e intentá nuevamente.';
+                            }
+
+                            alert(errorMsg);
                         });
                 });
             });
@@ -4500,6 +4604,57 @@
             console.error('No se encontró el .cursada-header dentro del elemento');
         }
     }
+
+    // Guardar estado de paneles abiertos antes de navegar
+    const PANEL_STATE_KEY = 'inscripcion_panel_abierto';
+
+    // Detectar cuando la página se restaura desde bfcache (botón atrás del navegador)
+    window.addEventListener('pageshow', function (event) {
+        if (event.persisted) {
+            // La página fue restaurada desde bfcache
+            console.log('Página restaurada desde bfcache - preservando estado de paneles');
+
+            // Restaurar panel que estaba abierto
+            try {
+                const panelAbierto = sessionStorage.getItem(PANEL_STATE_KEY);
+                if (panelAbierto) {
+                    setTimeout(() => {
+                        const panel = document.getElementById('panel-' + panelAbierto);
+                        const boton = document.querySelector('.cursada-btn-ver-valores[data-cursada-id="' + panelAbierto + '"]');
+
+                        if (panel && boton) {
+                            panel.classList.remove('panel-hidden');
+                            panel.classList.add('panel-visible');
+                            boton.classList.add('panel-desplegado');
+
+                            const infoTexto = document.getElementById('info-' + panelAbierto);
+                            if (infoTexto) {
+                                infoTexto.classList.remove('panel-hidden');
+                                infoTexto.classList.add('panel-visible');
+                            }
+                        }
+                    }, 100);
+                }
+            } catch (e) {
+                console.error('Error restaurando panel:', e);
+            }
+        }
+    });
+
+    // Guardar qué panel está abierto antes de navegar
+    window.addEventListener('beforeunload', function () {
+        try {
+            const panelVisible = document.querySelector('.cursada-valores-panel.panel-visible');
+            if (panelVisible) {
+                const panelId = panelVisible.id.replace('panel-', '');
+                sessionStorage.setItem(PANEL_STATE_KEY, panelId);
+            } else {
+                sessionStorage.removeItem(PANEL_STATE_KEY);
+            }
+        } catch (e) {
+            console.error('Error guardando estado del panel:', e);
+        }
+    });
 
     // Iniciar chequeo cuando el documento esté listo
     if (document.readyState === 'complete') {

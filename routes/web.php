@@ -10,6 +10,10 @@ use App\Http\Controllers\DevAccessController;
 Route::get('/dev-login', [DevAccessController::class, 'showLoginForm'])->name('dev-login');
 Route::post('/dev-login', [DevAccessController::class, 'login'])->name('dev-login.store');
 
+// Rutas de Acceso Dev (Protección del sitio en desarrollo)
+Route::get('/dev-login', [DevAccessController::class, 'showLoginForm'])->name('dev-login');
+Route::post('/dev-login', [DevAccessController::class, 'login'])->name('dev-login.store');
+
 Route::get('/', [App\Http\Controllers\WelcomeController::class, 'index'])->name('home');
 Route::get('/carreras', [App\Http\Controllers\WelcomeController::class, 'carreras'])->name('carreras');
 Route::get('/somos-itca', [App\Http\Controllers\WelcomeController::class, 'somosItca'])->name('somos-itca');
@@ -23,9 +27,14 @@ Route::post('/leads', [App\Http\Controllers\WelcomeController::class, 'storeLead
 Route::get('/leads/{id}/data', [App\Http\Controllers\WelcomeController::class, 'getLeadData'])->name('leads.data'); // Recuperar datos del lead
 Route::post('/leads/{id}/terms', [App\Http\Controllers\WelcomeController::class, 'updateLeadTerms'])->name('leads.terms.update');
 Route::post('/buscar-descuento', [App\Http\Controllers\CursoController::class, 'buscarDescuento'])->name('buscar.descuento')->middleware('web');
+// Recuperar carrito abandonado
+Route::get('/recuperar/{token}', [App\Http\Controllers\AbandonedCartController::class, 'recover'])->name('abandoned.recover');
 
 
 Route::middleware('auth')->group(function () {
+    // Mail Preview (Solo logueados)
+    Route::get('/mail-preview/abandoned-cart', [App\Http\Controllers\MailPreviewController::class, 'previewAbandonedCart'])->name('mail.preview.abandoned-cart');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -196,7 +205,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/leads/config', [App\Http\Controllers\LeadController::class, 'config'])->name('admin.leads.config');
         Route::post('/leads/config', [App\Http\Controllers\LeadController::class, 'updateConfig'])->name('admin.leads.config.update');
         Route::get('/leads/export', [App\Http\Controllers\LeadController::class, 'export'])->name('admin.leads.export');
-
+        
+        // Rutas de mail templates
+        Route::get('/leads/mail-templates', [App\Http\Controllers\CareerMailTemplateController::class, 'index'])->name('admin.leads.mail-templates');
+        Route::get('/leads/mail-templates/{id}', [App\Http\Controllers\CareerMailTemplateController::class, 'show'])->name('admin.leads.mail-templates.show');
+        Route::post('/leads/mail-templates/test-send', [App\Http\Controllers\CareerMailTemplateController::class, 'sendTest'])->name('admin.leads.mail-templates.send-test');
+        Route::post('/leads/mail-templates/{id}', [App\Http\Controllers\CareerMailTemplateController::class, 'update'])->name('admin.leads.mail-templates.update');
+        
         // Rutas de inscriptos
         Route::get('/inscriptos', [App\Http\Controllers\InscripcionController::class, 'index'])->name('admin.inscriptos');
     });

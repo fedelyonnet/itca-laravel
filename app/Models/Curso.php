@@ -60,4 +60,6 @@ class Curso extends Model
     {
         return $this->hasMany(Modalidad::class)->orderBy('orden');
     }
+
+
 }

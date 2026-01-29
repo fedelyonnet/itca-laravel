@@ -26,6 +26,7 @@
     $leadsRoutes = [
         'admin.leads',
         'admin.leads.config',
+        'admin.leads.mail-templates',
     ];
     $isActiveLeads = request()->routeIs($leadsRoutes);
     
@@ -253,6 +254,12 @@
                    class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
                    role="menuitem">
                     Configuración Leads
+                </a>
+
+                <a href="{{ route('admin.leads.mail-templates') }}" 
+                   class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
+                   role="menuitem">
+                    Mails de Seguimiento
                 </a>
             </div>
         </div>

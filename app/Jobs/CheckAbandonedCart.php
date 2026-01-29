@@ -46,6 +46,28 @@ class CheckAbandonedCart implements ShouldQueue
         // Verificamos si la cursada aún tiene vacantes antes de enviar (opcional, pero recomendado)
         // Por ahora enviamos siempre y la validación se hace al clickear el link según lo hablado.
 
-        Mail::to($this->lead->correo)->send(new AbandonedCartMail($this->lead, $this->cursada));
+        // Check if there is already an abandoned cart for this lead and cursada that is pending or sent
+        $existingCart = \App\Models\AbandonedCart::where('lead_id', $this->lead->id)
+            ->where('cursada_id', $this->cursada->ID_Curso)
+            ->whereIn('estado', ['pendiente', 'enviado'])
+            ->first();
+
+        if ($existingCart) {
+            $token = $existingCart->token;
+        } else {
+             // Generate unique token
+            $token = \Illuminate\Support\Str::random(60);
+             
+            // Create Abandoned Cart record
+            \App\Models\AbandonedCart::create([
+                'lead_id' => $this->lead->id,
+                'cursada_id' => $this->cursada->ID_Curso,
+                'token' => $token,
+                'estado' => 'enviado',
+                'enviado_at' => now(),
+            ]);
+        }
+
+        Mail::to($this->lead->correo)->send(new AbandonedCartMail($this->lead, $this->cursada, $token));
     }
 }

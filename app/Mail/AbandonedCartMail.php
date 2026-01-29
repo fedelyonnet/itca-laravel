@@ -18,14 +18,16 @@ class AbandonedCartMail extends Mailable
 
     public $lead;
     public $cursada;
+    public $token;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(Lead $lead, Cursada $cursada)
+    public function __construct(Lead $lead, Cursada $cursada, string $token)
     {
         $this->lead = $lead;
         $this->cursada = $cursada;
+        $this->token = $token;
     }
 
     /**
@@ -41,10 +43,23 @@ class AbandonedCartMail extends Mailable
     /**
      * Get the message content definition.
      */
+    /**
+     * Get the message content definition.
+     */
     public function content(): Content
     {
+        // Resolve curso, template and modalid tipo
+        $curso = $this->cursada->resolveCurso();
+        $mailTemplate = $curso ? \App\Models\CareerMailTemplate::where('curso_id', $curso->id)->first() : null;
+        $modalidadTipo = $this->cursada->getModalidadTipo();
+
         return new Content(
             view: 'emails.abandoned_cart',
+            with: [
+                'mailTemplate' => $mailTemplate,
+                'curso' => $curso,
+                'modalidadTipo' => $modalidadTipo,
+            ],
         );
     }
 
