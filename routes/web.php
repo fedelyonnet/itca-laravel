@@ -214,6 +214,18 @@ Route::middleware('auth')->group(function () {
         
         // Rutas de inscriptos
         Route::get('/inscriptos', [App\Http\Controllers\InscripcionController::class, 'index'])->name('admin.inscriptos');
+        
+        // Rutas de Somos ITCA CMS
+        Route::get('/somos-itca', [App\Http\Controllers\SomosItcaController::class, 'index'])->name('admin.somos-itca');
+        Route::put('/somos-itca/content', [App\Http\Controllers\SomosItcaController::class, 'updateContent'])->name('admin.somos-itca.update-content');
+        
+        // Instalaciones
+        Route::post('/somos-itca/instalaciones', [App\Http\Controllers\SomosItcaController::class, 'storeInstalacion'])->name('admin.somos-itca.instalaciones.store');
+        Route::delete('/somos-itca/instalaciones/{id}', [App\Http\Controllers\SomosItcaController::class, 'destroyInstalacion'])->name('admin.somos-itca.instalaciones.destroy');
+
+        // Formadores
+        Route::post('/somos-itca/formadores', [App\Http\Controllers\SomosItcaController::class, 'storeFormador'])->name('admin.somos-itca.formadores.store');
+        Route::delete('/somos-itca/formadores/{id}', [App\Http\Controllers\SomosItcaController::class, 'destroyFormador'])->name('admin.somos-itca.formadores.destroy');
     });
 });
 

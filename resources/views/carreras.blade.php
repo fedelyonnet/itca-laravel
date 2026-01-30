@@ -51,7 +51,7 @@
                 <!-- Desktop Navigation -->
                 <ul class="nav-links">
                     <li>
-                        <a href="{{ url('/') }}" class="nav-link">
+                        <a href="{{ route('somos-itca') }}" class="nav-link">
                             Somos ITCA
                         </a>
                     </li>

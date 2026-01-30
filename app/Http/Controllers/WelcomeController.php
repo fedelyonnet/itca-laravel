@@ -15,6 +15,9 @@ use App\Models\Noticia;
 use App\Models\Cursada;
 use App\Models\Lead;
 use App\Models\PromoBadge;
+use App\Models\SomosItcaContent;
+use App\Models\Instalacion;
+use App\Models\Formador;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -142,6 +145,11 @@ class WelcomeController extends Controller
         // Obtener Sticky Bar
         $stickyBar = StickyBar::first();
         
+        // Obtener contenido gestionable de la página
+        $content = SomosItcaContent::with(['instalaciones', 'formadores'])->first();
+        $instalaciones = $content ? $content->instalaciones : collect();
+        $formadores = $content ? $content->formadores : collect();
+
         // Obtener partners ordenados
         $partners = Partner::ordered()->get();
         
@@ -155,7 +163,7 @@ class WelcomeController extends Controller
         $contactosInfo = \App\Models\DatoContacto::info()->get();
         $contactosSocial = \App\Models\DatoContacto::social()->get();
         
-        return view('somos-itca', compact('stickyBar', 'partners', 'sedes', 'contactosInfo', 'contactosSocial'));
+        return view('somos-itca', compact('stickyBar', 'partners', 'sedes', 'contactosInfo', 'contactosSocial', 'content', 'instalaciones', 'formadores'));
     }
 
     public function retomarInscripcion(Request $request)

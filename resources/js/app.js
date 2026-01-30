@@ -1994,6 +1994,89 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     initFotosSwiper();
+    initFormadoresSwiper();
+
+    // Inicializar carrusel de Formadores (similar a Fotos)
+    function initFormadoresSwiper(retryCount = 0) {
+        const formadoresSwiperElement = document.querySelector('.formadores-section .fotos-carousel-section .fotos-swiper');
+        if (!formadoresSwiperElement) {
+            if (retryCount < 20) {
+                return setTimeout(() => initFormadoresSwiper(retryCount + 1), 100);
+            }
+            return;
+        }
+        if (typeof window === 'undefined' || typeof window.Swiper === 'undefined') {
+            if (retryCount < 20) {
+                return setTimeout(() => initFormadoresSwiper(retryCount + 1), 100);
+            }
+            return;
+        }
+
+        const formadoresSwiper = new window.Swiper('.formadores-section .fotos-carousel-section .fotos-swiper', {
+            loop: false,
+            // Mobile (default)
+            slidesPerView: 1.2,
+            centeredSlides: true,
+            spaceBetween: 15,
+
+            speed: 600,
+            breakpoints: {
+                600: {
+                    slidesPerView: 'auto',
+                    centeredSlides: false,
+                    slidesPerGroup: 1,
+                    spaceBetween: 15,
+                },
+                1100: {
+                    slidesPerView: 3,
+                    centeredSlides: false,
+                    slidesPerGroup: 1,
+                    spaceBetween: 20,
+                },
+                1366: {
+                    slidesPerView: 4,
+                    centeredSlides: false,
+                    slidesPerGroup: 1,
+                    spaceBetween: 20,
+                },
+                1920: {
+                    slidesPerView: 4,
+                    centeredSlides: false,
+                    slidesPerGroup: 1,
+                    spaceBetween: 20,
+                }
+            },
+            navigation: {
+                nextEl: '.formadores-controls .fotos-carousel-btn-next',
+                prevEl: '.formadores-controls .fotos-carousel-btn-prev',
+                disabledClass: 'swiper-button-disabled',
+            },
+            pagination: {
+                el: '.formadores-pagination',
+                type: 'bullets',
+                clickable: true,
+            },
+            touchRatio: 1,
+            touchAngle: 45,
+            grabCursor: true,
+            effect: 'slide',
+            watchSlidesProgress: true,
+            observer: true,
+            observeParents: true,
+
+            on: {
+                init: function () {
+                    updateFotosNavigationButtons(this);
+                },
+                slideChange: function () {
+                    updateFotosNavigationButtons(this);
+                },
+                resize: function () {
+                    updateFotosNavigationButtons(this);
+                }
+            }
+        });
+    }
 });
 
 // ========================================

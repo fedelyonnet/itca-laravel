@@ -77,6 +77,432 @@
 
     <!-- Main Content -->
         <main>
+            <!-- Main / Intro Section -->
+            <section class="main-section" id="main">
+                <div class="container">
+                    <div class="main-content">
+                        <h1 class="main-title">
+                            <span class="main-title-line-1">Tu pasión por la mecánica,</span>
+                            <span class="main-title-line-2">
+                                <span class="highlight">Nuestro compromiso</span> con tu futuro
+                            </span>
+                        </h1>
+                        
+                        <div class="main-image-container">
+                            <img src="/images/desktop/somos-itca/d1.png" alt="" class="deco-1">
+                            <img src="/images/desktop/somos-itca/d2.png" alt="" class="deco-2">
+                            <img src="/images/desktop/somos-itca/hero-somos.png" alt="Somos ITCA" class="main-hero-image">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Main Content Section -->
+            <section class="main-content-section">
+                <div class="container">
+                    <div class="main-content">
+                        <div class="info-dropdown">
+                            <div class="info-dropdown-header">
+                                <span class="info-dropdown-title">¿Qué es ITCA?</span>
+                                <img src="/images/desktop/chevron.png" alt="Abrir" class="info-dropdown-chevron">
+                            </div>
+                            <div class="info-dropdown-content">
+                                <div class="que-es-itca-grid">
+                                    <div class="video-col relative group cursor-pointer video-container-click">
+                                        @if(isset($content) && $content->video_url)
+                                            <video src="{{ asset('storage/' . $content->video_url) }}" class="itca-video" playsinline></video>
+                                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none play-overlay">
+                                                <img src="/images/desktop/play.png" alt="Play" class="w-16 h-16 opacity-80 group-hover:opacity-100 transition-opacity">
+                                            </div>
+                                        @else
+                                            <div class="video-placeholder-empty">Video no disponible</div>
+                                        @endif
+                                    </div>
+                                    <div class="text-col">
+                                        <p class="itca-text">
+                                            <strong>ITCA (Instituto Tecnológico de Capacitación Automotriz)</strong> es el lugar donde tu pasión por los fierros se convierte en una profesión real.
+                                        </p>
+                                        <p class="itca-text">
+                                            Es una <strong>institución educativa especializada en mecánica, electrónica y tecnologías del automóvil y la moto</strong>, pensada para jóvenes que quieren aprender haciendo, con clases prácticas, equipamiento real y una visión enfocada en salida laboral inmediata.
+                                        </p>
+                                        <p class="itca-text">
+                                            Vas a aprender mecánica con autos y motos reales, con docentes expertos y talleres equipados, preparándote para trabajar en talleres, abrir tu propio emprendimiento o integrarte fácilmente al mercado automotriz.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-dropdown">
+                            <div class="info-dropdown-header">
+                                <span class="info-dropdown-title">¿Por qué elegirnos?</span>
+                                <img src="/images/desktop/chevron.png" alt="Abrir" class="info-dropdown-chevron">
+                            </div>
+                            <div class="info-dropdown-content">
+                                <div class="por-que-grid">
+                                    <!-- Image Column -->
+                                    <div class="por-que-img-col">
+                                        @if(isset($content) && $content->img_por_que)
+                                            <img src="{{ asset('storage/' . $content->img_por_que) }}" alt="Por qué elegirnos" class="por-que-main-img">
+                                        @else
+                                            <!-- Placeholder or hidden if empty -->
+                                            <div class="por-que-img-placeholder">Sin imagen</div>
+                                        @endif
+                                    </div>
+
+                                    <!-- Text Column -->
+                                    <div class="por-que-text-col">
+                                        <ul class="por-que-list">
+                                            <li class="por-que-item">
+                                                <img src="/images/desktop/somos-itca/ico1.png" alt="Icono" class="por-que-icon">
+                                                <span class="por-que-text">Práctica real desde el primer día.</span>
+                                            </li>
+                                            <li class="por-que-item">
+                                                <img src="/images/desktop/somos-itca/ico2.png" alt="Icono" class="por-que-icon">
+                                                <span class="por-que-text">Pasión que se convierte en profesión.</span>
+                                            </li>
+                                            <li class="por-que-item">
+                                                <img src="/images/desktop/somos-itca/ico3.png" alt="Icono" class="por-que-icon">
+                                                <span class="por-que-text">Salida laboral concreta.</span>
+                                            </li>
+                                            <li class="por-que-item">
+                                                <img src="/images/desktop/somos-itca/ico4.png" alt="Icono" class="por-que-icon">
+                                                <span class="por-que-text">Reconocimiento de la industria.</span>
+                                            </li>
+                                            <li class="por-que-item">
+                                                <img src="/images/desktop/somos-itca/ico5.png" alt="Icono" class="por-que-icon">
+                                                <span class="por-que-text">Flexibilidad para estudiar: presencial y semipresencial.</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-dropdown instalaciones-dropdown">
+                            <div class="info-dropdown-header">
+                                <span class="info-dropdown-title">Instalaciones</span>
+                                <img src="/images/desktop/chevron.png" alt="Abrir" class="info-dropdown-chevron">
+                            </div>
+                            <div class="info-dropdown-content">
+                                <p class="instalaciones-text">
+                                    En ITCA, cada aula y cada taller están pensados para que te sumerjas en la mecánica desde el primer día.<br>
+                                    No hay teoría sin práctica: vas a tocar, desarmar y construir sobre lo que realmente usan los talleres de hoy.
+                                </p>
+
+                                <div class="fotos-desktop">
+                                    <div class="fotos-carousel-section">
+                                        <div class="swiper fotos-swiper">
+                                            <div class="swiper-wrapper">
+                                                @forelse($instalaciones as $inst)
+                                                    <div class="swiper-slide fotos-carousel-slide">
+                                                        <img src="{{ asset('storage/' . $inst->image_path) }}" 
+                                                             alt="Instalación ITCA" 
+                                                             class="fotos-slide-img" />
+                                                    </div>
+                                                @empty
+                                                    <p style="color: #999; font-style: italic; text-align: center; padding: 20px;">
+                                                        Próximamente imágenes de nuestras instalaciones.
+                                                    </p>
+                                                @endforelse
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Controles sobre las slides (fuera del swiper para evitar recorte) -->
+                                        <div class="fotos-controls-wrapper">
+                                            <button class="fotos-carousel-btn fotos-carousel-btn-prev">
+                                                <img src="/images/desktop/arrow-b.svg" alt="Anterior" class="fotos-arrow-left" />
+                                            </button>
+                                            <button class="fotos-carousel-btn fotos-carousel-btn-next">
+                                                <img src="/images/desktop/arrow-b.svg" alt="Siguiente" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Versión Mobile -->
+                                <div class="fotos-mobile">
+                                    <div class="fotos-mobile-carousel-section">
+                                        <div class="fotos-mobile-carousel">
+                                            <div class="fotos-carousel-track">
+                                                @foreach($instalaciones as $inst)
+                                                    <div class="fotos-carousel-slide">
+                                                        <img src="{{ asset('storage/' . $inst->image_path) }}" 
+                                                             alt="Instalación ITCA" />
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="fotos-carousel-controls">
+                                            <div class="fotos-progress-bar">
+                                                <div class="fotos-progress-track"></div>
+                                                <div class="fotos-progress-indicator"></div>
+                                            </div>
+                                            
+                                            <!-- Botones de navegación -->
+                                            <div class="fotos-controls-row">
+                                                <button class="fotos-carousel-btn fotos-arrow-left" onclick="scrollFotosCarousel('left')">
+                                                    <img src="/images/mobile/arrowicon.png" alt="Anterior" />
+                                                </button>
+                                                
+                                                <button class="fotos-carousel-btn fotos-arrow-right" onclick="scrollFotosCarousel('right')">
+                                                    <img src="/images/mobile/arrowicon.png" alt="Siguiente" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="instalaciones-features-container">
+                                    <ul class="instalaciones-list">
+                                        <li class="instalaciones-item">
+                                            <img src="/images/desktop/somos-itca/star1.png" alt="Star" class="instalaciones-star">
+                                            <span>Trabajo directo sobre <strong>motores y vehículos.</strong></span>
+                                        </li>
+                                        <li class="instalaciones-item">
+                                            <img src="/images/desktop/somos-itca/star2.png" alt="Star" class="instalaciones-star">
+                                            <span><strong>Equipamiento completo</strong> para una formación profesional.</span>
+                                        </li>
+                                        <li class="instalaciones-item">
+                                            <img src="/images/desktop/somos-itca/star3.png" alt="Star" class="instalaciones-star">
+                                            <span><strong>Aulas Taller</strong> que integran teoría y práctica.</span>
+                                        </li>
+                                        <li class="instalaciones-item">
+                                            <img src="/images/desktop/somos-itca/star1.png" alt="Star" class="instalaciones-star">
+                                            <span><strong>Confort:</strong> aire acondicionado, proyector y sillas cómodas.</span>
+                                        </li>
+                                        <li class="instalaciones-item">
+                                            <img src="/images/desktop/somos-itca/star2.png" alt="Star" class="instalaciones-star">
+                                            <span><strong>Seguridad:</strong> detectores de humo, cámaras de seguridad y<br>normas que garantizan un entorno cuidado.</span>
+                                        </li>
+                                        <li class="instalaciones-item">
+                                            <img src="/images/desktop/somos-itca/star3.png" alt="Star" class="instalaciones-star">
+                                            <span><strong>Nunca suspendemos las clases</strong>, contamos con grupo<br>electrógeno propio.</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-dropdown formadores-dropdown">
+                            <div class="info-dropdown-header">
+                                <span class="info-dropdown-title">Formadores</span>
+                                <img src="/images/desktop/chevron.png" alt="Abrir" class="info-dropdown-chevron">
+                            </div>
+                            <div class="info-dropdown-content">
+                                <p class="formadores-text-intro">
+                                    Quienes enseñan en nuestra institución son profesionales que viven la mecánica día a día.<br>
+                                    Contamos con un equipo de <strong>más de 50 docentes</strong>, con años de experiencia en talleres y en la industria<br>
+                                    automotriz, que transmiten sus conocimientos con compromiso, cercanía y vocación por enseñar.
+                                </p>
+
+
+                                @if(isset($formadores) && $formadores->count() > 0)
+                                    <!-- Carrusel Formadores (Responsive para Desktop y Mobile) -->
+                                    <div class="formadores-section">
+                                        <div class="fotos-carousel-section">
+                                            <div class="swiper fotos-swiper formadores-swiper">
+                                                <div class="swiper-wrapper">
+                                                    @foreach($formadores as $formador)
+                                                        <div class="swiper-slide fotos-carousel-slide formador-slide">
+                                                            <div class="formador-img-wrapper">
+                                                                <img src="{{ asset('storage/' . $formador->image_path) }}" 
+                                                                     alt="{{ $formador->nombre }}" 
+                                                                     class="fotos-slide-img formador-img" loading="lazy" />
+                                                            </div>
+                                                            <h3 class="formador-name">{{ $formador->nombre }}</h3>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                                <!-- Paginación para Mobile -->
+                                                <div class="swiper-pagination formadores-pagination"></div>
+                                            </div>
+                                            
+                                            <!-- Controles Desktop (fuera del swiper) -->
+                                            <div class="fotos-controls-wrapper formadores-controls">
+                                                <button class="fotos-carousel-btn fotos-carousel-btn-prev">
+                                                    <img src="/images/desktop/arrow-b.svg" alt="Anterior" class="fotos-arrow-left" />
+                                                </button>
+                                                <button class="fotos-carousel-btn fotos-carousel-btn-next">
+                                                    <img src="/images/desktop/arrow-b.svg" alt="Siguiente" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @else
+                                    <p style="color: #999; font-style: italic; text-align: center; padding: 20px;">
+                                        Próximamente conocerás a nuestro equipo.
+                                    </p>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Info Metrics Section -->
+            <section class="info-metrics-section">
+                <div class="container metrics-container">
+                    <div class="metrics-grid">
+                        <!-- Metric 1 -->
+                        <div class="metric-item">
+                            <h2 class="metric-number">+20</h2>
+                            <h3 class="metric-title">Años de experiencia</h3>
+                            <p class="metric-text">
+                                Unimos experiencia y actualización constante para ofrecerte una 
+                                <strong>propuesta moderna, creativa y con identidad</strong> propia.
+                            </p>
+                        </div>
+
+                        <!-- Metric 2 -->
+                        <div class="metric-item">
+                            <h2 class="metric-number">+37K</h2>
+                            <h3 class="metric-title">Egresados</h3>
+                            <p class="metric-text">
+                                Quienes egresan de la institución se 
+                                <strong>insertan en el ámbito automotor o impulsan proyectos</strong> 
+                                propios de manera independiente.
+                            </p>
+                        </div>
+
+                        <!-- Metric 3 -->
+                        <div class="metric-item">
+                            <h2 class="metric-number">+4K</h2>
+                            <h3 class="metric-title">Estudiantes</h3>
+                            <p class="metric-text">
+                                Cada año, estudiantes de todo el país eligen formarse con nosotros, de 
+                                <strong>manera presencial y semipresencial</strong>.
+                            </p>
+                        </div>
+
+                        <!-- Metric 4 -->
+                        <div class="metric-item">
+                            <h2 class="metric-number">+6</h2>
+                            <h3 class="metric-title">Sedes activas</h3>
+                            <p class="metric-text">
+                                Nuestras sedes están ubicadas en 
+                                <strong>Zona: Sur, Oeste, Norte y CABA</strong>, 
+                                para que te formes cerca de donde vivís.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Categorías Section -->
+            <section class="categorias-section">
+                <div class="categorias-grid">
+                    <!-- Card 1: Motores -->
+                    <div class="categoria-card">
+                        <div class="categoria-card-inner">
+                            <div class="categoria-card-front">
+                                <div class="categoria-img-wrapper">
+                                    <img src="/images/desktop/somos-itca/motores.png" alt="Motores" loading="lazy">
+                                </div>
+                                <div class="categoria-label">MOTORES</div>
+                            </div>
+                            <div class="categoria-card-back">
+                                <p class="categoria-desc">
+                                    Tenemos <strong>más de 90 motores de inyección, carburación, diésel y nafta</strong>, de distintas marcas y modelos, para una formación práctica con la mayor variedad posible.
+                                </p>
+                                <div class="categoria-label">MOTORES</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Automóviles -->
+                    <div class="categoria-card">
+                        <div class="categoria-card-inner">
+                            <div class="categoria-card-front">
+                                <div class="categoria-img-wrapper">
+                                    <img src="/images/desktop/somos-itca/auto.png" alt="Automóviles" loading="lazy">
+                                </div>
+                                <div class="categoria-label">AUTOMÓVILES</div>
+                            </div>
+                            <div class="categoria-card-back">
+                                <p class="categoria-desc">
+                                    Contamos con automóviles 0km destinados a prácticas y demostraciones: <strong>Peugeot 408 Common Rail, Chevrolet Spin LTZ, Toyota Hilux, VW Golf</strong>, entre otros modelos.
+                                </p>
+                                <div class="categoria-label">AUTOMÓVILES</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Motocicletas -->
+                    <div class="categoria-card">
+                        <div class="categoria-card-inner">
+                            <div class="categoria-card-front">
+                                <div class="categoria-img-wrapper">
+                                    <img src="/images/desktop/somos-itca/moto.png" alt="Motocicletas" loading="lazy">
+                                </div>
+                                <div class="categoria-label">MOTOCICLETAS</div>
+                            </div>
+                            <div class="categoria-card-back">
+                                <p class="categoria-desc">
+                                    Nuestro instituto dispone de más de 20 motocicletas de diversas cilindradas, de marcas como <strong>Honda, Yamaha, Royal Enfield y Kawasaki</strong>, para la formación práctica de los estudiantes.
+                                </p>
+                                <div class="categoria-label">MOTOCICLETAS</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Maquetas -->
+                    <div class="categoria-card">
+                        <div class="categoria-card-inner">
+                            <div class="categoria-card-front">
+                                <div class="categoria-img-wrapper">
+                                    <img src="/images/desktop/somos-itca/maquetas.png" alt="Maquetas panel" loading="lazy">
+                                </div>
+                                <div class="categoria-label">MAQUETAS</div>
+                            </div>
+                            <div class="categoria-card-back">
+                                <p class="categoria-desc">
+                                    En cada clase, los alumnos aprenden de manera práctica utilizando maquetas didácticas de <strong>redes multiplexadas, inyección electrónica y sistemas actuales del automóvil</strong>.
+                                </p>
+                                <div class="categoria-label">MAQUETAS</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CTA Decision Section -->
+            <section class="cta-decide-section">
+                <div class="container">
+                    <p class="cta-decide-text">
+                        <strong>¿Todavía no te decidiste?</strong><br>
+                        Estudiá y capacitate con nosotros
+                    </p>
+                    
+                    <div class="cta-actions-row">
+                        <div class="cta-arrow-wrapper">
+                            <img src="/images/desktop/somos-itca/arrow-somos.png" alt="Flecha" class="cta-arrow-img">
+                        </div>
+                        
+                        @php
+                            $whatsappItem = $contactosInfo->first(function($item) {
+                                return Str::contains(Str::lower($item->descripcion), 'whatsapp');
+                            });
+                            $whatsappUrl = '#';
+                            if ($whatsappItem) {
+                                // Limpiar todo lo que no sea número
+                                $numeroLimpio = preg_replace('/[^0-9]/', '', $whatsappItem->contenido);
+                                $whatsappUrl = "https://wa.me/" . $numeroLimpio;
+                            }
+                        @endphp
+
+                        <a href="{{ $whatsappUrl }}" target="_blank" class="cta-chat-btn">
+                            <strong>Chatear</strong> con un asesor de inscripción
+                        </a>
+                    
+                        <div class="cta-stripes-wrapper">
+                            <img src="/images/desktop/somos-itca/stripes-somos.png" alt="Decoración" class="cta-stripes-img">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Partners Section -->
             <section class="partners-section">
                 <div class="partners-content">
@@ -284,5 +710,92 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Info Dropdown Toggle
+            const dropdownHeaders = document.querySelectorAll('.info-dropdown-header');
+            
+            dropdownHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    // Toggle active class on the parent container
+                    const dropdown = this.parentElement;
+                    const isOpen = dropdown.classList.toggle('active');
+
+                    // If it's the Instalaciones dropdown
+                    if (dropdown.classList.contains('instalaciones-dropdown')) {
+                        const swiperEl = dropdown.querySelector('.fotos-swiper');
+                        
+                        if (isOpen) {
+                            // Opened: Wait for transition then set fully-open for overflow visible
+                            setTimeout(() => {
+                                dropdown.classList.add('fully-open');
+                                if (swiperEl && swiperEl.swiper) {
+                                    swiperEl.swiper.update();
+                                }
+                            }, 600); // 600ms matches CSS transition duration
+                        } else {
+                            // Closed: Remove fully-open immediately to clip content during collapse
+                            dropdown.classList.remove('fully-open');
+                        }
+                    }
+                });
+            });
+
+            // Video Logic
+            const videoContainers = document.querySelectorAll('.video-container-click');
+            
+            videoContainers.forEach(container => {
+                const video = container.querySelector('video');
+                const overlay = container.querySelector('.play-overlay');
+                
+                if (!video || !overlay) return;
+
+                // 1. Click en el contenedor (para el primer Play o cuando no hay controles)
+                container.addEventListener('click', function(e) {
+                    // Si ya tiene controles, dejamos que el navegador maneje los clicks (play/pause/seek)
+                    // Solo intervenimos si NO tiene controles (estado inicial)
+                    if (!video.hasAttribute('controls')) {
+                         video.play();
+                    }
+                });
+
+                // 2. Al dar Play
+                video.addEventListener('play', function() {
+                    video.setAttribute('controls', 'true'); // Habilitar controles nativos
+                    overlay.style.opacity = '0'; // Ocultar botón grande
+                });
+
+                // 3. Al Pausar
+                video.addEventListener('pause', function() {
+                    // Mantenemos los controles visibles para que el usuario pueda usar la barra
+                    // Pero mostramos el botón grande semi-transparente como indicador
+                    overlay.style.opacity = '1'; 
+                });
+            });
+
+            // Contacto Sedes Logic (Existing)
+            const sedeRows = document.querySelectorAll('.contacto-sede-row[data-sede]');
+            sedeRows.forEach(row => {
+                row.addEventListener('click', function() {
+                    const sedeId = this.getAttribute('data-sede');
+                    const content = document.getElementById(sedeId + '-content');
+                    // Collapse others
+                    document.querySelectorAll('.contacto-sede-content').forEach(otherContent => {
+                        if (otherContent !== content) otherContent.classList.remove('active');
+                    });
+                    if (content) content.classList.toggle('active');
+                });
+            });
+
+            // Flip Cards Logic - Click to toggle
+            const cards = document.querySelectorAll('.categoria-card');
+            cards.forEach(card => {
+                card.addEventListener('click', function() {
+                    this.classList.toggle('is-flipped');
+                });
+            });
+        });
+    </script>
     </body>
 </html>
