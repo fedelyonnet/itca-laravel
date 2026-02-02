@@ -84,8 +84,9 @@
                         <h1 class="main-title">
                             <span class="main-title-line-1">Tu pasión por la mecánica,</span>
                             <span class="main-title-line-2">
-                                <span class="highlight">Nuestro compromiso</span> con tu futuro
+                                <span class="highlight">Nuestro compromiso</span>
                             </span>
+                            <span class="main-title-line-3">con tu futuro</span>
                         </h1>
                         
                         <div class="main-image-container">
@@ -125,7 +126,7 @@
                                         <p class="itca-text">
                                             Es una <strong>institución educativa especializada en mecánica, electrónica y tecnologías del automóvil y la moto</strong>, pensada para jóvenes que quieren aprender haciendo, con clases prácticas, equipamiento real y una visión enfocada en salida laboral inmediata.
                                         </p>
-                                        <p class="itca-text">
+                                        <p class="itca-text itca-text-extra">
                                             Vas a aprender mecánica con autos y motos reales, con docentes expertos y talleres equipados, preparándote para trabajar en talleres, abrir tu propio emprendimiento o integrarte fácilmente al mercado automotriz.
                                         </p>
                                     </div>
@@ -190,69 +191,41 @@
                                     No hay teoría sin práctica: vas a tocar, desarmar y construir sobre lo que realmente usan los talleres de hoy.
                                 </p>
 
-                                <div class="fotos-desktop">
-                                    <div class="fotos-carousel-section">
-                                        <div class="swiper fotos-swiper">
-                                            <div class="swiper-wrapper">
-                                                @forelse($instalaciones as $inst)
-                                                    <div class="swiper-slide fotos-carousel-slide">
-                                                        <img src="{{ asset('storage/' . $inst->image_path) }}" 
-                                                             alt="Instalación ITCA" 
-                                                             class="fotos-slide-img" />
-                                                    </div>
-                                                @empty
-                                                    <p style="color: #999; font-style: italic; text-align: center; padding: 20px;">
-                                                        Próximamente imágenes de nuestras instalaciones.
-                                                    </p>
-                                                @endforelse
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Controles sobre las slides (fuera del swiper para evitar recorte) -->
-                                        <div class="fotos-controls-wrapper">
-                                            <button class="fotos-carousel-btn fotos-carousel-btn-prev">
-                                                <img src="/images/desktop/arrow-b.svg" alt="Anterior" class="fotos-arrow-left" />
-                                            </button>
-                                            <button class="fotos-carousel-btn fotos-carousel-btn-next">
-                                                <img src="/images/desktop/arrow-b.svg" alt="Siguiente" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Versión Mobile -->
-                                <div class="fotos-mobile">
-                                    <div class="fotos-mobile-carousel-section">
-                                        <div class="fotos-mobile-carousel">
-                                            <div class="fotos-carousel-track">
-                                                @foreach($instalaciones as $inst)
-                                                    <div class="fotos-carousel-slide">
-                                                        <img src="{{ asset('storage/' . $inst->image_path) }}" 
-                                                             alt="Instalación ITCA" />
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="fotos-carousel-controls">
-                                            <div class="fotos-progress-bar">
-                                                <div class="fotos-progress-track"></div>
-                                                <div class="fotos-progress-indicator"></div>
+                                @if(isset($instalaciones) && $instalaciones->count() > 0)
+                                    <!-- Carrusel Instalaciones (Clon de Formadores) -->
+                                    <div class="formadores-section" style="margin-bottom: 30px;">
+                                        <div class="fotos-carousel-section">
+                                            <div class="swiper fotos-swiper formadores-swiper">
+                                                <div class="swiper-wrapper">
+                                                    @foreach($instalaciones as $inst)
+                                                        <div class="swiper-slide fotos-carousel-slide formador-slide">
+                                                            <div class="formador-img-wrapper">
+                                                                <img src="{{ asset('storage/' . $inst->image_path) }}" 
+                                                                     alt="Instalación ITCA" 
+                                                                     class="fotos-slide-img formador-img" 
+                                                                     loading="lazy" />
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                                <!-- Paginación para Mobile -->
+                                                <div class="swiper-pagination formadores-pagination"></div>
                                             </div>
                                             
-                                            <!-- Botones de navegación -->
-                                            <div class="fotos-controls-row">
-                                                <button class="fotos-carousel-btn fotos-arrow-left" onclick="scrollFotosCarousel('left')">
-                                                    <img src="/images/mobile/arrowicon.png" alt="Anterior" />
+                                            <!-- Controles Desktop (fuera del swiper) -->
+                                            <div class="fotos-controls-wrapper formadores-controls">
+                                                <button class="fotos-carousel-btn fotos-carousel-btn-prev">
+                                                    <img src="/images/desktop/arrow-b.svg" alt="Anterior" class="fotos-arrow-left" />
                                                 </button>
-                                                
-                                                <button class="fotos-carousel-btn fotos-arrow-right" onclick="scrollFotosCarousel('right')">
-                                                    <img src="/images/mobile/arrowicon.png" alt="Siguiente" />
+                                                <button class="fotos-carousel-btn fotos-carousel-btn-next">
+                                                    <img src="/images/desktop/arrow-b.svg" alt="Siguiente" />
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                @endif
+
+
 
                                 <div class="instalaciones-features-container">
                                     <ul class="instalaciones-list">
@@ -274,11 +247,11 @@
                                         </li>
                                         <li class="instalaciones-item">
                                             <img src="/images/desktop/somos-itca/star2.png" alt="Star" class="instalaciones-star">
-                                            <span><strong>Seguridad:</strong> detectores de humo, cámaras de seguridad y<br>normas que garantizan un entorno cuidado.</span>
+                                            <span><strong>Seguridad:</strong> detectores de humo, cámaras de seguridad y normas que garantizan un entorno cuidado.</span>
                                         </li>
                                         <li class="instalaciones-item">
                                             <img src="/images/desktop/somos-itca/star3.png" alt="Star" class="instalaciones-star">
-                                            <span><strong>Nunca suspendemos las clases</strong>, contamos con grupo<br>electrógeno propio.</span>
+                                            <span><strong>Nunca suspendemos las clases</strong>, contamos con grupo electrógeno propio.</span>
                                         </li>
                                     </ul>
                                 </div>
@@ -304,16 +277,7 @@
                                         <div class="fotos-carousel-section">
                                             <div class="swiper fotos-swiper formadores-swiper">
                                                 <div class="swiper-wrapper">
-                                                    @foreach($formadores as $formador)
-                                                        <div class="swiper-slide fotos-carousel-slide formador-slide">
-                                                            <div class="formador-img-wrapper">
-                                                                <img src="{{ asset('storage/' . $formador->image_path) }}" 
-                                                                     alt="{{ $formador->nombre }}" 
-                                                                     class="fotos-slide-img formador-img" loading="lazy" />
-                                                            </div>
-                                                            <h3 class="formador-name">{{ $formador->nombre }}</h3>
-                                                        </div>
-                                                    @endforeach
+@foreach($formadores as $formador)<div class="swiper-slide fotos-carousel-slide formador-slide"><div class="formador-img-wrapper"><img src="{{ asset('storage/' . $formador->image_path) }}" alt="{{ $formador->nombre }}" class="fotos-slide-img formador-img" loading="lazy" /></div><h3 class="formador-name">{{ $formador->nombre }}</h3></div>@endforeach
                                                 </div>
                                                 <!-- Paginación para Mobile -->
                                                 <div class="swiper-pagination formadores-pagination"></div>

@@ -813,6 +813,8 @@ body {
     transition: color 0.2s ease;
     position: relative;
     /* Necessary for absolute positioning of the pseudo-element */
+    white-space: nowrap;
+    /* Evitar que el texto se quiebre en dos líneas */
 }
 
 /* Active indicator styling (Desktop only) */
@@ -8182,6 +8184,12 @@ section h2 {
     background-repeat: no-repeat;
     background-position: center;
     z-index: -1;
+}
+
+@media (min-width: 600px) and (max-width: 1099px) {
+    .partners-title-text-2::before {
+        width: clamp(300px, calc(300px + (100vw - 600px) * 0.0401), 320px);
+    }
 }
 
 

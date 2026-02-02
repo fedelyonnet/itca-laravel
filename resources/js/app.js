@@ -1912,94 +1912,12 @@ function updateFotosNavigationButtons(swiper) {
 // CARRUSEL DE FOTOS CON SWIPER
 // ========================================
 document.addEventListener('DOMContentLoaded', function () {
-    function initFotosSwiper(retryCount = 0) {
-        const fotosSwiperElement = document.querySelector('.fotos-desktop .fotos-carousel-section .fotos-swiper');
-        if (!fotosSwiperElement) {
-            if (retryCount < 20) {
-                return setTimeout(() => initFotosSwiper(retryCount + 1), 100);
-            }
-            return;
-        }
-        if (typeof window === 'undefined' || typeof window.Swiper === 'undefined') {
-            if (retryCount < 20) {
-                return setTimeout(() => initFotosSwiper(retryCount + 1), 100);
-            }
-            return;
-        }
-
-        const fotosSwiper = new window.Swiper('.fotos-desktop .fotos-carousel-section .fotos-swiper', {
-            loop: false,
-            slidesPerView: 'auto',
-            slidesPerGroup: 1,
-            spaceBetween: 5,
-            speed: 600,
-            breakpoints: {
-                600: {
-                    slidesPerView: 'auto',
-                    slidesPerGroup: 1,
-                    spaceBetween: 15,
-                },
-                1100: {
-                    slidesPerView: 'auto',
-                    slidesPerGroup: 2,
-                    spaceBetween: 15,
-                },
-                1366: {
-                    slidesPerView: 'auto',
-                    slidesPerGroup: 2,
-                    spaceBetween: 18,
-                },
-                1920: {
-                    slidesPerView: 'auto',
-                    slidesPerGroup: 2,
-                    spaceBetween: 20,
-                }
-            },
-            navigation: {
-                nextEl: '.fotos-desktop .fotos-carousel-btn-next',
-                prevEl: '.fotos-desktop .fotos-carousel-btn-prev',
-                disabledClass: 'swiper-button-disabled',
-            },
-            touchRatio: 1,
-            touchAngle: 45,
-            grabCursor: true,
-            effect: 'slide',
-            watchSlidesProgress: true,
-            observer: true,
-            observeParents: true,
-            on: {
-                init: function () {
-                    updateFotosProgressBar(this);
-                    updateFotosNavigationButtons(this);
-                    setTimeout(() => updateFotosProgressBar(this), 50);
-                },
-                slideChange: function () {
-                    updateFotosProgressBar(this);
-                    updateFotosNavigationButtons(this);
-                },
-                slideChangeTransitionEnd: function () {
-                    updateFotosProgressBar(this);
-                },
-                resize: function () {
-                    updateFotosProgressBar(this);
-                    updateFotosNavigationButtons(this);
-                    setTimeout(() => updateFotosProgressBar(this), 50);
-                }
-            }
-        });
-
-        window.addEventListener('load', () => {
-            setTimeout(() => updateFotosProgressBar(fotosSwiper), 100);
-        });
-    }
-
-    initFotosSwiper();
     initFormadoresSwiper();
 
     // Inicializar carrusel de Formadores (similar a Fotos)
     function initFormadoresSwiper(retryCount = 0) {
-        const formadoresSwiperElement = document.querySelector('.formadores-section .fotos-carousel-section .fotos-swiper');
-        if (!formadoresSwiperElement) {
+        const formadoresSwiperElements = document.querySelectorAll('.formadores-section .fotos-carousel-section .fotos-swiper');
+        if (formadoresSwiperElements.length === 0) {
             if (retryCount < 20) {
                 return setTimeout(() => initFormadoresSwiper(retryCount + 1), 100);
             }
@@ -2012,69 +1930,85 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        const formadoresSwiper = new window.Swiper('.formadores-section .fotos-carousel-section .fotos-swiper', {
-            loop: false,
-            // Mobile (default)
-            slidesPerView: 1.2,
-            centeredSlides: true,
-            spaceBetween: 15,
+        formadoresSwiperElements.forEach(swiperElement => {
+            if (swiperElement.swiper) return; // Already initialized
 
-            speed: 600,
-            breakpoints: {
-                600: {
-                    slidesPerView: 'auto',
-                    centeredSlides: false,
-                    slidesPerGroup: 1,
-                    spaceBetween: 15,
-                },
-                1100: {
-                    slidesPerView: 3,
-                    centeredSlides: false,
-                    slidesPerGroup: 1,
-                    spaceBetween: 20,
-                },
-                1366: {
-                    slidesPerView: 4,
-                    centeredSlides: false,
-                    slidesPerGroup: 1,
-                    spaceBetween: 20,
-                },
-                1920: {
-                    slidesPerView: 4,
-                    centeredSlides: false,
-                    slidesPerGroup: 1,
-                    spaceBetween: 20,
-                }
-            },
-            navigation: {
-                nextEl: '.formadores-controls .fotos-carousel-btn-next',
-                prevEl: '.formadores-controls .fotos-carousel-btn-prev',
-                disabledClass: 'swiper-button-disabled',
-            },
-            pagination: {
-                el: '.formadores-pagination',
-                type: 'bullets',
-                clickable: true,
-            },
-            touchRatio: 1,
-            touchAngle: 45,
-            grabCursor: true,
-            effect: 'slide',
-            watchSlidesProgress: true,
-            observer: true,
-            observeParents: true,
+            const container = swiperElement.closest('.fotos-carousel-section');
+            const nextBtn = container.querySelector('.fotos-carousel-btn-next');
+            const prevBtn = container.querySelector('.fotos-carousel-btn-prev');
+            const paginationEl = container.querySelector('.formadores-pagination');
 
-            on: {
-                init: function () {
-                    updateFotosNavigationButtons(this);
+            new window.Swiper(swiperElement, {
+                loop: false,
+                // Mobile (default)
+                slidesPerView: 1.2,
+                centeredSlides: true,
+                spaceBetween: 15,
+                watchOverflow: true, // Deshabilita navegación si no hay suficientes slides
+
+                speed: 600,
+                breakpoints: {
+                    600: {
+                        slidesPerView: 'auto',
+                        centeredSlides: false,
+                        slidesPerGroup: 1,
+                        spaceBetween: 15,
+                    },
+                    1100: {
+                        slidesPerView: 'auto', // Cambiar a auto para usar anchos CSS
+                        centeredSlides: false,
+                        slidesPerGroup: 1,
+                        spaceBetween: 20,
+                    },
+                    1366: {
+                        slidesPerView: 'auto', // Cambiar a auto
+                        centeredSlides: false,
+                        slidesPerGroup: 1,
+                        spaceBetween: 20,
+                    },
+                    1920: {
+                        slidesPerView: 'auto', // Cambiar a auto
+                        centeredSlides: false,
+                        slidesPerGroup: 1,
+                        spaceBetween: 20,
+                    }
                 },
-                slideChange: function () {
-                    updateFotosNavigationButtons(this);
+                navigation: {
+                    nextEl: nextBtn,
+                    prevEl: prevBtn,
+                    disabledClass: 'swiper-button-disabled',
                 },
-                resize: function () {
-                    updateFotosNavigationButtons(this);
+                pagination: {
+                    el: paginationEl,
+                    type: 'bullets',
+                    clickable: true,
+                },
+                touchRatio: 1,
+                touchAngle: 45,
+                grabCursor: true,
+                effect: 'slide',
+                watchSlidesProgress: true,
+                observer: true,
+                observeParents: true,
+
+                on: {
+                    init: function () {
+                        updateFotosNavigationButtons(this);
+                        // Forzar actualización después de init
+                        setTimeout(() => {
+                            this.update();
+                            updateFotosNavigationButtons(this);
+                        }, 100);
+                    },
+                    slideChange: function () {
+                        updateFotosNavigationButtons(this);
+                    },
+                    resize: function () {
+                        this.update();
+                        updateFotosNavigationButtons(this);
+                    }
                 }
-            }
+            });
         });
     }
 });

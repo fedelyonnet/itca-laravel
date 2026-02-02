@@ -33,8 +33,8 @@
             .box-container { min-height: 0 !important; margin-bottom: 20px !important; }
             
 
-            /* Responsive Grid for Characteristics */
-            .responsive-col { width: 50% !important; }
+            /* Responsive Grid for Characteristics - Single column on mobile */
+            .responsive-col { width: 75% !important; }
             
             /* Smaller fonts for Years table on mobile */
             .text-year { font-size: 16px !important; }
@@ -46,6 +46,9 @@
             
             /* Smaller Invoice Rows on Mobile */
             .text-invoice-row { font-size: 14px !important; }
+            
+            /* Modality intro text */
+            .text-modality-intro { font-size: 12px !important; }
         }
         
         /* Grid System */
@@ -79,7 +82,29 @@
         <!-- Header Image (Dynamic) -->
         <div class="header-container" style="background-color: #1a56db;">
             @if(isset($mailTemplate) && $mailTemplate->header_image && file_exists(storage_path('app/public/' . $mailTemplate->header_image)))
-                <img src="{{ $message->embed(storage_path('app/public/' . $mailTemplate->header_image)) }}" alt="ITCA" class="header-image">
+                @php
+                    $headerPath = $mailTemplate->header_image;
+                    $headerSlices = [];
+                    for ($i = 1; $i <= 16; $i++) {
+                        $headerSlices[$i] = str_replace('.', "_slice_{$i}.", $headerPath);
+                    }
+                @endphp
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;">
+                    <tr>
+                        @for ($i = 1; $i <= 8; $i++)
+                            <td width="12.5%" style="padding: 0; margin: 0; line-height: 0;">
+                                <img src="{{ $message->embed(storage_path('app/public/' . $headerSlices[$i])) }}" style="width: 100%; display: block; border: 0; margin: 0; padding: 0;">
+                            </td>
+                        @endfor
+                    </tr>
+                    <tr>
+                        @for ($i = 9; $i <= 16; $i++)
+                            <td width="12.5%" style="padding: 0; margin: 0; line-height: 0;">
+                                <img src="{{ $message->embed(storage_path('app/public/' . $headerSlices[$i])) }}" style="width: 100%; display: block; border: 0; margin: 0; padding: 0;">
+                            </td>
+                        @endfor
+                    </tr>
+                </table>
             @else
                 <!-- Fallback Header if no custom image is set or file missing -->
                 <div style="padding: 30px; text-align: center;">
@@ -90,14 +115,14 @@
 
         <div class="content">
             <div style="text-align: center; margin-bottom: 20px;">
-                <span style="font-family: 'Montserrat', sans-serif; font-weight: 500; font-size: 17px; color: #010C42;">Hola </span>
-                <span style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 17px; color: #034EFF;">{{ $lead->nombre }}:</span>
+                <span style="font-family: 'Montserrat', sans-serif; font-weight: 500; font-size: 19px; color: #010C42;">Hola </span>
+                <span style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 19px; color: #034EFF;">{{ $lead->nombre }}:</span>
             </div>
-            <p style="font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: 12px; color: #010C42; margin-bottom: 0; text-align: center;">
+            <p style="font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: 16px; color: #010C42; margin-bottom: 0; text-align: center;">
                 Queremos acompañarte en tu proceso de inscripción.<br>
                 No dejes pasar esta oportunidad, ¡quedan pocos cupos disponibles!
             </p>
-            <p style="font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: 10px; color: #010C42; margin-top: 20px; margin-bottom: 30px; text-align: center;">
+            <p style="font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: 14px; color: #010C42; margin-top: 20px; margin-bottom: 30px; text-align: center;">
                 Te presentamos <span style="color: #034EFF;">un resumen de tu elección</span> para que puedas continuar:
             </p>
 
@@ -412,7 +437,7 @@
                             <!-- Body -->
                             <tr>
                                 <td align="center" valign="middle" style="padding: 12px 5px; height: 80px;">
-                                    <span style="font-family: 'Montserrat', sans-serif; font-size: 11px; color: #010C42; font-weight: 600; line-height: 1.3; display: block;">
+                                    <span style="font-family: 'Montserrat', sans-serif; font-size: 14px; color: #010C42; font-weight: 600; line-height: 1.3; display: block;">
                                         @if(isset($f['is_tp']))
                                             @php
                                                 $tp = trim($modalidadTipo->teoria_practica ?? '');
@@ -458,16 +483,42 @@
             @if(isset($mailTemplate) && ($mailTemplate->main_illustration || $mailTemplate->certificate_image))
             <table class="two-columns" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top: 10px;">
                 <tr>
-                    <!-- Ilustración Principal -->
-                    <td class="mobile-stack" align="center" valign="top" style="width: 50%; padding: 10px;">
+                    <!-- Ilustración Principal (Sliced 2x2) - Fixed height 158px -->
+                    <td class="mobile-stack" align="center" valign="middle" style="padding: 10px;">
                         @if($mailTemplate->main_illustration && file_exists(storage_path('app/public/' . $mailTemplate->main_illustration)))
-                            <img src="{{ $message->embed(storage_path('app/public/' . $mailTemplate->main_illustration)) }}" alt="Ilustración" style="max-width: 100%; height: auto; display: block; border-radius: 8px;">
+                            @php
+                                $basePath = $mailTemplate->main_illustration;
+                                $slice1 = str_replace('.', '_slice_1.', $basePath);
+                                $slice2 = str_replace('.', '_slice_2.', $basePath);
+                                $slice3 = str_replace('.', '_slice_3.', $basePath);
+                                $slice4 = str_replace('.', '_slice_4.', $basePath);
+                            @endphp
+                            <div style="border: 2px solid #000000; border-radius: 8px; overflow: hidden; height: 158px; width: auto; display: inline-block;">
+                                <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; height: 158px;">
+                                    <tr style="height: 79px;">
+                                        <td style="padding: 0; margin: 0; line-height: 0; width: 150.5px;">
+                                            <img src="{{ $message->embed(storage_path('app/public/' . $slice1)) }}" style="width: 150.5px; height: 79px; display: block; border: 0; margin: 0; padding: 0;">
+                                        </td>
+                                        <td style="padding: 0; margin: 0; line-height: 0; width: 150.5px;">
+                                            <img src="{{ $message->embed(storage_path('app/public/' . $slice2)) }}" style="width: 150.5px; height: 79px; display: block; border: 0; margin: 0; padding: 0;">
+                                        </td>
+                                    </tr>
+                                    <tr style="height: 79px;">
+                                        <td style="padding: 0; margin: 0; line-height: 0; width: 150.5px;">
+                                            <img src="{{ $message->embed(storage_path('app/public/' . $slice3)) }}" style="width: 150.5px; height: 79px; display: block; border: 0; margin: 0; padding: 0;">
+                                        </td>
+                                        <td style="padding: 0; margin: 0; line-height: 0; width: 150.5px;">
+                                            <img src="{{ $message->embed(storage_path('app/public/' . $slice4)) }}" style="width: 150.5px; height: 79px; display: block; border: 0; margin: 0; padding: 0;">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
                         @endif
                     </td>
-                    <!-- Certificado -->
-                    <td class="mobile-stack" align="center" valign="top" style="width: 50%; padding: 10px;">
+                    <!-- Certificado - Fixed height 158px, width auto -->
+                    <td class="mobile-stack" align="center" valign="middle" style="padding: 10px;">
                         @if($mailTemplate->certificate_image && file_exists(storage_path('app/public/' . $mailTemplate->certificate_image)))
-                            <img src="{{ $message->embed(storage_path('app/public/' . $mailTemplate->certificate_image)) }}" alt="Certificado" style="max-width: 100%; height: auto; display: block; border-radius: 8px; border: 2px solid #000000;">
+                            <img src="{{ $message->embed(storage_path('app/public/' . $mailTemplate->certificate_image)) }}" alt="Certificado" style="height: 158px; width: auto; display: block; border-radius: 8px; border: 2px solid #000000;">
                         @endif
                     </td>
                 </tr>
@@ -512,7 +563,19 @@
                                     </table>
                                     <div style="background-color: #ffffff; height: 100px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
                                         @if($mailTemplate->benefit_1_image && file_exists(storage_path('app/public/' . $mailTemplate->benefit_1_image)))
-                                            <img src="{{ $message->embed(storage_path('app/public/' . $mailTemplate->benefit_1_image)) }}" alt="Club ITCA" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                            @if($mailTemplate->benefit_1_url)
+                                                @php
+                                                    $url1 = $mailTemplate->benefit_1_url;
+                                                    if (!Str::startsWith($url1, ['http://', 'https://'])) {
+                                                        $url1 = 'https://' . $url1;
+                                                    }
+                                                @endphp
+                                                <a href="{{ $url1 }}" target="_blank" style="display: block; width: 100%; height: 100%;">
+                                                    <img src="{{ $message->embed(storage_path('app/public/' . $mailTemplate->benefit_1_image)) }}" alt="Club ITCA" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                                </a>
+                                            @else
+                                                <img src="{{ $message->embed(storage_path('app/public/' . $mailTemplate->benefit_1_image)) }}" alt="Club ITCA" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                            @endif
                                         @endif
                                     </div>
                                 </div>
@@ -529,7 +592,19 @@
                                     </table>
                                     <div style="background-color: #ffffff; height: 100px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
                                         @if($mailTemplate->benefit_2_image && file_exists(storage_path('app/public/' . $mailTemplate->benefit_2_image)))
-                                            <img src="{{ $message->embed(storage_path('app/public/' . $mailTemplate->benefit_2_image)) }}" alt="Productos" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                            @if($mailTemplate->benefit_2_url)
+                                                @php
+                                                    $url2 = $mailTemplate->benefit_2_url;
+                                                    if (!Str::startsWith($url2, ['http://', 'https://'])) {
+                                                        $url2 = 'https://' . $url2;
+                                                    }
+                                                @endphp
+                                                <a href="{{ $url2 }}" target="_blank" style="display: block; width: 100%; height: 100%;">
+                                                    <img src="{{ $message->embed(storage_path('app/public/' . $mailTemplate->benefit_2_image)) }}" alt="Productos" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                                </a>
+                                            @else
+                                                <img src="{{ $message->embed(storage_path('app/public/' . $mailTemplate->benefit_2_image)) }}" alt="Productos" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                            @endif
                                         @endif
                                     </div>
                                 </div>
@@ -546,7 +621,19 @@
                                     </table>
                                     <div style="background-color: #ffffff; height: 100px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
                                         @if($mailTemplate->benefit_3_image && file_exists(storage_path('app/public/' . $mailTemplate->benefit_3_image)))
-                                            <img src="{{ $message->embed(storage_path('app/public/' . $mailTemplate->benefit_3_image)) }}" alt="Bolsa Laboral" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                            @if($mailTemplate->benefit_3_url)
+                                                @php
+                                                    $url3 = $mailTemplate->benefit_3_url;
+                                                    if (!Str::startsWith($url3, ['http://', 'https://'])) {
+                                                        $url3 = 'https://' . $url3;
+                                                    }
+                                                @endphp
+                                                <a href="{{ $url3 }}" target="_blank" style="display: block; width: 100%; height: 100%;">
+                                                    <img src="{{ $message->embed(storage_path('app/public/' . $mailTemplate->benefit_3_image)) }}" alt="Bolsa Laboral" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                                </a>
+                                            @else
+                                                <img src="{{ $message->embed(storage_path('app/public/' . $mailTemplate->benefit_3_image)) }}" alt="Bolsa Laboral" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                            @endif
                                         @endif
                                     </div>
                                 </div>
@@ -563,7 +650,19 @@
                                     </table>
                                     <div style="background-color: #ffffff; height: 100px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
                                         @if($mailTemplate->benefit_4_image && file_exists(storage_path('app/public/' . $mailTemplate->benefit_4_image)))
-                                            <img src="{{ $message->embed(storage_path('app/public/' . $mailTemplate->benefit_4_image)) }}" alt="Charlas" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                            @if($mailTemplate->benefit_4_url)
+                                                @php
+                                                    $url4 = $mailTemplate->benefit_4_url;
+                                                    if (!Str::startsWith($url4, ['http://', 'https://'])) {
+                                                        $url4 = 'https://' . $url4;
+                                                    }
+                                                @endphp
+                                                <a href="{{ $url4 }}" target="_blank" style="display: block; width: 100%; height: 100%;">
+                                                    <img src="{{ $message->embed(storage_path('app/public/' . $mailTemplate->benefit_4_image)) }}" alt="Charlas" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                                </a>
+                                            @else
+                                                <img src="{{ $message->embed(storage_path('app/public/' . $mailTemplate->benefit_4_image)) }}" alt="Charlas" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                            @endif
                                         @endif
                                     </div>
                                 </div>
@@ -657,7 +756,33 @@
         </div>
         @if(isset($mailTemplate->bottom_image) && file_exists(storage_path('app/public/' . $mailTemplate->bottom_image)))
             <div class="footer" style="padding: 0; background-color: transparent; border: none;">
-                <img src="{{ $message->embed(storage_path('app/public/' . $mailTemplate->bottom_image)) }}" alt="ITCA" style="width: 100%; height: auto; display: block; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
+                @php
+                    $bottomPath = $mailTemplate->bottom_image;
+                    $bottomSlice1 = str_replace('.', '_slice_1.', $bottomPath);
+                    $bottomSlice2 = str_replace('.', '_slice_2.', $bottomPath);
+                    $bottomSlice3 = str_replace('.', '_slice_3.', $bottomPath);
+                    $bottomSlice4 = str_replace('.', '_slice_4.', $bottomPath);
+                @endphp
+                <a href="https://www.itca.com.ar" target="_blank" style="display: block; text-decoration: none;">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;">
+                        <tr>
+                            <td width="50%" style="padding: 0; margin: 0; line-height: 0;">
+                                <img src="{{ $message->embed(storage_path('app/public/' . $bottomSlice1)) }}" style="width: 100%; display: block; border: 0; margin: 0; padding: 0;">
+                            </td>
+                            <td width="50%" style="padding: 0; margin: 0; line-height: 0;">
+                                <img src="{{ $message->embed(storage_path('app/public/' . $bottomSlice2)) }}" style="width: 100%; display: block; border: 0; margin: 0; padding: 0;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="50%" style="padding: 0; margin: 0; line-height: 0;">
+                                <img src="{{ $message->embed(storage_path('app/public/' . $bottomSlice3)) }}" style="width: 100%; display: block; border: 0; margin: 0; padding: 0; border-bottom-left-radius: 8px;">
+                            </td>
+                            <td width="50%" style="padding: 0; margin: 0; line-height: 0;">
+                                <img src="{{ $message->embed(storage_path('app/public/' . $bottomSlice4)) }}" style="width: 100%; display: block; border: 0; margin: 0; padding: 0; border-bottom-right-radius: 8px;">
+                            </td>
+                        </tr>
+                    </table>
+                </a>
             </div>
         @endif
     </div>

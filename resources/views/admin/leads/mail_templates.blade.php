@@ -92,8 +92,22 @@
                                     <h3 class="text-lg font-bold mb-4 text-blue-400 border-b border-gray-700 pb-2">Imágenes Beneficios</h3>
                                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                                         @foreach(['benefit_1_image', 'benefit_2_image', 'benefit_3_image', 'benefit_4_image'] as $index => $field)
-                                            <div class="flex flex-col">
+                                            <div class="flex flex-col space-y-2">
                                                 @include('admin.leads.partials.image_field', ['field' => $field, 'label' => 'Ben. ' . ($index + 1)])
+                                                
+                                                @php
+                                                    $urlField = str_replace('_image', '_url', $field);
+                                                @endphp
+                                                <div>
+                                                    <label class="block text-xs font-medium text-gray-400 mb-1">URL (opcional)</label>
+                                                    <input 
+                                                        type="url" 
+                                                        name="{{ $urlField }}" 
+                                                        id="{{ $urlField }}"
+                                                        placeholder="https://..."
+                                                        class="w-full px-2 py-1 text-sm bg-gray-800 border border-gray-600 rounded text-white focus:border-blue-500 focus:outline-none"
+                                                    >
+                                                </div>
                                             </div>
                                         @endforeach
                                     </div>
@@ -257,6 +271,7 @@
             document.querySelectorAll('.preview-placeholder').forEach(p => p.classList.remove('hidden'));
             document.querySelectorAll('span[id^="btn_label_"]').forEach(s => s.textContent = '');
             document.querySelectorAll('a[id^="link_"]').forEach(a => a.classList.add('hidden'));
+            document.querySelectorAll('input[type="url"]').forEach(i => i.value = '');
 
             // Show form loading
             formContainer.classList.remove('hidden');
@@ -308,6 +323,14 @@
                         link.classList.remove('hidden');
                         link.innerHTML = `<svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> Ver Archivo Guardado`;
                     }
+                }
+            });
+
+            // Fill benefit URLs
+            ['benefit_1_url', 'benefit_2_url', 'benefit_3_url', 'benefit_4_url'].forEach(field => {
+                const input = document.getElementById(field);
+                if (input) {
+                    input.value = data[field] || '';
                 }
             });
         }

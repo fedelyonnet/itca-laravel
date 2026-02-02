@@ -71,12 +71,89 @@ class CareerMailTemplateController extends Controller
                     // Borrar anterior
                     if ($template->$field && Storage::disk('public')->exists($template->$field)) {
                         Storage::disk('public')->delete($template->$field);
+                        
+                        // Si es una imagen con slices, borrar también los slices
+                        if (in_array($field, ['main_illustration', 'header_image', 'bottom_image'])) {
+                            $maxSlices = ($field === 'header_image') ? 16 : 4;
+                            for ($i = 1; $i <= $maxSlices; $i++) {
+                                $slicePath = str_replace('.', "_slice_{$i}.", $template->$field);
+                                if (Storage::disk('public')->exists($slicePath)) {
+                                    Storage::disk('public')->delete($slicePath);
+                                }
+                            }
+                        }
                     }
 
                     // Guardar nuevo
                     $folder = str_contains($field, 'syllabus') ? 'mails/pdfs' : 'mails/images';
                     $path = $request->file($field)->store($folder, 'public');
                     $template->$field = $path;
+                    
+                    // Si es main_illustration, header_image o bottom_image, cortarla en partes
+                    if (in_array($field, ['main_illustration', 'header_image', 'bottom_image'])) {
+                        $fullPath = storage_path('app/public/' . $path);
+                        
+                        // Intervention Image v3 API
+                        $manager = new \Intervention\Image\ImageManager(
+                            new \Intervention\Image\Drivers\Gd\Driver()
+                        );
+                        $img = $manager->read($fullPath);
+                        
+                        $width = $img->width();
+                        $height = $img->height();
+                        
+                        // Header: 16 slices (8x2), otros: 4 slices (2x2)
+                        if ($field === 'header_image') {
+                            $sliceWidth = (int) floor($width / 8);
+                            $sliceHeight = (int) floor($height / 2);
+                            
+                            $slices = [];
+                            for ($row = 0; $row < 2; $row++) {
+                                for ($col = 0; $col < 8; $col++) {
+                                    $num = ($row * 8) + $col + 1;
+                                    $slices[$num] = [
+                                        'x' => $sliceWidth * $col,
+                                        'y' => $sliceHeight * $row
+                                    ];
+                                }
+                            }
+                            
+                            foreach ($slices as $num => $coords) {
+                                $slice = $manager->read($fullPath);
+                                $slice->crop($sliceWidth, $sliceHeight, $coords['x'], $coords['y']);
+                                
+                                $slicePath = str_replace('.', "_slice_{$num}.", $path);
+                                $slice->save(storage_path('app/public/' . $slicePath));
+                            }
+                        } else {
+                            // main_illustration y bottom_image: 4 slices (2x2)
+                            $halfWidth = (int) floor($width / 2);
+                            $halfHeight = (int) floor($height / 2);
+                            
+                            $slices = [
+                                1 => ['x' => 0, 'y' => 0],
+                                2 => ['x' => $halfWidth, 'y' => 0],
+                                3 => ['x' => 0, 'y' => $halfHeight],
+                                4 => ['x' => $halfWidth, 'y' => $halfHeight],
+                            ];
+                            
+                            foreach ($slices as $num => $coords) {
+                                $slice = $manager->read($fullPath);
+                                $slice->crop($halfWidth, $halfHeight, $coords['x'], $coords['y']);
+                                
+                                $slicePath = str_replace('.', "_slice_{$num}.", $path);
+                                $slice->save(storage_path('app/public/' . $slicePath));
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Guardar URLs de beneficios
+            $urlFields = ['benefit_1_url', 'benefit_2_url', 'benefit_3_url', 'benefit_4_url'];
+            foreach ($urlFields as $field) {
+                if ($request->has($field)) {
+                    $template->$field = $request->input($field);
                 }
             }
 
