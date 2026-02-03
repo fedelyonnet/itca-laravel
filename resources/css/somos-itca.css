@@ -1228,16 +1228,28 @@
         grid-template-columns: 1fr;
         /* 1 columna en mobile */
         gap: 50px;
+        padding: 0 20px;
+        /* Alineado con los dropdowns */
+        box-sizing: border-box;
     }
 
-    .metric-text {
-        font-size: 16px;
-        /* Ligero ajuste para mobile */
-        max-width: 100%;
+    .metric-number {
+        /* Fluidez: ~45px en 320px -> 60px en 430px */
+        font-size: clamp(45px, calc(45px + (60 - 45) * ((100vw - 320px) / 110)), 60px);
+        margin-bottom: 5px;
     }
 
     .metric-title {
-        font-size: 24px;
+        /* Fluidez: ~16px en 320px -> 20px en 430px */
+        font-size: clamp(16px, calc(16px + (20 - 16) * ((100vw - 320px) / 110)), 20px);
+        margin-bottom: 12px;
+    }
+
+    .metric-text {
+        /* Fluidez: ~11px en 320px -> 12px en 430px */
+        font-size: clamp(11px, calc(11px + (12 - 11) * ((100vw - 320px) / 110)), 12px);
+        line-height: 1.5;
+        max-width: 250px;
     }
 }
 
