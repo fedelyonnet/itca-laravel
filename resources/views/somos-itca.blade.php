@@ -81,19 +81,23 @@
             <section class="main-section" id="main">
                 <div class="container somos-itca-container">
                     <div class="main-content">
-                        <h1 class="main-title">
-                            <span class="main-title-line-1">Tu pasión por la mecánica,</span>
-                            <span class="main-title-line-2">
-                                <span class="highlight">Nuestro compromiso</span>
-                            </span>
-                            <span class="main-title-line-3">con tu futuro</span>
-                        </h1>
-                        
-                        <div class="main-image-container">
-                            <img src="/images/desktop/somos-itca/d1.png" alt="" class="deco-1">
-                            <img src="/images/desktop/somos-itca/d2.png" alt="" class="deco-2">
-                            <img src="/images/desktop/somos-itca/hero-somos.png" alt="Somos ITCA" class="main-hero-image">
-                        </div>
+                <h1 class="main-title">
+                    <span class="main-title-line-1">Tu pasión por la mecánica,</span>
+                    <span class="main-title-line-2">
+                        <span class="highlight">Nuestro compromiso</span>
+                    </span>
+                    <span class="main-title-line-3">con tu futuro</span>
+                </h1>
+                
+                <div class="main-image-container">
+                    <img src="/images/desktop/somos-itca/d1.png" alt="" class="deco-1">
+                    <img src="/images/desktop/somos-itca/d2.png" alt="" class="deco-2">
+                    @if(isset($content->hero_image) && $content->hero_image)
+                        <img src="{{ asset('storage/' . $content->hero_image) }}" alt="Somos ITCA" class="main-hero-image">
+                    @else
+                        <img src="/images/desktop/somos-itca/hero-somos.png" alt="Somos ITCA" class="main-hero-image">
+                    @endif
+                </div>
                     </div>
                 </div>
             </section>
@@ -318,9 +322,18 @@
                             </div>
                             <div class="info-dropdown-content">
                                 <p class="formadores-text-intro">
-                                    Quienes enseñan en nuestra institución son profesionales que viven la mecánica día a día.<br>
-                                    Contamos con un equipo de <strong>más de 50 docentes</strong>, con años de experiencia en talleres y en la industria<br>
-                                    automotriz, que transmiten sus conocimientos con compromiso, cercanía y vocación por enseñar.
+                                    @if(isset($content->formadores_texto) && $content->formadores_texto)
+                                        @php
+                                            $formText = e($content->formadores_texto);
+                                            $formText = preg_replace('/\*\/(.*?)\/\*/', '<strong>$1</strong>', $formText);
+                                            $formText = nl2br($formText);
+                                        @endphp
+                                        {!! $formText !!}
+                                    @else
+                                        Quienes enseñan en nuestra institución son profesionales que viven la mecánica día a día.<br>
+                                        Contamos con un equipo de <strong>más de 50 docentes</strong>, con años de experiencia en talleres y en la industria<br>
+                                        automotriz, que transmiten sus conocimientos con compromiso, cercanía y vocación por enseñar.
+                                    @endif
                                 </p>
 
 
@@ -379,47 +392,28 @@
             <section class="info-metrics-section">
                 <div class="container metrics-container somos-itca-container">
                     <div class="metrics-grid">
-                        <!-- Metric 1 -->
-                        <div class="metric-item">
-                            <h2 class="metric-number">+20</h2>
-                            <h3 class="metric-title">Años de experiencia</h3>
-                            <p class="metric-text">
-                                Unimos experiencia y actualización constante para ofrecerte una 
-                                <strong>propuesta moderna, creativa y con identidad</strong> propia.
-                            </p>
-                        </div>
-
-                        <!-- Metric 2 -->
-                        <div class="metric-item">
-                            <h2 class="metric-number">+37K</h2>
-                            <h3 class="metric-title">Egresados</h3>
-                            <p class="metric-text">
-                                Quienes egresan de la institución se 
-                                <strong>insertan en el ámbito automotor o impulsan proyectos</strong> 
-                                propios de manera independiente.
-                            </p>
-                        </div>
-
-                        <!-- Metric 3 -->
-                        <div class="metric-item">
-                            <h2 class="metric-number">+4K</h2>
-                            <h3 class="metric-title">Estudiantes</h3>
-                            <p class="metric-text">
-                                Cada año, estudiantes de todo el país eligen formarse con nosotros, de 
-                                <strong>manera presencial y semipresencial</strong>.
-                            </p>
-                        </div>
-
-                        <!-- Metric 4 -->
-                        <div class="metric-item">
-                            <h2 class="metric-number">+6</h2>
-                            <h3 class="metric-title">Sedes activas</h3>
-                            <p class="metric-text">
-                                Nuestras sedes están ubicadas en 
-                                <strong>Zona: Sur, Oeste, Norte y CABA</strong>, 
-                                para que te formes cerca de donde vivís.
-                            </p>
-                        </div>
+                        @for($i = 1; $i <= 4; $i++)
+                            @php
+                                $num = $content->{"m{$i}_number"} ?? '';
+                                $title = $content->{"m{$i}_title"} ?? '';
+                                $text = $content->{"m{$i}_text"} ?? '';
+                                
+                                if($text) {
+                                    $text = nl2br(preg_replace('/\*\/(.*?)\/\*/', '<strong>$1</strong>', e($text)));
+                                }
+                            @endphp
+                            
+                            @if($num || $title || $text)
+                            <!-- Metric {{ $i }} -->
+                            <div class="metric-item">
+                                <h2 class="metric-number">{{ $num }}</h2>
+                                <h3 class="metric-title">{{ $title }}</h3>
+                                <div class="metric-text">
+                                    {!! $text !!}
+                                </div>
+                            </div>
+                            @endif
+                        @endfor
                     </div>
                 </div>
             </section>
@@ -427,111 +421,76 @@
             <!-- Categorías Section -->
             <section class="categorias-section">
                 <div class="categorias-grid">
-                    <!-- Card 1: Motores -->
-                    <div class="categoria-card">
-                        <div class="categoria-card-inner">
-                            <div class="categoria-card-front">
-                                <div class="categoria-img-wrapper">
-                                    <img src="/images/desktop/somos-itca/motores.png" alt="Motores" loading="lazy">
-                                </div>
-                                <div class="categoria-label categoria-label-front">MOTORES</div>
-                            </div>
-                            <div class="categoria-card-back">
-                                <p class="categoria-desc">
-                                    Tenemos <strong>más de 90 motores de inyección, carburación, diésel y nafta</strong>, de distintas marcas y modelos, para una formación práctica con la mayor variedad posible.
-                                </p>
-                                <div class="categoria-label categoria-label-back">MOTORES</div>
-                            </div>
-                        </div>
-                    </div>
+                    @for($i = 1; $i <= 4; $i++)
+                        @php
+                            $img = $content->{"cat{$i}_img"} ?? '';
+                            $title = $content->{"cat{$i}_title"} ?? '';
+                            $text = $content->{"cat{$i}_text"} ?? '';
+                            
+                            if($text) {
+                                $text = nl2br(preg_replace('/\*\/(.*?)\/\*/', '<strong>$1</strong>', e($text)));
+                            }
+                        @endphp
 
-                    <!-- Card 2: Automóviles -->
-                    <div class="categoria-card">
-                        <div class="categoria-card-inner">
-                            <div class="categoria-card-front">
-                                <div class="categoria-img-wrapper">
-                                    <img src="/images/desktop/somos-itca/auto.png" alt="Automóviles" loading="lazy">
+                        @if($img || $title || $text)
+                        <!-- Card {{ $i }}: {{ $title }} -->
+                        <div class="categoria-card">
+                            <div class="categoria-card-inner">
+                                <div class="categoria-card-front">
+                                    <div class="categoria-img-wrapper">
+                                        @if($img)
+                                            <img src="{{ asset('storage/' . $img) }}" alt="{{ $title }}" loading="lazy">
+                                        @endif
+                                    </div>
+                                    <div class="categoria-label categoria-label-front">{{ $title }}</div>
                                 </div>
-                                <div class="categoria-label categoria-label-front">AUTOMÓVILES</div>
-                            </div>
-                            <div class="categoria-card-back">
-                                <p class="categoria-desc">
-                                    Contamos con automóviles 0km destinados a prácticas y demostraciones: <strong>Peugeot 408 Common Rail, Chevrolet Spin LTZ, Toyota Hilux, VW Golf</strong>, entre otros modelos.
-                                </p>
-                                <div class="categoria-label categoria-label-back">AUTOMÓVILES</div>
+                                <div class="categoria-card-back">
+                                    <div class="categoria-desc">
+                                        {!! $text !!}
+                                    </div>
+                                    <div class="categoria-label categoria-label-back">{{ $title }}</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Card 3: Motocicletas -->
-                    <div class="categoria-card">
-                        <div class="categoria-card-inner">
-                            <div class="categoria-card-front">
-                                <div class="categoria-img-wrapper">
-                                    <img src="/images/desktop/somos-itca/moto.png" alt="Motocicletas" loading="lazy">
-                                </div>
-                                <div class="categoria-label categoria-label-front">MOTOCICLETAS</div>
-                            </div>
-                            <div class="categoria-card-back">
-                                <p class="categoria-desc">
-                                    Nuestro instituto dispone de más de 20 motocicletas de diversas cilindradas, de marcas como <strong>Honda, Yamaha, Royal Enfield y Kawasaki</strong>, para la formación práctica de los estudiantes.
-                                </p>
-                                <div class="categoria-label categoria-label-back">MOTOCICLETAS</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card 4: Maquetas -->
-                    <div class="categoria-card">
-                        <div class="categoria-card-inner">
-                            <div class="categoria-card-front">
-                                <div class="categoria-img-wrapper">
-                                    <img src="/images/desktop/somos-itca/maquetas.png" alt="Maquetas panel" loading="lazy">
-                                </div>
-                                <div class="categoria-label categoria-label-front">MAQUETAS</div>
-                            </div>
-                            <div class="categoria-card-back">
-                                <p class="categoria-desc">
-                                    En cada clase, los alumnos aprenden de manera práctica utilizando maquetas didácticas de <strong>redes multiplexadas, inyección electrónica y sistemas actuales del automóvil</strong>.
-                                </p>
-                                <div class="categoria-label categoria-label-back">MAQUETAS</div>
-                            </div>
-                        </div>
-                    </div>
+                        @endif
+                    @endfor
                 </div>
             </section>
 
             <!-- CTA Decision Section -->
             <section class="cta-decide-section">
                 <div class="container somos-itca-container">
-                    <p class="cta-decide-text">
-                        <strong>¿Todavía no te decidiste?</strong><br>
-                        Estudiá y capacitate con nosotros
-                    </p>
-                    
-                    <div class="cta-actions-row">
-                        <div class="cta-arrow-wrapper">
-                            <img src="/images/desktop/somos-itca/arrow-somos.png" alt="Flecha" class="cta-arrow-img">
-                        </div>
-                        
-                        @php
-                            $whatsappItem = $contactosInfo->first(function($item) {
-                                return Str::contains(Str::lower($item->descripcion), 'whatsapp');
-                            });
-                            $whatsappUrl = '#';
-                            if ($whatsappItem) {
-                                // Limpiar todo lo que no sea número
-                                $numeroLimpio = preg_replace('/[^0-9]/', '', $whatsappItem->contenido);
-                                $whatsappUrl = "https://wa.me/" . $numeroLimpio;
-                            }
-                        @endphp
+                    <div class="cta-stack">
+                        <p class="cta-decide-text">
+                            <strong>¿Todavía no te decidiste?</strong><br>
+                            Estudiá y capacitate con nosotros
+                        </p>
 
-                        <a href="{{ $whatsappUrl }}" target="_blank" class="cta-chat-btn">
-                            <strong>Chatear</strong> <span class="cta-text-desktop">con un asesor de inscripción</span><span class="cta-text-mobile">con un asesor</span>
-                        </a>
-                    
-                        <div class="cta-stripes-wrapper">
-                            <img src="/images/desktop/somos-itca/stripes-somos.png" alt="Decoración" class="cta-stripes-img">
+                        <div class="cta-bottom-row">
+                            <div class="cta-decor cta-decor-left">
+                                <img src="/images/desktop/somos-itca/arrow-somos.png" alt="Flecha" class="cta-arrow-img">
+                            </div>
+
+                            <div class="cta-btn-wrapper">
+                                @php
+                                    $whatsappItem = $contactosInfo->first(function($item) {
+                                        return Str::contains(Str::lower($item->descripcion), 'whatsapp');
+                                    });
+                                    $whatsappUrl = '#';
+                                    if ($whatsappItem) {
+                                        $numeroLimpio = preg_replace('/[^0-9]/', '', $whatsappItem->contenido);
+                                        $whatsappUrl = "https://wa.me/" . $numeroLimpio;
+                                    }
+                                @endphp
+
+                                <a href="{{ $whatsappUrl }}" target="_blank" class="cta-chat-btn">
+                                    <strong>Chatear</strong> <span class="cta-text-desktop">con un asesor de inscripción</span><span class="cta-text-mobile">con un asesor</span>
+                                </a>
+                            </div>
+
+                            <div class="cta-decor cta-decor-right">
+                                <img src="/images/desktop/somos-itca/stripes-somos.png" alt="Decoración" class="cta-stripes-img">
+                            </div>
                         </div>
                     </div>
                 </div>

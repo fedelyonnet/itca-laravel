@@ -37,11 +37,48 @@ class SomosItcaController extends Controller
         $request->validate([
             'video_file' => 'nullable|file|mimetypes:video/mp4,video/quicktime,video/webm|max:51200',
             'img_por_que' => 'nullable|image|max:2048',
+            'hero_image' => 'nullable|image|max:2048',
+            'title_line_1' => 'nullable|string|max:255',
+            'title_line_2' => 'nullable|string|max:255',
+            'title_line_3' => 'nullable|string|max:255',
+            'm1_number' => 'nullable|string|max:255',
+            'm1_title' => 'nullable|string|max:255',
+            'm1_text' => 'nullable|string',
+            'm2_number' => 'nullable|string|max:255',
+            'm2_title' => 'nullable|string|max:255',
+            'm2_text' => 'nullable|string',
+            'm3_number' => 'nullable|string|max:255',
+            'm3_title' => 'nullable|string|max:255',
+            'm3_text' => 'nullable|string',
+            'm4_number' => 'nullable|string|max:255',
+            'm4_title' => 'nullable|string|max:255',
+            'm4_text' => 'nullable|string',
+            'cat1_title' => 'nullable|string|max:255',
+            'cat1_text' => 'nullable|string',
+            'cat1_img' => 'nullable|image|max:2048',
+            'cat2_title' => 'nullable|string|max:255',
+            'cat2_text' => 'nullable|string',
+            'cat2_img' => 'nullable|image|max:2048',
+            'cat3_title' => 'nullable|string|max:255',
+            'cat3_text' => 'nullable|string',
+            'cat3_img' => 'nullable|image|max:2048',
+            'cat4_title' => 'nullable|string|max:255',
+            'cat4_text' => 'nullable|string',
+            'cat4_img' => 'nullable|image|max:2048',
         ]);
 
         $content = SomosItcaContent::first();
         if (!$content) {
             $content = new SomosItcaContent();
+        }
+
+        // Hero Image
+        if ($request->hasFile('hero_image')) {
+            if ($content->hero_image) {
+                Storage::disk('public')->delete($content->hero_image);
+            }
+            $path = $request->file('hero_image')->store('uploads/somos-itca/hero', 'public');
+            $content->hero_image = $path;
         }
 
         if ($request->hasFile('video_file')) {
@@ -60,9 +97,47 @@ class SomosItcaController extends Controller
             $content->img_por_que = $path;
         }
 
-        // Save 'que_es_itca' text
+        // Save text fields
+        if ($request->has('title_line_1')) $content->title_line_1 = $request->input('title_line_1');
+        if ($request->has('title_line_2')) $content->title_line_2 = $request->input('title_line_2');
+        if ($request->has('title_line_3')) $content->title_line_3 = $request->input('title_line_3');
+        
         if ($request->has('que_es_itca')) {
             $content->que_es_itca = $request->input('que_es_itca');
+        }
+        
+        if ($request->has('formadores_texto')) {
+            $content->formadores_texto = $request->input('formadores_texto');
+        }
+
+        // Metrics
+        for ($i = 1; $i <= 4; $i++) {
+            $numField = "m{$i}_number";
+            $titleField = "m{$i}_title";
+            $textField = "m{$i}_text";
+            
+            if ($request->has($numField)) $content->$numField = $request->input($numField);
+            if ($request->has($titleField)) $content->$titleField = $request->input($titleField);
+            if ($request->has($textField)) $content->$textField = $request->input($textField);
+        }
+
+        // Categories
+        for ($i = 1; $i <= 4; $i++) {
+            $titleField = "cat{$i}_title";
+            $textField = "cat{$i}_text";
+            $imgField = "cat{$i}_img";
+            
+            if ($request->has($titleField)) $content->$titleField = $request->input($titleField);
+            if ($request->has($textField)) $content->$textField = $request->input($textField);
+            
+            if ($request->hasFile($imgField)) {
+                // Delete old image if exists
+                if ($content->$imgField) {
+                    \Storage::disk('public')->delete($content->$imgField);
+                }
+                $path = $request->file($imgField)->store('somos-itca', 'public');
+                $content->$imgField = $path;
+            }
         }
 
         $content->save();
