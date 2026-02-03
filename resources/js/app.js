@@ -1934,19 +1934,36 @@ document.addEventListener('DOMContentLoaded', function () {
             if (swiperElement.swiper) return; // Already initialized
 
             const container = swiperElement.closest('.fotos-carousel-section');
-            const nextBtn = container.querySelector('.fotos-carousel-btn-next');
-            const prevBtn = container.querySelector('.fotos-carousel-btn-prev');
-            const paginationEl = container.querySelector('.formadores-pagination');
+            // Desktop buttons
+            const nextBtn = container.querySelector('.fotos-carousel-btn-next:not(.mobile-next-btn)');
+            const prevBtn = container.querySelector('.fotos-carousel-btn-prev:not(.mobile-prev-btn)');
 
-            new window.Swiper(swiperElement, {
+            // Mobile buttons
+            const mobileNextBtn = container.querySelector('.mobile-next-btn');
+            const mobilePrevBtn = container.querySelector('.mobile-prev-btn');
+            const mobileProgressBar = container.querySelector('.mobile-progress-indicator');
+
+            const swiperInstance = new window.Swiper(swiperElement, {
                 loop: false,
                 // Mobile (default)
                 slidesPerView: 'auto',
                 centeredSlides: false,
                 spaceBetween: 0,
-                watchOverflow: true, // Deshabilita navegación si no hay suficientes slides
+                watchOverflow: true,
 
                 speed: 600,
+
+                navigation: {
+                    // Soporte dual para botones desktop y mobile (Swiper permite pasar arrays o selectores multiples en versiones recientes, 
+                    // pero para seguridad usaremos el API navigation.nextEl / prevEl manualmente o asignaremos uno principal y manejaremos el otro con eventos)
+                    // En este caso, asignamos los desktop como principales y los mobile los vincularemos manualmente si es necesario, 
+                    // o mejor, usaremos clases comunes si fuera posible. 
+                    // Como son elementos distintos en el DOM, Swiper solo acepta un elemento o selector.
+                    // Solución: Usaremos el desktop por defecto y agregaremos listeners a los mobile buttons.
+                    nextEl: nextBtn,
+                    prevEl: prevBtn,
+                },
+
                 breakpoints: {
                     600: {
                         slidesPerView: 'auto',
@@ -1955,60 +1972,94 @@ document.addEventListener('DOMContentLoaded', function () {
                         spaceBetween: 15,
                     },
                     1100: {
-                        slidesPerView: 'auto', // Cambiar a auto para usar anchos CSS
+                        slidesPerView: 'auto',
                         centeredSlides: false,
                         slidesPerGroup: 1,
                         spaceBetween: 20,
                     },
                     1366: {
-                        slidesPerView: 'auto', // Cambiar a auto
+                        slidesPerView: 'auto',
                         centeredSlides: false,
                         slidesPerGroup: 1,
                         spaceBetween: 20,
                     },
                     1920: {
-                        slidesPerView: 'auto', // Cambiar a auto
+                        slidesPerView: 'auto',
                         centeredSlides: false,
                         slidesPerGroup: 1,
                         spaceBetween: 20,
                     }
                 },
-                navigation: {
-                    nextEl: nextBtn,
-                    prevEl: prevBtn,
-                    disabledClass: 'swiper-button-disabled',
-                },
-                pagination: {
-                    el: paginationEl,
-                    type: 'bullets',
-                    clickable: true,
-                },
-                touchRatio: 1,
-                touchAngle: 45,
-                grabCursor: true,
-                effect: 'slide',
-                watchSlidesProgress: true,
-                observer: true,
-                observeParents: true,
-
                 on: {
-                    init: function () {
-                        updateFotosNavigationButtons(this);
-                        // Forzar actualización después de init
-                        setTimeout(() => {
-                            this.update();
-                            updateFotosNavigationButtons(this);
-                        }, 100);
+                    init: function (swiper) {
+                        updateMobileProgress(swiper, mobileProgressBar);
+                        setupMobileNavigation(swiper, mobileNextBtn, mobilePrevBtn);
                     },
-                    slideChange: function () {
-                        updateFotosNavigationButtons(this);
+                    slideChange: function (swiper) {
+                        updateMobileProgress(swiper, mobileProgressBar);
                     },
-                    resize: function () {
-                        this.update();
-                        updateFotosNavigationButtons(this);
+                    resize: function (swiper) {
+                        updateMobileProgress(swiper, mobileProgressBar);
                     }
                 }
             });
+
+            function updateMobileProgress(swiper, progressBar) {
+                // 1. Update Progress Bar
+                if (progressBar) {
+                    const totalSteps = swiper.snapGrid.length;
+                    const currentStep = swiper.snapIndex + 1;
+                    const percentage = (currentStep / totalSteps) * 100;
+                    progressBar.style.width = `${percentage}%`;
+                }
+
+                // 2. Update Button States (Disabled/Opacity)
+                const container = swiper.el.closest('.fotos-carousel-section');
+                if (!container) return;
+
+                const mobileNextBtn = container.querySelector('.mobile-next-btn');
+                const mobilePrevBtn = container.querySelector('.mobile-prev-btn');
+
+                if (mobilePrevBtn) {
+                    if (swiper.isBeginning) {
+                        mobilePrevBtn.style.opacity = '0.3';
+                        mobilePrevBtn.style.cursor = 'default';
+                        mobilePrevBtn.disabled = true;
+                    } else {
+                        mobilePrevBtn.style.opacity = '1';
+                        mobilePrevBtn.style.cursor = 'pointer';
+                        mobilePrevBtn.disabled = false;
+                    }
+                }
+
+                if (mobileNextBtn) {
+                    if (swiper.isEnd) {
+                        mobileNextBtn.style.opacity = '0.3';
+                        mobileNextBtn.style.cursor = 'default';
+                        mobileNextBtn.disabled = true;
+                    } else {
+                        mobileNextBtn.style.opacity = '1';
+                        mobileNextBtn.style.cursor = 'pointer';
+                        mobileNextBtn.disabled = false;
+                    }
+                }
+            }
+
+            function setupMobileNavigation(swiper, next, prev) {
+                if (next) {
+                    next.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        swiper.slideNext();
+                    });
+                }
+                if (prev) {
+                    prev.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        swiper.slidePrev();
+                    });
+                }
+            }
+
         });
     }
 });

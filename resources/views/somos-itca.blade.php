@@ -185,15 +185,15 @@
                                 <span class="info-dropdown-title">Instalaciones</span>
                                 <img src="/images/desktop/chevron.png" alt="Abrir" class="info-dropdown-chevron">
                             </div>
-                            <div class="info-dropdown-content">
-                                <p class="instalaciones-text">
-                                    En ITCA, cada aula y cada taller están pensados para que te sumerjas en la mecánica desde el primer día.<br>
-                                    No hay teoría sin práctica: vas a tocar, desarmar y construir sobre lo que realmente usan los talleres de hoy.
+                            <div class="info-dropdown-content instalaciones-dropdown-content">
+                                <p class="instalaciones-text mobile-order-1">
+                                    En ITCA, cada aula y cada taller están pensados para que te sumerjas en la mecánica desde el primer día.<span class="mobile-hidden-text"><br>
+                                    No hay teoría sin práctica: vas a tocar, desarmar y construir sobre lo que realmente usan los talleres de hoy.</span>
                                 </p>
 
                                 @if(isset($instalaciones) && $instalaciones->count() > 0)
                                     <!-- Carrusel Instalaciones (Clon de Formadores) -->
-                                    <div class="formadores-section" style="margin-bottom: 30px;">
+                                    <div class="formadores-section mobile-order-3">
                                         <div class="fotos-carousel-section">
                                             <div class="swiper fotos-swiper formadores-swiper">
                                                 <div class="swiper-wrapper">
@@ -209,7 +209,25 @@
                                                     @endforeach
                                                 </div>
                                                 <!-- Paginación para Mobile -->
-                                                <div class="swiper-pagination formadores-pagination"></div>
+                                                <!-- Paginación para Mobile personalizada (Barra de progreso arriba, flechas abajo) -->
+                                                <div class="fotos-carousel-controls mobile-only-controls" style="margin-top: 20px; display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                                                    
+                                                    <!-- Barra de Progreso -->
+                                                    <div class="fotos-progress-bar mobile-progress-bar" style="width: 100%; max-width: 200px; height: 4px; background-color: rgba(255,255,255,0.2); border-radius: 2px; position: relative; overflow: hidden;">
+                                                        <div class="fotos-progress-indicator mobile-progress-indicator" style="position: absolute; top: 0; left: 0; height: 100%; background-color: #65E09C; width: 0%; transition: width 0.3s ease;"></div>
+                                                    </div>
+
+                                                    <!-- Flechas de Navegación -->
+                                                    <div class="mobile-arrows-wrapper" style="display: flex; gap: 20px;">
+                                                        <button class="fotos-carousel-btn fotos-carousel-btn-prev mobile-prev-btn" style="background: none; border: none; cursor: pointer; padding: 0; opacity: 0.5; transition: opacity 0.3s;">
+                                                            <img src="/images/desktop/arrow-b.svg" alt="Anterior" class="fotos-arrow-left mobile-control-img" style="transform: rotate(180deg);" />
+                                                        </button>
+                                                        <button class="fotos-carousel-btn fotos-carousel-btn-next mobile-next-btn" style="background: none; border: none; cursor: pointer; padding: 0; opacity: 1; transition: opacity 0.3s;">
+                                                            <img src="/images/desktop/arrow-b.svg" alt="Siguiente" class="mobile-control-img" />
+                                                        </button>
+                                                    </div>
+
+                                                </div>
                                             </div>
                                             
                                             <!-- Controles Desktop (fuera del swiper) -->
@@ -227,7 +245,7 @@
 
 
 
-                                <div class="instalaciones-features-container">
+                                <div class="instalaciones-features-container mobile-order-2">
                                     <ul class="instalaciones-list">
                                         <li class="instalaciones-item">
                                             <img src="/images/desktop/somos-itca/star1.png" alt="Star" class="instalaciones-star">
@@ -279,8 +297,25 @@
                                                 <div class="swiper-wrapper">
 @foreach($formadores as $formador)<div class="swiper-slide fotos-carousel-slide formador-slide"><div class="formador-img-wrapper"><img src="{{ asset('storage/' . $formador->image_path) }}" alt="{{ $formador->nombre }}" class="fotos-slide-img formador-img" loading="lazy" /></div><h3 class="formador-name">{{ $formador->nombre }}</h3></div>@endforeach
                                                 </div>
-                                                <!-- Paginación para Mobile -->
-                                                <div class="swiper-pagination formadores-pagination"></div>
+                                                <!-- Paginación para Mobile personalizada (Barra de progreso arriba, flechas abajo) -->
+                                                <div class="fotos-carousel-controls mobile-only-controls" style="margin-top: 20px; display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                                                    
+                                                    <!-- Barra de Progreso -->
+                                                    <div class="fotos-progress-bar mobile-progress-bar" style="width: 100%; max-width: 200px; height: 4px; background-color: rgba(255,255,255,0.2); border-radius: 2px; position: relative; overflow: hidden;">
+                                                        <div class="fotos-progress-indicator mobile-progress-indicator" style="position: absolute; top: 0; left: 0; height: 100%; background-color: #65E09C; width: 0%; transition: width 0.3s ease;"></div>
+                                                    </div>
+
+                                                    <!-- Flechas de Navegación -->
+                                                    <div class="mobile-arrows-wrapper" style="display: flex; gap: 20px;">
+                                                        <button class="fotos-carousel-btn fotos-carousel-btn-prev mobile-prev-btn" style="background: none; border: none; cursor: pointer; padding: 0; opacity: 0.5; transition: opacity 0.3s;">
+                                                            <img src="/images/desktop/arrow-b.svg" alt="Anterior" class="fotos-arrow-left mobile-control-img" style="transform: rotate(180deg);" />
+                                                        </button>
+                                                        <button class="fotos-carousel-btn fotos-carousel-btn-next mobile-next-btn" style="background: none; border: none; cursor: pointer; padding: 0; opacity: 1; transition: opacity 0.3s;">
+                                                            <img src="/images/desktop/arrow-b.svg" alt="Siguiente" class="mobile-control-img" />
+                                                        </button>
+                                                    </div>
+
+                                                </div>
                                             </div>
                                             
                                             <!-- Controles Desktop (fuera del swiper) -->

@@ -759,8 +759,18 @@
 }
 
 /* Centrar texto Instalaciones */
+/* Centrar texto Instalaciones */
 .instalaciones-text {
     text-align: center;
+}
+
+@media (max-width: 599px) {
+    .instalaciones-text {
+        text-align: left;
+        hyphens: auto;
+        -webkit-hyphens: auto;
+        -ms-hyphens: auto;
+    }
 }
 
 /* Ajustes para el Carousel de Fotos dentro del Dropdown Instalaciones */
@@ -1024,7 +1034,6 @@
     z-index: 20;
     /* Encima del swiper */
     pointer-events: none;
-    border-radius: 10px 0 0 10px;
     /* Opcional: coincidir borde si es necesario */
 }
 
@@ -1041,7 +1050,6 @@
     z-index: 20;
     /* Encima del swiper */
     pointer-events: none;
-    border-radius: 0 10px 10px 0;
     /* Opcional */
 }
 
@@ -1505,5 +1513,55 @@
 
     .cta-stripes-img {
         order: -1;
+    }
+
+    /* Ocultar texto específico en mobile */
+    .mobile-hidden-text {
+        display: none;
+    }
+
+    /* Reordenamiento de Instalaciones en Mobile */
+    .instalaciones-dropdown-content {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    .mobile-order-1 {
+        order: 1 !important;
+    }
+
+    .mobile-order-2 {
+        order: 2 !important;
+        margin-top: 0 !important;
+        /* Resetear margin top si tuviera */
+        margin-bottom: 20px !important;
+        /* Dar espacio antes del carrusel */
+    }
+
+    .mobile-order-3 {
+        order: 3 !important;
+    }
+
+    /* Mostrar controles personalizados mobile */
+    .mobile-only-controls {
+        display: flex !important;
+    }
+
+    /* Ocultar paginación default swiper (puntitos) */
+    .swiper-pagination-bullets {
+        display: none !important;
+    }
+
+    /* Imagen fluida para flechas mobile */
+    .mobile-control-img {
+        width: clamp(30px, 8vw, 42px) !important;
+        height: clamp(30px, 8vw, 42px) !important;
+    }
+}
+
+/* Ocultar controles mobile en desktop */
+@media (min-width: 600px) {
+    .mobile-only-controls {
+        display: none !important;
     }
 }
