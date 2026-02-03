@@ -399,13 +399,13 @@
                                 <div class="categoria-img-wrapper">
                                     <img src="/images/desktop/somos-itca/motores.png" alt="Motores" loading="lazy">
                                 </div>
-                                <div class="categoria-label">MOTORES</div>
+                                <div class="categoria-label categoria-label-front">MOTORES</div>
                             </div>
                             <div class="categoria-card-back">
                                 <p class="categoria-desc">
                                     Tenemos <strong>más de 90 motores de inyección, carburación, diésel y nafta</strong>, de distintas marcas y modelos, para una formación práctica con la mayor variedad posible.
                                 </p>
-                                <div class="categoria-label">MOTORES</div>
+                                <div class="categoria-label categoria-label-back">MOTORES</div>
                             </div>
                         </div>
                     </div>
@@ -417,13 +417,13 @@
                                 <div class="categoria-img-wrapper">
                                     <img src="/images/desktop/somos-itca/auto.png" alt="Automóviles" loading="lazy">
                                 </div>
-                                <div class="categoria-label">AUTOMÓVILES</div>
+                                <div class="categoria-label categoria-label-front">AUTOMÓVILES</div>
                             </div>
                             <div class="categoria-card-back">
                                 <p class="categoria-desc">
                                     Contamos con automóviles 0km destinados a prácticas y demostraciones: <strong>Peugeot 408 Common Rail, Chevrolet Spin LTZ, Toyota Hilux, VW Golf</strong>, entre otros modelos.
                                 </p>
-                                <div class="categoria-label">AUTOMÓVILES</div>
+                                <div class="categoria-label categoria-label-back">AUTOMÓVILES</div>
                             </div>
                         </div>
                     </div>
@@ -435,13 +435,13 @@
                                 <div class="categoria-img-wrapper">
                                     <img src="/images/desktop/somos-itca/moto.png" alt="Motocicletas" loading="lazy">
                                 </div>
-                                <div class="categoria-label">MOTOCICLETAS</div>
+                                <div class="categoria-label categoria-label-front">MOTOCICLETAS</div>
                             </div>
                             <div class="categoria-card-back">
                                 <p class="categoria-desc">
                                     Nuestro instituto dispone de más de 20 motocicletas de diversas cilindradas, de marcas como <strong>Honda, Yamaha, Royal Enfield y Kawasaki</strong>, para la formación práctica de los estudiantes.
                                 </p>
-                                <div class="categoria-label">MOTOCICLETAS</div>
+                                <div class="categoria-label categoria-label-back">MOTOCICLETAS</div>
                             </div>
                         </div>
                     </div>
@@ -453,13 +453,13 @@
                                 <div class="categoria-img-wrapper">
                                     <img src="/images/desktop/somos-itca/maquetas.png" alt="Maquetas panel" loading="lazy">
                                 </div>
-                                <div class="categoria-label">MAQUETAS</div>
+                                <div class="categoria-label categoria-label-front">MAQUETAS</div>
                             </div>
                             <div class="categoria-card-back">
                                 <p class="categoria-desc">
                                     En cada clase, los alumnos aprenden de manera práctica utilizando maquetas didácticas de <strong>redes multiplexadas, inyección electrónica y sistemas actuales del automóvil</strong>.
                                 </p>
-                                <div class="categoria-label">MAQUETAS</div>
+                                <div class="categoria-label categoria-label-back">MAQUETAS</div>
                             </div>
                         </div>
                     </div>
@@ -492,7 +492,7 @@
                         @endphp
 
                         <a href="{{ $whatsappUrl }}" target="_blank" class="cta-chat-btn">
-                            <strong>Chatear</strong> con un asesor de inscripción
+                            <strong>Chatear</strong> <span class="cta-text-desktop">con un asesor de inscripción</span><span class="cta-text-mobile">con un asesor</span>
                         </a>
                     
                         <div class="cta-stripes-wrapper">

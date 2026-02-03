@@ -1399,8 +1399,76 @@
         padding: 0 20px;
     }
 
-    .categoria-img-wrapper {
-        aspect-ratio: 1/1;
+    .categoria-card {
+        aspect-ratio: 375/231;
+    }
+
+    /* Calibración Contenidos Mobile */
+
+    /* En mobile, el back tiene el título arriba. Usamos column-reverse ya que en el HTML está abajo (shared structure) */
+    .categoria-card-back {
+        flex-direction: column-reverse;
+        justify-content: flex-end;
+        /* Alinear contenido arriba visualmente */
+    }
+
+    /* Estilo Específico FRONT: Grande, centrado, fondo verde */
+    .categoria-label-front {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        /* ExtraBold */
+        font-size: 25px;
+        /* Fijo 25px como pedido */
+        padding: 15px 10px;
+        line-height: 1.2;
+        background-color: #65E09C;
+        /* Verde ITCA */
+        color: #000000;
+        margin-top: auto;
+        /* Pegado al fondo */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* Centrado vertical del texto */
+        width: 100%;
+        text-align: center;
+    }
+
+    /* Estilo Específico BACK: Chico, arriba, fondo transparente (integrado) */
+    .categoria-label-back {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        /* SemiBold */
+        /* Fluidez: ~13px en 320px -> 15px en 430px */
+        font-size: clamp(13px, calc(13px + (15 - 13) * ((100vw - 320px) / 110)), 15px);
+        padding: 15px 10px 5px;
+        /* Ajuste padding para que quede bien arriba */
+        line-height: 1.2;
+        margin: 0 !important;
+        /* Reset margin auto */
+        background-color: transparent;
+        /* Integrado al fondo verde del back */
+        color: #000000;
+        width: 100%;
+        text-align: center;
+    }
+
+    .categoria-desc {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 400;
+        /* Regular */
+        /* Fluidez: ~13px en 320px -> 15px en 430px (Igual que el título) */
+        font-size: clamp(13px, calc(13px + (15 - 13) * ((100vw - 320px) / 110)), 15px);
+        margin: 5px auto 0;
+        max-width: 90%;
+        line-height: 1.4;
+    }
+
+    .categoria-cta {
+        margin-top: auto;
+        margin-bottom: 20px;
+        font-size: 14px;
+        padding: 10px 20px;
     }
 }
 
@@ -1547,71 +1615,111 @@
         gap: 30px;
     }
 
-    .cta-arrow-img,
-    .cta-stripes-img {
-        width: 80%;
-        max-width: 400px;
-    }
-
-    .cta-stripes-img {
-        order: -1;
-    }
-
-    /* Ocultar texto específico en mobile */
-    .mobile-hidden-text {
+    .cta-arrow-wrapper,
+    .cta-stripes-wrapper {
         display: none;
     }
 
-    /* Reordenamiento de Instalaciones en Mobile */
-    .instalaciones-dropdown-content {
-        display: flex !important;
-        flex-direction: column !important;
+    .cta-chat-btn {
+        padding: 15px 20px;
+        /* Ajuste de padding para mobile */
+        white-space: normal;
     }
 
-    .mobile-order-1 {
-        order: 1 !important;
+    /* Aplicar tamaño fluido a las partes del texto independientemente para permitir control */
+    .cta-chat-btn strong,
+    .cta-text-mobile {
+        /* Fluidez: ~16px en 320px -> 21px en 430px */
+        font-size: clamp(16px, calc(16px + (21 - 16) * ((100vw - 320px) / 110)), 21px);
     }
 
-    .mobile-order-2 {
-        order: 2 !important;
-        margin-top: 0 !important;
-        /* Resetear margin top si tuviera */
-        margin-bottom: 20px !important;
-        /* Dar espacio antes del carrusel */
+    .cta-text-desktop {
+        display: none;
     }
 
-    .mobile-order-3 {
-        order: 3 !important;
-    }
-
-    /* Mostrar controles personalizados mobile */
-    .mobile-only-controls {
-        display: flex !important;
-    }
-
-    /* Ocultar paginación default swiper (puntitos) */
-    .swiper-pagination-bullets {
-        display: none !important;
-    }
-
-    /* Imagen fluida para flechas mobile */
-    .mobile-control-img {
-        width: clamp(30px, 8vw, 42px) !important;
-        height: clamp(30px, 8vw, 42px) !important;
-        /* Optimización de renderizado para evitar pixelación/borrosidad en escalas */
-        backface-visibility: hidden;
-        -webkit-backface-visibility: hidden;
-        transform: translateZ(0);
-        /* Forzar aceleración GPU */
-        -webkit-font-smoothing: antialiased;
-        image-rendering: -webkit-optimize-contrast;
-        /* Crucial para nitidez en PNGs escalados */
-    }
-
-    .fotos-arrow-left.mobile-control-img {
-        transform: rotate(180deg) translateZ(0);
+    .cta-text-mobile {
+        display: inline;
     }
 }
+
+/* Default state for text toggle (Desktop) */
+@media (min-width: 600px) {
+    .cta-text-mobile {
+        display: none;
+    }
+}
+
+
+
+/* Ocultar texto específico en mobile */
+.mobile-hidden-text {
+    display: none;
+}
+
+/* Reordenamiento de Instalaciones en Mobile */
+.instalaciones-dropdown-content {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.mobile-order-1 {
+    order: 1 !important;
+}
+
+.mobile-order-2 {
+    order: 2 !important;
+    margin-top: 0 !important;
+    /* Resetear margin top si tuviera */
+    margin-bottom: 20px !important;
+    /* Dar espacio antes del carrusel */
+}
+
+.mobile-order-3 {
+    order: 3 !important;
+}
+
+.partners-section {
+    background-color: #010C42 !important;
+    /* Azul oscuro exclusivo para Somos ITCA mobile */
+}
+
+.contacto-section {
+    background-color: #02115A !important;
+}
+
+.contacto-tercio.contacto-contacto,
+.contacto-tercio.contacto-sedes {
+    background-color: #02115A !important;
+}
+
+/* Mostrar controles personalizados mobile */
+.mobile-only-controls {
+    display: flex !important;
+}
+
+/* Ocultar paginación default swiper (puntitos) */
+.swiper-pagination-bullets {
+    display: none !important;
+}
+
+/* Imagen fluida para flechas mobile */
+.mobile-control-img {
+    width: clamp(30px, 8vw, 42px) !important;
+    height: clamp(30px, 8vw, 42px) !important;
+    /* Optimización de renderizado para evitar pixelación/borrosidad en escalas */
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0);
+    /* Forzar aceleración GPU */
+    -webkit-font-smoothing: antialiased;
+    image-rendering: -webkit-optimize-contrast;
+    /* Crucial para nitidez en PNGs escalados */
+}
+
+.fotos-arrow-left.mobile-control-img {
+    transform: rotate(180deg) translateZ(0);
+}
+
 
 /* Ocultar controles mobile en desktop */
 @media (min-width: 600px) {
