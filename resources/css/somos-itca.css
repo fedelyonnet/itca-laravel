@@ -169,6 +169,11 @@
 }
 
 @media (max-width: 599px) {
+    .somos-itca-container {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
     .main-content {
         max-width: 100%;
         padding: 0 20px;
@@ -998,33 +1003,46 @@
     transform: translateX(50%);
 }
 
-/* Gradientes laterales (igual que instalaciones) */
-.formadores-dropdown .fotos-swiper {
+/* Gradientes laterales (igual que instalaciones) - MOVIDO AL PADRE para evitar recorte por overflow hidden */
+.formadores-dropdown .fotos-carousel-section,
+.instalaciones-dropdown .fotos-carousel-section {
     position: relative;
+    overflow: visible;
+    /* Asegurar que el padre no recorte los gradientes */
 }
 
-.formadores-dropdown .fotos-swiper::before {
+.formadores-dropdown .fotos-carousel-section::before,
+.instalaciones-dropdown .fotos-carousel-section::before {
     content: '';
     position: absolute;
     top: 0;
-    left: 0;
-    width: 12%;
+    left: -1px;
+    /* Cubrir borde izquierdo */
+    width: 15%;
     height: 100%;
-    background: linear-gradient(to right, rgba(1, 12, 66, 0.85), transparent);
-    z-index: 5;
+    background: linear-gradient(to right, rgba(1, 12, 66, 1), transparent);
+    z-index: 20;
+    /* Encima del swiper */
     pointer-events: none;
+    border-radius: 10px 0 0 10px;
+    /* Opcional: coincidir borde si es necesario */
 }
 
-.formadores-dropdown .fotos-swiper::after {
+.formadores-dropdown .fotos-carousel-section::after,
+.instalaciones-dropdown .fotos-carousel-section::after {
     content: '';
     position: absolute;
     top: 0;
-    right: 0;
-    width: 12%;
+    right: -1px;
+    /* Cubrir borde derecho */
+    width: 15%;
     height: 100%;
-    background: linear-gradient(to left, rgba(1, 12, 66, 0.85), transparent);
-    z-index: 5;
+    background: linear-gradient(to left, rgba(1, 12, 66, 1), transparent);
+    z-index: 20;
+    /* Encima del swiper */
     pointer-events: none;
+    border-radius: 0 10px 10px 0;
+    /* Opcional */
 }
 
 /* Paginación (Dots) - Solo Mobile */
@@ -1065,8 +1083,14 @@
     }
 
     .formador-slide {
-        max-width: 250px;
-        /* Un poco más chico en mobile */
+        /* Width: ~85% para intentar asegurar que se vea un borde del siguiente */
+        width: 85vw;
+        max-width: 300px;
+        /* Limite razonable para que en 599px no sea gigante */
+    }
+
+    .formador-img-wrapper {
+        aspect-ratio: 313 / 258;
     }
 }
 

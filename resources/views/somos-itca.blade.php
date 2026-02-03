@@ -79,7 +79,7 @@
         <main>
             <!-- Main / Intro Section -->
             <section class="main-section" id="main">
-                <div class="container">
+                <div class="container somos-itca-container">
                     <div class="main-content">
                         <h1 class="main-title">
                             <span class="main-title-line-1">Tu pasión por la mecánica,</span>
@@ -100,7 +100,7 @@
 
             <!-- Main Content Section -->
             <section class="main-content-section">
-                <div class="container">
+                <div class="container somos-itca-container">
                     <div class="main-content">
                         <div class="info-dropdown">
                             <div class="info-dropdown-header">
@@ -307,7 +307,7 @@
 
             <!-- Info Metrics Section -->
             <section class="info-metrics-section">
-                <div class="container metrics-container">
+                <div class="container metrics-container somos-itca-container">
                     <div class="metrics-grid">
                         <!-- Metric 1 -->
                         <div class="metric-item">
@@ -433,7 +433,7 @@
 
             <!-- CTA Decision Section -->
             <section class="cta-decide-section">
-                <div class="container">
+                <div class="container somos-itca-container">
                     <p class="cta-decide-text">
                         <strong>¿Todavía no te decidiste?</strong><br>
                         Estudiá y capacitate con nosotros

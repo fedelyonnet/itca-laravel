@@ -1941,9 +1941,9 @@ document.addEventListener('DOMContentLoaded', function () {
             new window.Swiper(swiperElement, {
                 loop: false,
                 // Mobile (default)
-                slidesPerView: 1.2,
-                centeredSlides: true,
-                spaceBetween: 15,
+                slidesPerView: 'auto',
+                centeredSlides: false,
+                spaceBetween: 0,
                 watchOverflow: true, // Deshabilita navegación si no hay suficientes slides
 
                 speed: 600,
