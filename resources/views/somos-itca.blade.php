@@ -220,7 +220,7 @@
                                                     <!-- Flechas de Navegación -->
                                                     <div class="mobile-arrows-wrapper" style="display: flex; gap: 20px;">
                                                         <button class="fotos-carousel-btn fotos-carousel-btn-prev mobile-prev-btn" style="background: none; border: none; cursor: pointer; padding: 0; opacity: 0.5; transition: opacity 0.3s;">
-                                                            <img src="/images/desktop/arrow-b.svg" alt="Anterior" class="fotos-arrow-left mobile-control-img" style="transform: rotate(180deg);" />
+                                                            <img src="/images/desktop/arrow-b.svg" alt="Anterior" class="fotos-arrow-left mobile-control-img" />
                                                         </button>
                                                         <button class="fotos-carousel-btn fotos-carousel-btn-next mobile-next-btn" style="background: none; border: none; cursor: pointer; padding: 0; opacity: 1; transition: opacity 0.3s;">
                                                             <img src="/images/desktop/arrow-b.svg" alt="Siguiente" class="mobile-control-img" />
@@ -308,7 +308,7 @@
                                                     <!-- Flechas de Navegación -->
                                                     <div class="mobile-arrows-wrapper" style="display: flex; gap: 20px;">
                                                         <button class="fotos-carousel-btn fotos-carousel-btn-prev mobile-prev-btn" style="background: none; border: none; cursor: pointer; padding: 0; opacity: 0.5; transition: opacity 0.3s;">
-                                                            <img src="/images/desktop/arrow-b.svg" alt="Anterior" class="fotos-arrow-left mobile-control-img" style="transform: rotate(180deg);" />
+                                                            <img src="/images/desktop/arrow-b.svg" alt="Anterior" class="fotos-arrow-left mobile-control-img" />
                                                         </button>
                                                         <button class="fotos-carousel-btn fotos-carousel-btn-next mobile-next-btn" style="background: none; border: none; cursor: pointer; padding: 0; opacity: 1; transition: opacity 0.3s;">
                                                             <img src="/images/desktop/arrow-b.svg" alt="Siguiente" class="mobile-control-img" />

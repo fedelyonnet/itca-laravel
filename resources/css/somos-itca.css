@@ -779,24 +779,49 @@
 /* FEATURES/CARACTERÍSTICAS DE INSTALACIONES (Lista con estrellas) */
 .instalaciones-features-container {
     width: 100%;
-    max-width: clamp(1070px, 85vw, 1557px);
     margin: 40px auto 0;
     padding: 0 20px;
 }
 
+@media (min-width: 1100px) {
+    .instalaciones-features-container {
+        width: 100%;
+        max-width: 100%;
+        margin: 40px 0 0 0;
+        padding: 0;
+        display: grid;
+        place-items: center;
+        /* Centrado absoluto e infalible en Grid */
+    }
+
+    .instalaciones-list {
+        /* Fluidez requerida: Max 700px en 1920px, reduciendo hacia 1100px */
+        max-width: clamp(500px, calc(500px + (700 - 500) * ((100vw - 1100px) / (1920 - 1100))), 700px);
+        width: fit-content;
+        /* Clave para que el centrado sea real respecto al texto */
+        margin: 0;
+        padding: 0 !important;
+    }
+}
+
 .instalaciones-list {
     list-style: none;
-    padding: 0;
-    margin: 0 auto;
+    padding: 0 !important;
+    /* Forzar reseteo de padding lateral de UL */
+    margin: 0;
+    /* El centrado lo hace el padre flex */
     display: flex;
     flex-direction: column;
     gap: 15px;
     width: fit-content;
+    padding-inline-start: 0;
+    /* Reseteo moderno extra */
 }
 
 .instalaciones-item {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
+    /* Alineación vertical al centro */
     gap: clamp(12px, 1.5vw, 22px);
     text-align: left;
     font-family: 'Montserrat', sans-serif;
@@ -814,7 +839,8 @@
     width: clamp(20px, 1.5vw, 28px);
     height: auto;
     flex-shrink: 0;
-    margin-top: 3px;
+    margin-top: 0;
+    /* Remover margin-top para que align-items: center funcione puro */
 }
 
 @media (min-width: 600px) and (max-width: 1099px) {
@@ -873,7 +899,7 @@
     color: white;
     font-weight: 300;
     text-align: center;
-    margin: 20px auto 40px;
+    margin: 0 auto 40px;
     max-width: 90%;
 }
 
@@ -890,9 +916,13 @@
 
     .formadores-text-intro {
         text-align: left;
-        /* En mobile generalmente se lee mejor alineado a la izquierda o justificado, pero el usuario pidió centrado. Lo dejaré centrado si no especifica lo contrario, pero el br display none ayuda. */
-        text-align: center;
-        padding: 0 15px;
+        margin: 0 0 20px;
+        max-width: 100%;
+        hyphens: auto;
+        -webkit-hyphens: auto;
+        -ms-hyphens: auto;
+        overflow-wrap: break-word;
+        /* Aseguramos que rompa si no soporta hyphens */
     }
 }
 
@@ -1556,6 +1586,18 @@
     .mobile-control-img {
         width: clamp(30px, 8vw, 42px) !important;
         height: clamp(30px, 8vw, 42px) !important;
+        /* Optimización de renderizado para evitar pixelación/borrosidad en escalas */
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        transform: translateZ(0);
+        /* Forzar aceleración GPU */
+        -webkit-font-smoothing: antialiased;
+        image-rendering: -webkit-optimize-contrast;
+        /* Crucial para nitidez en PNGs escalados */
+    }
+
+    .fotos-arrow-left.mobile-control-img {
+        transform: rotate(180deg) translateZ(0);
     }
 }
 
