@@ -146,9 +146,15 @@ class WelcomeController extends Controller
         $stickyBar = StickyBar::first();
         
         // Obtener contenido gestionable de la página
-        $content = SomosItcaContent::with(['instalaciones', 'formadores'])->first();
+        $content = SomosItcaContent::with([
+            'instalaciones' => function($q) { $q->orderBy('orden', 'asc'); }, // Add order for instalacion images too? Default is fine but good practice.
+            'formadores',
+            'porQueItems' => function($q) { $q->orderBy('orden', 'asc')->orderBy('id', 'asc'); },
+            'instalacionItems' => function($q) { $q->orderBy('orden', 'asc')->orderBy('id', 'asc'); }
+        ])->first();
         $instalaciones = $content ? $content->instalaciones : collect();
         $formadores = $content ? $content->formadores : collect();
+        $instalacionItems = $content ? $content->instalacionItems : collect();
 
         // Obtener partners ordenados
         $partners = Partner::ordered()->get();
@@ -162,8 +168,8 @@ class WelcomeController extends Controller
         // Obtener datos de contacto
         $contactosInfo = \App\Models\DatoContacto::info()->get();
         $contactosSocial = \App\Models\DatoContacto::social()->get();
-        
-        return view('somos-itca', compact('stickyBar', 'partners', 'sedes', 'contactosInfo', 'contactosSocial', 'content', 'instalaciones', 'formadores'));
+
+        return view('somos-itca', compact('stickyBar', 'partners', 'sedes', 'contactosInfo', 'contactosSocial', 'content', 'instalaciones', 'formadores', 'instalacionItems'));
     }
 
     public function retomarInscripcion(Request $request)

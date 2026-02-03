@@ -12,6 +12,7 @@ class SomosItcaContent extends Model
     protected $fillable = [
         'video_url',
         'img_por_que',
+        'que_es_itca',
     ];
 
     public function instalaciones()
@@ -22,5 +23,15 @@ class SomosItcaContent extends Model
     public function formadores()
     {
         return $this->hasMany(Formador::class);
+    }
+
+    public function porQueItems()
+    {
+        return $this->hasMany(PorQueItem::class);
+    }
+    
+    public function instalacionItems()
+    {
+        return $this->hasMany(InstalacionItem::class);
     }
 }

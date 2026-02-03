@@ -120,15 +120,29 @@
                                         @endif
                                     </div>
                                     <div class="text-col">
-                                        <p class="itca-text">
-                                            <strong>ITCA (Instituto Tecnológico de Capacitación Automotriz)</strong> es el lugar donde tu pasión por los fierros se convierte en una profesión real.
-                                        </p>
-                                        <p class="itca-text">
-                                            Es una <strong>institución educativa especializada en mecánica, electrónica y tecnologías del automóvil y la moto</strong>, pensada para jóvenes que quieren aprender haciendo, con clases prácticas, equipamiento real y una visión enfocada en salida laboral inmediata.
-                                        </p>
-                                        <p class="itca-text itca-text-extra">
-                                            Vas a aprender mecánica con autos y motos reales, con docentes expertos y talleres equipados, preparándote para trabajar en talleres, abrir tu propio emprendimiento o integrarte fácilmente al mercado automotriz.
-                                        </p>
+                                        @if(isset($content) && $content->que_es_itca)
+                                            @php
+                                                // Convertir */texto/* a <strong>texto</strong> y saltos de línea a <br>
+                                                $formattedText = nl2br(preg_replace('/\*\/(.*?)\/\*/', '<strong>$1</strong>', e($content->que_es_itca)));
+                                                
+                                                // Para asegurar que los strongs parseados no se escapen, usamos e() antes y luego revertimos SOLO para strong
+                                                // Una forma más segura:
+                                                $text = e($content->que_es_itca); // Escapar todo primero
+                                                $text = preg_replace('/\*\/(.*?)\/\*/', '<strong>$1</strong>', $text); // Aplicar negrita
+                                                $text = nl2br($text); // Aplicar br
+                                            @endphp
+                                            <p class="itca-text">{!! $text !!}</p>
+                                        @else
+                                            <p class="itca-text">
+                                                <strong>ITCA (Instituto Tecnológico de Capacitación Automotriz)</strong> es el lugar donde tu pasión por los fierros se convierte en una profesión real.
+                                            </p>
+                                            <p class="itca-text">
+                                                Es una <strong>institución educativa especializada en mecánica, electrónica y tecnologías del automóvil y la moto</strong>, pensada para jóvenes que quieren aprender haciendo, con clases prácticas, equipamiento real y una visión enfocada en salida laboral inmediata.
+                                            </p>
+                                            <p class="itca-text itca-text-extra">
+                                                Vas a aprender mecánica con autos y motos reales, con docentes expertos y talleres equipados, preparándote para trabajar en talleres, abrir tu propio emprendimiento o integrarte fácilmente al mercado automotriz.
+                                            </p>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -154,26 +168,37 @@
                                     <!-- Text Column -->
                                     <div class="por-que-text-col">
                                         <ul class="por-que-list">
-                                            <li class="por-que-item">
-                                                <img src="/images/desktop/somos-itca/ico1.png" alt="Icono" class="por-que-icon">
-                                                <span class="por-que-text">Práctica real desde el primer día.</span>
-                                            </li>
-                                            <li class="por-que-item">
-                                                <img src="/images/desktop/somos-itca/ico2.png" alt="Icono" class="por-que-icon">
-                                                <span class="por-que-text">Pasión que se convierte en profesión.</span>
-                                            </li>
-                                            <li class="por-que-item">
-                                                <img src="/images/desktop/somos-itca/ico3.png" alt="Icono" class="por-que-icon">
-                                                <span class="por-que-text">Salida laboral concreta.</span>
-                                            </li>
-                                            <li class="por-que-item">
-                                                <img src="/images/desktop/somos-itca/ico4.png" alt="Icono" class="por-que-icon">
-                                                <span class="por-que-text">Reconocimiento de la industria.</span>
-                                            </li>
-                                            <li class="por-que-item">
-                                                <img src="/images/desktop/somos-itca/ico5.png" alt="Icono" class="por-que-icon">
-                                                <span class="por-que-text">Flexibilidad para estudiar: presencial y semipresencial.</span>
-                                            </li>
+                                            @if(isset($content) && $content->porQueItems && $content->porQueItems->count() > 0)
+                                                @foreach($content->porQueItems as $item)
+                                                    <li class="por-que-item">
+                                                        {{-- Ciclar iconos del 1 al 5 --}}
+                                                        @php $iconIndex = ($loop->index % 5) + 1; @endphp
+                                                        <img src="/images/desktop/somos-itca/ico{{ $iconIndex }}.png" alt="Icono" class="por-que-icon">
+                                                        <span class="por-que-text">{{ $item->descripcion }}</span>
+                                                    </li>
+                                                @endforeach
+                                            @else
+                                                <li class="por-que-item">
+                                                    <img src="/images/desktop/somos-itca/ico1.png" alt="Icono" class="por-que-icon">
+                                                    <span class="por-que-text">Práctica real desde el primer día.</span>
+                                                </li>
+                                                <li class="por-que-item">
+                                                    <img src="/images/desktop/somos-itca/ico2.png" alt="Icono" class="por-que-icon">
+                                                    <span class="por-que-text">Pasión que se convierte en profesión.</span>
+                                                </li>
+                                                <li class="por-que-item">
+                                                    <img src="/images/desktop/somos-itca/ico3.png" alt="Icono" class="por-que-icon">
+                                                    <span class="por-que-text">Salida laboral concreta.</span>
+                                                </li>
+                                                <li class="por-que-item">
+                                                    <img src="/images/desktop/somos-itca/ico4.png" alt="Icono" class="por-que-icon">
+                                                    <span class="por-que-text">Reconocimiento de la industria.</span>
+                                                </li>
+                                                <li class="por-que-item">
+                                                    <img src="/images/desktop/somos-itca/ico5.png" alt="Icono" class="por-que-icon">
+                                                    <span class="por-que-text">Flexibilidad para estudiar: presencial y semipresencial.</span>
+                                                </li>
+                                            @endif
                                         </ul>
                                     </div>
                                 </div>
@@ -186,14 +211,14 @@
                                 <img src="/images/desktop/chevron.png" alt="Abrir" class="info-dropdown-chevron">
                             </div>
                             <div class="info-dropdown-content instalaciones-dropdown-content">
-                                <p class="instalaciones-text mobile-order-1">
+                                <p class="instalaciones-text">
                                     En ITCA, cada aula y cada taller están pensados para que te sumerjas en la mecánica desde el primer día.<span class="mobile-hidden-text"><br>
                                     No hay teoría sin práctica: vas a tocar, desarmar y construir sobre lo que realmente usan los talleres de hoy.</span>
                                 </p>
 
                                 @if(isset($instalaciones) && $instalaciones->count() > 0)
                                     <!-- Carrusel Instalaciones (Clon de Formadores) -->
-                                    <div class="formadores-section mobile-order-3">
+                                    <div class="formadores-section">
                                         <div class="fotos-carousel-section">
                                             <div class="swiper fotos-swiper formadores-swiper">
                                                 <div class="swiper-wrapper">
@@ -245,32 +270,42 @@
 
 
 
-                                <div class="instalaciones-features-container mobile-order-2">
+                                <div class="instalaciones-features-container">
                                     <ul class="instalaciones-list">
-                                        <li class="instalaciones-item">
-                                            <img src="/images/desktop/somos-itca/star1.png" alt="Star" class="instalaciones-star">
-                                            <span>Trabajo directo sobre <strong>motores y vehículos.</strong></span>
-                                        </li>
-                                        <li class="instalaciones-item">
-                                            <img src="/images/desktop/somos-itca/star2.png" alt="Star" class="instalaciones-star">
-                                            <span><strong>Equipamiento completo</strong> para una formación profesional.</span>
-                                        </li>
-                                        <li class="instalaciones-item">
-                                            <img src="/images/desktop/somos-itca/star3.png" alt="Star" class="instalaciones-star">
-                                            <span><strong>Aulas Taller</strong> que integran teoría y práctica.</span>
-                                        </li>
-                                        <li class="instalaciones-item">
-                                            <img src="/images/desktop/somos-itca/star1.png" alt="Star" class="instalaciones-star">
-                                            <span><strong>Confort:</strong> aire acondicionado, proyector y sillas cómodas.</span>
-                                        </li>
-                                        <li class="instalaciones-item">
-                                            <img src="/images/desktop/somos-itca/star2.png" alt="Star" class="instalaciones-star">
-                                            <span><strong>Seguridad:</strong> detectores de humo, cámaras de seguridad y normas que garantizan un entorno cuidado.</span>
-                                        </li>
-                                        <li class="instalaciones-item">
-                                            <img src="/images/desktop/somos-itca/star3.png" alt="Star" class="instalaciones-star">
-                                            <span><strong>Nunca suspendemos las clases</strong>, contamos con grupo electrógeno propio.</span>
-                                        </li>
+                                        @if(isset($instalacionItems) && $instalacionItems->count() > 0)
+                                            @foreach($instalacionItems as $item)
+                                                <li class="instalaciones-item">
+                                                    @php $folder = $item->image_path ? asset('storage/'.$item->image_path) : '/images/desktop/somos-itca/star'.(($loop->index % 3) + 1).'.png'; @endphp
+                                                    <img src="/images/desktop/somos-itca/star{{ ($loop->index % 3) + 1 }}.png" alt="Star" class="instalaciones-star">
+                                                    <span>{!! preg_replace('/\*\/(.*?)\/\*/', '<strong>$1</strong>', e($item->descripcion)) !!}</span>
+                                                </li>
+                                            @endforeach
+                                        @else
+                                            <li class="instalaciones-item">
+                                                <img src="/images/desktop/somos-itca/star1.png" alt="Star" class="instalaciones-star">
+                                                <span>Trabajo directo sobre <strong>motores y vehículos.</strong></span>
+                                            </li>
+                                            <li class="instalaciones-item">
+                                                <img src="/images/desktop/somos-itca/star2.png" alt="Star" class="instalaciones-star">
+                                                <span><strong>Equipamiento completo</strong> para una formación profesional.</span>
+                                            </li>
+                                            <li class="instalaciones-item">
+                                                <img src="/images/desktop/somos-itca/star3.png" alt="Star" class="instalaciones-star">
+                                                <span><strong>Aulas Taller</strong> que integran teoría y práctica.</span>
+                                            </li>
+                                            <li class="instalaciones-item">
+                                                <img src="/images/desktop/somos-itca/star1.png" alt="Star" class="instalaciones-star">
+                                                <span><strong>Confort:</strong> aire acondicionado, proyector y sillas cómodas.</span>
+                                            </li>
+                                            <li class="instalaciones-item">
+                                                <img src="/images/desktop/somos-itca/star2.png" alt="Star" class="instalaciones-star">
+                                                <span><strong>Seguridad:</strong> detectores de humo, cámaras de seguridad y normas que garantizan un entorno cuidado.</span>
+                                            </li>
+                                            <li class="instalaciones-item">
+                                                <img src="/images/desktop/somos-itca/star3.png" alt="Star" class="instalaciones-star">
+                                                <span><strong>Ubicación estratégica:</strong> Sede Central y Sedes en GBA para estar cerca tuyo.</span>
+                                            </li>
+                                        @endif
                                     </ul>
                                 </div>
                             </div>

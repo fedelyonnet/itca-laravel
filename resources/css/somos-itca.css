@@ -588,6 +588,23 @@
         margin-top: 20px;
     }
 
+    .instalaciones-dropdown-content {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .instalaciones-text {
+        order: 1;
+    }
+
+    .instalaciones-features-container {
+        order: 2;
+    }
+
+    .formadores-section {
+        order: 3;
+    }
+
     .por-que-item {
         grid-template-columns: 45px 1fr;
         gap: 10px;
@@ -878,6 +895,7 @@
     .instalaciones-list {
         margin: 0 auto;
         width: 100%;
+        padding-bottom: 35px !important;
     }
 
     .instalaciones-item {

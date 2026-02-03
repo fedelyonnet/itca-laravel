@@ -222,10 +222,22 @@ Route::middleware('auth')->group(function () {
         // Instalaciones
         Route::post('/somos-itca/instalaciones', [App\Http\Controllers\SomosItcaController::class, 'storeInstalacion'])->name('admin.somos-itca.instalaciones.store');
         Route::delete('/somos-itca/instalaciones/{id}', [App\Http\Controllers\SomosItcaController::class, 'destroyInstalacion'])->name('admin.somos-itca.instalaciones.destroy');
+        Route::put('/somos-itca/instalaciones/{id}', [App\Http\Controllers\SomosItcaController::class, 'updateInstalacion'])->name('admin.somos-itca.instalaciones.update');
+        Route::post('/somos-itca/instalaciones/reorder', [App\Http\Controllers\SomosItcaController::class, 'reorderInstalaciones'])->name('admin.somos-itca.instalaciones.reorder');
+
+        // Instalacion Items (Lista con estrellas)
+        Route::post('/somos-itca/instalacion-items', [App\Http\Controllers\SomosItcaController::class, 'storeInstalacionItem'])->name('admin.somos-itca.instalacion-items.store');
+        Route::delete('/somos-itca/instalacion-items/{id}', [App\Http\Controllers\SomosItcaController::class, 'destroyInstalacionItem'])->name('admin.somos-itca.instalacion-items.destroy');
+        Route::post('/somos-itca/instalacion-items/reorder', [App\Http\Controllers\SomosItcaController::class, 'reorderInstalacionItems'])->name('admin.somos-itca.instalacion-items.reorder');
 
         // Formadores
         Route::post('/somos-itca/formadores', [App\Http\Controllers\SomosItcaController::class, 'storeFormador'])->name('admin.somos-itca.formadores.store');
         Route::delete('/somos-itca/formadores/{id}', [App\Http\Controllers\SomosItcaController::class, 'destroyFormador'])->name('admin.somos-itca.formadores.destroy');
+
+        // Por Qué Items
+        Route::post('/somos-itca/porque', [App\Http\Controllers\SomosItcaController::class, 'storePorQueItem'])->name('admin.somos-itca.porque.store');
+        Route::delete('/somos-itca/porque/{id}', [App\Http\Controllers\SomosItcaController::class, 'destroyPorQueItem'])->name('admin.somos-itca.porque.destroy');
+        Route::post('/somos-itca/porque/reorder', [App\Http\Controllers\SomosItcaController::class, 'reorderPorQueItems'])->name('admin.somos-itca.porque.reorder');
     });
 });
 
