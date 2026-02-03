@@ -1246,8 +1246,8 @@
     }
 
     .metric-text {
-        /* Fluidez: ~11px en 320px -> 12px en 430px */
-        font-size: clamp(11px, calc(11px + (12 - 11) * ((100vw - 320px) / 110)), 12px);
+        /* Fluidez: 12px en 320px -> 15px en 430px */
+        font-size: clamp(12px, calc(12px + (15 - 12) * ((100vw - 320px) / 110)), 15px);
         line-height: 1.5;
         max-width: 250px;
     }
