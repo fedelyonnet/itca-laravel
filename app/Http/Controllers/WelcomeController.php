@@ -148,7 +148,7 @@ class WelcomeController extends Controller
         // Obtener contenido gestionable de la página
         $content = SomosItcaContent::with([
             'instalaciones' => function($q) { $q->orderBy('orden', 'asc'); }, // Add order for instalacion images too? Default is fine but good practice.
-            'formadores',
+            'formadores' => function($q) { $q->orderBy('orden', 'asc')->orderBy('id', 'asc'); },
             'porQueItems' => function($q) { $q->orderBy('orden', 'asc')->orderBy('id', 'asc'); },
             'instalacionItems' => function($q) { $q->orderBy('orden', 'asc')->orderBy('id', 'asc'); }
         ])->first();
@@ -190,7 +190,10 @@ class WelcomeController extends Controller
                     ->ordered()
                     ->get();
 
-        return view('beneficios', compact('stickyBar', 'contactosInfo', 'contactosSocial', 'partners', 'sedes'));
+        // Obtener contenido de beneficios
+        $content = \App\Models\BeneficiosContent::first();
+
+        return view('beneficios', compact('stickyBar', 'contactosInfo', 'contactosSocial', 'partners', 'sedes', 'content'));
     }
 
     public function retomarInscripcion(Request $request)

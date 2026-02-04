@@ -27,10 +27,9 @@
     </div>
 
     <div class="py-12" x-data="{ 
-        activeTab: localStorage.getItem('active_somos_itca_tab') || 'header',
+        activeTab: '{{ session('active_tab', 'header') }}',
         setActiveTab(tab) {
             this.activeTab = tab;
-            localStorage.setItem('active_somos_itca_tab', tab);
         }
     }">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -69,33 +68,27 @@
                         <form action="{{ route('admin.somos-itca.update-content') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                             @csrf
                             @method('PUT')
+                            <input type="hidden" name="active_tab" value="header">
                             
                                 <!-- Imagen Hero -->
                                 <div class="bg-gray-900 p-4 rounded border border-gray-700 w-full">
                                     <label class="block text-sm font-bold text-gray-300 mb-2 uppercase">Imagen Hero Principal (Fondo)</label>
-                                    <div class="relative group max-w-2xl mx-auto">
-                                        <input type="file" name="hero_image" id="hero_image" accept="image/*" class="hidden" onchange="previewHero(this)">
-                                        <label for="hero_image" class="relative block w-full h-48 bg-gray-800 rounded overflow-hidden border border-gray-700 border-dashed hover:border-blue-500 cursor-pointer transition-all group shadow-inner">
-                                            @if(isset($content->hero_image) && $content->hero_image)
-                                                <img id="hero_preview" src="{{ asset('storage/' . $content->hero_image) }}" class="w-full h-full object-cover">
-                                            @else
-                                                <img id="hero_preview" class="w-full h-full object-cover hidden">
-                                            @endif
-                                            <div id="hero_placeholder" class="{{ (isset($content->hero_image) && $content->hero_image) ? 'hidden' : '' }} absolute inset-0 flex flex-col items-center justify-center text-gray-500 group-hover:text-blue-400 transition-colors p-4 pointer-events-none">
-                                                <svg class="w-8 h-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                                <span class="text-xs uppercase font-bold">Cambiar Imagen Hero</span>
-                                            </div>
-                                        </label>
-                                    </div>
-                                    <p class="text-[10px] text-gray-500 mt-2 text-center font-mono">Recomendado: 1920x1080px. El título superior se mantiene fijo por diseño.</p>
-                            </div>
-
-                            <div class="flex justify-center pt-8 border-t border-gray-700">
-                                <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-10 rounded-full shadow-lg transition-all transform hover:-translate-y-1 active:scale-95 flex items-center gap-2">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
-                                    GUARDAR CONFIGURACIÓN HEADER
-                                </button>
-                            </div>
+                                        <div class="relative group max-w-2xl mx-auto">
+                                            <input type="file" name="hero_image" id="hero_image" accept="image/*" class="hidden" onchange="this.form.submit()">
+                                            <label for="hero_image" class="relative block w-full h-48 bg-gray-800 rounded overflow-hidden border border-gray-700 border-dashed hover:border-blue-500 cursor-pointer transition-all group shadow-inner">
+                                                @if(isset($content->hero_image) && $content->hero_image)
+                                                    <img id="hero_preview" src="{{ asset('storage/' . $content->hero_image) }}" class="w-full h-full object-cover">
+                                                @else
+                                                    <img id="hero_preview" class="w-full h-full object-cover hidden">
+                                                @endif
+                                                <div id="hero_placeholder" class="{{ (isset($content->hero_image) && $content->hero_image) ? 'hidden' : '' }} absolute inset-0 flex flex-col items-center justify-center text-gray-500 group-hover:text-blue-400 transition-colors p-4 pointer-events-none">
+                                                    <svg class="w-8 h-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                                    <span class="text-xs uppercase font-bold">Cambiar Imagen Hero</span>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <p class="text-[10px] text-gray-500 mt-2 text-center font-mono">Recomendado: 1920x1080px. El título superior se mantiene fijo por diseño.</p>
+                                </div>
                         </form>
                     </div>
 
@@ -105,13 +98,14 @@
                         <form action="{{ route('admin.somos-itca.update-content') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                             @csrf
                             @method('PUT')
+                            <input type="hidden" name="active_tab" value="que-es-itca">
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <!-- Video -->
                                 <div class="bg-gray-900 p-4 rounded border border-gray-700">
                                     <label class="block text-sm font-bold text-gray-300 mb-2 uppercase">Video de Presentación</label>
                                     <div class="relative group">
-                                        <input type="file" name="video_file" id="video_file_tab2" accept="video/mp4,video/webm" class="hidden" onchange="previewVideoTab2(this)">
+                                        <input type="file" name="video_file" id="video_file_tab2" accept="video/mp4,video/webm" class="hidden" onchange="this.form.submit()">
                                         <label for="video_file_tab2" class="relative block w-full h-48 bg-gray-800 rounded overflow-hidden border border-gray-700 border-dashed hover:border-blue-500 cursor-pointer transition-all group shadow-inner flex flex-col items-center justify-center">
                                             @if(isset($content->video_url) && $content->video_url)
                                                 <video id="video_preview_tab2" src="{{ asset('storage/' . $content->video_url) }}" class="w-full h-full object-cover" muted loop></video>
@@ -143,10 +137,10 @@
                             </div>
 
                             <div class="flex justify-center pt-8 border-t border-gray-700">
-                                <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-10 rounded-full shadow-lg transition-all transform hover:-translate-y-1 active:scale-95 flex items-center gap-2">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
-                                    GUARDAR CONFIGURACIÓN
-                                </button>
+                                    <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-10 rounded-full shadow-lg transition-all transform hover:-translate-y-1 active:scale-95 flex items-center gap-2">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                                        GUARDAR TEXTO
+                                    </button>
                             </div>
                         </form>
                     </div>
@@ -161,10 +155,11 @@
                                 <form action="{{ route('admin.somos-itca.update-content') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                                     @csrf
                                     @method('PUT')
+                                    <input type="hidden" name="active_tab" value="porque">
                                     <div class="bg-gray-900 p-4 rounded border border-gray-700">
                                         <label class="block text-sm font-bold text-gray-300 mb-2 uppercase">Imagen Lateral</label>
                                         <div class="relative group">
-                                            <input type="file" name="img_por_que" id="img_por_que_tab3" accept="image/*" class="hidden" onchange="previewImageTab3(this)">
+                                            <input type="file" name="img_por_que" id="img_por_que_tab3" accept="image/*" class="hidden" onchange="this.form.submit()">
                                             <label for="img_por_que_tab3" class="relative block w-full h-64 bg-gray-800 rounded overflow-hidden border border-gray-700 border-dashed hover:border-blue-500 cursor-pointer transition-all group shadow-inner">
                                                 @if(isset($content->img_por_que) && $content->img_por_que)
                                                     <img id="img_preview_tab3" src="{{ asset('storage/' . $content->img_por_que) }}" class="w-full h-full object-cover">
@@ -178,12 +173,6 @@
                                             </label>
                                         </div>
                                         <p class="text-[10px] text-gray-500 mt-1 text-center">800x1200px (Vertical recomendado)</p>
-                                    </div>
-                                    <div class="flex justify-center pt-4">
-                                        <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-10 rounded-full shadow-lg transition-all transform hover:-translate-y-1 active:scale-95 flex items-center gap-2">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                            GUARDAR IMAGEN
-                                        </button>
                                     </div>
                                 </form>
                             </div>
@@ -269,25 +258,40 @@
                             <div class="space-y-6">
                                 <div class="bg-gray-900 p-4 rounded border border-gray-700">
                                     <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-2">
-                                        <label class="text-sm font-bold text-gray-300 uppercase">Imágenes del Carrusel</label>
+                                        <label class="text-sm font-bold text-gray-300 uppercase">Carrousel de instalaciones</label>
                                         <button onclick="openModalInstalacion()" class="bg-green-600 hover:bg-green-500 text-white px-2 py-1 rounded text-[10px] font-bold uppercase transition-all shadow-md">
                                             + Agregar Foto
                                         </button>
                                     </div>
                                     @if(isset($instalaciones) && $instalaciones->count() > 0)
-                                        <div class="grid grid-cols-3 gap-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                                        <div id="instalacionesList" class="space-y-2 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                                             @foreach($instalaciones as $inst)
-                                                <div class="relative group aspect-square rounded overflow-hidden border border-gray-700">
-                                                    <img src="{{ asset('storage/' . $inst->image_path) }}" class="w-full h-full object-cover">
-                                                    <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                                        <form action="{{ route('admin.somos-itca.instalaciones.destroy', $inst->id) }}" method="POST" onsubmit="return confirmSubmission(event, 'Eliminar', '¿Borrar esta imagen?');">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="bg-red-600 text-white p-2 rounded-full hover:bg-red-500 transition-colors">
-                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                                            </button>
-                                                        </form>
+                                                <div data-id="{{ $inst->id }}" class="instalacion-draggable flex items-center justify-between bg-gray-800 p-2 rounded border border-gray-700 group hover:border-blue-500/50 cursor-move">
+                                                    <div class="flex items-center gap-3">
+                                                        <!-- Drag Handle -->
+                                                        <svg class="w-4 h-4 text-gray-600 drag-handle group-hover:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                                                        
+                                                        <!-- Icon & Preview Container -->
+                                                        <div class="relative group/preview flex items-center">
+                                                            <!-- Thumbnail Icon -->
+                                                            <img src="{{ asset('storage/' . $inst->image_path) }}" class="h-8 w-8 rounded object-cover border border-gray-600 cursor-pointer group-hover/preview:border-blue-400 transition-colors">
+                                                            
+                                                            <!-- Hover Image Preview -->
+                                                            <div class="fixed hidden group-hover/preview:block z-[9999] w-64 bg-gray-900 border border-gray-600 rounded-lg shadow-2xl overflow-hidden pointer-events-none" style="transform: translate(20px, -50%);">
+                                                                <img src="{{ asset('storage/' . $inst->image_path) }}" class="w-full h-auto object-cover">
+                                                            </div>
+                                                        </div>
+
+                                                        <span class="text-xs text-gray-400">Imagen ID: {{ $inst->id }}</span>
                                                     </div>
+
+                                                    <form action="{{ route('admin.somos-itca.instalaciones.destroy', $inst->id) }}" method="POST" onsubmit="return confirmSubmission(event, 'Eliminar', '¿Borrar esta imagen?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-gray-500 hover:text-red-500 transition-colors">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                        </button>
+                                                    </form>
                                                 </div>
                                             @endforeach
                                         </div>
@@ -308,6 +312,7 @@
                             <form action="{{ route('admin.somos-itca.update-content') }}" method="POST" class="bg-gray-900 p-4 rounded border border-gray-700 h-fit">
                                 @csrf
                                 @method('PUT')
+                                <input type="hidden" name="active_tab" value="formadores">
                                 <label for="formadores_texto" class="block text-sm font-bold text-gray-300 mb-2 uppercase">Texto Introducción</label>
                                 <p class="text-xs text-gray-400 mb-3 italic">Usa <code class="bg-gray-800 px-1 rounded text-blue-400">*/texto/*</code> para resaltar.</p>
                                 <textarea name="formadores_texto" id="formadores_texto" rows="6" 
@@ -330,10 +335,11 @@
                                     </button>
                                 </div>
                                 @if(isset($formadores) && $formadores->count() > 0)
-                                    <div class="grid grid-cols-2 gap-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                                    <div id="formadoresList" class="space-y-2 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                                         @foreach($formadores as $formador)
-                                            <div class="flex items-center justify-between bg-gray-800 p-2 rounded border border-gray-700 hover:border-gray-500 group">
+                                            <div data-id="{{ $formador->id }}" class="formador-draggable flex items-center justify-between bg-gray-800 p-2 rounded border border-gray-700 hover:border-gray-500 group cursor-move">
                                                 <div class="flex items-center space-x-3 truncate">
+                                                    <svg class="w-4 h-4 text-gray-600 drag-handle group-hover:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                                                     <img src="{{ asset('storage/' . $formador->image_path) }}" class="h-8 w-8 rounded-full object-cover border border-gray-600 flex-shrink-0">
                                                     <span class="text-xs font-medium text-gray-200 truncate">{{ $formador->nombre }}</span>
                                                 </div>
@@ -361,6 +367,7 @@
                         <form action="{{ route('admin.somos-itca.update-content') }}" method="POST" class="space-y-8">
                             @csrf
                             @method('PUT')
+                            <input type="hidden" name="active_tab" value="metricas">
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 @for($i = 1; $i <= 4; $i++)
@@ -408,6 +415,7 @@
                         <form action="{{ route('admin.somos-itca.update-content') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
                             @csrf
                             @method('PUT')
+                            <input type="hidden" name="active_tab" value="categorias">
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                                 @for($i = 1; $i <= 4; $i++)
@@ -419,7 +427,7 @@
                                         <div>
                                             <label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase text-center">Imagen (Frente)</label>
                                             <div class="relative group aspect-square">
-                                                <input type="file" name="cat{{$i}}_img" id="cat{{$i}}_img" accept="image/*" class="hidden" onchange="previewCat(this, {{$i}})">
+                                                <input type="file" name="cat{{$i}}_img" id="cat{{$i}}_img" accept="image/*" class="hidden" onchange="this.form.submit()">
                                                 <label for="cat{{$i}}_img" class="relative block w-full h-full bg-gray-800 rounded overflow-hidden border border-gray-700 border-dashed hover:border-blue-500 cursor-pointer transition-all flex flex-col items-center justify-center group shadow-inner">
                                                     @if(isset($content->{'cat'.$i.'_img'}) && $content->{'cat'.$i.'_img'})
                                                         <img id="cat{{$i}}_preview" src="{{ asset('storage/' . $content->{'cat'.$i.'_img'}) }}" class="w-full h-full object-cover">
@@ -458,10 +466,10 @@
                             </div>
 
                             <div class="flex justify-center pt-8 border-t border-gray-700">
-                                <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-12 rounded-full shadow-lg transition-all transform hover:-translate-y-1 active:scale-95 flex items-center gap-2">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
-                                    GUARDAR CATEGORÍAS
-                                </button>
+                                    <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-12 rounded-full shadow-lg transition-all transform hover:-translate-y-1 active:scale-95 flex items-center gap-2">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                                        GUARDAR TEXTOS
+                                    </button>
                             </div>
                         </form>
                     </div>
@@ -656,6 +664,44 @@
                         var orden = [];
                         document.querySelectorAll('#instalacionItemsList .instalacion-item-draggable').forEach(item => orden.push(item.getAttribute('data-id')));
                         fetch("{{ route('admin.somos-itca.instalacion-items.reorder') }}", {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                            body: JSON.stringify({ orden: orden })
+                        });
+                    },
+                });
+            }
+
+            // Sortable Instalaciones (Grid/List content)
+            var elInstalaciones = document.getElementById('instalacionesList');
+            if(elInstalaciones){
+                new Sortable(elInstalaciones, {
+                    animation: 150,
+                    ghostClass: 'bg-gray-700',
+                    handle: '.drag-handle',
+                    onEnd: function (evt) {
+                        var orden = [];
+                        document.querySelectorAll('#instalacionesList .instalacion-draggable').forEach(item => orden.push(item.getAttribute('data-id')));
+                        fetch("{{ route('admin.somos-itca.instalaciones.reorder') }}", {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                            body: JSON.stringify({ orden: orden })
+                        });
+                    },
+                });
+            }
+
+            // Sortable Formadores
+            var elFormadores = document.getElementById('formadoresList');
+            if(elFormadores){
+                new Sortable(elFormadores, {
+                    animation: 150,
+                    ghostClass: 'bg-gray-700',
+                    handle: '.drag-handle',
+                    onEnd: function (evt) {
+                        var orden = [];
+                        document.querySelectorAll('#formadoresList .formador-draggable').forEach(item => orden.push(item.getAttribute('data-id')));
+                        fetch("{{ route('admin.somos-itca.formadores.reorder') }}", {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
                             body: JSON.stringify({ orden: orden })

@@ -75,6 +75,75 @@
 
     <!-- Main Content -->
         <main>
+        <!-- Breadcrumb Section -->
+        <section class="beneficios-header-section">
+            <div class="container somos-itca-container beneficios-top-container">
+                 <div class="lista-carreras-breadcrumb">
+                    <a href="/" class="lista-carreras-breadcrumb-link">Inicio</a>
+                    <span class="lista-carreras-breadcrumb-separator">></span>
+                    <span class="lista-carreras-breadcrumb-current">Beneficios</span>
+                </div>
+            </div>
+
+            <div class="container somos-itca-container">
+                <div class="beneficios-main-content">
+                    <h1 class="beneficios-header-title">
+                        <span class="beneficios-title-line-1">Los beneficios que marcan</span>
+                        <span class="beneficios-title-line-2">
+                            <span class="beneficios-highlight">la diferencia</span> al estudiar en ITCA
+                        </span>
+                    </h1>
+
+                    <div class="beneficios-image-container">
+                        @if(isset($content->hero_image) && $content->hero_image)
+                            <img src="{{ asset('storage/' . $content->hero_image) }}" alt="Beneficios ITCA" class="beneficios-hero-image">
+                        @else
+                            <img src="/images/desktop/somos-itca/hero-somos.png" alt="Beneficios ITCA" class="beneficios-hero-image">
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Decision Section -->
+        <section class="cta-decide-section">
+            <div class="container somos-itca-container">
+                <div class="cta-stack">
+                    <p class="cta-decide-text">
+                        <strong>¿Todavía no te decidiste?</strong><br>
+                        Estudiá y capacitate con nosotros
+                    </p>
+
+                    <div class="cta-bottom-row">
+                        <div class="cta-decor cta-decor-left">
+                            <img src="/images/desktop/somos-itca/arrow-somos.png" alt="Flecha" class="cta-arrow-img">
+                        </div>
+
+                        <div class="cta-btn-wrapper">
+                            @php
+                                $whatsappItem = $contactosInfo->first(function($item) {
+                                    return Str::contains(Str::lower($item->descripcion), 'whatsapp');
+                                });
+                                $whatsappUrl = '#';
+                                if ($whatsappItem) {
+                                    $numeroLimpio = preg_replace('/[^0-9]/', '', $whatsappItem->contenido);
+                                    $whatsappUrl = "https://wa.me/" . $numeroLimpio;
+                                }
+                            @endphp
+
+                            <a href="{{ $whatsappUrl }}" target="_blank" class="cta-chat-btn">
+                                <strong>Chatear</strong> <span class="cta-text-desktop">con un asesor de inscripción</span><span class="cta-text-mobile">con un asesor</span>
+                            </a>
+                        </div>
+
+                        <div class="cta-decor cta-decor-right">
+                            <img src="/images/desktop/somos-itca/stripes-somos.png" alt="Decoración" class="cta-stripes-img">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Partners Section -->
         <section class="partners-section">
             <div class="partners-content">

@@ -15,7 +15,7 @@ class SomosItcaController extends Controller
     {
         $content = SomosItcaContent::with([
             'instalaciones' => function($q) { $q->orderBy('orden', 'asc')->orderBy('id', 'asc'); },
-            'formadores',
+            'formadores' => function($q) { $q->orderBy('orden', 'asc')->orderBy('id', 'asc'); },
             'porQueItems' => function($q) { $q->orderBy('orden', 'asc')->orderBy('id', 'asc'); },
             'instalacionItems' => function($q) { $q->orderBy('orden', 'asc')->orderBy('id', 'asc'); }
         ])->first();
@@ -142,7 +142,8 @@ class SomosItcaController extends Controller
 
         $content->save();
 
-        return redirect()->back()->with('success', 'Contenido actualizado correctamente.');
+        $activeTab = $request->input('active_tab', 'header');
+        return redirect()->back()->with('success', 'Contenido actualizado correctamente.')->with('active_tab', $activeTab);
     }
 
     public function storeInstalacion(Request $request)
@@ -163,7 +164,7 @@ class SomosItcaController extends Controller
             ]);
         }
 
-        return redirect()->back()->with('success', 'Instalación agregada correctamente.');
+        return redirect()->back()->with('success', 'Instalación agregada correctamente.')->with('active_tab', 'instalaciones');
     }
     
     // Método para actualizar la descripción (si fuera necesario separado)
@@ -190,7 +191,7 @@ class SomosItcaController extends Controller
         
         $instalacion->delete();
 
-        return redirect()->back()->with('success', 'Instalación eliminada.');
+        return redirect()->back()->with('success', 'Instalación eliminada.')->with('active_tab', 'instalaciones');
     }
     
     public function reorderInstalaciones(Request $request)
@@ -224,7 +225,7 @@ class SomosItcaController extends Controller
             ]);
         }
 
-        return redirect()->back()->with('success', 'Formador agregado correctamente.');
+        return redirect()->back()->with('success', 'Formador agregado correctamente.')->with('active_tab', 'formadores');
     }
 
     public function destroyFormador($id)
@@ -237,7 +238,20 @@ class SomosItcaController extends Controller
         
         $formador->delete();
 
-        return redirect()->back()->with('success', 'Formador eliminado.');
+        return redirect()->back()->with('success', 'Formador eliminado.')->with('active_tab', 'formadores');
+    }
+
+    public function reorderFormadores(Request $request)
+    {
+        $orden = $request->input('orden'); 
+        
+        if ($orden && is_array($orden)) {
+            foreach ($orden as $index => $id) {
+                Formador::where('id', $id)->update(['orden' => $index]);
+            }
+        }
+
+        return response()->json(['success' => true]);
     }
 
     public function storePorQueItem(Request $request)
@@ -252,14 +266,14 @@ class SomosItcaController extends Controller
             'descripcion' => $request->descripcion
         ]);
 
-        return redirect()->back()->with('success', 'Item agregado correctamente.');
+        return redirect()->back()->with('success', 'Item agregado correctamente.')->with('active_tab', 'porque');
     }
 
     public function destroyPorQueItem($id)
     {
         $item = PorQueItem::findOrFail($id);
         $item->delete();
-        return redirect()->back()->with('success', 'Item eliminado.');
+        return redirect()->back()->with('success', 'Item eliminado.')->with('active_tab', 'porque');
     }
 
     public function reorderPorQueItems(Request $request)
@@ -288,14 +302,14 @@ class SomosItcaController extends Controller
             'descripcion' => $request->descripcion
         ]);
 
-        return redirect()->back()->with('success', 'Item de instalación agregado.');
+        return redirect()->back()->with('success', 'Item de instalación agregado.')->with('active_tab', 'instalaciones');
     }
 
     public function destroyInstalacionItem($id)
     {
         $item = \App\Models\InstalacionItem::findOrFail($id);
         $item->delete();
-        return redirect()->back()->with('success', 'Item eliminado.');
+        return redirect()->back()->with('success', 'Item eliminado.')->with('active_tab', 'instalaciones');
     }
 
     public function reorderInstalacionItems(Request $request)

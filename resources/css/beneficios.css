@@ -1,1 +1,422 @@
 /* beneficios.css */
+
+/* Header Hero Section */
+.beneficios-header-section {
+    background-color: #010C42;
+    padding: 20px 0 100px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.beneficios-main-content {
+    width: 100%;
+    max-width: clamp(1070px, 94vw, 1700px);
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.beneficios-top-container {
+    padding-top: 20px;
+}
+
+.beneficios-image-container {
+    width: 100%;
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    overflow: visible;
+}
+
+.beneficios-hero-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    display: block;
+    position: relative;
+    z-index: 1;
+}
+
+
+
+/* Global Container Style - Removed to avoid conflicts, handled by specific sections */
+/*
+.somos-itca-container {
+    background-color: #02115A;
+}
+*/
+
+.lista-carreras-breadcrumb {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    margin-bottom: 20px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    width: 100%;
+    /* Mismo ancho fluido que main content y contacto */
+    max-width: clamp(1070px, 94vw, 1700px);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+@media (max-width: 1099px) {
+    .lista-carreras-breadcrumb {
+        max-width: 94vw;
+        padding-left: 0;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (max-width: 599px) {
+    .lista-carreras-breadcrumb {
+        width: 93.5vw;
+        max-width: none;
+        padding-left: 0;
+        padding-right: 0;
+        margin-left: auto;
+        margin-right: auto;
+        justify-content: flex-start;
+    }
+}
+
+.lista-carreras-breadcrumb-link {
+    color: #ffffff;
+    /* Link blanco */
+    text-decoration: none;
+    font-weight: 500;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.lista-carreras-breadcrumb-separator {
+    color: #65E09C;
+    /* Separador verde */
+    font-family: 'Montserrat', sans-serif;
+}
+
+.lista-carreras-breadcrumb-current {
+    color: #ffffff;
+    /* Texto actual blanco */
+    font-weight: 500;
+    /* Matched 500 to link */
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Ensure header section is dark blue (same as menu) */
+.beneficios-header-section {
+    width: 100%;
+}
+
+.cta-decide-section {
+    background-color: #02115A !important;
+    padding: 60px 0;
+    width: 100%;
+}
+
+/* Ensure CTA container style doesn't override transparently if not needed, or reset */
+.cta-decide-section .somos-itca-container {
+    background-color: transparent !important;
+}
+
+/* Reset any global somos-itca-container BG that might interfere if used elsewhere */
+.cta-decide-text {
+    width: 100%;
+    margin: 0;
+    text-align: center;
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    line-height: 1.3;
+}
+
+.cta-decide-text strong {
+    font-weight: 700;
+}
+
+.cta-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.cta-chat-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 2px solid #65E09C;
+    border-radius: 49px;
+    color: #65E09C;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+}
+
+.cta-chat-btn strong {
+    font-weight: 700;
+    margin-right: 5px;
+}
+
+.cta-chat-btn:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    transform: scale(1.05);
+}
+
+.cta-decor img {
+    display: block;
+    height: auto;
+}
+
+/* 1) VIEW: UP TO 599px (Mobile) */
+@media (max-width: 599px) {
+    .cta-decide-text {
+        font-size: 20px;
+        margin-bottom: 30px;
+    }
+
+    .cta-bottom-row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .cta-decor {
+        display: none;
+    }
+
+    .cta-chat-btn {
+        padding: 15px 25px;
+        font-size: clamp(16px, 4.5vw, 18px);
+        white-space: normal;
+        text-align: center;
+    }
+
+    .cta-text-desktop {
+        display: none;
+    }
+
+    .cta-text-mobile {
+        display: inline;
+    }
+}
+
+/* 2) VIEW: 600px TO 1099px (Tablet) */
+@media (min-width: 600px) and (max-width: 1099px) {
+    .cta-decide-text {
+        font-size: clamp(22px, 3vw, 24px);
+        margin-bottom: 35px;
+    }
+
+    .cta-bottom-row {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        gap: 30px;
+        width: 100%;
+    }
+
+    .cta-decor-left {
+        justify-self: flex-end;
+    }
+
+    .cta-decor-right {
+        justify-self: flex-start;
+    }
+
+    .cta-arrow-img {
+        width: clamp(100px, 15vw, 150px);
+    }
+
+    .cta-stripes-img {
+        width: clamp(40px, 5vw, 60px);
+    }
+
+    .cta-chat-btn {
+        padding: 15px 35px;
+        font-size: 18px;
+    }
+
+    .cta-text-desktop {
+        display: inline;
+    }
+
+    .cta-text-mobile {
+        display: none;
+    }
+}
+
+/* 3) VIEW: 1100px TO 1920px (Desktop) */
+@media (min-width: 1100px) {
+    .cta-decide-text {
+        font-size: clamp(24px, 1.35vw, 26px);
+        margin-bottom: 40px;
+    }
+
+    .cta-bottom-row {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        gap: 30px;
+        width: 100%;
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .cta-decor-left {
+        justify-self: flex-end;
+    }
+
+    .cta-decor-right {
+        justify-self: flex-start;
+    }
+
+    .cta-arrow-img {
+        width: 13.2vw;
+        max-width: 255px;
+    }
+
+    .cta-stripes-img {
+        width: 4.1vw;
+        max-width: 79px;
+    }
+
+    .cta-chat-btn {
+        padding: 18px 45px;
+        font-size: clamp(18px, 1.1vw, 21px);
+    }
+
+    .cta-text-desktop {
+        display: inline;
+    }
+
+    .cta-text-mobile {
+        display: none;
+    }
+}
+
+/* Header Title Styles */
+.beneficios-header-title {
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
+    color: #ffffff;
+    font-weight: 400;
+    /* Regular */
+    line-height: 1.1;
+    margin-top: 20px;
+    margin-bottom: 40px;
+    /* Fluid font size: 44px @ 1920px -> reduce towards 1100px */
+    font-size: clamp(32px, calc(32px + (100vw - 1100px) * 0.0146), 44px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.1em;
+}
+
+.beneficios-title-line-1 {
+    display: block;
+}
+
+.beneficios-title-line-2 {
+    display: block;
+}
+
+.beneficios-highlight {
+    color: #010C42;
+    font-weight: 600;
+    /* Semi-Bold */
+    position: relative;
+    display: inline-block;
+    z-index: 10;
+    padding: 0 0.2em;
+}
+
+.beneficios-highlight::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* Width fluid: 300px @ 1920px -> reduce towards 1100px (~220px) */
+    width: clamp(220px, calc(220px + (300 - 220) * ((100vw - 1100px) / (1920 - 1100))), 300px);
+    height: 120%;
+    background-image: url('/images/desktop/beneficios-stroke.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Responsive adjustments (at the end for proper cascade) */
+
+/* TABLET VIEW */
+@media (min-width: 600px) and (max-width: 1099px) {
+    .beneficios-header-section {
+        padding: 40px 0;
+    }
+
+    .beneficios-image-container {
+        margin-top: 30px;
+    }
+}
+
+/* MOBILE VIEW */
+@media (max-width: 599px) {
+    .beneficios-header-section {
+        padding: 20px 0 20px 0;
+    }
+
+    .beneficios-header-section .container,
+    .beneficios-header-section .somos-itca-container {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    .beneficios-main-content {
+        width: 93.5vw;
+        padding: 0;
+        margin: 0 auto !important;
+    }
+
+    .beneficios-image-container {
+        overflow: hidden;
+        border-radius: 12px;
+    }
+
+    .beneficios-header-title {
+        /* Fluidez: 16px en 320px -> 21px en 430px */
+        font-size: clamp(16px, calc(16px + (21 - 16) * ((100vw - 320px) / 110)), 21px) !important;
+        margin-bottom: 25px;
+        line-height: 1.2;
+    }
+
+    .beneficios-hero-image {
+        border: 1px solid rgba(200, 209, 255, 0.45);
+        border-radius: 12px;
+        /* Fluidez: 130px en 320px -> 174px en 430px */
+        height: clamp(130px, calc(130px + (174 - 130) * ((100vw - 320px) / 110)), 174px) !important;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .beneficios-highlight::before {
+        /* Width: 115px en 320px -> 150px en 430px */
+        width: clamp(115px, calc(115px + (150 - 115) * ((100vw - 320px) / 110)), 150px) !important;
+        height: 140%;
+    }
+}

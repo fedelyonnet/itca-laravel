@@ -234,11 +234,16 @@ Route::middleware('auth')->group(function () {
         // Formadores
         Route::post('/somos-itca/formadores', [App\Http\Controllers\SomosItcaController::class, 'storeFormador'])->name('admin.somos-itca.formadores.store');
         Route::delete('/somos-itca/formadores/{id}', [App\Http\Controllers\SomosItcaController::class, 'destroyFormador'])->name('admin.somos-itca.formadores.destroy');
+        Route::post('/somos-itca/formadores/reorder', [App\Http\Controllers\SomosItcaController::class, 'reorderFormadores'])->name('admin.somos-itca.formadores.reorder');
 
         // Por Qué Items
         Route::post('/somos-itca/porque', [App\Http\Controllers\SomosItcaController::class, 'storePorQueItem'])->name('admin.somos-itca.porque.store');
         Route::delete('/somos-itca/porque/{id}', [App\Http\Controllers\SomosItcaController::class, 'destroyPorQueItem'])->name('admin.somos-itca.porque.destroy');
         Route::post('/somos-itca/porque/reorder', [App\Http\Controllers\SomosItcaController::class, 'reorderPorQueItems'])->name('admin.somos-itca.porque.reorder');
+
+        // Rutas de Beneficios CMS Página
+        Route::get('/beneficios-page', [App\Http\Controllers\BeneficiosPageController::class, 'index'])->name('admin.beneficios.page');
+        Route::put('/beneficios-page/content', [App\Http\Controllers\BeneficiosPageController::class, 'updateContent'])->name('admin.beneficios.page.update');
     });
 });
 
