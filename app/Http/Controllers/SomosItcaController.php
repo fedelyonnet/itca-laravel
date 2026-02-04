@@ -258,20 +258,56 @@ class SomosItcaController extends Controller
     {
         $request->validate([
             'descripcion' => 'required|string|max:255',
+            'icon' => 'nullable|image|max:2048', // Allow icon upload
         ]);
 
         $content = SomosItcaContent::firstOrCreate([]);
 
-        $content->porQueItems()->create([
-            'descripcion' => $request->descripcion
-        ]);
+        $data = ['descripcion' => $request->descripcion];
+
+        if ($request->hasFile('icon')) {
+            $path = $request->file('icon')->store('uploads/somos-itca/icons', 'public');
+            $data['image_path'] = $path;
+        }
+
+        $content->porQueItems()->create($data);
 
         return redirect()->back()->with('success', 'Item agregado correctamente.')->with('active_tab', 'porque');
+    }
+
+    public function updatePorQueItem(Request $request, $id)
+    {
+        $request->validate([
+            'descripcion' => 'required|string|max:255',
+            'icon' => 'nullable|image|max:2048', // Allow icon update
+        ]);
+
+        $item = PorQueItem::findOrFail($id);
+        
+        $data = ['descripcion' => $request->descripcion];
+
+        if ($request->hasFile('icon')) {
+            // Delete old icon if exists
+            if ($item->image_path) {
+                Storage::disk('public')->delete($item->image_path);
+            }
+            $path = $request->file('icon')->store('uploads/somos-itca/icons', 'public');
+            $data['image_path'] = $path;
+        }
+
+        $item->update($data);
+
+        return redirect()->back()->with('success', 'Item actualizado correctamente.')->with('active_tab', 'porque');
     }
 
     public function destroyPorQueItem($id)
     {
         $item = PorQueItem::findOrFail($id);
+        
+        if ($item->image_path) {
+            Storage::disk('public')->delete($item->image_path);
+        }
+
         $item->delete();
         return redirect()->back()->with('success', 'Item eliminado.')->with('active_tab', 'porque');
     }

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PorQueItem extends Model
 {
-    protected $fillable = ['descripcion', 'somos_itca_content_id', 'orden'];
+    protected $fillable = ['descripcion', 'somos_itca_content_id', 'orden', 'image_path'];
 
     public function somosItcaContent()
     {

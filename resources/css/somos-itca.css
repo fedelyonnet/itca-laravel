@@ -556,19 +556,29 @@
 /* Corrección de alineación Iconos y Texto */
 .por-que-item {
     display: grid;
-    /* Grid para mejor control que flex */
-    grid-template-columns: 60px 1fr;
-    /* Columna fija para centrar iconos visualmente si varian ancho */
+    /* 
+       Columna 1: 50px fijo para el icono (wrapper)
+       Columna 2: fr para el texto 
+    */
+    grid-template-columns: 50px 1fr;
     align-items: center;
     /* Centrado vertical */
     gap: 15px;
     text-align: left;
-    /* Asegurar texto a izquierda */
 }
 
-/* Centrar el icono dentro de su celda de grid */
+/* Wrapper para centrar el icono en su columna */
+.por-que-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    /* Ocupa todo el ancho de su celda (50px) */
+}
+
+/* Centrar el icono dentro de su celda de grid (legacy, wrapper lo maneja ahora) */
 .por-que-item .por-que-icon {
-    justify-self: center;
+    /* justify-self: center; No necesario con wrapper flex */
 }
 
 /* Forzar alineación de textos específicos */
@@ -606,8 +616,9 @@
     }
 
     .por-que-item {
-        grid-template-columns: 45px 1fr;
-        gap: 10px;
+        /* En mobile, un poco más angosta la col del icono */
+        grid-template-columns: 40px 1fr;
+        gap: 12px;
     }
 
     .por-que-text {

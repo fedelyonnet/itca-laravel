@@ -238,6 +238,7 @@ Route::middleware('auth')->group(function () {
 
         // Por Qué Items
         Route::post('/somos-itca/porque', [App\Http\Controllers\SomosItcaController::class, 'storePorQueItem'])->name('admin.somos-itca.porque.store');
+        Route::put('/somos-itca/porque/{id}', [App\Http\Controllers\SomosItcaController::class, 'updatePorQueItem'])->name('admin.somos-itca.porque.update');
         Route::delete('/somos-itca/porque/{id}', [App\Http\Controllers\SomosItcaController::class, 'destroyPorQueItem'])->name('admin.somos-itca.porque.destroy');
         Route::post('/somos-itca/porque/reorder', [App\Http\Controllers\SomosItcaController::class, 'reorderPorQueItems'])->name('admin.somos-itca.porque.reorder');
 

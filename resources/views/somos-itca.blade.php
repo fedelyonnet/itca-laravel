@@ -175,31 +175,47 @@
                                             @if(isset($content) && $content->porQueItems && $content->porQueItems->count() > 0)
                                                 @foreach($content->porQueItems as $item)
                                                     <li class="por-que-item">
-                                                        {{-- Ciclar iconos del 1 al 5 --}}
-                                                        @php $iconIndex = ($loop->index % 5) + 1; @endphp
-                                                        <img src="/images/desktop/somos-itca/ico{{ $iconIndex }}.png" alt="Icono" class="por-que-icon">
+                                                        <div class="por-que-icon-wrapper">
+                                                            @if($item->image_path)
+                                                                <img src="{{ asset('storage/' . $item->image_path) }}" alt="Icono" class="por-que-icon">
+                                                            @else
+                                                                {{-- Fallback a ciclo de iconos predeterminados --}}
+                                                                @php $iconIndex = ($loop->index % 5) + 1; @endphp
+                                                                <img src="/images/desktop/somos-itca/ico{{ $iconIndex }}.png" alt="Icono" class="por-que-icon">
+                                                            @endif
+                                                        </div>
                                                         <span class="por-que-text">{{ $item->descripcion }}</span>
                                                     </li>
                                                 @endforeach
                                             @else
                                                 <li class="por-que-item">
-                                                    <img src="/images/desktop/somos-itca/ico1.png" alt="Icono" class="por-que-icon">
+                                                    <div class="por-que-icon-wrapper">
+                                                        <img src="/images/desktop/somos-itca/ico1.png" alt="Icono" class="por-que-icon">
+                                                    </div>
                                                     <span class="por-que-text">Práctica real desde el primer día.</span>
                                                 </li>
                                                 <li class="por-que-item">
-                                                    <img src="/images/desktop/somos-itca/ico2.png" alt="Icono" class="por-que-icon">
+                                                    <div class="por-que-icon-wrapper">
+                                                        <img src="/images/desktop/somos-itca/ico2.png" alt="Icono" class="por-que-icon">
+                                                    </div>
                                                     <span class="por-que-text">Pasión que se convierte en profesión.</span>
                                                 </li>
                                                 <li class="por-que-item">
-                                                    <img src="/images/desktop/somos-itca/ico3.png" alt="Icono" class="por-que-icon">
+                                                    <div class="por-que-icon-wrapper">
+                                                        <img src="/images/desktop/somos-itca/ico3.png" alt="Icono" class="por-que-icon">
+                                                    </div>
                                                     <span class="por-que-text">Salida laboral concreta.</span>
                                                 </li>
                                                 <li class="por-que-item">
-                                                    <img src="/images/desktop/somos-itca/ico4.png" alt="Icono" class="por-que-icon">
+                                                    <div class="por-que-icon-wrapper">
+                                                        <img src="/images/desktop/somos-itca/ico4.png" alt="Icono" class="por-que-icon">
+                                                    </div>
                                                     <span class="por-que-text">Reconocimiento de la industria.</span>
                                                 </li>
                                                 <li class="por-que-item">
-                                                    <img src="/images/desktop/somos-itca/ico5.png" alt="Icono" class="por-que-icon">
+                                                    <div class="por-que-icon-wrapper">
+                                                        <img src="/images/desktop/somos-itca/ico5.png" alt="Icono" class="por-que-icon">
+                                                    </div>
                                                     <span class="por-que-text">Flexibilidad para estudiar: presencial y semipresencial.</span>
                                                 </li>
                                             @endif

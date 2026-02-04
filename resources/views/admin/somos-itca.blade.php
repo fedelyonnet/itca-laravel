@@ -181,26 +181,47 @@
                             <div class="bg-gray-900 p-4 rounded border border-gray-700">
                                 <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-2">
                                     <label class="text-sm font-bold text-gray-300 uppercase">Items de la lista</label>
-                                    <button onclick="openModalPorQue()" class="bg-green-600 hover:bg-green-500 text-white px-3 py-1 rounded text-xs font-bold transition-all shadow-md">
-                                        + AGREGAR ITEM
-                                    </button>
+                                    @if(isset($porQueItems) && $porQueItems->count() >= 5)
+                                        <button title="Máximo 5 items permitidos" class="bg-gray-600 cursor-not-allowed opacity-50 text-white px-3 py-1 rounded text-xs font-bold transition-all shadow-md" disabled>
+                                            + AGREGAR ITEM (MAX 5)
+                                        </button>
+                                    @else
+                                        <button onclick="openModalPorQue()" class="bg-green-600 hover:bg-green-500 text-white px-3 py-1 rounded text-xs font-bold transition-all shadow-md">
+                                            + AGREGAR ITEM
+                                        </button>
+                                    @endif
                                 </div>
 
                                 @if(isset($porQueItems) && $porQueItems->count() > 0)
                                     <div id="porQueList" class="space-y-2 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                                         @foreach($porQueItems as $item)
                                             <div data-id="{{ $item->id }}" class="por-que-draggable flex items-center justify-between bg-gray-800 p-3 rounded border border-gray-700 hover:border-gray-500 transition-all cursor-move group">
-                                                <div class="flex items-center gap-3">
-                                                    <svg class="w-5 h-5 text-gray-600 group-hover:text-blue-400 drag-handle" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                                                <div class="flex items-center gap-3 flex-grow">
+                                                    <svg class="w-5 h-5 text-gray-600 group-hover:text-blue-400 drag-handle flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                                                    
+                                                    <!-- Icon Preview in List -->
+                                                    <div class="w-8 h-8 flex-shrink-0 bg-gray-700 rounded flex items-center justify-center overflow-hidden">
+                                                        @if($item->image_path)
+                                                            <img src="{{ asset('storage/' . $item->image_path) }}" class="w-full h-full object-contain">
+                                                        @else
+                                                            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                                        @endif
+                                                    </div>
+
                                                     <span class="text-sm text-gray-200">{{ $item->descripcion }}</span>
                                                 </div>
-                                                <form action="{{ route('admin.somos-itca.porque.destroy', $item->id) }}" method="POST" onsubmit="return confirmSubmission(event, 'Eliminar Item', '¿Seguro que querés borrar este item?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="text-gray-500 hover:text-red-500 transition-colors">
-                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                <div class="flex items-center gap-2 h-full">
+                                                    <button type="button" onclick="openEditModalPorQue('{{ $item->id }}', '{{ addslashes($item->descripcion) }}', '{{ $item->image_path }}')" class="text-gray-500 hover:text-blue-400 transition-colors flex items-center justify-center h-8 w-8 rounded hover:bg-gray-700">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                                                     </button>
-                                                </form>
+                                                    <form action="{{ route('admin.somos-itca.porque.destroy', $item->id) }}" method="POST" onsubmit="return confirmSubmission(event, 'Eliminar Item', '¿Seguro que querés borrar este item?');" class="flex items-center m-0">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-gray-500 hover:text-red-500 transition-colors flex items-center justify-center h-8 w-8 rounded hover:bg-gray-700">
+                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </div>
                                         @endforeach
                                     </div>
@@ -538,19 +559,57 @@
         </div>
     </div>
 
-    <!-- MODAL POR QUÉ ITEM -->
+
+
+    <!-- MODAL ADD POR QUÉ ITEM -->
     <div id="modalPorQue" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center backdrop-blur-sm">
         <div class="bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4 border border-gray-700 shadow-2xl">
             <h3 class="text-lg font-bold text-white mb-4 uppercase border-b border-gray-700 pb-2">Agregar Razón / Beneficio</h3>
-            <form action="{{ route('admin.somos-itca.porque.store') }}" method="POST">
+            <form action="{{ route('admin.somos-itca.porque.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-400 mb-2 uppercase">Descripción breve</label>
-                    <textarea name="descripcion" rows="3" required class="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded text-gray-100 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all"></textarea>
+                    <textarea name="descripcion" rows="3" required class="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded text-gray-100 text-sm focus:outline-none focus:ring-1 focus:ring-green-500 transition-all"></textarea>
                 </div>
+                <!-- Icon Upload -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-400 mb-2 uppercase">Icono</label>
+                    <input type="file" name="icon" accept="image/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-gray-700 file:text-gray-300 hover:file:bg-gray-600 cursor-pointer">
+                    <p class="text-[10px] text-gray-500 mt-1">Recomendado PNG transparente, aprox 50x50px</p>
+                </div>
+
                 <div class="flex justify-end space-x-3">
                     <button type="button" onclick="document.getElementById('modalPorQue').classList.add('hidden')" class="px-4 py-2 bg-gray-700 text-gray-300 rounded text-xs font-bold uppercase hover:bg-gray-600 transition-colors">Cancelar</button>
-                    <button type="submit" class="px-6 py-2 bg-green-600 text-white rounded text-xs font-bold uppercase hover:bg-green-500 shadow-lg shadow-green-900/20 transition-all">Agregar Razón</button>
+                    <button type="submit" class="px-6 py-2 bg-green-600 text-white rounded text-xs font-bold uppercase hover:bg-green-500 shadow-lg shadow-green-900/20 transition-all">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL EDIT POR QUÉ ITEM -->
+    <div id="modalEditPorQue" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4 border border-gray-700 shadow-2xl">
+            <h3 class="text-lg font-bold text-white mb-4 uppercase border-b border-gray-700 pb-2">Editar Razón / Beneficio</h3>
+            <form id="formEditPorQue" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-400 mb-2 uppercase">Descripción breve</label>
+                    <textarea name="descripcion" id="editPorQueDescripcion" rows="3" required class="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded text-gray-100 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all"></textarea>
+                </div>
+                <!-- Icon Upload (Edit) -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-400 mb-2 uppercase">Cambiar Icono</label>
+                    <div class="flex items-center gap-4 mb-2">
+                        <img id="editPorQueIconPreview" class="w-10 h-10 object-contain bg-gray-700 rounded p-1 hidden">
+                        <span id="editPorQueIconText" class="text-xs text-gray-500 italic">Sin icono actual</span>
+                    </div>
+                    <input type="file" name="icon" accept="image/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-gray-700 file:text-gray-300 hover:file:bg-gray-600 cursor-pointer">
+                </div>
+
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="document.getElementById('modalEditPorQue').classList.add('hidden')" class="px-4 py-2 bg-gray-700 text-gray-300 rounded text-xs font-bold uppercase hover:bg-gray-600 transition-colors">Cancelar</button>
+                    <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded text-xs font-bold uppercase hover:bg-blue-500 shadow-lg shadow-blue-900/20 transition-all">Guardar Cambios</button>
                 </div>
             </form>
         </div>
@@ -560,6 +619,31 @@
         function openModalInstalacion() { document.getElementById('modalInstalacion').classList.remove('hidden'); }
         function openModalFormador() { document.getElementById('modalFormador').classList.remove('hidden'); }
         function openModalPorQue() { document.getElementById('modalPorQue').classList.remove('hidden'); }
+        
+        function openEditModalPorQue(id, descripcion, iconUrl) {
+            const modal = document.getElementById('modalEditPorQue');
+            const form = document.getElementById('formEditPorQue');
+            const textarea = document.getElementById('editPorQueDescripcion');
+            const imgPreview = document.getElementById('editPorQueIconPreview');
+            const iconText = document.getElementById('editPorQueIconText');
+            
+            // Set action URL dynamically
+            form.action = `/admin/somos-itca/porque/${id}`;
+            textarea.value = descripcion;
+            
+            // Handle Icon Preview
+            if (iconUrl && iconUrl !== 'null' && iconUrl !== '') {
+                imgPreview.src = `/storage/${iconUrl}`;
+                imgPreview.classList.remove('hidden');
+                iconText.classList.add('hidden');
+            } else {
+                imgPreview.src = '';
+                imgPreview.classList.add('hidden');
+                iconText.classList.remove('hidden');
+            }
+
+            modal.classList.remove('hidden');
+        }
 
         // Previewers for different tabs
         function previewHero(input) {
