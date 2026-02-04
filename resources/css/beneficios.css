@@ -586,6 +586,10 @@
         margin-top: 0 !important;
     }
 
+    .dropdowns-main-content {
+        padding: 0;
+    }
+
     .beneficios-main-content {
         width: 93.5vw;
         padding: 0;
@@ -616,5 +620,9 @@
         /* Width: 115px en 320px -> 150px en 430px */
         width: clamp(115px, calc(115px + (150 - 115) * ((100vw - 320px) / 110)), 150px) !important;
         height: 140%;
+    }
+
+    .club-itca-btn-wrapper {
+        justify-content: center;
     }
 }

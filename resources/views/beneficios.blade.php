@@ -411,18 +411,7 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Mobile Menu Logic
-             const hamburger = document.querySelector('.hamburger');
-             const navLinks = document.querySelector('.nav-links');
-            
-             if (hamburger && navLinks) {
-                 hamburger.addEventListener('click', function() {
-                     this.classList.toggle('active');
-                     navLinks.classList.toggle('active');
-                 });
-             }
-
-             // Contacto Sedes Logic
+            // Contacto Sedes Logic
             const sedeRows = document.querySelectorAll('.contacto-sede-row[data-sede]');
             sedeRows.forEach(row => {
                 row.addEventListener('click', function() {
