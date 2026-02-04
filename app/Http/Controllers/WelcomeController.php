@@ -190,10 +190,13 @@ class WelcomeController extends Controller
                     ->ordered()
                     ->get();
 
-        // Obtener contenido de beneficios
+        // Obtener beneficios individuales
+        $beneficios = Beneficio::ordered()->get();
+
+        // Obtener contenido de beneficios (Hero, etc.)
         $content = \App\Models\BeneficiosContent::first();
 
-        return view('beneficios', compact('stickyBar', 'contactosInfo', 'contactosSocial', 'partners', 'sedes', 'content'));
+        return view('beneficios', compact('stickyBar', 'contactosInfo', 'contactosSocial', 'partners', 'sedes', 'content', 'beneficios'));
     }
 
     public function retomarInscripcion(Request $request)
