@@ -228,6 +228,7 @@ Route::middleware('auth')->group(function () {
 
         // Instalacion Items (Lista con estrellas)
         Route::post('/somos-itca/instalacion-items', [App\Http\Controllers\SomosItcaController::class, 'storeInstalacionItem'])->name('admin.somos-itca.instalacion-items.store');
+        Route::put('/somos-itca/instalacion-items/{id}', [App\Http\Controllers\SomosItcaController::class, 'updateInstalacionItem'])->name('admin.somos-itca.instalacion-items.update');
         Route::delete('/somos-itca/instalacion-items/{id}', [App\Http\Controllers\SomosItcaController::class, 'destroyInstalacionItem'])->name('admin.somos-itca.instalacion-items.destroy');
         Route::post('/somos-itca/instalacion-items/reorder', [App\Http\Controllers\SomosItcaController::class, 'reorderInstalacionItems'])->name('admin.somos-itca.instalacion-items.reorder');
 

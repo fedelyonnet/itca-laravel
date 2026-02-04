@@ -341,6 +341,20 @@ class SomosItcaController extends Controller
         return redirect()->back()->with('success', 'Item de instalación agregado.')->with('active_tab', 'instalaciones');
     }
 
+    public function updateInstalacionItem(Request $request, $id)
+    {
+        $request->validate([
+            'descripcion' => 'required|string|max:255',
+        ]);
+
+        $item = \App\Models\InstalacionItem::findOrFail($id);
+        $item->update([
+            'descripcion' => $request->descripcion
+        ]);
+
+        return redirect()->back()->with('success', 'Item de instalación actualizado.')->with('active_tab', 'instalaciones');
+    }
+
     public function destroyInstalacionItem($id)
     {
         $item = \App\Models\InstalacionItem::findOrFail($id);

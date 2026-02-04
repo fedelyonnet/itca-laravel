@@ -245,9 +245,15 @@
                                 <div class="bg-gray-900 p-4 rounded border border-gray-700">
                                     <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-2">
                                         <label class="text-sm font-bold text-gray-300 uppercase">Items Destacados (Estrellas)</label>
-                                        <button onclick="document.getElementById('modalInstalacionItem').classList.remove('hidden')" class="bg-green-600 hover:bg-green-500 text-white px-2 py-1 rounded text-[10px] font-bold uppercase transition-all shadow-md">
-                                            + Agregar destacada
-                                        </button>
+                                        @if(isset($instalacionItems) && $instalacionItems->count() >= 6)
+                                            <button title="Máximo 6 items permitidos" class="bg-gray-600 cursor-not-allowed opacity-50 text-white px-2 py-1 rounded text-[10px] font-bold uppercase transition-all shadow-md" disabled>
+                                                + Agregar destacada (MAX 6)
+                                            </button>
+                                        @else
+                                            <button onclick="document.getElementById('modalInstalacionItem').classList.remove('hidden')" class="bg-green-600 hover:bg-green-500 text-white px-2 py-1 rounded text-[10px] font-bold uppercase transition-all shadow-md">
+                                                + Agregar destacada
+                                            </button>
+                                        @endif
                                     </div>
                                     @if(isset($instalacionItems) && $instalacionItems->count() > 0)
                                         <div id="instalacionItemsList" class="space-y-2 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
@@ -257,13 +263,18 @@
                                                         <svg class="w-4 h-4 text-gray-600 drag-handle group-hover:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                                                         <span class="text-sm text-gray-200">{{ $item->descripcion }}</span>
                                                     </div>
-                                                    <form action="{{ route('admin.somos-itca.instalacion-items.destroy', $item->id) }}" method="POST" onsubmit="return confirmSubmission(event, 'Eliminar Item', '¿Seguro?');">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="text-gray-500 hover:text-red-500 transition-colors">
-                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                    <div class="flex items-center gap-2 h-full">
+                                                        <button type="button" onclick="openEditModalInstalacionItem('{{ $item->id }}', '{{ addslashes($item->descripcion) }}')" class="text-gray-500 hover:text-blue-400 transition-colors flex items-center justify-center h-6 w-6 rounded hover:bg-gray-700">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                                                         </button>
-                                                    </form>
+                                                        <form action="{{ route('admin.somos-itca.instalacion-items.destroy', $item->id) }}" method="POST" onsubmit="return confirmSubmission(event, 'Eliminar Item', '¿Seguro?');" class="flex items-center m-0">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="text-gray-500 hover:text-red-500 transition-colors flex items-center justify-center h-6 w-6 rounded hover:bg-gray-700">
+                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                            </button>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             @endforeach
                                         </div>
@@ -586,6 +597,26 @@
         </div>
     </div>
 
+    <!-- MODAL EDIT INSTALACION ITEM -->
+    <div id="modalEditInstalacionItem" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4 border border-gray-700 shadow-2xl">
+            <h3 class="text-lg font-bold text-white mb-4 uppercase border-b border-gray-700 pb-2">Editar Item Destacado</h3>
+            <form id="formEditInstalacionItem" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-400 mb-2 uppercase">Descripción</label>
+                    <textarea name="descripcion" id="editInstalacionItemDescripcion" rows="3" required class="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded text-gray-100 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all"></textarea>
+                    <p class="text-[10px] text-gray-500 mt-1">Tip: Usá */texto/* para resaltar en negrita.</p>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="document.getElementById('modalEditInstalacionItem').classList.add('hidden')" class="px-4 py-2 bg-gray-700 text-gray-300 rounded text-xs font-bold uppercase hover:bg-gray-600 transition-colors">Cancelar</button>
+                    <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded text-xs font-bold uppercase hover:bg-blue-500 shadow-lg shadow-blue-900/20 transition-all">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- MODAL EDIT POR QUÉ ITEM -->
     <div id="modalEditPorQue" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center backdrop-blur-sm">
         <div class="bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4 border border-gray-700 shadow-2xl">
@@ -642,6 +673,17 @@
                 iconText.classList.remove('hidden');
             }
 
+            modal.classList.remove('hidden');
+        }
+
+        function openEditModalInstalacionItem(id, descripcion) {
+            const modal = document.getElementById('modalEditInstalacionItem');
+            const form = document.getElementById('formEditInstalacionItem');
+            const textarea = document.getElementById('editInstalacionItemDescripcion');
+            
+            form.action = `/admin/somos-itca/instalacion-items/${id}`;
+            textarea.value = descripcion;
+            
             modal.classList.remove('hidden');
         }
 
