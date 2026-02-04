@@ -1339,7 +1339,7 @@
 .categoria-card-back {
     background-color: #65E09C;
     /* Verde ITCA */
-    color: #000000;
+    color: #010C42;
     transform: rotateY(180deg);
     /* justify-content removido, margins controlan spacing */
 }
@@ -1381,7 +1381,7 @@
 /* Label (Shared Front/Back style) */
 .categoria-label {
     background-color: #65E09C;
-    color: #000000;
+    color: #010C42;
     font-family: 'Montserrat', sans-serif;
     font-weight: 800;
     text-align: center;
@@ -1441,7 +1441,7 @@
         line-height: 1.2;
         background-color: #65E09C;
         /* Verde ITCA */
-        color: #000000;
+        color: #010C42;
         margin-top: auto;
         /* Pegado al fondo */
         display: flex;
@@ -1466,7 +1466,7 @@
         /* Reset margin auto */
         background-color: transparent;
         /* Integrado al fondo verde del back */
-        color: #000000;
+        color: #010C42;
         width: 100%;
         text-align: center;
     }

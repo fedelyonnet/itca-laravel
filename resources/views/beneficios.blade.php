@@ -105,6 +105,64 @@
             </div>
         </section>
 
+        <!-- Dropdowns Section -->
+        <section class="beneficios-dropdowns-section">
+            <div class="container somos-itca-container">
+                <div class="dropdowns-main-content">
+                    @php
+                        $somosItca = \App\Models\SomosItcaContent::first();
+                    @endphp
+
+                    <!-- Dropdown 2: ¿Qué es el club ITCA? -->
+                    <div class="info-dropdown">
+                        <div class="info-dropdown-header">
+                            <span class="info-dropdown-title">¿Qué es el club ITCA?</span>
+                            <img src="/images/desktop/chevron.png" alt="Abrir" class="info-dropdown-chevron">
+                        </div>
+                        <div class="info-dropdown-content">
+                            <div class="que-es-itca-grid">
+                                <div class="video-col relative group cursor-pointer video-container-click">
+                                    @if(isset($content) && $content->club_itca_video)
+                                        <video class="itca-video" playsinline preload="auto">
+                                            <source src="{{ asset('storage/' . $content->club_itca_video) }}" type="video/mp4">
+                                        </video>
+                                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none play-overlay">
+                                            <img src="/images/desktop/play.png" alt="Play" class="w-16 h-16 opacity-80 group-hover:opacity-100 transition-opacity">
+                                        </div>
+                                    @else
+                                        <div class="video-placeholder-empty">Video no disponible</div>
+                                    @endif
+                                </div>
+                                <div class="text-col">
+                                    @if(isset($content) && $content->club_itca_texto)
+                                        @php
+                                            $text = e($content->club_itca_texto);
+                                            $text = preg_replace('/\*\/(.*?)\/\*/', '<strong>$1</strong>', $text);
+                                            $text = nl2br($text);
+                                        @endphp
+                                        <p class="itca-text">{!! $text !!}</p>
+                                    @else
+                                        <p class="itca-text">
+                                            */Club ITCA/* es mucho más que un programa de beneficios:<br>
+                                            es ser parte de una comunidad que acompaña tu formación y tu crecimiento profesional, antes, durante y después de estudiar.<br><br>
+                                            Está pensado para alumnos y egresados que buscan seguir conectados con el mundo automotriz.<br><br>
+                                            Como miembro, accedés a descuentos en herramientas, productos y servicios, promociones con marcas líderes del sector, encuentros de egresados, exposiciones y eventos.
+                                        </p>
+                                    @endif
+                                    
+                                    <div class="club-itca-btn-wrapper">
+                                        <a href="{{ $content->club_itca_button_url ?? '#' }}" class="club-itca-btn">
+                                            <strong>Ingresar</strong>&nbsp;a Club ITCA
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- CTA Decision Section -->
         <section class="cta-decide-section">
             <div class="container somos-itca-container">
@@ -377,6 +435,50 @@
                     if (content) content.classList.toggle('active');
                 });
             });
+
+            // Info Dropdown Toggle
+            const dropdownHeaders = document.querySelectorAll('.info-dropdown-header');
+            dropdownHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const dropdown = this.parentElement;
+                    const isOpen = dropdown.classList.toggle('active');
+                });
+            });
+
+            // Video Logic
+            const videoContainers = document.querySelectorAll('.video-container-click');
+            videoContainers.forEach(container => {
+                const video = container.querySelector('video');
+                const overlay = container.querySelector('.play-overlay');
+                
+                if (!video || !overlay) return;
+
+                container.addEventListener('click', function(e) {
+                    if (!video.hasAttribute('controls')) {
+                         video.play();
+                    }
+                });
+
+                video.addEventListener('play', function() {
+                    video.setAttribute('controls', 'true');
+                    overlay.style.opacity = '0';
+                });
+
+                video.addEventListener('pause', function() {
+                    overlay.style.opacity = '1'; 
+                });
+            });
+
+            // Initialize first dropdown as open
+            const firstDropdown = document.querySelector('.info-dropdown');
+            if (firstDropdown) {
+                firstDropdown.classList.add('active');
+                const video = firstDropdown.querySelector('video');
+                if (video) {
+                    // video.muted = true;
+                    // video.play().catch(error => console.log("Autoplay prevented:", error));
+                }
+            }
 
              // Slick Carousel for Partners
              if ($('.partners-slider').length) {

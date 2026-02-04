@@ -798,8 +798,8 @@
                 if (videoContainer) {
                     const video = videoContainer.querySelector('video');
                     if (video) {
-                        video.muted = true;
-                        video.play().catch(error => console.log("Autoplay prevented:", error));
+                        // video.muted = true;
+                        // video.play().catch(error => console.log("Autoplay prevented:", error));
                     }
                 }
             }

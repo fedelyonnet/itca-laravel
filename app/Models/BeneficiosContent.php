@@ -11,5 +11,8 @@ class BeneficiosContent extends Model
 
     protected $fillable = [
         'hero_image',
+        'club_itca_video',
+        'club_itca_texto',
+        'club_itca_button_url'
     ];
 }
