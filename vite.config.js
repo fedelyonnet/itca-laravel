@@ -9,6 +9,7 @@ export default defineConfig({
                 'resources/css/backoffice.css',
                 'resources/css/public.css',
                 'resources/css/somos-itca.css',
+                'resources/css/beneficios.css',
                 'resources/css/inscripcion-mobile.css',
                 'resources/js/app.js',
                 'resources/js/backoffice.js',
