@@ -17,6 +17,7 @@ Route::post('/dev-login', [DevAccessController::class, 'login'])->name('dev-logi
 Route::get('/', [App\Http\Controllers\WelcomeController::class, 'index'])->name('home');
 Route::get('/carreras', [App\Http\Controllers\WelcomeController::class, 'carreras'])->name('carreras');
 Route::get('/somos-itca', [App\Http\Controllers\WelcomeController::class, 'somosItca'])->name('somos-itca');
+Route::get('/beneficios', [App\Http\Controllers\WelcomeController::class, 'beneficios'])->name('beneficios');
 // Carrera individual (por id por ahora)
 Route::get('/carreras/{curso}', [CursoController::class, 'show'])->name('carreras.show');
 // Inscripción/Compra

@@ -172,6 +172,27 @@ class WelcomeController extends Controller
         return view('somos-itca', compact('stickyBar', 'partners', 'sedes', 'contactosInfo', 'contactosSocial', 'content', 'instalaciones', 'formadores', 'instalacionItems'));
     }
 
+    public function beneficios()
+    {
+        // Obtener Sticky Bar
+        $stickyBar = StickyBar::first();
+        
+        // Obtener datos de contacto
+        $contactosInfo = \App\Models\DatoContacto::info()->get();
+        $contactosSocial = \App\Models\DatoContacto::social()->get();
+
+        // Obtener partners ordenados
+        $partners = Partner::ordered()->get();
+        
+        // Obtener sedes disponibles para contacto
+        $sedes = Sede::where('disponible', true)
+                    ->whereNotIn('nombre', ['online', 'Online', 'ONLINE', 'próximamente', 'Proximamente', 'PROXIMAMENTE'])
+                    ->ordered()
+                    ->get();
+
+        return view('beneficios', compact('stickyBar', 'contactosInfo', 'contactosSocial', 'partners', 'sedes'));
+    }
+
     public function retomarInscripcion(Request $request)
     {
         $cursadaId = $request->get('retomar');

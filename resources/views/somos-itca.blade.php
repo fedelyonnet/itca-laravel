@@ -53,7 +53,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url('/#beneficios') }}" class="nav-link">
+                        <a href="{{ route('beneficios') }}" class="nav-link">
                             Beneficios
                         </a>
                     </li>
@@ -788,6 +788,21 @@
                     this.classList.toggle('is-flipped');
                 });
             });
+
+            // Initialize first dropdown as open and play video muted
+            const firstDropdown = document.querySelector('.info-dropdown');
+            if (firstDropdown) {
+                firstDropdown.classList.add('active');
+                
+                const videoContainer = firstDropdown.querySelector('.video-container-click');
+                if (videoContainer) {
+                    const video = videoContainer.querySelector('video');
+                    if (video) {
+                        video.muted = true;
+                        video.play().catch(error => console.log("Autoplay prevented:", error));
+                    }
+                }
+            }
         });
     </script>
     </body>

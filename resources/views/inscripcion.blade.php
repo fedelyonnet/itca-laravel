@@ -73,7 +73,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url('/#beneficios') }}" class="nav-link">
+                        <a href="{{ route('beneficios') }}" class="nav-link">
                             Beneficios
                         </a>
                     </li>
