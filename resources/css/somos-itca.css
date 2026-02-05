@@ -1470,8 +1470,17 @@
         /* SemiBold */
         /* Fluidez: ~13px en 320px -> 15px en 430px */
         font-size: clamp(13px, calc(13px + (15 - 13) * ((100vw - 320px) / 110)), 15px);
-        padding: 15px 10px 5px;
-        /* Ajuste padding para que quede bien arriba */
+
+        /* Padding fluido:
+           Top: 20px en 320px -> 30px en 430px
+           Bottom: 10px en 320px -> 20px en 430px 
+           Left/Right: 10px fijo
+        */
+        padding-top: clamp(20px, calc(20px + (30 - 20) * ((100vw - 320px) / 110)), 30px);
+        padding-bottom: clamp(10px, calc(10px + (20 - 10) * ((100vw - 320px) / 110)), 20px);
+        padding-left: 10px;
+        padding-right: 10px;
+
         line-height: 1.2;
         margin: 0 !important;
         /* Reset margin auto */
@@ -1763,8 +1772,8 @@
 
 /* Imagen fluida para flechas mobile */
 .mobile-control-img {
-    width: clamp(30px, 8vw, 42px) !important;
-    height: clamp(30px, 8vw, 42px) !important;
+    width: clamp(35px, calc(35px + (100vw - 320px) * 0.0545), 41px) !important;
+    height: clamp(35px, calc(35px + (100vw - 320px) * 0.0545), 41px) !important;
     /* Optimización de renderizado para evitar pixelación/borrosidad en escalas */
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;

@@ -13,6 +13,9 @@ class BeneficiosContent extends Model
         'hero_image',
         'club_itca_video',
         'club_itca_texto',
-        'club_itca_button_url'
+        'club_itca_button_url',
+        'bolsa_work_image',
+        'bolsa_work_text',
+        'bolsa_work_button_url'
     ];
 }

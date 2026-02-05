@@ -26,6 +26,9 @@ class BeneficiosPageController extends Controller
             'club_itca_video' => 'nullable|mimes:mp4,mov,avi|max:102400',
             'club_itca_texto' => 'nullable|string',
             'club_itca_button_url' => 'nullable|string',
+            'bolsa_work_image' => 'nullable|image|max:2048',
+            'bolsa_work_text' => 'nullable|string',
+            'bolsa_work_button_url' => 'nullable|string',
         ]);
 
         $content = BeneficiosContent::first();
@@ -57,6 +60,22 @@ class BeneficiosPageController extends Controller
         }
         if ($request->has('club_itca_button_url')) {
             $content->club_itca_button_url = $request->club_itca_button_url;
+        }
+
+        // Bolsa Laboral (Trabajá de lo que te apasiona)
+        if ($request->hasFile('bolsa_work_image')) {
+            if ($content->bolsa_work_image) {
+                Storage::disk('public')->delete($content->bolsa_work_image);
+            }
+            $path = $request->file('bolsa_work_image')->store('uploads/beneficios/bolsa', 'public');
+            $content->bolsa_work_image = $path;
+        }
+
+        if ($request->has('bolsa_work_text')) {
+            $content->bolsa_work_text = $request->bolsa_work_text;
+        }
+        if ($request->has('bolsa_work_button_url')) {
+            $content->bolsa_work_button_url = $request->bolsa_work_button_url;
         }
 
         $content->save();

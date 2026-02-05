@@ -387,7 +387,7 @@
                                             @if($tipos->count() > 1)
                                                 <button class="modalidad-mobile-tab-btn active" data-tab="{{ Str::slug(strtolower($primerTipo->nombre)) }}">{{ $primerTipo->nombre }}</button>
                                             @else
-                                                <div class="modalidad-mobile-tab-placeholder"></div>
+                                                <div class="modalidad-mobile-tab-btn active" style="cursor: default; pointer-events: none;">{{ $primerTipo->nombre }}</div>
                                             @endif
                                             <div class="modalidad-mobile-column-content">
                                                 @foreach($tipos as $tipo)
@@ -405,12 +405,16 @@
                                                 @endforeach
                                             </div>
                                         </div>
-                                        <!-- Columna Derecha: Segundo Tipo (Regular) -->
-                                        @if($tipos->count() > 1)
-                                        <div class="modalidad-mobile-column modalidad-mobile-column-right">
-                                            @if($segundoTipo)
-                                                <button class="modalidad-mobile-tab-btn" data-tab="{{ Str::slug(strtolower($segundoTipo->nombre)) }}">{{ $segundoTipo->nombre }}</button>
+                                        <!-- Columna Derecha: Segundo Tipo (Regular) o Datos unicos -->
+                                        <div class="modalidad-mobile-column modalidad-mobile-column-right {{ $tipos->count() === 1 ? 'single-mode' : '' }}">
+                                            @if($tipos->count() > 1)
+                                                @if($segundoTipo)
+                                                    <button class="modalidad-mobile-tab-btn" data-tab="{{ Str::slug(strtolower($segundoTipo->nombre)) }}">{{ $segundoTipo->nombre }}</button>
+                                                @endif
+                                            @else
+                                                <div class="modalidad-mobile-tab-btn" style="cursor: default; pointer-events: none;">&nbsp;</div>
                                             @endif
+                                            
                                             <div class="modalidad-mobile-column-content">
                                                 @foreach($tipos as $tipo)
                                                     @php $tipoSlug = Str::slug(strtolower($tipo->nombre)); @endphp
@@ -425,23 +429,17 @@
                                                                 <div class="modalidad-mobile-data-item">
                                                                     @if($valor)
                                                                         @php
-                                                                            // Solo dividir en 2 líneas máximo: antes y después de "cada"
                                                                             $esMultilinea = strpos($valor, 'cada') !== false;
                                                                         @endphp
                                                                         @if($esMultilinea)
                                                                             @php
-                                                                                // Dividir solo en 2 partes: antes de "cada" y después
                                                                                 $partes = explode(' cada ', $valor);
                                                                                 if(count($partes) == 2) {
                                                                                     $lineas = [$partes[0], 'cada ' . $partes[1]];
                                                                                 } else {
-                                                                                    // Si no tiene "cada " exacto, buscar "cada"
                                                                                     $posCada = strpos($valor, 'cada');
                                                                                     if($posCada !== false) {
-                                                                                        $lineas = [
-                                                                                            trim(substr($valor, 0, $posCada)),
-                                                                                            trim(substr($valor, $posCada))
-                                                                                        ];
+                                                                                        $lineas = [trim(substr($valor, 0, $posCada)), trim(substr($valor, $posCada))];
                                                                                     } else {
                                                                                         $lineas = [$valor];
                                                                                     }
@@ -461,51 +459,6 @@
                                                 @endforeach
                                             </div>
                                         </div>
-                                        @else
-                                        <!-- Caso de una sola modalidad: Mostrar datos directamente en la columna derecha -->
-                                        <div class="modalidad-mobile-column modalidad-mobile-column-right single-mode">
-                                            <div class="modalidad-mobile-tab-placeholder"></div>
-                                            <div class="modalidad-mobile-column-content">
-                                                <div class="modalidad-mobile-tab-content active" data-content="{{ Str::slug(strtolower($primerTipo->nombre)) }}">
-                                                    <div class="modalidad-mobile-data-col">
-                                                        @foreach($columnas as $columna)
-                                                            @php
-                                                                $campoDato = $columna['campo_dato'] ?? $columna['campo'] ?? '';
-                                                                $valor = $primerTipo->$campoDato ?? '';
-                                                            @endphp
-                                                            <div class="modalidad-mobile-data-item">
-                                                                @if($valor)
-                                                                    @php
-                                                                        $esMultilinea = strpos($valor, 'cada') !== false;
-                                                                    @endphp
-                                                                    @if($esMultilinea)
-                                                                        @php
-                                                                            $partes = explode(' cada ', $valor);
-                                                                            if(count($partes) == 2) {
-                                                                                $lineas = [$partes[0], 'cada ' . $partes[1]];
-                                                                            } else {
-                                                                                $posCada = strpos($valor, 'cada');
-                                                                                if($posCada !== false) {
-                                                                                    $lineas = [trim(substr($valor, 0, $posCada)), trim(substr($valor, $posCada))];
-                                                                                } else {
-                                                                                    $lineas = [$valor];
-                                                                                }
-                                                                            }
-                                                                        @endphp
-                                                                        @foreach($lineas as $linea)
-                                                                            <span class="modalidad-mobile-data-text">{{ trim($linea) }}</span>
-                                                                        @endforeach
-                                                                    @else
-                                                                        <span class="modalidad-mobile-data-text">{{ $valor }}</span>
-                                                                    @endif
-                                                                @endif
-                                                            </div>
-                                                        @endforeach
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        @endif
                                     </div>
                                 @endif
                                 <!-- Sección especial mobile -->
@@ -973,11 +926,11 @@
                             <!-- Botones de navegación -->
                             <div class="fotos-controls-row">
                                 <button class="fotos-carousel-btn fotos-arrow-left" onclick="scrollFotosCarousel('left')">
-                                    <img src="/images/mobile/arrowicon.png" alt="Anterior" />
+                                    <img src="/images/desktop/arrow-b.svg" alt="Anterior" />
                                 </button>
                                 
                                 <button class="fotos-carousel-btn fotos-arrow-right" onclick="scrollFotosCarousel('right')">
-                                    <img src="/images/mobile/arrowicon.png" alt="Siguiente" />
+                                    <img src="/images/desktop/arrow-b.svg" alt="Siguiente" />
                                 </button>
                             </div>
                         </div>

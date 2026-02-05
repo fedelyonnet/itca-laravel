@@ -9601,50 +9601,12 @@ a.carrera-btn-inscribir {
         gap: 0;
     }
 
-    /* Modificación para una sola columna (cuando solo hay 1 tipo de modalidad) */
-    .modalidad-mobile-columns.single-column {
-        grid-template-columns: 1fr;
-        /* Una sola columna que ocupa todo el ancho */
-    }
+
 
     /* Cada columna */
     .modalidad-mobile-column {
         display: flex;
         flex-direction: column;
-    }
-
-    /* Ajustes para modo single-mode (cuando hay 1 sola modalidad) */
-    .modalidad-mobile-column.single-mode {
-        width: 100%;
-    }
-
-    .modalidad-mobile-column.single-mode .modalidad-mobile-tab-placeholder {
-        height: 60px;
-        /* Altura equivalente al botón de tab para mantener alineación */
-        border-bottom: 1px solid #D4D4D4;
-    }
-
-    /* Cuando es single mode, ocultar la columna izquierda vacía si se usa la estructura original,
-   pero como cambiamos el HTML para usar solo la columna derecha en single-mode, 
-   necesitamos ajustar los estilos de esa columna única */
-    .modalidad-mobile-columns.single-column .modalidad-mobile-column-right.single-mode {
-        grid-column: 1 / -1;
-        /* Ocupar todo el ancho */
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        /* Dividir internamente en icono/texto */
-    }
-
-    .modalidad-mobile-columns.single-column .modalidad-mobile-column-right.single-mode .modalidad-mobile-tab-placeholder {
-        grid-column: 1 / -1;
-        /* El placeholder del header ocupa todo el ancho */
-    }
-
-    .modalidad-mobile-columns.single-column .modalidad-mobile-column-right.single-mode .modalidad-mobile-column-content {
-        grid-column: 1 / -1;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        /* Mantener estructura de 2 columnas para contenido */
     }
 
     /* Ajuste específico para que los iconos y textos se alineen en single mode */
@@ -9667,14 +9629,14 @@ a.carrera-btn-inscribir {
     }
 
     .modalidad-mobile-columns.single-column .modalidad-mobile-column-left.single-mode {
-        border-right: 1px solid #D4D4D4;
-        /* Borde divisor */
+        border-right: none;
+        /* Borde divisor eliminado */
     }
 
     .modalidad-mobile-columns.single-column .modalidad-mobile-column-left.single-mode .modalidad-mobile-tab-placeholder,
     .modalidad-mobile-columns.single-column .modalidad-mobile-column-right.single-mode .modalidad-mobile-tab-placeholder {
         height: 60px;
-        border-bottom: 1px solid #D4D4D4;
+        border-bottom: none;
         background-color: transparent;
         /* Sin fondo de tab inactivo */
     }
@@ -9687,7 +9649,6 @@ a.carrera-btn-inscribir {
         display: flex;
         align-items: center;
         justify-content: center;
-        border-bottom: 1px solid rgba(212, 212, 212, 0.3);
     }
 
     /* Botón dentro de cada columna */
@@ -11729,8 +11690,8 @@ a.carrera-btn-inscribir {
     .modalidad-mobile-special-row {
         width: 100%;
         padding: clamp(15px, calc(15px + (100vw - 600px) * ((20 - 15) / (1099 - 600))), 20px);
-        margin-top: clamp(15px, calc(15px + (100vw - 600px) * ((20 - 15) / (1099 - 600))), 20px);
-        border-top: 1px solid #D4D4D4;
+        margin-top: 0;
+        border-top: none;
         background-color: var(--menu-bg);
         display: flex;
         flex-direction: column;

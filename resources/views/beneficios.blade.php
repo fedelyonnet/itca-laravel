@@ -159,6 +159,60 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Dropdown: Trabajá de lo que te apasiona -->
+                    <div class="info-dropdown">
+                        <div class="info-dropdown-header">
+                            <span class="info-dropdown-title">Trabajá de lo que te apasiona</span>
+                            <img src="/images/desktop/chevron.png" alt="Abrir" class="info-dropdown-chevron">
+                        </div>
+                        <div class="info-dropdown-content">
+                            <div class="por-que-grid">
+                                <!-- Image Column -->
+                                <div class="por-que-img-col">
+                                    @if(isset($content) && $content->bolsa_work_image)
+                                        <img src="{{ asset('storage/' . $content->bolsa_work_image) }}" alt="Trabajá de lo que te apasiona" class="por-que-main-img">
+                                    @elseif(isset($somosItca) && $somosItca->img_por_que)
+                                        <img src="{{ asset('storage/' . $somosItca->img_por_que) }}" alt="Trabajá de lo que te apasiona" class="por-que-main-img">
+                                    @else
+                                        <!-- Placeholder or hidden if empty -->
+                                        <div class="por-que-img-placeholder">Sin imagen</div>
+                                    @endif
+                                </div>
+
+                                <!-- Text Column -->
+                                <div class="por-que-text-col">
+                                    <p class="itca-text">
+                                        @if(isset($content) && $content->bolsa_work_text)
+                                            @php
+                                                $text = e($content->bolsa_work_text);
+                                                $text = preg_replace('/\*\/(.*?)\/\*/', '<strong>$1</strong>', $text);
+                                                $text = nl2br($text);
+                                            @endphp
+                                            {!! $text !!}
+                                        @else
+                                            Accedé a las mejores oportunidades laborales en el rubro automotriz.<br>
+                                            Conectamos a nuestros alumnos y egresados con talleres, concesionarias y empresas líderes que buscan personal calificado para potenciar sus equipos de trabajo.
+                                        @endif
+                                    </p>
+                                    
+                                    @if(isset($content) && $content->bolsa_work_button_url)
+                                        <div class="club-itca-btn-wrapper">
+                                            <a href="{{ $content->bolsa_work_button_url }}" class="club-itca-btn" target="_blank">
+                                                <strong>Ingresar</strong>&nbsp;a Bolsa Laboral
+                                            </a>
+                                        </div>
+                                    @else
+                                        <div class="club-itca-btn-wrapper">
+                                            <a href="#" class="club-itca-btn">
+                                                <strong>Ingresar</strong>&nbsp;a Bolsa Laboral
+                                            </a>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>

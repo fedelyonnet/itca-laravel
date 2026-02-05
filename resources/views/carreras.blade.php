@@ -334,11 +334,11 @@
                                 <a href="#" class="beneficios-ver-todos-btn">Ver todos los beneficios</a>
                                 
                                 <button class="beneficios-carousel-btn beneficios-arrow-left" onclick="scrollBeneficiosCarousel('left')">
-                                    <img src="/images/mobile/arrowicon.png" alt="Anterior" />
+                                    <img src="/images/desktop/arrow-b.svg" alt="Anterior" />
                                 </button>
                                 
                                 <button class="beneficios-carousel-btn beneficios-arrow-right" onclick="scrollBeneficiosCarousel('right')">
-                                    <img src="/images/mobile/arrowicon.png" alt="Siguiente" />
+                                    <img src="/images/desktop/arrow-b.svg" alt="Siguiente" />
                                 </button>
                             </div>
                         </div>
