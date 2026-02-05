@@ -20,9 +20,14 @@
         'admin.en-accion',
         'admin.noticias',
         'admin.contacto',
-        'admin.somos-itca',
     ];
     $isActiveCMS = request()->routeIs($cmsRoutes);
+
+    $cmsPaginasRoutes = [
+        'admin.somos-itca',
+        'admin.beneficios.page',
+    ];
+    $isActiveCMSPaginas = request()->routeIs($cmsPaginasRoutes);
     
     $leadsRoutes = [
         'admin.leads',
@@ -228,11 +233,9 @@
                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
             </svg>
         </button>
-        <!-- Logic for active line would need a separate check if routes were strictly separated, 
-             for now we can assume 'Edición CMS Páginas' doesn't have a distinct active state var or reuse/share if desired.
-             Or let's assume it should ideally have one.
-             We will skip the blue underline logic for this new item to keep it simple unless requested. 
-        -->
+        @if($isActiveCMSPaginas)
+            <div class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500"></div>
+        @endif
 
         <div x-show="open" 
              x-cloak
