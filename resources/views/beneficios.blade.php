@@ -135,22 +135,24 @@
                                         <div class="video-placeholder-empty">Video no disponible</div>
                                     @endif
                                 </div>
-                                <div class="text-col">
-                                    @if(isset($content) && $content->club_itca_texto)
-                                        @php
-                                            $text = e($content->club_itca_texto);
-                                            $text = preg_replace('/\*\/(.*?)\/\*/', '<strong>$1</strong>', $text);
-                                            $text = nl2br($text);
-                                        @endphp
-                                        <p class="itca-text">{!! $text !!}</p>
-                                    @else
-                                        <p class="itca-text">
-                                            */Club ITCA/* es mucho más que un programa de beneficios:<br>
-                                            es ser parte de una comunidad que acompaña tu formación y tu crecimiento profesional, antes, durante y después de estudiar.<br><br>
-                                            Está pensado para alumnos y egresados que buscan seguir conectados con el mundo automotriz.<br><br>
-                                            Como miembro, accedés a descuentos en herramientas, productos y servicios, promociones con marcas líderes del sector, encuentros de egresados, exposiciones y eventos.
-                                        </p>
-                                    @endif
+                                <div class="text-col" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                                    <div>
+                                        @if(isset($content) && $content->club_itca_texto)
+                                            @php
+                                                $text = e($content->club_itca_texto);
+                                                $text = preg_replace('/\*\/(.*?)\/\*/', '<strong>$1</strong>', $text);
+                                                $text = nl2br($text);
+                                            @endphp
+                                            <p class="itca-text">{!! $text !!}</p>
+                                        @else
+                                            <p class="itca-text">
+                                                */Club ITCA/* es mucho más que un programa de beneficios:<br>
+                                                es ser parte de una comunidad que acompaña tu formación y tu crecimiento profesional, antes, durante y después de estudiar.<br><br>
+                                                Está pensado para alumnos y egresados que buscan seguir conectados con el mundo automotriz.<br><br>
+                                                Como miembro, accedés a descuentos en herramientas, productos y servicios, promociones con marcas líderes del sector, encuentros de egresados, exposiciones y eventos.
+                                            </p>
+                                        @endif
+                                    </div>
                                     
                                     <div class="club-itca-btn-wrapper">
                                         <a href="{{ (isset($content->club_itca_button_url) && $content->club_itca_button_url) ? (Str::startsWith($content->club_itca_button_url, ['http://', 'https://']) ? $content->club_itca_button_url : 'https://' . $content->club_itca_button_url) : '#' }}" class="club-itca-btn">
@@ -183,20 +185,22 @@
                                 </div>
 
                                 <!-- Text Column -->
-                                <div class="por-que-text-col">
-                                    <p class="itca-text">
-                                        @if(isset($content) && $content->bolsa_work_text)
-                                            @php
-                                                $text = e($content->bolsa_work_text);
-                                                $text = preg_replace('/\*\/(.*?)\/\*/', '<strong>$1</strong>', $text);
-                                                $text = nl2br($text);
-                                            @endphp
-                                            {!! $text !!}
-                                        @else
-                                            Accedé a las mejores oportunidades laborales en el rubro automotriz.<br>
-                                            Conectamos a nuestros alumnos y egresados con talleres, concesionarias y empresas líderes que buscan personal calificado para potenciar sus equipos de trabajo.
-                                        @endif
-                                    </p>
+                                <div class="por-que-text-col" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                                    <div>
+                                        <p class="itca-text">
+                                            @if(isset($content) && $content->bolsa_work_text)
+                                                @php
+                                                    $text = e($content->bolsa_work_text);
+                                                    $text = preg_replace('/\*\/(.*?)\/\*/', '<strong>$1</strong>', $text);
+                                                    $text = nl2br($text);
+                                                @endphp
+                                                {!! $text !!}
+                                            @else
+                                                Accedé a las mejores oportunidades laborales en el rubro automotriz.<br>
+                                                Conectamos a nuestros alumnos y egresados con talleres, concesionarias y empresas líderes que buscan personal calificado para potenciar sus equipos de trabajo.
+                                            @endif
+                                        </p>
+                                    </div>
                                     
                                     @if(isset($content) && $content->bolsa_work_button_url)
                                         <div class="club-itca-btn-wrapper">
@@ -300,6 +304,52 @@
                                 <a href="{{ (isset($content) && $content->tienda_button_url) ? (Str::startsWith($content->tienda_button_url, ['http://', 'https://']) ? $content->tienda_button_url : 'https://' . $content->tienda_button_url) : '#' }}" class="club-itca-btn" target="{{ (isset($content) && $content->tienda_button_url) ? '_blank' : '_self' }}">
                                     <strong>Acceder</strong>&nbsp;a la Tienda Online
                                 </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dropdown: Competencia ITCA -->
+                    <div class="info-dropdown">
+                        <div class="info-dropdown-header">
+                            <span class="info-dropdown-title">Competencia ITCA</span>
+                            <img src="/images/desktop/chevron.png" alt="Abrir" class="info-dropdown-chevron">
+                        </div>
+                        <div class="info-dropdown-content">
+                            <div class="que-es-itca-grid">
+                                <div class="video-col relative group cursor-pointer video-container-click">
+                                    @if(isset($content) && $content->competencia_itca_video)
+                                        <video class="itca-video" playsinline preload="auto">
+                                            <source src="{{ asset('storage/' . $content->competencia_itca_video) }}" type="video/mp4">
+                                        </video>
+                                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none play-overlay">
+                                            <img src="/images/desktop/play-btn.svg" alt="Play" class="w-16 h-16 opacity-80 group-hover:opacity-100 transition-opacity">
+                                        </div>
+                                    @else
+                                        <div class="video-placeholder-empty">Video no disponible</div>
+                                    @endif
+                                </div>
+                                <div class="text-col" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                                    <div>
+                                        @if(isset($content) && $content->competencia_itca_texto)
+                                            @php
+                                                $text = e($content->competencia_itca_texto);
+                                                $text = preg_replace('/\*\/(.*?)\/\*/', '<strong>$1</strong>', $text);
+                                                $text = nl2br($text);
+                                            @endphp
+                                            <p class="itca-text">{!! $text !!}</p>
+                                        @else
+                                            <p class="itca-text">
+                                                Información sobre la <strong>Competencia ITCA</strong> próximamente.
+                                            </p>
+                                        @endif
+                                    </div>
+                                    
+                                    <div class="club-itca-btn-wrapper">
+                                        <a href="{{ (isset($content->competencia_itca_button_url) && $content->competencia_itca_button_url) ? (Str::startsWith($content->competencia_itca_button_url, ['http://', 'https://']) ? $content->competencia_itca_button_url : 'https://' . $content->competencia_itca_button_url) : '#' }}" class="club-itca-btn">
+                                            <strong>Ingresar</strong>&nbsp;a Competencia ITCA
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

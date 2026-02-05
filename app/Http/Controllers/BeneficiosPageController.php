@@ -31,6 +31,9 @@ class BeneficiosPageController extends Controller
             'bolsa_work_button_url' => 'nullable|string',
             'tienda_text' => 'nullable|string',
             'tienda_button_url' => 'nullable|string',
+            'competencia_itca_video' => 'nullable|mimes:mp4,mov,avi|max:102400',
+            'competencia_itca_texto' => 'nullable|string',
+            'competencia_itca_button_url' => 'nullable|string',
         ]);
 
         $content = BeneficiosContent::first();
@@ -86,6 +89,22 @@ class BeneficiosPageController extends Controller
         }
         if ($request->has('tienda_button_url')) {
             $content->tienda_button_url = $request->tienda_button_url;
+        }
+
+        // Competencia ITCA
+        if ($request->hasFile('competencia_itca_video')) {
+            if ($content->competencia_itca_video) {
+                Storage::disk('public')->delete($content->competencia_itca_video);
+            }
+            $path = $request->file('competencia_itca_video')->store('uploads/beneficios/competencia', 'public');
+            $content->competencia_itca_video = $path;
+        }
+
+        if ($request->has('competencia_itca_texto')) {
+            $content->competencia_itca_texto = $request->competencia_itca_texto;
+        }
+        if ($request->has('competencia_itca_button_url')) {
+            $content->competencia_itca_button_url = $request->competencia_itca_button_url;
         }
 
         $content->save();

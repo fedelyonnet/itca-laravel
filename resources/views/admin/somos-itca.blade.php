@@ -151,8 +151,8 @@
                         
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                             <!-- Update Image and manage general info -->
-                            <div class="space-y-6">
-                                <form action="{{ route('admin.somos-itca.update-content') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                            <div>
+                                <form action="{{ route('admin.somos-itca.update-content') }}" method="POST" enctype="multipart/form-data" class="w-full">
                                     @csrf
                                     @method('PUT')
                                     <input type="hidden" name="active_tab" value="porque">
