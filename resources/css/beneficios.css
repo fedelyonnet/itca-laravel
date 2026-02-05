@@ -989,6 +989,33 @@
     margin-top: 60px;
 }
 
+.charlas-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(12px, 1vw, 18px) clamp(20px, 2.5vw, 45px);
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 2px solid #65E09C;
+    border-radius: 49px;
+    color: #65E09C;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: clamp(18px, calc(18px + (21 - 18) * ((100vw - 1100px) / 820)), 21px);
+    white-space: nowrap;
+}
+
+.charlas-cta-btn strong {
+    font-weight: 700;
+    margin-right: 4px;
+}
+
+.charlas-cta-btn:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    transform: scale(1.05);
+}
+
 /* =========================================
    Flip Cards - Charlas y Visitas Técnicas
    ========================================= */
@@ -1053,12 +1080,13 @@
     /* Verde ITCA */
     color: #010C42;
     transform: rotateY(180deg);
+    justify-content: flex-start;
 }
 
 /* Back Description */
 .categoria-desc {
     padding: 0 30px;
-    margin: auto 0;
+    margin: 0;
     font-family: 'Montserrat', sans-serif;
     font-weight: 400;
     /* Fluido: 12px min -> 18px max */
@@ -1073,7 +1101,11 @@
 
 /* Fecha (Back - Top) */
 .categoria-fecha {
-    padding: 30px 30px 0;
+    /* Padding top y bottom fluido: 15px en 1100px -> 30px en 1920px */
+    padding-top: clamp(15px, calc(15px + (30 - 15) * ((100vw - 1100px) / (1920 - 1100))), 30px);
+    padding-bottom: clamp(15px, calc(15px + (30 - 15) * ((100vw - 1100px) / (1920 - 1100))), 30px);
+    padding-left: 30px;
+    padding-right: 30px;
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
     font-size: clamp(12px, 1vw, 16px);
@@ -1248,5 +1280,11 @@
     .charlas-description-mobile strong {
         font-weight: 600;
         /* Semibold */
+    }
+
+    .charlas-cta-btn {
+        /* Fluidez: 12px en 320px -> 16px en 430px */
+        font-size: clamp(12px, calc(12px + (16 - 12) * ((100vw - 320px) / 110)), 16px);
+        padding: 12px 25px;
     }
 }

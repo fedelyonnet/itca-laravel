@@ -371,7 +371,7 @@
                         Organizamos charlas y visitas técnicas gratuitas que <strong>te conectan con las principales<br>marcas y referentes de la industria automotriz,</strong> complementando tu formación.
                     </p>
                     <p class="charlas-description-mobile">
-                        <strong>Te conectamos con las principales marcas y referentes<br>de la industria automotriz,</strong> complementando tu formación.
+                        <strong>Te conectamos con las principales marcas<br>y referentes de la industria automotriz,</strong><br>complementando tu formación.
                     </p>
                 </div>
 
@@ -421,7 +421,7 @@
 
                 <!-- CTA Button -->
                 <div class="charlas-cta-wrapper">
-                    <a href="#" class="club-itca-btn">
+                    <a href="#" class="charlas-cta-btn">
                         <strong>Anotate</strong>&nbsp;para las próximas charlas
                     </a>
                 </div>
