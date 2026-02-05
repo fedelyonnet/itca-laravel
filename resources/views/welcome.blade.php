@@ -38,7 +38,7 @@
         <div class="container">
             <nav class="nav">
                 <!-- Logo -->
-                <a href="#top" class="logo">ITCA</a>
+                <a href="{{ route('home') }}" class="logo">ITCA</a>
                 
                 <!-- Desktop Navigation -->
                 <ul class="nav-links">
@@ -53,7 +53,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('beneficios') }}" class="nav-link">
+                        <a href="{{ route('beneficios') }}" class="nav-link" data-target="beneficios">
                             Beneficios
                         </a>
                     </li>
@@ -154,7 +154,7 @@
                                         </video>
                                     @endif
                                     <button class="carousel-play-button">
-                                        <img src="/images/desktop/play.png" alt="Play" class="carousel-play-icon" loading="lazy" />
+                                        <img src="/images/desktop/play-btn.svg" alt="Play" class="carousel-play-icon" loading="lazy" />
                                     </button>
                                 </div>
                                 <div class="carousel-slide">
@@ -190,7 +190,7 @@
                                 </video>
                             @endif
                             <button class="q4-play-button">
-                                <img src="/images/desktop/play.png" alt="Play" class="q4-play-icon" loading="lazy" />
+                                <img src="/images/desktop/play-btn.svg" alt="Play" class="q4-play-icon" loading="lazy" />
                             </button>
                         </div>
                         <div class="q4-right">
@@ -323,7 +323,7 @@
         </section>
 
             <!-- Beneficios Section -->
-            <section class="beneficios-section">
+            <section class="beneficios-section" id="beneficios">
                 <div class="beneficios-container">
                     <h2 class="beneficios-title">
                         <span class="beneficios-text-regular">Ser </span>
@@ -777,7 +777,7 @@
                                             <source src="{{ asset('storage/' . $video->video) }}" type="video/mp4">
                                         </video>
                                         <button class="en-accion-tablet-play-button">
-                                            <img src="/images/desktop/play.png" alt="Play" class="en-accion-tablet-play-icon" />
+                                            <img src="/images/desktop/play-btn.svg" alt="Play" class="en-accion-tablet-play-icon" />
                                         </button>
                                         <a href="{{ $video->url }}" target="_blank" class="en-accion-tablet-{{ $video->getPlatformClass() }}-btn">
                                             Ir a {{ $video->getPlatformName() }}
@@ -844,7 +844,7 @@
                                         <source src="{{ asset('storage/' . $video->video) }}" type="video/mp4">
                                     </video>
                                     <button class="en-accion-mobile-play-button">
-                                        <img src="/images/desktop/play.png" alt="Play" class="en-accion-mobile-play-icon" />
+                                        <img src="/images/desktop/play-btn.svg" alt="Play" class="en-accion-mobile-play-icon" />
                                     </button>
                                     <a href="{{ $video->url }}" target="_blank" class="en-accion-mobile-{{ $video->getPlatformClass() }}-btn">
                                         Ir a {{ $video->getPlatformName() }}
@@ -932,7 +932,7 @@
                                         <source src="{{ asset('storage/' . $video1->video) }}" type="video/mp4">
                                     </video>
                                     <button class="en-accion-play-button">
-                                        <img src="/images/desktop/play.png" alt="Play" class="en-accion-play-icon" />
+                                        <img src="/images/desktop/play-btn.svg" alt="Play" class="en-accion-play-icon" />
                                     </button>
                                     <a href="{{ $video1->url }}" target="_blank" class="en-accion-{{ $video1->getPlatformClass() }}-btn">
                                         Ir a {{ $video1->getPlatformName() }}
@@ -974,7 +974,7 @@
                                         <source src="{{ asset('storage/' . $video3->video) }}" type="video/mp4">
                                     </video>
                                     <button class="en-accion-play-button">
-                                        <img src="/images/desktop/play.png" alt="Play" class="en-accion-play-icon" />
+                                        <img src="/images/desktop/play-btn.svg" alt="Play" class="en-accion-play-icon" />
                                     </button>
                                     <a href="{{ $video3->url }}" target="_blank" class="en-accion-{{ $video3->getPlatformClass() }}-btn">
                                         Ir a {{ $video3->getPlatformName() }}
@@ -1024,7 +1024,7 @@
                                             <source src="{{ asset('storage/' . $video5->video) }}" type="video/mp4">
                                         </video>
                                         <button class="en-accion-play-button">
-                                            <img src="/images/desktop/play.png" alt="Play" class="en-accion-play-icon" />
+                                            <img src="/images/desktop/play-btn.svg" alt="Play" class="en-accion-play-icon" />
                                         </button>
                                         <a href="{{ $video5->url }}" target="_blank" class="en-accion-{{ $video5->getPlatformClass() }}-btn">
                                             Ir a {{ $video5->getPlatformName() }}

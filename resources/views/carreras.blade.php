@@ -46,7 +46,7 @@
         <div class="container">
             <nav class="nav">
                 <!-- Logo -->
-                <a href="/" class="logo">ITCA</a>
+                <a href="{{ route('home') }}" class="logo">ITCA</a>
                 
                 <!-- Desktop Navigation -->
                 <ul class="nav-links">
@@ -66,7 +66,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url('/#contacto') }}" class="nav-link">
+                        <a href="#contacto" class="nav-link">
                             Contacto
                         </a>
                     </li>

@@ -54,7 +54,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#beneficios" class="nav-link" data-target="beneficios">
+                        <a href="{{ route('beneficios') }}" class="nav-link">
                             Beneficios
                         </a>
                     </li>

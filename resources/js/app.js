@@ -2392,16 +2392,26 @@ document.addEventListener('DOMContentLoaded', function () {
         initialActive = null;
     }
 
-    // Si no hay ninguno activo, forzamos el LOGO como default
+    // Si no hay ninguno activo, intentamos detectar por URL
     if (!initialActive) {
-        // En cualquier otra página (como /somos-itca), si "Somos ITCA" debería estar activo
-        // pero por alguna razón no lo está (e.g. lógica CSS :active), lo buscamos manualmente por URL
         const currentPath = window.location.pathname;
         if (currentPath.includes('somos-itca')) {
             const somosItcaLink = Array.from(navItems).find(link => link.href.includes('somos-itca'));
             if (somosItcaLink) {
                 initialActive = somosItcaLink;
-                initialActive.classList.add('active'); // Aseguramos que tenga la clase
+                initialActive.classList.add('active');
+            }
+        } else if (currentPath.includes('beneficios')) {
+            const beneficiosLink = Array.from(navItems).find(link => link.href.includes('beneficios'));
+            if (beneficiosLink) {
+                initialActive = beneficiosLink;
+                initialActive.classList.add('active');
+            }
+        } else if (currentPath.includes('carreras')) {
+            const carrerasLink = Array.from(navItems).find(link => link.href.includes('carreras'));
+            if (carrerasLink) {
+                initialActive = carrerasLink;
+                initialActive.classList.add('active');
             }
         }
     }

@@ -38,12 +38,12 @@
         <div class="container">
             <nav class="nav">
                 <!-- Logo -->
-                <a href="{{ url('/') }}" class="logo">ITCA</a>
+                <a href="{{ route('home') }}" class="logo">ITCA</a>
                 
                 <!-- Desktop Navigation -->
                 <ul class="nav-links">
                     <li>
-                        <a href="{{ route('somos-itca') }}" class="nav-link">
+                        <a href="{{ route('somos-itca') }}" class="nav-link active">
                             Somos ITCA
                         </a>
                     </li>
@@ -117,7 +117,7 @@
                                         @if(isset($content) && $content->video_url)
                                             <video src="{{ asset('storage/' . $content->video_url) }}" class="itca-video" playsinline></video>
                                             <div class="absolute inset-0 flex items-center justify-center pointer-events-none play-overlay">
-                                                <img src="/images/desktop/play.png" alt="Play" class="w-16 h-16 opacity-80 group-hover:opacity-100 transition-opacity">
+                                                <img src="/images/desktop/play-btn.svg" alt="Play" class="w-16 h-16 opacity-80 group-hover:opacity-100 transition-opacity">
                                             </div>
                                         @else
                                             <div class="video-placeholder-empty">Video no disponible</div>

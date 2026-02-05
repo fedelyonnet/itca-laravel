@@ -34,11 +34,11 @@
         <div class="container">
             <nav class="nav">
                 <!-- Logo -->
-                <a href="/" class="logo">ITCA</a>
+                <a href="{{ route('home') }}" class="logo">ITCA</a>
                 <!-- Desktop Navigation -->
                 <ul class="nav-links">
                     <li>
-                        <a href="{{ url('/') }}" class="nav-link">
+                        <a href="{{ route('somos-itca') }}" class="nav-link">
                             Somos ITCA
                         </a>
                     </li>
@@ -48,12 +48,12 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url('/#beneficios') }}" class="nav-link">
+                        <a href="{{ route('beneficios') }}" class="nav-link">
                             Beneficios
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url('/#contacto') }}" class="nav-link">
+                        <a href="#contacto" class="nav-link">
                             Contacto
                         </a>
                     </li>
@@ -970,7 +970,7 @@
                                         Tu navegador no soporta el elemento video.
                                     </video>
                                     <button class="testimonios-carrera-play-button">
-                                        <img src="/images/desktop/play.png" alt="Play" class="testimonios-carrera-play-icon" />
+                                        <img src="/images/desktop/play-btn.svg" alt="Play" class="testimonios-carrera-play-icon" />
                                     </button>
                                     <a href="{{ ($videoTestimonios && !empty($videoTestimonios->url)) ? $videoTestimonios->url : '#' }}" class="testimonios-carrera-ver-mas-btn">
                                         Ver más testimonios
@@ -1092,7 +1092,7 @@
                             <source src="{{ asset('storage/' . $video->video) }}" type="video/mp4">
                         </video>
                         <button class="en-accion-carrera-mobile-play-button">
-                            <img src="/images/desktop/play.png" alt="Play" class="en-accion-carrera-mobile-play-icon" />
+                            <img src="/images/desktop/play-btn.svg" alt="Play" class="en-accion-carrera-mobile-play-icon" />
                         </button>
                         <a href="{{ $video->url }}" target="_blank" class="en-accion-carrera-mobile-{{ $video->getPlatformClass() }}-btn">
                             Ir a {{ $video->getPlatformName() }}

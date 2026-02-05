@@ -36,7 +36,7 @@
         <div class="container">
             <nav class="nav">
                 <!-- Logo -->
-                <a href="{{ url('/') }}" class="logo">ITCA</a>
+                <a href="{{ route('home') }}" class="logo">ITCA</a>
                 
                 <!-- Desktop Navigation -->
                 <ul class="nav-links">
@@ -51,7 +51,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('beneficios') }}" class="nav-link">
+                        <a href="{{ route('beneficios') }}" class="nav-link active">
                             Beneficios
                         </a>
                     </li>
@@ -127,7 +127,7 @@
                                             <source src="{{ asset('storage/' . $content->club_itca_video) }}" type="video/mp4">
                                         </video>
                                         <div class="absolute inset-0 flex items-center justify-center pointer-events-none play-overlay">
-                                            <img src="/images/desktop/play.png" alt="Play" class="w-16 h-16 opacity-80 group-hover:opacity-100 transition-opacity">
+                                            <img src="/images/desktop/play-btn.svg" alt="Play" class="w-16 h-16 opacity-80 group-hover:opacity-100 transition-opacity">
                                         </div>
                                     @else
                                         <div class="video-placeholder-empty">Video no disponible</div>
