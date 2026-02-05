@@ -332,13 +332,13 @@
 
 @media (max-width: 599px) {
     .info-dropdown-title {
-        /* Fluidez: 14px en 320px -> 20px en 430px */
-        font-size: clamp(14px, calc(14px + (20 - 14) * ((100vw - 320px) / 110)), 20px);
+        /* Fluidez: 13px en 320px -> 17px en 430px (divisor 110 = 430-320) */
+        font-size: clamp(13px, calc(13px + (17 - 13) * ((100vw - 320px) / 110)), 20px);
     }
 
     .info-dropdown-chevron {
-        /* Fluidez: 16px en 320px -> 20px en 430px */
-        width: clamp(16px, calc(16px + (20 - 16) * ((100vw - 320px) / 110)), 20px);
+        /* Fluidez: 14px en 320px -> 17px en 430px */
+        width: clamp(14px, calc(14px + (17 - 14) * ((100vw - 320px) / 110)), 20px);
     }
 }
 

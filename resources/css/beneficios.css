@@ -182,11 +182,13 @@
 /* Mobile specific fluid titles */
 @media (max-width: 599px) {
     .info-dropdown-title {
-        font-size: clamp(14px, calc(14px + (20 - 14) * ((100vw - 320px) / 110)), 20px);
+        /* Fluidez: 13px en 320px -> 17px en 430px (divisor 110 = 430-320) */
+        font-size: clamp(13px, calc(13px + (17 - 13) * ((100vw - 320px) / 110)), 20px);
     }
 
     .info-dropdown-chevron {
-        width: clamp(16px, calc(16px + (20 - 16) * ((100vw - 320px) / 110)), 20px);
+        /* Fluidez: 14px en 320px -> 17px en 430px */
+        width: clamp(14px, calc(14px + (17 - 14) * ((100vw - 320px) / 110)), 20px);
     }
 
     .info-dropdown-content {
@@ -626,6 +628,7 @@
         justify-content: center;
     }
 }
+
 /* Replicated styles from Somos ITCA for "Trabajá de lo que te apasiona" dropdown */
 .por-que-grid {
     display: flex;
@@ -693,29 +696,51 @@
 }
 
 /* Specific icon sizing */
-.por-que-item:nth-child(1) .por-que-icon { width: 2.6vw; min-width: 35px; }
-.por-que-item:nth-child(2) .por-que-icon { width: 1.77vw; min-width: 24px; }
-.por-que-item:nth-child(3) .por-que-icon { width: 1.77vw; min-width: 24px; }
-.por-que-item:nth-child(4) .por-que-icon { width: 2.08vw; min-width: 28px; }
-.por-que-item:nth-child(5) .por-que-icon { width: 1.98vw; min-width: 26px; }
+.por-que-item:nth-child(1) .por-que-icon {
+    width: 2.6vw;
+    min-width: 35px;
+}
+
+.por-que-item:nth-child(2) .por-que-icon {
+    width: 1.77vw;
+    min-width: 24px;
+}
+
+.por-que-item:nth-child(3) .por-que-icon {
+    width: 1.77vw;
+    min-width: 24px;
+}
+
+.por-que-item:nth-child(4) .por-que-icon {
+    width: 2.08vw;
+    min-width: 28px;
+}
+
+.por-que-item:nth-child(5) .por-que-icon {
+    width: 1.98vw;
+    min-width: 26px;
+}
 
 /* Desktop Layout */
 @media (min-width: 1100px) {
     .por-que-grid {
         display: grid;
-        grid-template-columns: 6fr 4fr; /* Match que-es-itca-grid ratio */
+        grid-template-columns: 6fr 4fr;
+        /* Match que-es-itca-grid ratio */
         gap: 50px;
         align-items: center;
     }
 
     .por-que-img-col {
         width: 100%;
-        order: 1; /* Image left */
+        order: 1;
+        /* Image left */
     }
 
     .por-que-text-col {
         width: 100%;
-        order: 2; /* Text right */
+        order: 2;
+        /* Text right */
     }
 
     .por-que-main-img {
