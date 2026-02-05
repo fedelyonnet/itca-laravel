@@ -357,6 +357,77 @@
             </div>
         </section>
 
+        <!-- Charlas y Visitas Técnicas Section -->
+        <section class="charlas-section">
+            <div class="container somos-itca-container">
+                <div class="charlas-content-wrapper">
+                    <!-- Title similar to dropdown headers -->
+                    <h2 class="charlas-title">
+                        Charlas y visitas técnicas
+                    </h2>
+                    
+                    <!-- Description text -->
+                    <p class="charlas-description charlas-desc-desktop">
+                        Organizamos charlas y visitas técnicas gratuitas que <strong>te conectan con las principales<br>marcas y referentes de la industria automotriz,</strong> complementando tu formación.
+                    </p>
+                    <p class="charlas-description-mobile">
+                        <strong>Te conectamos con las principales marcas y referentes<br>de la industria automotriz,</strong> complementando tu formación.
+                    </p>
+                </div>
+
+                <!-- Flip Cards Grid -->
+                <div class="categorias-grid">
+                    @php
+                        $charlasContent = \App\Models\BeneficiosContent::first();
+                    @endphp
+                    
+                    @for($i = 1; $i <= 4; $i++)
+                        @php
+                            $img = $charlasContent->{"charla{$i}_img"} ?? '';
+                            $title = $charlasContent->{"charla{$i}_title"} ?? '';
+                            $text = $charlasContent->{"charla{$i}_text"} ?? '';
+                            $fecha = $charlasContent->{"charla{$i}_fecha"} ?? '';
+                            
+                            if($text) {
+                                $text = nl2br(preg_replace('/\*\/(.*?)\/\*/', '<strong>$1</strong>', e($text)));
+                            }
+                        @endphp
+
+                        @if($img || $title || $text)
+                        <!-- Card {{ $i }}: {{ $title }} -->
+                        <div class="categoria-card">
+                            <div class="categoria-card-inner">
+                                <div class="categoria-card-front">
+                                    <div class="categoria-img-wrapper">
+                                        @if($img)
+                                            <img src="{{ asset('storage/' . $img) }}" alt="{{ $title }}" loading="lazy">
+                                        @endif
+                                    </div>
+                                    <div class="categoria-label categoria-label-front">{{ $title }}</div>
+                                </div>
+                                <div class="categoria-card-back">
+                                    @if($fecha)
+                                        <div class="categoria-fecha">{{ $fecha }}</div>
+                                    @endif
+                                    <div class="categoria-desc">
+                                        {!! $text !!}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+                    @endfor
+                </div>
+
+                <!-- CTA Button -->
+                <div class="charlas-cta-wrapper">
+                    <a href="#" class="club-itca-btn">
+                        <strong>Anotate</strong>&nbsp;para las próximas charlas
+                    </a>
+                </div>
+            </div>
+        </section>
+
         <!-- CTA Decision Section -->
         <section class="cta-decide-section">
             <div class="container somos-itca-container">
@@ -666,6 +737,14 @@
 
                 video.addEventListener('pause', function() {
                     overlay.style.opacity = '1'; 
+                });
+            });
+
+            // Flip Cards Logic - Click to toggle
+            const cards = document.querySelectorAll('.categoria-card');
+            cards.forEach(card => {
+                card.addEventListener('click', function() {
+                    this.classList.toggle('is-flipped');
                 });
             });
 

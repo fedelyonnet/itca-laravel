@@ -56,6 +56,9 @@
                     <button @click="setActiveTab('competencia_itca')" :class="activeTab === 'competencia_itca' ? 'bg-gray-800 text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'" class="px-6 py-4 text-sm font-bold uppercase transition-all outline-none">
                         5) Competencia ITCA
                     </button>
+                    <button @click="setActiveTab('charlas')" :class="activeTab === 'charlas' ? 'bg-gray-800 text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'" class="px-6 py-4 text-sm font-bold uppercase transition-all outline-none">
+                        6) Charlas
+                    </button>
                 </div>
 
                 <div class="p-6">
@@ -373,6 +376,79 @@
                             </div>
 
                         </div>
+                    </div>
+
+                    <!-- TAB 6: CHARLAS Y VISITAS TÉCNICAS -->
+                    <div x-show="activeTab === 'charlas'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" style="display: none;">
+                        <form action="{{ route('admin.beneficios.page.update') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
+                            @csrf
+                            @method('PUT')
+                            <input type="hidden" name="active_tab" value="charlas">
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                @for($i = 1; $i <= 4; $i++)
+                                <div class="bg-gray-900/50 p-4 rounded-xl border border-gray-700 shadow-inner flex flex-col h-full">
+                                    <h4 class="text-blue-400 font-bold mb-4 uppercase text-[10px] tracking-widest border-b border-gray-700 pb-2">Card #{{$i}}</h4>
+                                    
+                                    <div class="space-y-4 flex-grow">
+                                        <!-- Imagen -->
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase text-center">Imagen (Frente)</label>
+                                            <div class="relative group aspect-square">
+                                                <input type="file" name="charla{{$i}}_img" id="charla{{$i}}_img" accept="image/*" class="hidden" onchange="this.form.submit()">
+                                                <label for="charla{{$i}}_img" class="relative block w-full h-full bg-gray-800 rounded overflow-hidden border border-gray-700 border-dashed hover:border-blue-500 cursor-pointer transition-all flex flex-col items-center justify-center group shadow-inner">
+                                                    @if(isset($content->{'charla'.$i.'_img'}) && $content->{'charla'.$i.'_img'})
+                                                        <img id="charla{{$i}}_preview" src="{{ asset('storage/' . $content->{'charla'.$i.'_img'}) }}" class="w-full h-full object-cover">
+                                                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                                        </div>
+                                                    @else
+                                                        <div id="charla{{$i}}_placeholder" class="flex flex-col items-center justify-center text-gray-600">
+                                                            <svg class="w-8 h-8 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                                            <span class="text-[10px] font-bold">Subir</span>
+                                                        </div>
+                                                        <img id="charla{{$i}}_preview" class="w-full h-full object-cover hidden">
+                                                    @endif
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Título -->
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Título (Front/Back)</label>
+                                            <input type="text" name="charla{{$i}}_title" value="{{ old('charla'.$i.'_title', $content->{'charla'.$i.'_title'}) }}" 
+                                                class="w-full bg-gray-800 border-gray-600 rounded text-gray-100 text-xs focus:border-blue-500 focus:ring-0"
+                                                placeholder="Ej: VISITA TÉCNICA">
+                                        </div>
+
+                                        <!-- Fecha -->
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Fecha (Atrás - Arriba)</label>
+                                            <input type="text" name="charla{{$i}}_fecha" value="{{ old('charla'.$i.'_fecha', $content->{'charla'.$i.'_fecha'}) }}" 
+                                                class="w-full bg-gray-800 border-gray-600 rounded text-gray-100 text-xs focus:border-blue-500 focus:ring-0"
+                                                placeholder="Ej: 15 de marzo de 2026">
+                                        </div>
+
+                                        <!-- Descripción -->
+                                        <div class="flex-grow">
+                                            <label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Descripción (Atrás)</label>
+                                            <textarea name="charla{{$i}}_text" rows="5" 
+                                                class="w-full bg-gray-800 border-gray-600 rounded text-gray-100 text-[11px] focus:border-blue-500 focus:ring-0 leading-tight"
+                                                placeholder="Texto que aparece al girar...">{{ old('charla'.$i.'_text', $content->{'charla'.$i.'_text'}) }}</textarea>
+                                            <p class="text-[10px] text-gray-500 mt-1">Usa */texto/* para poner en negrita</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endfor
+                            </div>
+
+                            <div class="flex justify-center pt-8 border-t border-gray-700">
+                                    <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-12 rounded-full shadow-lg transition-all transform hover:-translate-y-1 active:scale-95 flex items-center gap-2">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                                        GUARDAR CHARLAS
+                                    </button>
+                            </div>
+                        </form>
                     </div>
 
 

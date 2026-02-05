@@ -18,7 +18,15 @@ class BeneficiosContent extends Model
         'bolsa_work_text',
         'bolsa_work_button_url',
         'tienda_text',
-        'tienda_button_url'
+        'tienda_button_url',
+        'competencia_itca_video',
+        'competencia_itca_texto',
+        'competencia_itca_button_url',
+        // Charlas y Visitas Técnicas
+        'charla1_img', 'charla1_title', 'charla1_text', 'charla1_fecha',
+        'charla2_img', 'charla2_title', 'charla2_text', 'charla2_fecha',
+        'charla3_img', 'charla3_title', 'charla3_text', 'charla3_fecha',
+        'charla4_img', 'charla4_title', 'charla4_text', 'charla4_fecha',
     ];
 
     public function productos()

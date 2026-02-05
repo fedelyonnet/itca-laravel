@@ -34,6 +34,23 @@ class BeneficiosPageController extends Controller
             'competencia_itca_video' => 'nullable|mimes:mp4,mov,avi|max:102400',
             'competencia_itca_texto' => 'nullable|string',
             'competencia_itca_button_url' => 'nullable|string',
+            // Charlas y Visitas Técnicas
+            'charla1_img' => 'nullable|image|max:2048',
+            'charla1_title' => 'nullable|string',
+            'charla1_text' => 'nullable|string',
+            'charla1_fecha' => 'nullable|string',
+            'charla2_img' => 'nullable|image|max:2048',
+            'charla2_title' => 'nullable|string',
+            'charla2_text' => 'nullable|string',
+            'charla2_fecha' => 'nullable|string',
+            'charla3_img' => 'nullable|image|max:2048',
+            'charla3_title' => 'nullable|string',
+            'charla3_text' => 'nullable|string',
+            'charla3_fecha' => 'nullable|string',
+            'charla4_img' => 'nullable|image|max:2048',
+            'charla4_title' => 'nullable|string',
+            'charla4_text' => 'nullable|string',
+            'charla4_fecha' => 'nullable|string',
         ]);
 
         $content = BeneficiosContent::first();
@@ -105,6 +122,33 @@ class BeneficiosPageController extends Controller
         }
         if ($request->has('competencia_itca_button_url')) {
             $content->competencia_itca_button_url = $request->competencia_itca_button_url;
+        }
+
+        // Charlas y Visitas Técnicas - 4 flip cards
+        for ($i = 1; $i <= 4; $i++) {
+            // Handle image upload
+            if ($request->hasFile("charla{$i}_img")) {
+                if ($content->{"charla{$i}_img"}) {
+                    Storage::disk('public')->delete($content->{"charla{$i}_img"});
+                }
+                $path = $request->file("charla{$i}_img")->store('uploads/beneficios/charlas', 'public');
+                $content->{"charla{$i}_img"} = $path;
+            }
+            
+            // Handle title
+            if ($request->has("charla{$i}_title")) {
+                $content->{"charla{$i}_title"} = $request->{"charla{$i}_title"};
+            }
+            
+            // Handle fecha
+            if ($request->has("charla{$i}_fecha")) {
+                $content->{"charla{$i}_fecha"} = $request->{"charla{$i}_fecha"};
+            }
+            
+            // Handle text
+            if ($request->has("charla{$i}_text")) {
+                $content->{"charla{$i}_text"} = $request->{"charla{$i}_text"};
+            }
         }
 
         $content->save();

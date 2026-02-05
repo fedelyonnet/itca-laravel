@@ -941,3 +941,312 @@
         gap: 15px;
     }
 }
+
+/* =========================================
+   Charlas y Visitas Técnicas Section
+   ========================================= */
+.charlas-section {
+    background-color: #02115A;
+    padding: 80px 0;
+}
+
+.charlas-content-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.charlas-title {
+    font-family: 'Special Gothic Expanded One', sans-serif;
+    color: #65E09C;
+    font-weight: 400;
+    font-size: clamp(30px, calc(30px + (100vw - 1100px) * 0.0122), 40px);
+    text-align: center;
+    margin-bottom: 30px;
+    display: block;
+}
+
+.charlas-description {
+    color: #FFFFFF;
+    font-size: clamp(12px, calc(12px + (100vw - 1100px) * 0.0073), 18px);
+    line-height: 1.6;
+    font-weight: 400;
+    max-width: clamp(550px, calc(550px + (800 - 550) * ((100vw - 1100px) / (1920 - 1100))), 800px);
+    margin: 0 auto 60px auto;
+}
+
+.charlas-description strong {
+    font-weight: 600;
+}
+
+.charlas-description-mobile {
+    display: none;
+}
+
+.charlas-cta-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 60px;
+}
+
+/* =========================================
+   Flip Cards - Charlas y Visitas Técnicas
+   ========================================= */
+.categorias-grid {
+    width: 100%;
+    max-width: clamp(1100px, 85vw, 1557px);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Flip Card Container */
+.categoria-card {
+    background-color: transparent;
+    perspective: 1000px;
+    width: 100%;
+    aspect-ratio: 375/382;
+    cursor: pointer;
+}
+
+/* Inner Container */
+.categoria-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+    border-radius: 20px;
+}
+
+/* Flipped State (Click to Toggle) */
+.categoria-card.is-flipped .categoria-card-inner {
+    transform: rotateY(180deg);
+}
+
+/* Front and Back common styles */
+.categoria-card-front,
+.categoria-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Front Face */
+.categoria-card-front {
+    background-color: #02115A;
+}
+
+/* Back Face */
+.categoria-card-back {
+    background-color: #65E09C;
+    /* Verde ITCA */
+    color: #010C42;
+    transform: rotateY(180deg);
+}
+
+/* Back Description */
+.categoria-desc {
+    padding: 0 30px;
+    margin: auto 0;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    /* Fluido: 12px min -> 18px max */
+    font-size: clamp(12px, 1.1vw, 18px);
+    line-height: 1.6;
+    text-align: center;
+}
+
+.categoria-desc strong {
+    font-weight: 800;
+}
+
+/* Fecha (Back - Top) */
+.categoria-fecha {
+    padding: 30px 30px 0;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: clamp(12px, 1vw, 16px);
+    line-height: 1.4;
+    text-align: center;
+    color: #010C42;
+}
+
+/* Image Wrapper (Front) */
+.categoria-img-wrapper {
+    width: 100%;
+    flex: 1;
+    position: relative;
+    background-color: #02115A;
+}
+
+.categoria-img-wrapper img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    display: block;
+}
+
+/* Label (Shared Front/Back style) */
+.categoria-label {
+    background-color: #65E09C;
+    color: #010C42;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    text-align: center;
+    padding: 15px 10px;
+    text-transform: uppercase;
+    /* Fluido: 14px en mobile -> 30px en desktop */
+    font-size: clamp(14px, 2vw, 30px);
+    line-height: 1.2;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Responsive */
+@media (max-width: 1099px) {
+    .categorias-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+        max-width: 530px;
+        /* (250px * 2) + 30px gap = 530px */
+        margin: 0 auto;
+        padding: 0;
+    }
+}
+
+@media (max-width: 599px) {
+    .categorias-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 0 20px;
+    }
+
+    .categoria-card {
+        aspect-ratio: 375/231;
+    }
+
+    /* Mobile: fecha arriba, texto abajo */
+    .categoria-card-back {
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    /* Estilo Específico FRONT: Grande, centrado, fondo verde */
+    .categoria-label-front {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        /* ExtraBold */
+        font-size: 25px;
+        /* Fijo 25px como pedido */
+        padding: 15px 10px;
+        line-height: 1.2;
+        background-color: #65E09C;
+        /* Verde ITCA */
+        color: #010C42;
+        margin-top: auto;
+        /* Pegado al fondo */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* Centrado vertical del texto */
+        width: 100%;
+        text-align: center;
+    }
+
+    /* Estilo Específico BACK: Chico, arriba, fondo transparente (integrado) */
+    .categoria-label-back {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        /* SemiBold */
+        /* Fluidez: ~13px en 320px -> 15px en 430px */
+        font-size: clamp(13px, calc(13px + (15 - 13) * ((100vw - 320px) / 110)), 15px);
+
+        /* Padding fluido:
+           Top: 20px en 320px -> 30px en 430px
+           Bottom: 10px en 320px -> 20px en 430px 
+           Left/Right: 10px fijo
+        */
+        padding-top: clamp(20px, calc(20px + (30 - 20) * ((100vw - 320px) / 110)), 30px);
+        padding-bottom: clamp(10px, calc(10px + (20 - 10) * ((100vw - 320px) / 110)), 20px);
+        padding-left: 10px;
+        padding-right: 10px;
+
+        line-height: 1.2;
+        margin: 0 !important;
+        /* Reset margin auto */
+        background-color: transparent;
+        /* Integrado al fondo verde del back */
+        color: #010C42;
+        width: 100%;
+        text-align: center;
+    }
+
+    .categoria-desc {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 400;
+        /* Regular */
+        /* Fluidez: ~13px en 320px -> 15px en 430px (Igual que el título) */
+        font-size: clamp(13px, calc(13px + (15 - 13) * ((100vw - 320px) / 110)), 15px);
+        margin: 5px auto 0;
+        max-width: 90%;
+        line-height: 1.4;
+    }
+
+    .categoria-fecha {
+        /* Fluidez: ~12px en 320px -> 15px en 430px */
+        font-size: clamp(12px, calc(12px + (15 - 12) * ((100vw - 320px) / 110)), 15px);
+        /* Padding top fijo, bottom fluido: 15px en 320px -> 20px en 430px */
+        padding-top: 20px;
+        padding-bottom: clamp(15px, calc(15px + (20 - 15) * ((100vw - 320px) / 110)), 20px);
+        padding-left: 20px;
+        padding-right: 20px;
+        font-weight: 600;
+    }
+
+    .charlas-section {
+        padding: 50px 0;
+    }
+
+    .charlas-title {
+        /* Fluidez: ~16px en 320px -> 20px en 430px */
+        font-size: clamp(16px, calc(16px + (20 - 16) * ((100vw - 320px) / 110)), 20px) !important;
+    }
+
+    .charlas-desc-desktop {
+        display: none;
+    }
+
+    .charlas-description-mobile {
+        display: block;
+        color: #FFFFFF;
+        font-family: 'Montserrat', sans-serif;
+        /* Fluidez: ~10px en 320px -> 12px en 430px */
+        font-size: clamp(10px, calc(10px + (12 - 10) * ((100vw - 320px) / 110)), 12px);
+        line-height: 1.4;
+        font-weight: 400;
+        margin: 0 auto 40px auto;
+        text-align: center;
+        max-width: 90%;
+        width: 100%;
+    }
+
+    .charlas-description-mobile strong {
+        font-weight: 600;
+        /* Semibold */
+    }
+}
