@@ -16,6 +16,13 @@ class BeneficiosContent extends Model
         'club_itca_button_url',
         'bolsa_work_image',
         'bolsa_work_text',
-        'bolsa_work_button_url'
+        'bolsa_work_button_url',
+        'tienda_text',
+        'tienda_button_url'
     ];
+
+    public function productos()
+    {
+        return $this->hasMany(BeneficioProducto::class)->orderBy('orden');
+    }
 }

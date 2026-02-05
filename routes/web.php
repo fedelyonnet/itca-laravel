@@ -246,6 +246,9 @@ Route::middleware('auth')->group(function () {
         // Rutas de Beneficios CMS Página
         Route::get('/beneficios-page', [App\Http\Controllers\BeneficiosPageController::class, 'index'])->name('admin.beneficios.page');
         Route::put('/beneficios-page/content', [App\Http\Controllers\BeneficiosPageController::class, 'updateContent'])->name('admin.beneficios.page.update');
+        Route::post('/beneficios-page/producto', [App\Http\Controllers\BeneficiosPageController::class, 'storeProducto'])->name('admin.beneficios.producto.store');
+        Route::delete('/beneficios-page/producto/{id}', [App\Http\Controllers\BeneficiosPageController::class, 'destroyProducto'])->name('admin.beneficios.producto.destroy');
+        Route::post('/beneficios-page/producto/reorder', [App\Http\Controllers\BeneficiosPageController::class, 'reorderProductos'])->name('admin.beneficios.producto.reorder');
     });
 });
 

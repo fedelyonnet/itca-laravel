@@ -148,6 +148,10 @@
     font-weight: 400;
     line-height: 1.6;
     margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 800px;
+    width: 100%;
     font-size: clamp(12px, calc(12px + (100vw - 1100px) * 0.0073), 18px);
     text-align: left;
 }
@@ -195,6 +199,18 @@
         padding-left: 15px;
         padding-right: 15px;
     }
+
+    .itca-text {
+        -webkit-hyphens: auto;
+        -ms-hyphens: auto;
+        hyphens: auto;
+    }
+}
+
+/* Productos Dropdown Text Center Override */
+.productos-dropdown .itca-text {
+    text-align: center;
+    padding-bottom: clamp(14px, calc(14px + (100vw - 1100px) * 0.0073), 20px);
 }
 
 /* Club ITCA Button Styles */
@@ -772,5 +788,156 @@
         -webkit-hyphens: auto;
         -ms-hyphens: auto;
         hyphens: auto;
+    }
+}
+
+/* --- PRODUCTOS / FORMADORES CAROUSEL STYLES (Ported for new Dropdown) --- */
+
+.formadores-section {
+    padding: 0 40px;
+}
+
+.formadores-section .fotos-carousel-section {
+    position: relative;
+}
+
+/* Replicar comportamiento de overflow para que las flechas sobresalgan */
+.productos-dropdown.fully-open,
+.productos-dropdown.fully-open .info-dropdown-content {
+    overflow: visible !important;
+}
+
+.productos-dropdown .fotos-swiper {
+    overflow: hidden !important;
+}
+
+/* Slides */
+.formador-slide {
+    box-sizing: border-box;
+    flex-shrink: 0;
+    width: auto;
+}
+
+/* Media Queries for Slides Width */
+@media (min-width: 600px) and (max-width: 1099px) {
+    .formador-slide {
+        width: 250px;
+    }
+}
+
+@media (min-width: 1100px) and (max-width: 1365px) {
+    .formador-slide {
+        width: calc((100% - 40px) / 3);
+        max-width: 353px;
+    }
+}
+
+@media (min-width: 1366px) {
+    .formador-slide {
+        width: calc((100% - 60px) / 4);
+        max-width: 370px;
+    }
+}
+
+.formador-img-wrapper {
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    background-color: #f5f5f5;
+    /* Placeholder bg */
+}
+
+.formador-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Controls */
+.formadores-controls {
+    position: absolute;
+    top: 40%;
+    transform: translateY(-50%);
+    width: 100%;
+    left: 0;
+    pointer-events: none;
+    z-index: 30 !important;
+}
+
+.formadores-controls .fotos-carousel-btn {
+    pointer-events: auto;
+    z-index: 30 !important;
+    position: absolute;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.formadores-controls .fotos-carousel-btn-prev {
+    left: 0;
+    transform: translateX(-50%);
+}
+
+.formadores-controls .fotos-carousel-btn-prev img {
+    transform: rotate(180deg);
+}
+
+.formadores-controls .fotos-carousel-btn-next {
+    right: 0;
+    transform: translateX(50%);
+}
+
+/* Gradients */
+.productos-dropdown .fotos-carousel-section {
+    position: relative;
+    overflow: visible;
+}
+
+.productos-dropdown .fotos-carousel-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -1px;
+    width: 15%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(1, 12, 66, 1), transparent);
+    z-index: 20;
+    pointer-events: none;
+}
+
+.productos-dropdown .fotos-carousel-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -1px;
+    width: 15%;
+    height: 100%;
+    background: linear-gradient(to left, rgba(1, 12, 66, 1), transparent);
+    z-index: 20;
+    pointer-events: none;
+}
+
+/* Mobile Controls */
+.mobile-only-controls {
+    display: none;
+}
+
+@media (max-width: 599px) {
+    .formadores-section {
+        padding: 0;
+    }
+
+    .formadores-controls {
+        display: none;
+    }
+
+    .mobile-only-controls {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
     }
 }

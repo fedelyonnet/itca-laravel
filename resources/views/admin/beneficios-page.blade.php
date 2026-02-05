@@ -50,6 +50,9 @@
                     <button @click="setActiveTab('bolsa_laboral')" :class="activeTab === 'bolsa_laboral' ? 'bg-gray-800 text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'" class="px-6 py-4 text-sm font-bold uppercase transition-all outline-none">
                         3) Bolsa Laboral
                     </button>
+                    <button @click="setActiveTab('productos')" :class="activeTab === 'productos' ? 'bg-gray-800 text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'" class="px-6 py-4 text-sm font-bold uppercase transition-all outline-none">
+                        4) Productos y herramientas
+                    </button>
                 </div>
 
                 <div class="p-6">
@@ -211,6 +214,92 @@
                         </div>
                     </div>
 
+                    <!-- TAB 4: PRODUCTOS -->
+                    <div x-show="activeTab === 'productos'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+                         
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            
+                            <!-- Left: Texts & URL -->
+                            <div class="space-y-6">
+                                <form action="{{ route('admin.beneficios.page.update') }}" method="POST" class="bg-gray-900 p-4 rounded border border-gray-700 h-fit">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="active_tab" value="productos">
+                                    
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-bold text-gray-300 mb-2 uppercase italic">Texto Descriptivo (Tienda)</label>
+                                        <textarea name="tienda_text" rows="8" class="w-full bg-gray-800 border-gray-700 text-gray-300 rounded focus:ring-blue-500 focus:border-blue-500 text-sm font-mono custom-scrollbar" placeholder="En nuestra tienda online encontrarás...">{{ $content->tienda_text }}</textarea>
+                                        <p class="text-[10px] text-gray-500 mt-1 uppercase">Usa */texto/* para poner en negrita</p>
+                                    </div>
+
+                                    <div class="mb-6">
+                                        <label class="block text-sm font-bold text-gray-300 mb-2 uppercase italic">URL Botón Tienda</label>
+                                        <input type="text" name="tienda_button_url" value="{{ $content->tienda_button_url }}" class="w-full bg-gray-800 border-gray-700 text-gray-300 rounded focus:ring-blue-500 focus:border-blue-500 text-sm font-mono" placeholder="https://...">
+                                    </div>
+
+                                    <div class="flex justify-center">
+                                        <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-10 rounded-full shadow-lg transition-all transform hover:-translate-y-1 active:scale-95 flex items-center gap-2">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                                            GUARDAR TEXTOS
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Right: Carousel Images (Instalaciones Style) -->
+                            <div class="space-y-6">
+                                <div class="bg-gray-900 p-4 rounded border border-gray-700">
+                                    <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-2">
+                                        <label class="text-sm font-bold text-gray-300 uppercase">Carrusel de Productos</label>
+                                        <button onclick="document.getElementById('modalProducto').classList.remove('hidden')" class="bg-green-600 hover:bg-green-500 text-white px-2 py-1 rounded text-[10px] font-bold uppercase transition-all shadow-md">
+                                            + Agregar Foto
+                                        </button>
+                                    </div>
+                                    @if(isset($content->productos) && $content->productos->count() > 0)
+                                        <div id="sortable-productos" class="space-y-2 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                                            @foreach($content->productos as $producto)
+                                                <div data-id="{{ $producto->id }}" class="producto-draggable flex items-center justify-between bg-gray-800 p-2 rounded border border-gray-700 group hover:border-blue-500/50 cursor-move">
+                                                    <div class="flex items-center gap-3">
+                                                        <!-- Drag Handle -->
+                                                        <svg style="cursor: move;" class="w-4 h-4 text-gray-600 drag-handle group-hover:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                                                        
+                                                        <!-- Icon & Preview Container -->
+                                                        <div class="relative group/preview flex items-center">
+                                                            <!-- Thumbnail Icon -->
+                                                            <img src="{{ asset('storage/' . $producto->image_path) }}" class="h-8 w-8 rounded object-cover border border-gray-600 cursor-pointer group-hover/preview:border-blue-400 transition-colors">
+                                                            
+                                                            <!-- Hover Image Preview -->
+                                                            <div class="fixed hidden group-hover/preview:block z-[9999] w-64 bg-gray-900 border border-gray-600 rounded-lg shadow-2xl overflow-hidden pointer-events-none" style="transform: translate(20px, -50%);">
+                                                                <img src="{{ asset('storage/' . $producto->image_path) }}" class="w-full h-auto object-cover">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="flex flex-col">
+                                                            <span class="text-xs text-gray-400">ID: {{ $producto->id }}</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <form action="{{ route('admin.beneficios.producto.destroy', $producto->id) }}" method="POST" onsubmit="return confirm('¿Eliminar esta imagen?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-gray-500 hover:text-red-500 transition-colors">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        <div class="py-12 flex flex-col items-center border border-dashed border-gray-700 rounded bg-gray-800/20 text-gray-600 text-xs italic">
+                                            Sin fotos cargadas
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -228,8 +317,54 @@
                     setTimeout(() => toast.remove(), 500);
                 }, 3000);
             });
+
+            // Sortable for Productos
+            const productosList = document.getElementById('sortable-productos');
+            if (productosList) {
+                new Sortable(productosList, {
+                    animation: 150,
+                    handle: '.drag-handle',
+                    onEnd: function (evt) {
+                        const items = Array.from(productosList.children);
+                        const orderedIds = items.map(item => item.getAttribute('data-id'));
+                        
+                        // Send Reorder Request
+                        fetch('{{ route('admin.beneficios.producto.reorder') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({ orden: orderedIds })
+                        }).then(response => {
+                            if (!response.ok) {
+                                alert('Error al reordenar items');
+                            }
+                        });
+                    }
+                });
+            }
         });
     </script>
+
+    <!-- MODAL ADD PRODUCTO -->
+    <div id="modalProducto" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4 border border-gray-700 shadow-2xl">
+            <h3 class="text-lg font-bold text-white mb-4 uppercase border-b border-gray-700 pb-2">Agregar Producto</h3>
+            <form action="{{ route('admin.beneficios.producto.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="mb-4 bg-gray-900 p-6 rounded border border-gray-700 border-dashed text-center">
+                    <label class="block text-sm font-medium text-gray-400 mb-4 uppercase">Subir archivo</label>
+                    <input type="file" name="image" accept="image/*" required class="w-full text-gray-400 text-xs font-mono">
+                    <p class="text-[10px] text-gray-600 mt-2 italic">Formatos: JPG, PNG, WEBP</p>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="document.getElementById('modalProducto').classList.add('hidden')" class="px-4 py-2 bg-gray-700 text-gray-300 rounded text-xs font-bold uppercase hover:bg-gray-600 transition-colors">Cancelar</button>
+                    <button type="submit" class="px-6 py-2 bg-green-600 text-white rounded text-xs font-bold uppercase hover:bg-green-500 shadow-lg shadow-green-900/20 transition-all">Subir Imagen</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <style>
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }

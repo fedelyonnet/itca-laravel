@@ -13,6 +13,8 @@
 
     <!-- Styles -->
         @vite(['resources/css/public.css', 'resources/css/beneficios.css', 'resources/js/app.js'])
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     <!-- Slick Carousel CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
@@ -151,7 +153,7 @@
                                     @endif
                                     
                                     <div class="club-itca-btn-wrapper">
-                                        <a href="{{ $content->club_itca_button_url ?? '#' }}" class="club-itca-btn">
+                                        <a href="{{ (isset($content->club_itca_button_url) && $content->club_itca_button_url) ? (Str::startsWith($content->club_itca_button_url, ['http://', 'https://']) ? $content->club_itca_button_url : 'https://' . $content->club_itca_button_url) : '#' }}" class="club-itca-btn">
                                             <strong>Ingresar</strong>&nbsp;a Club ITCA
                                         </a>
                                     </div>
@@ -198,7 +200,7 @@
                                     
                                     @if(isset($content) && $content->bolsa_work_button_url)
                                         <div class="club-itca-btn-wrapper">
-                                            <a href="{{ $content->bolsa_work_button_url }}" class="club-itca-btn" target="_blank">
+                                            <a href="{{ Str::startsWith($content->bolsa_work_button_url, ['http://', 'https://']) ? $content->bolsa_work_button_url : 'https://' . $content->bolsa_work_button_url }}" class="club-itca-btn" target="_blank">
                                                 <strong>Ingresar</strong>&nbsp;a Bolsa Laboral
                                             </a>
                                         </div>
@@ -210,6 +212,94 @@
                                         </div>
                                     @endif
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dropdown: Productos y herramientas -->
+                    <div class="info-dropdown productos-dropdown">
+                        <div class="info-dropdown-header">
+                            <span class="info-dropdown-title">Productos y herramientas</span>
+                            <img src="/images/desktop/chevron.png" alt="Abrir" class="info-dropdown-chevron">
+                        </div>
+                        <div class="info-dropdown-content">
+                            <p class="itca-text">
+                                @if(isset($content) && $content->tienda_text)
+                                    @php
+                                        $text = e($content->tienda_text);
+                                        $text = preg_replace('/\*\/(.*?)\/\*/', '<strong>$1</strong>', $text);
+                                        $text = nl2br($text);
+                                    @endphp
+                                    {!! $text !!}
+                                @else
+                                    En nuestra tienda online encontrarás una amplia selección de herramientas profesionales y productos especializados para potenciar tu trabajo diario. Desde equipamiento de diagnóstico hasta insumos esenciales, todo lo que necesitás para tu taller está a un clic de distancia.
+                                @endif
+                            </p>
+
+                            <!-- Carrusel Productos -->
+                            <div class="formadores-section">
+                                <div class="fotos-carousel-section">
+                                    <div class="swiper fotos-swiper productos-swiper">
+                                        <div class="swiper-wrapper">
+                                            @if(isset($content) && $content->productos && $content->productos->count() > 0)
+                                                @foreach($content->productos as $producto)
+                                                <div class="swiper-slide fotos-carousel-slide formador-slide">
+                                                    <div class="formador-img-wrapper">
+                                                        <img src="{{ asset('storage/' . $producto->image_path) }}" 
+                                                             alt="Producto ITCA" 
+                                                             class="fotos-slide-img formador-img" 
+                                                             loading="lazy" 
+                                                             style="object-fit: cover;" />
+                                                    </div>
+                                                </div>
+                                                @endforeach
+                                            @else
+                                                <!-- Fallback Static Slides -->
+                                                @for ($i = 1; $i <= 6; $i++)
+                                                <div class="swiper-slide fotos-carousel-slide formador-slide">
+                                                    <div class="formador-img-wrapper">
+                                                        <img src="/images/desktop/gear.png" 
+                                                             alt="Producto {{ $i }}" 
+                                                             class="fotos-slide-img formador-img" 
+                                                             loading="lazy" 
+                                                             style="object-fit: cover;" />
+                                                    </div>
+                                                </div>
+                                                @endfor
+                                            @endif
+                                        </div>
+                                        <!-- Paginación para Mobile -->
+                                        <div class="fotos-carousel-controls mobile-only-controls" style="margin-top: 20px;">
+                                            <div class="fotos-progress-bar mobile-progress-bar" style="width: 100%; max-width: 200px; height: 4px; background-color: rgba(255,255,255,0.2); border-radius: 2px; position: relative; overflow: hidden;">
+                                                <div class="fotos-progress-indicator mobile-progress-indicator" style="position: absolute; top: 0; left: 0; height: 100%; background-color: #65E09C; width: 0%; transition: width 0.3s ease;"></div>
+                                            </div>
+                                            <div class="mobile-arrows-wrapper" style="display: flex; gap: 20px;">
+                                                <button class="fotos-carousel-btn fotos-carousel-btn-prev mobile-prev-btn" style="background: none; border: none; cursor: pointer; padding: 0; opacity: 0.5; transition: opacity 0.3s;">
+                                                    <img src="/images/desktop/arrow-b.svg" alt="Anterior" class="fotos-arrow-left mobile-control-img" style="transform: rotate(180deg);" />
+                                                </button>
+                                                <button class="fotos-carousel-btn fotos-carousel-btn-next mobile-next-btn" style="background: none; border: none; cursor: pointer; padding: 0; opacity: 1; transition: opacity 0.3s;">
+                                                    <img src="/images/desktop/arrow-b.svg" alt="Siguiente" class="mobile-control-img" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Controles Desktop -->
+                                    <div class="fotos-controls-wrapper formadores-controls">
+                                        <button class="fotos-carousel-btn fotos-carousel-btn-prev">
+                                            <img src="/images/desktop/arrow-b.svg" alt="Anterior" class="fotos-arrow-left" />
+                                        </button>
+                                        <button class="fotos-carousel-btn fotos-carousel-btn-next">
+                                            <img src="/images/desktop/arrow-b.svg" alt="Siguiente" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="club-itca-btn-wrapper" style="justify-content: center; margin-top: 30px;">
+                                <a href="{{ (isset($content) && $content->tienda_button_url) ? (Str::startsWith($content->tienda_button_url, ['http://', 'https://']) ? $content->tienda_button_url : 'https://' . $content->tienda_button_url) : '#' }}" class="club-itca-btn" target="{{ (isset($content) && $content->tienda_button_url) ? '_blank' : '_self' }}">
+                                    <strong>Acceder</strong>&nbsp;a la Tienda Online
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -460,6 +550,7 @@
         </main>
 
     <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
     
@@ -485,6 +576,22 @@
                 header.addEventListener('click', function() {
                     const dropdown = this.parentElement;
                     const isOpen = dropdown.classList.toggle('active');
+
+                    // If it's the Productos dropdown
+                    if (dropdown.classList.contains('productos-dropdown')) {
+                        const swiperEl = dropdown.querySelector('.fotos-swiper');
+                        
+                        if (isOpen) {
+                            setTimeout(() => {
+                                dropdown.classList.add('fully-open');
+                                if (swiperEl && swiperEl.swiper) {
+                                    swiperEl.swiper.update();
+                                }
+                            }, 600);
+                        } else {
+                            dropdown.classList.remove('fully-open');
+                        }
+                    }
                 });
             });
 
