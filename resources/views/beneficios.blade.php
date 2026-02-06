@@ -125,10 +125,10 @@
                             <div class="que-es-itca-grid">
                                 <div class="video-col relative group cursor-pointer video-container-click">
                                     @if(isset($content) && $content->club_itca_video)
-                                        <video class="itca-video" playsinline preload="auto">
+                                        <video class="itca-video" playsinline preload="auto" disablePictureInPicture>
                                             <source src="{{ asset('storage/' . $content->club_itca_video) }}" type="video/mp4">
                                         </video>
-                                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none play-overlay">
+                                        <div class="absolute inset-0 flex items-center justify-center play-overlay">
                                             <img src="/images/desktop/play-btn.svg" alt="Play" class="w-16 h-16 opacity-80 group-hover:opacity-100 transition-opacity">
                                         </div>
                                     @else
@@ -318,10 +318,10 @@
                             <div class="que-es-itca-grid">
                                 <div class="video-col relative group cursor-pointer video-container-click">
                                     @if(isset($content) && $content->competencia_itca_video)
-                                        <video class="itca-video" playsinline preload="auto">
+                                        <video class="itca-video" playsinline preload="auto" disablePictureInPicture>
                                             <source src="{{ asset('storage/' . $content->competencia_itca_video) }}" type="video/mp4">
                                         </video>
-                                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none play-overlay">
+                                        <div class="absolute inset-0 flex items-center justify-center play-overlay">
                                             <img src="/images/desktop/play-btn.svg" alt="Play" class="w-16 h-16 opacity-80 group-hover:opacity-100 transition-opacity">
                                         </div>
                                     @else
@@ -424,6 +424,65 @@
                     <a href="#" class="charlas-cta-btn">
                         <strong>Anotate</strong>&nbsp;para las próximas charlas
                     </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Material Didáctico Section -->
+        <section class="beneficios-dropdowns-section" style="margin-top: 0 !important; padding-top: 80px;">
+            <div class="container somos-itca-container">
+                <div class="dropdowns-main-content">
+                    <div class="info-dropdown">
+                        <div class="info-dropdown-header">
+                            <span class="info-dropdown-title">Material didáctico</span>
+                            <img src="/images/desktop/chevron.png" alt="Abrir" class="info-dropdown-chevron">
+                        </div>
+                        <div class="info-dropdown-content">
+                            <div class="manuales-grid">
+                                <!-- Columna Izquierda: Imágenes -->
+                                <div class="manuales-images-row">
+                                    <div class="manuales-image-item">
+                                        @if(isset($content->manuales_img1) && $content->manuales_img1)
+                                            <img src="{{ asset('storage/' . $content->manuales_img1) }}" alt="Material 1">
+                                        @else
+                                            <div style="width:100%; height:100%; background:#02115A; display:flex; align-items:center; justify-content:center; color:#65E09C;">354x345</div>
+                                        @endif
+                                    </div>
+                                    <div class="manuales-image-item">
+                                        @if(isset($content->manuales_img2) && $content->manuales_img2)
+                                            <img src="{{ asset('storage/' . $content->manuales_img2) }}" alt="Material 2">
+                                        @else
+                                            <div style="width:100%; height:100%; background:#02115A; display:flex; align-items:center; justify-content:center; color:#65E09C;">354x345</div>
+                                        @endif
+                                    </div>
+                                </div>
+                                
+                                <!-- Columna Derecha: Texto y Botón -->
+                                <div class="text-col" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                                    <div>
+                                        @if(isset($content->manuales_texto) && $content->manuales_texto)
+                                            @php
+                                                $text = e($content->manuales_texto);
+                                                $text = preg_replace('/\*\/(.*?)\/\*/', '<strong>$1</strong>', $text);
+                                                $text = nl2br($text);
+                                            @endphp
+                                            <p class="itca-text">{!! $text !!}</p>
+                                        @else
+                                            <p class="itca-text">
+                                                Accedé a nuestros manuales técnicos especializados para potenciar tu conocimiento.
+                                            </p>
+                                        @endif
+                                    </div>
+
+                                    <div class="club-itca-btn-wrapper">
+                                        <a href="{{ $content->manuales_button_url ?? '#' }}" class="manuales-cta-btn">
+                                            Acceder a manuales técnicos
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -724,19 +783,32 @@
                 
                 if (!video || !overlay) return;
 
-                container.addEventListener('click', function(e) {
-                    if (!video.hasAttribute('controls')) {
-                         video.play();
+                // Play only via overlay button
+                overlay.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (video.paused) {
+                        video.play();
+                    } else {
+                        video.pause();
+                    }
+                });
+
+                // Pause when clicking the video (only if playing)
+                video.addEventListener('click', function(e) {
+                    if (!video.paused) {
+                        video.pause();
                     }
                 });
 
                 video.addEventListener('play', function() {
-                    video.setAttribute('controls', 'true');
+                    // video.setAttribute('controls', 'true'); // Native controls disabled as requested
                     overlay.style.opacity = '0';
+                    overlay.style.pointerEvents = 'none'; // Allow clicking the video to pause
                 });
 
                 video.addEventListener('pause', function() {
                     overlay.style.opacity = '1'; 
+                    overlay.style.pointerEvents = 'auto'; // Re-enable overlay to allow play
                 });
             });
 

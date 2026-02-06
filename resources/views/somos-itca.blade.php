@@ -115,8 +115,8 @@
                                 <div class="que-es-itca-grid">
                                     <div class="video-col relative group cursor-pointer video-container-click">
                                         @if(isset($content) && $content->video_url)
-                                            <video src="{{ asset('storage/' . $content->video_url) }}" class="itca-video" playsinline></video>
-                                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none play-overlay">
+                                            <video src="{{ asset('storage/' . $content->video_url) }}" class="itca-video" playsinline disablePictureInPicture></video>
+                                            <div class="absolute inset-0 flex items-center justify-center play-overlay">
                                                 <img src="/images/desktop/play-btn.svg" alt="Play" class="w-16 h-16 opacity-80 group-hover:opacity-100 transition-opacity">
                                             </div>
                                         @else
@@ -760,26 +760,32 @@
                 
                 if (!video || !overlay) return;
 
-                // 1. Click en el contenedor (para el primer Play o cuando no hay controles)
-                container.addEventListener('click', function(e) {
-                    // Si ya tiene controles, dejamos que el navegador maneje los clicks (play/pause/seek)
-                    // Solo intervenimos si NO tiene controles (estado inicial)
-                    if (!video.hasAttribute('controls')) {
-                         video.play();
+                // Play only via overlay button
+                overlay.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (video.paused) {
+                        video.play();
+                    } else {
+                        video.pause();
                     }
                 });
 
-                // 2. Al dar Play
-                video.addEventListener('play', function() {
-                    video.setAttribute('controls', 'true'); // Habilitar controles nativos
-                    overlay.style.opacity = '0'; // Ocultar botón grande
+                // Pause when clicking the video (only if playing)
+                video.addEventListener('click', function(e) {
+                    if (!video.paused) {
+                        video.pause();
+                    }
                 });
 
-                // 3. Al Pausar
+                video.addEventListener('play', function() {
+                    // video.setAttribute('controls', 'true'); // Native controls disabled as requested
+                    overlay.style.opacity = '0';
+                    overlay.style.pointerEvents = 'none'; // Allow clicking the video to pause
+                });
+
                 video.addEventListener('pause', function() {
-                    // Mantenemos los controles visibles para que el usuario pueda usar la barra
-                    // Pero mostramos el botón grande semi-transparente como indicador
                     overlay.style.opacity = '1'; 
+                    overlay.style.pointerEvents = 'auto'; // Re-enable overlay to allow play
                 });
             });
 

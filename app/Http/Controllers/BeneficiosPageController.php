@@ -51,6 +51,11 @@ class BeneficiosPageController extends Controller
             'charla4_title' => 'nullable|string',
             'charla4_text' => 'nullable|string',
             'charla4_fecha' => 'nullable|string',
+            // Material Didáctico
+            'manuales_img1' => 'nullable|image|max:2048',
+            'manuales_img2' => 'nullable|image|max:2048',
+            'manuales_texto' => 'nullable|string',
+            'manuales_button_url' => 'nullable|string',
         ]);
 
         $content = BeneficiosContent::first();
@@ -149,6 +154,31 @@ class BeneficiosPageController extends Controller
             if ($request->has("charla{$i}_text")) {
                 $content->{"charla{$i}_text"} = $request->{"charla{$i}_text"};
             }
+        }
+
+        // Material Didáctico
+        if ($request->hasFile('manuales_img1')) {
+            if ($content->manuales_img1) {
+                Storage::disk('public')->delete($content->manuales_img1);
+            }
+            $path = $request->file('manuales_img1')->store('uploads/beneficios/manuales', 'public');
+            $content->manuales_img1 = $path;
+        }
+
+        if ($request->hasFile('manuales_img2')) {
+            if ($content->manuales_img2) {
+                Storage::disk('public')->delete($content->manuales_img2);
+            }
+            $path = $request->file('manuales_img2')->store('uploads/beneficios/manuales', 'public');
+            $content->manuales_img2 = $path;
+        }
+
+        if ($request->has('manuales_texto')) {
+            $content->manuales_texto = $request->manuales_texto;
+        }
+
+        if ($request->has('manuales_button_url')) {
+            $content->manuales_button_url = $request->manuales_button_url;
         }
 
         $content->save();

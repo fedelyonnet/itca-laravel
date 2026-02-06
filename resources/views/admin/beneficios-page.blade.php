@@ -59,6 +59,9 @@
                     <button @click="setActiveTab('charlas')" :class="activeTab === 'charlas' ? 'bg-gray-800 text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'" class="px-6 py-4 text-sm font-bold uppercase transition-all outline-none">
                         6) Charlas
                     </button>
+                    <button @click="setActiveTab('manuales')" :class="activeTab === 'manuales' ? 'bg-gray-800 text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'" class="px-6 py-4 text-sm font-bold uppercase transition-all outline-none">
+                        7) Manuales
+                    </button>
                 </div>
 
                 <div class="p-6">
@@ -450,6 +453,91 @@
                             </div>
                         </form>
                     </div>
+                    
+                    <!-- TAB 7: MATERIAL DIDACTICO / MANUALES -->
+                    <div x-show="activeTab === 'manuales'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" style="display: none;">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            
+                            <!-- Left: Images -->
+                            <div class="space-y-6">
+                                <form action="{{ route('admin.beneficios.page.update') }}" method="POST" enctype="multipart/form-data" class="w-full">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="active_tab" value="manuales">
+                                    <div class="bg-gray-900 p-4 rounded border border-gray-700">
+                                        <label class="block text-sm font-bold text-gray-300 mb-4 uppercase italic">Imágenes Secundarias (Manuales)</label>
+                                        
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <!-- Imagen 1 -->
+                                            <div>
+                                                <label class="block text-[10px] text-gray-500 mb-1 uppercase font-bold text-center">Imagen 1</label>
+                                                <div class="relative group aspect-square">
+                                                    <input type="file" name="manuales_img1" id="manuales_img1" accept="image/*" class="hidden" onchange="this.form.submit()">
+                                                    <label for="manuales_img1" class="relative block w-full h-full bg-gray-800 rounded overflow-hidden border border-gray-700 border-dashed hover:border-blue-500 cursor-pointer transition-all flex flex-col items-center justify-center group shadow-inner">
+                                                        @if(isset($content->manuales_img1) && $content->manuales_img1)
+                                                            <img src="{{ asset('storage/' . $content->manuales_img1) }}" class="w-full h-full object-cover">
+                                                        @else
+                                                            <div class="flex flex-col items-center justify-center text-gray-600">
+                                                                <svg class="w-8 h-8 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                                                <span class="text-[10px] font-bold">Subir</span>
+                                                            </div>
+                                                        @endif
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            <!-- Imagen 2 -->
+                                            <div>
+                                                <label class="block text-[10px] text-gray-500 mb-1 uppercase font-bold text-center">Imagen 2</label>
+                                                <div class="relative group aspect-square">
+                                                    <input type="file" name="manuales_img2" id="manuales_img2" accept="image/*" class="hidden" onchange="this.form.submit()">
+                                                    <label for="manuales_img2" class="relative block w-full h-full bg-gray-800 rounded overflow-hidden border border-gray-700 border-dashed hover:border-blue-500 cursor-pointer transition-all flex flex-col items-center justify-center group shadow-inner">
+                                                        @if(isset($content->manuales_img2) && $content->manuales_img2)
+                                                            <img src="{{ asset('storage/' . $content->manuales_img2) }}" class="w-full h-full object-cover">
+                                                        @else
+                                                            <div class="flex flex-col items-center justify-center text-gray-600">
+                                                                <svg class="w-8 h-8 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                                                <span class="text-[10px] font-bold">Subir</span>
+                                                            </div>
+                                                        @endif
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p class="text-[10px] text-gray-500 mt-2 text-center font-mono uppercase italic">Se guardan automáticamente al seleccionar</p>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Right: Text and Button -->
+                            <div class="space-y-6">
+                                <form action="{{ route('admin.beneficios.page.update') }}" method="POST" class="bg-gray-900 p-4 rounded border border-gray-700 h-fit">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="active_tab" value="manuales">
+                                    
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-bold text-gray-300 mb-2 uppercase italic">Texto Descriptivo (Manuales)</label>
+                                        <textarea name="manuales_texto" rows="8" class="w-full bg-gray-800 border-gray-700 text-gray-300 rounded focus:ring-blue-500 focus:border-blue-500 text-sm font-mono custom-scrollbar" placeholder="Accedé a nuestros manuales técnicos especializados...">{{ $content->manuales_texto }}</textarea>
+                                        <p class="text-[10px] text-gray-500 mt-1 uppercase">Usa */texto/* para poner en negrita</p>
+                                    </div>
+
+                                    <div class="mb-6">
+                                        <label class="block text-sm font-bold text-gray-300 mb-2 uppercase italic">URL Botón / Enlace</label>
+                                        <input type="text" name="manuales_button_url" value="{{ $content->manuales_button_url }}" class="w-full bg-gray-800 border-gray-700 text-gray-300 rounded focus:ring-blue-500 focus:border-blue-500 text-sm font-mono" placeholder="https://...">
+                                    </div>
+
+                                    <div class="flex justify-center">
+                                        <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-10 rounded-full shadow-lg transition-all transform hover:-translate-y-1 active:scale-95 flex items-center gap-2">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                                            GUARDAR CONTENIDO
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
 
 
                 </div>

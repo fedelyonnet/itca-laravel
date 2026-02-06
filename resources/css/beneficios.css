@@ -1288,3 +1288,143 @@
         padding: 12px 25px;
     }
 }
+
+/* Manuales / Material Didáctico Grid */
+.manuales-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding-bottom: clamp(20px, calc(20px + (30 - 20) * ((100vw - 320px) / 780)), 30px);
+}
+
+.manuales-images-row {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.manuales-image-item {
+    /* Fluidez: 359px en 430px -> ~267px en 320px */
+    width: clamp(267px, calc(267px + (359 - 267) * ((100vw - 320px) / 110)), 359px);
+    aspect-ratio: 359/204;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.manuales-image-item:nth-child(2) {
+    display: none;
+}
+
+
+.manuales-image-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.manuales-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 2px solid #65E09C;
+    border-radius: 49px;
+    color: #65E09C;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.manuales-cta-btn strong {
+    font-weight: 700;
+    margin-right: 4px;
+}
+
+.manuales-cta-btn:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    transform: scale(1.05);
+}
+
+
+/* Desktop override */
+@media (min-width: 1100px) {
+    .manuales-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 1fr;
+        gap: 50px;
+        align-items: stretch;
+        /* Sincroniza el alto de ambas columnas */
+        padding-bottom: clamp(30px, calc(30px + (60 - 30) * ((100vw - 1100px) / (1920 - 1100))), 60px);
+    }
+
+    .manuales-images-row {
+        gap: 25px;
+    }
+
+    .manuales-image-item {
+        width: 50%;
+        aspect-ratio: 354/345;
+    }
+
+
+    .manuales-image-item:nth-child(2) {
+        display: block;
+    }
+
+
+    /* Ajuste para que el texto no empuje el botón de más si es corto */
+    .manuales-grid .itca-text {
+        margin-bottom: 0;
+        padding-bottom: 20px;
+    }
+
+    .manuales-cta-btn {
+        /* Fuente agresiva: 14px en 1100px -> 20px en 1920px */
+        font-size: clamp(14px, calc(14px + (20 - 14) * ((100vw - 1100px) / 820)), 20px);
+        padding: clamp(10px, 1vw, 15px) clamp(20px, 2vw, 40px);
+    }
+}
+
+/* Mobile font override for manuales button */
+@media (max-width: 1099px) {
+    .manuales-cta-btn {
+        /* Fuente muy agresiva en mobile: 11px en 320px -> 13px en 430px */
+        font-size: clamp(11px, calc(11px + (13 - 11) * ((100vw - 320px) / 110)), 13px);
+        padding: 8px 20px;
+    }
+}
+
+/* Tablet override for manuales (600px - 1099px) */
+@media (min-width: 600px) and (max-width: 1099px) {
+    .manuales-grid .text-col {
+        align-items: center !important;
+        text-align: center;
+    }
+
+    .manuales-grid .itca-text {
+        text-align: center !important;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .manuales-cta-btn {
+        font-size: 18px;
+        /* Tamaño similar al de desktop */
+        padding: 15px 45px;
+    }
+
+    /* Mostrar segunda imagen en tablet */
+    .manuales-image-item {
+        width: 50%;
+        aspect-ratio: 354/345;
+    }
+
+
+    .manuales-image-item:nth-child(2) {
+        display: block;
+    }
+}

@@ -27,6 +27,8 @@ class BeneficiosContent extends Model
         'charla2_img', 'charla2_title', 'charla2_text', 'charla2_fecha',
         'charla3_img', 'charla3_title', 'charla3_text', 'charla3_fecha',
         'charla4_img', 'charla4_title', 'charla4_text', 'charla4_fecha',
+        // Material Didáctico
+        'manuales_img1', 'manuales_img2', 'manuales_texto', 'manuales_button_url',
     ];
 
     public function productos()
