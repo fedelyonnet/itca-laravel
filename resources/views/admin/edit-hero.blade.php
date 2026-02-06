@@ -3,7 +3,7 @@
     @vite(['resources/css/backoffice.css', 'resources/js/backoffice.js'])
 
     <div class="py-12">
-        <div class="w-full px-6">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-gray-800 p-6 rounded-lg">
                 <h1 class="text-2xl font-bold mb-6 text-white">Editar Sección Hero + Sticky Bar</h1>
                 
@@ -12,468 +12,270 @@
                         {{ session('success') }}
                     </div>
                     <script>
-                        // Esperar un poco para que se renderice
                         setTimeout(() => {
                             const toast = document.getElementById('toast');
-                            // Mostrar toast (deslizar desde la derecha)
                             toast.classList.remove('translate-x-full');
-                            
-                            // Ocultar toast después de 3 segundos
                             setTimeout(() => {
                                 toast.classList.add('translate-x-full');
-                                // Remover del DOM después de la animación
-                                setTimeout(() => {
-                                    toast.remove();
-                                }, 500);
+                                setTimeout(() => { toast.remove(); }, 500);
                             }, 3000);
                         }, 100);
                     </script>
                 @endif
                 
-                <!-- ESTRUCTURA: Desktop izquierda, Mobile derecha arriba, Sticky Bar derecha abajo -->
-                <div style="display: flex; gap: 20px;">
-                    <!-- PANEL 1: Desktop (Izquierda) -->
-                    <div style="flex: 1; background: #374151; padding: 20px; border-radius: 8px;">
-                        <h2 class="text-lg font-semibold text-white mb-4">Desktop</h2>
-                        
-                        @php
-                            $desktopImg1 = $heroes->where('version', 'desktop')->where('type', 'img1')->first();
-                            $desktopImg2 = $heroes->where('version', 'desktop')->where('type', 'img2')->first();
-                            $desktopVideo = $heroes->where('version', 'desktop')->where('type', 'video')->first();
+                <!-- Tabs Navigation -->
+                <div x-data="{ activeTab: 'desktop' }">
+                    <div class="flex border-b border-gray-700 mb-6">
+                        <button 
+                            @click="activeTab = 'desktop'" 
+                            class="px-6 py-3 font-medium text-sm transition-colors focus:outline-none border-b-2"
+                            :class="activeTab === 'desktop' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-600'"
+                        >
+                            <span class="flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                Desktop
+                            </span>
+                        </button>
+                        <button 
+                            @click="activeTab = 'mobile'" 
+                            class="px-6 py-3 font-medium text-sm transition-colors focus:outline-none border-b-2"
+                            :class="activeTab === 'mobile' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-600'"
+                        >
+                            <span class="flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                                Mobile
+                            </span>
+                        </button>
+                        <button 
+                            @click="activeTab = 'sticky'" 
+                            class="px-6 py-3 font-medium text-sm transition-colors focus:outline-none border-b-2"
+                            :class="activeTab === 'sticky' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-600'"
+                        >
+                            <span class="flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path></svg>
+                                Sticky Bar
+                            </span>
+                        </button>
+                    </div>
+
+                    <!-- TAB 1: DESKTOP -->
+                    <div x-show="activeTab === 'desktop'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
+                        <div class="bg-gray-700/50 p-6 rounded-xl border border-gray-600">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-xl font-semibold text-white">Vista de Escritorio</h2>
+                                <span class="bg-blue-900/50 text-blue-200 text-xs px-3 py-1 rounded-full border border-blue-700/50">Resolución recomendada: 1366px+</span>
+                            </div>
                             
-                            // Configuración de badges
-                            $badges = [
-                                'desktop' => [
-                                    'img1' => ['title' => 'Imagen Principal', 'size' => '768 × 206 px'],
-                                    'img2' => ['title' => 'Imagen Secundaria', 'size' => '376 × 418 px'],
-                                    'video' => ['title' => 'Video Principal', 'size' => '376 × 418 px']
-                                ],
-                                'mobile' => [
-                                    'img1' => ['title' => 'Imagen 1', 'size' => '417 × 462 px'],
-                                    'img2' => ['title' => 'Imagen 2', 'size' => '417 × 462 px'],
-                                    'video' => ['title' => 'Video Mobile', 'size' => '417 × 462 px']
-                                ]
-                            ];
-                            @endphp
-                            
-                        <!-- Estructura del hero -->
-                        <div class="space-y-6">
-                            <!-- Fila 1: img1 (768x206) -->
-                            <div class="w-full bg-gray-600 rounded relative desktop-hero-img1">
-                                <!-- Badge flotante -->
-                                <div class="absolute top-2 right-2 text-white px-2 py-1 rounded text-xs hero-badge" style="background-color: rgba(0, 0, 0, 0.4);">
-                                    <div class="font-medium">{{ $badges['desktop']['img1']['title'] }}</div>
-                                    <div class="text-gray-300">{{ $badges['desktop']['img1']['size'] }}</div>
+                            <div class="grid grid-cols-12 gap-6">
+                                <!-- Hero Principal (Ocupa todo el ancho superior de la grilla visual) -->
+                                <div class="col-span-12">
+                                    <h3 class="text-gray-400 text-sm mb-2 font-medium">Imagen Principal (Izquierda)</h3>
+                                    <x-admin.hero-item 
+                                        version="desktop" 
+                                        type="img1" 
+                                        :item="$heroes->where('version', 'desktop')->where('type', 'img1')->first()" 
+                                        title="Principal" 
+                                        size="768 × 206 px"
+                                        placeholderText="Banner Horizontal"
+                                        containerClass="w-full desktop-hero-img1 shadow-lg"
+                                    />
                                 </div>
                                 
-                                @if($desktopImg1 && $desktopImg1->url)
-                                    <img src="{{ asset('storage/' . $desktopImg1->url) }}" alt="img1" class="w-full h-full object-cover rounded">
-                                    @else
-                                        <div class="w-full h-full flex flex-col items-center justify-center hero-content">
-                                            <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                            </svg>
-                                            <div class="text-gray-300 text-xs mt-2 text-center">
-                                                <div class="font-semibold">768 × 206 px</div>
-                                                <div class="text-gray-400">Imagen horizontal</div>
-                                            </div>
-                                        </div>
-                                    @endif
-                                    
-                                <!-- Barra blanca en el bottom -->
-                                <div class="hero-bottom-bar">
-                                    <div class="flex gap-2">
-                                        <form action="{{ route('admin.hero.update', $desktopImg1 ? $desktopImg1->id : 0) }}" method="POST" enctype="multipart/form-data" class="inline">
-                                                @csrf
-                                                <input type="hidden" name="version" value="desktop">
-                                            <input type="hidden" name="type" value="img1">
-                                            <label class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs transition-colors cursor-pointer">
-                                                Browse
-                                                <input type="file" name="file" accept="image/*" class="hidden" onchange="this.form.submit()">
-                                            </label>
-                                            </form>
-                                        @if($desktopImg1)
-                                            <form action="{{ route('admin.hero.delete', $desktopImg1->id) }}" method="POST" onsubmit="return confirmDelete(event)" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs transition-colors">Borrar</button>
-                                            </form>
-                                        @else
-                                            <button class="bg-gray-400 text-gray-600 px-3 py-1 rounded text-xs cursor-not-allowed" disabled>Borrar</button>
-                                        @endif
-                                    </div>
+                                <!-- Secundarios -->
+                                <div class="col-span-12 md:col-span-6">
+                                    <h3 class="text-gray-400 text-sm mb-2 font-medium">Imagen Secundaria (Centro)</h3>
+                                    <x-admin.hero-item 
+                                        version="desktop" 
+                                        type="img2" 
+                                        :item="$heroes->where('version', 'desktop')->where('type', 'img2')->first()" 
+                                        title="Secundaria" 
+                                        size="376 × 418 px"
+                                        placeholderText="Vertical"
+                                        containerClass="w-full desktop-hero-img2 shadow-lg"
+                                    />
                                 </div>
-                        </div>
-                            
-                            <!-- Fila 2: img2 y video (376x418) -->
-                            <div class="flex gap-4">
-                                <!-- img2 -->
-                                <div class="flex-1 bg-gray-600 rounded relative desktop-hero-img2">
-                                    <!-- Badge flotante -->
-                                    <div class="absolute top-2 right-2 text-white px-2 py-1 rounded text-xs hero-badge" style="background-color: rgba(0, 0, 0, 0.4);">
-                                        <div class="font-medium">{{ $badges['desktop']['img2']['title'] }}</div>
-                                        <div class="text-gray-300">{{ $badges['desktop']['img2']['size'] }}</div>
-                                    </div>
-                                    
-                                    @if($desktopImg2 && $desktopImg2->url)
-                                        <img src="{{ asset('storage/' . $desktopImg2->url) }}" alt="img2" class="w-full h-full object-cover rounded">
-                                    @else
-                                        <div class="w-full h-full flex flex-col items-center justify-center hero-content">
-                                            <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                            </svg>
-                                            <div class="text-gray-300 text-xs mt-2 text-center">
-                                                <div class="font-semibold">376 × 418 px</div>
-                                                <div class="text-gray-400">Imagen vertical</div>
-                                            </div>
-                                        </div>
-                                    @endif
-                                    
-                                    <!-- Barra blanca en el bottom -->
-                                    <div class="hero-bottom-bar">
-                                        <div class="flex gap-2">
-                                            <form action="{{ route('admin.hero.update', $desktopImg2 ? $desktopImg2->id : 0) }}" method="POST" enctype="multipart/form-data" class="inline">
-                                                @csrf
-                                                <input type="hidden" name="version" value="desktop">
-                                                <input type="hidden" name="type" value="img2">
-                                                <label class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs transition-colors cursor-pointer">
-                                                    Browse
-                                                    <input type="file" name="file" accept="image/*" class="hidden" onchange="this.form.submit()">
-                                                </label>
-                                            </form>
-                                            @if($desktopImg2)
-                                                <form action="{{ route('admin.hero.delete', $desktopImg2->id) }}" method="POST" onsubmit="return confirmDelete(event)" class="inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs transition-colors">Borrar</button>
-                                                </form>
-                                            @else
-                                                <button class="bg-gray-400 text-gray-600 px-3 py-1 rounded text-xs cursor-not-allowed" disabled>Borrar</button>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- video -->
-                                <div class="flex-1 bg-gray-600 rounded relative desktop-hero-video">
-                                    <!-- Badge flotante -->
-                                    <div class="absolute top-2 right-2 text-white px-2 py-1 rounded text-xs hero-badge" style="background-color: rgba(0, 0, 0, 0.4);">
-                                        <div class="font-medium">{{ $badges['desktop']['video']['title'] }}</div>
-                                        <div class="text-gray-300">{{ $badges['desktop']['video']['size'] }}</div>
-                                    </div>
-                                    
-                                    @if($desktopVideo && $desktopVideo->url)
-                                        <video class="w-full h-full object-cover rounded" muted loop autoplay>
-                                            <source src="{{ asset('storage/' . $desktopVideo->url) }}" type="video/mp4">
-                                            Tu navegador no soporta videos.
-                                        </video>
-                                    @else
-                                        <div class="w-full h-full flex flex-col items-center justify-center hero-content">
-                                            <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                                            </svg>
-                                            <div class="text-gray-300 text-xs mt-2 text-center">
-                                                <div class="font-semibold">376 × 418 px</div>
-                                                <div class="text-gray-400">Video vertical</div>
-                                            </div>
-                                        </div>
-                                    @endif
-                                    
-                                    <!-- Barra blanca en el bottom -->
-                                    <div class="hero-bottom-bar">
-                                        <div class="flex gap-2">
-                                            <form action="{{ route('admin.hero.update', $desktopVideo ? $desktopVideo->id : 0) }}" method="POST" enctype="multipart/form-data" class="inline">
-                                                @csrf
-                                                <input type="hidden" name="version" value="desktop">
-                                                <input type="hidden" name="type" value="video">
-                                                <label class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs transition-colors cursor-pointer">
-                                                    Browse
-                                                    <input type="file" name="file" accept="video/*" class="hidden" onchange="this.form.submit()">
-                                                </label>
-                                            </form>
-                                            @if($desktopVideo)
-                                                <form action="{{ route('admin.hero.delete', $desktopVideo->id) }}" method="POST" onsubmit="return confirmDelete(event)" class="inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs transition-colors">Borrar</button>
-                                                </form>
-                                            @else
-                                                <button class="bg-gray-400 text-gray-600 px-3 py-1 rounded text-xs cursor-not-allowed" disabled>Borrar</button>
-                                            @endif
-                                        </div>
-                                    </div>
+                                <div class="col-span-12 md:col-span-6">
+                                    <h3 class="text-gray-400 text-sm mb-2 font-medium">Video (Derecha)</h3>
+                                    <x-admin.hero-item 
+                                        version="desktop" 
+                                        type="video" 
+                                        :item="$heroes->where('version', 'desktop')->where('type', 'video')->first()" 
+                                        title="Video" 
+                                        size="376 × 418 px"
+                                        placeholderText="Video Loop"
+                                        containerClass="w-full desktop-hero-video shadow-lg"
+                                        :isVideo="true"
+                                    />
                                 </div>
                             </div>
                         </div>
-                                            </div>
-                                        
-                    <!-- COLUMNA DERECHA: Mobile arriba, Sticky Bar abajo -->
-                    <div style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
-                        <!-- PANEL 2: Mobile (Derecha Arriba) -->
-                        <div style="background: #374151; padding: 20px; border-radius: 8px;">
-                        <h2 class="text-lg font-semibold text-white mb-4">Mobile</h2>
-                        
-                        @php
-                            $mobileImg1 = $heroes->where('version', 'mobile')->where('type', 'img1')->first();
-                            $mobileImg2 = $heroes->where('version', 'mobile')->where('type', 'img2')->first();
-                            $mobileVideo = $heroes->where('version', 'mobile')->where('type', 'video')->first();
-                        @endphp
-                        
-                        <!-- Estructura del hero mobile -->
-                        <div class="grid grid-cols-3 gap-4">
-                            <!-- img1 -->
-                            <div class="w-full bg-gray-600 rounded relative mobile-hero-container">
-                                <!-- Badge flotante -->
-                                <div class="absolute top-2 right-2 text-white px-2 py-1 rounded text-xs hero-badge" style="background-color: rgba(0, 0, 0, 0.4);">
-                                    <div class="font-medium">{{ $badges['mobile']['img1']['title'] }}</div>
-                                    <div class="text-gray-300">{{ $badges['mobile']['img1']['size'] }}</div>
-                                </div>
-                                
-                                @if($mobileImg1 && $mobileImg1->url)
-                                    <img src="{{ asset('storage/' . $mobileImg1->url) }}" alt="img1" class="w-full h-full object-cover rounded">
-                                @else
-                                    <div class="w-full h-full flex flex-col items-center justify-center hero-content">
-                                        <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                        </svg>
-                                        <div class="text-gray-300 text-xs mt-2 text-center">
-                                            <div class="font-semibold">417 × 462 px</div>
-                                            <div class="text-gray-400">Imagen mobile</div>
-                                        </div>
-                                    </div>
-                                @endif
-                                
-                                <!-- Barra blanca en el bottom -->
-                                <div class="hero-bottom-bar">
-                                    <div class="flex gap-2">
-                                        <form action="{{ route('admin.hero.update', $mobileImg1 ? $mobileImg1->id : 0) }}" method="POST" enctype="multipart/form-data" class="inline">
-                                            @csrf
-                                            <input type="hidden" name="version" value="mobile">
-                                            <input type="hidden" name="type" value="img1">
-                                            <label class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs transition-colors cursor-pointer">
-                                                Browse
-                                                <input type="file" name="file" accept="image/*" class="hidden" onchange="this.form.submit()">
-                                            </label>
-                                        </form>
-                                        @if($mobileImg1)
-                                            <form action="{{ route('admin.hero.delete', $mobileImg1->id) }}" method="POST" onsubmit="return confirmDelete(event)" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs transition-colors">Borrar</button>
-                                            </form>
-                                        @else
-                                            <button class="bg-gray-400 text-gray-600 px-3 py-1 rounded text-xs cursor-not-allowed" disabled>Borrar</button>
-                                        @endif
-                                    </div>
-                                </div>
+                    </div>
+
+                    <!-- TAB 2: MOBILE -->
+                    <div x-show="activeTab === 'mobile'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" style="display: none;">
+                        <div class="bg-gray-700/50 p-6 rounded-xl border border-gray-600">
+                             <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-xl font-semibold text-white">Vista Móvil</h2>
+                                <span class="bg-purple-900/50 text-purple-200 text-xs px-3 py-1 rounded-full border border-purple-700/50">Visible en celulares</span>
                             </div>
                             
-                            <!-- img2 -->
-                            <div class="w-full bg-gray-600 rounded relative mobile-hero-container">
-                                <!-- Badge flotante -->
-                                <div class="absolute top-2 right-2 text-white px-2 py-1 rounded text-xs hero-badge" style="background-color: rgba(0, 0, 0, 0.4);">
-                                    <div class="font-medium">{{ $badges['mobile']['img2']['title'] }}</div>
-                                    <div class="text-gray-300">{{ $badges['mobile']['img2']['size'] }}</div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div>
+                                    <h3 class="text-gray-400 text-sm mb-2 font-medium">Imagen 1</h3>
+                                    <x-admin.hero-item 
+                                        version="mobile" 
+                                        type="img1" 
+                                        :item="$heroes->where('version', 'mobile')->where('type', 'img1')->first()" 
+                                        title="Carrousel 1" 
+                                        size="417 × 462 px"
+                                        placeholderText="Mobile 1"
+                                        containerClass="w-full mobile-hero-container shadow-lg"
+                                    />
+                                </div>
+
+                                <div>
+                                    <h3 class="text-gray-400 text-sm mb-2 font-medium">Imagen 2</h3>
+                                    <x-admin.hero-item 
+                                        version="mobile" 
+                                        type="img2" 
+                                        :item="$heroes->where('version', 'mobile')->where('type', 'img2')->first()" 
+                                        title="Carrousel 2" 
+                                        size="417 × 462 px"
+                                        placeholderText="Mobile 2"
+                                        containerClass="w-full mobile-hero-container shadow-lg"
+                                    />
                                 </div>
                                 
-                                @if($mobileImg2 && $mobileImg2->url)
-                                    <img src="{{ asset('storage/' . $mobileImg2->url) }}" alt="img2" class="w-full h-full object-cover rounded">
-                                @else
-                                    <div class="w-full h-full flex flex-col items-center justify-center hero-content">
-                                        <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                        </svg>
-                                        <div class="text-gray-300 text-xs mt-2 text-center">
-                                            <div class="font-semibold">417 × 462 px</div>
-                                            <div class="text-gray-400">Imagen mobile</div>
-                                        </div>
-                                    </div>
-                                @endif
-                                
-                                <!-- Barra blanca en el bottom -->
-                                <div class="hero-bottom-bar">
-                                    <div class="flex gap-2">
-                                        <form action="{{ route('admin.hero.update', $mobileImg2 ? $mobileImg2->id : 0) }}" method="POST" enctype="multipart/form-data" class="inline">
-                                            @csrf
-                                            <input type="hidden" name="version" value="mobile">
-                                            <input type="hidden" name="type" value="img2">
-                                            <label class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs transition-colors cursor-pointer">
-                                                Browse
-                                                <input type="file" name="file" accept="image/*" class="hidden" onchange="this.form.submit()">
-                                            </label>
-                                        </form>
-                                        @if($mobileImg2)
-                                            <form action="{{ route('admin.hero.delete', $mobileImg2->id) }}" method="POST" onsubmit="return confirmDelete(event)" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs transition-colors">Borrar</button>
-                                            </form>
-                                        @else
-                                            <button class="bg-gray-400 text-gray-600 px-3 py-1 rounded text-xs cursor-not-allowed" disabled>Borrar</button>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- video -->
-                            <div class="w-full bg-gray-600 rounded relative mobile-hero-container">
-                                <!-- Badge flotante -->
-                                <div class="absolute top-2 right-2 text-white px-2 py-1 rounded text-xs hero-badge" style="background-color: rgba(0, 0, 0, 0.4);">
-                                    <div class="font-medium">{{ $badges['mobile']['video']['title'] }}</div>
-                                    <div class="text-gray-300">{{ $badges['mobile']['video']['size'] }}</div>
-                                </div>
-                                
-                                @if($mobileVideo && $mobileVideo->url)
-                                    <video class="w-full h-full object-cover rounded" muted loop autoplay>
-                                        <source src="{{ asset('storage/' . $mobileVideo->url) }}" type="video/mp4">
-                                        Tu navegador no soporta videos.
-                                    </video>
-                                @else
-                                    <div class="w-full h-full flex flex-col items-center justify-center hero-content">
-                                        <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                                        </svg>
-                                        <div class="text-gray-300 text-xs mt-2 text-center">
-                                            <div class="font-semibold">417 × 462 px</div>
-                                            <div class="text-gray-400">Video mobile</div>
-                                        </div>
-                                    </div>
-                                @endif
-                                
-                                <!-- Barra blanca en el bottom -->
-                                <div class="hero-bottom-bar">
-                                    <div class="flex gap-2">
-                                        <form action="{{ route('admin.hero.update', $mobileVideo ? $mobileVideo->id : 0) }}" method="POST" enctype="multipart/form-data" class="inline">
-                                            @csrf
-                                            <input type="hidden" name="version" value="mobile">
-                                            <input type="hidden" name="type" value="video">
-                                            <label class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs transition-colors cursor-pointer">
-                                                Browse
-                                                <input type="file" name="file" accept="video/*" class="hidden" onchange="this.form.submit()">
-                                            </label>
-                                        </form>
-                                        @if($mobileVideo)
-                                            <form action="{{ route('admin.hero.delete', $mobileVideo->id) }}" method="POST" onsubmit="return confirmDelete(event)" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs transition-colors">Borrar</button>
-                                            </form>
-                                        @else
-                                            <button class="bg-gray-400 text-gray-600 px-3 py-1 rounded text-xs cursor-not-allowed" disabled>Borrar</button>
-                                        @endif
-                                    </div>
+                                <div>
+                                    <h3 class="text-gray-400 text-sm mb-2 font-medium">Video</h3>
+                                    <x-admin.hero-item 
+                                        version="mobile" 
+                                        type="video" 
+                                        :item="$heroes->where('version', 'mobile')->where('type', 'video')->first()" 
+                                        title="Carrousel Video" 
+                                        size="417 × 462 px"
+                                        placeholderText="Video Mobile"
+                                        containerClass="w-full mobile-hero-container shadow-lg"
+                                        :isVideo="true"
+                                    />
                                 </div>
                             </div>
                         </div>
-                        </div>
-                        
-                        <!-- PANEL 3: Sticky Bar (Derecha Abajo) -->
-                        <div style="background: #374151; padding: 20px; border-radius: 8px; height: fit-content;">
-                            <div class="flex items-center justify-between mb-4">
-                                <h2 class="text-lg font-semibold text-white">Sticky Bar</h2>
+                    </div>
+
+                    <!-- TAB 3: STICKY BAR -->
+                    <div x-show="activeTab === 'sticky'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" style="display: none;">
+                        <div class="bg-gray-700/50 p-6 rounded-xl border border-gray-600 max-w-2xl mx-auto">
+                            <div class="flex items-center justify-between mb-6 border-b border-gray-600 pb-4">
+                                <div>
+                                    <h2 class="text-xl font-semibold text-white">Sticky Bar</h2>
+                                    <p class="text-gray-400 text-sm mt-1">Barra de anuncios fijada en el borde inferior</p>
+                                </div>
                                 
                                 <!-- Checkbox Visible -->
                                 <form action="{{ route('admin.sticky-bar.update') }}" method="POST" class="inline">
                                     @csrf
-                                    <div class="flex items-center">
+                                    <label class="relative inline-flex items-center cursor-pointer">
                                         <input type="checkbox" name="visible" id="visible" value="1" 
                                                {{ $stickyBar->visible ? 'checked' : '' }}
-                                               class="mr-2" onchange="this.form.submit()">
-                                        <label for="visible" class="text-white text-sm">Visible</label>
+                                               class="sr-only peer" onchange="this.form.submit()">
+                                        <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+                                        <span class="ml-3 text-sm font-medium text-white">Activa</span>
+                                        
+                                        <!-- Inputs ocultos para mantener valores al hacer toggle -->
                                         <input type="hidden" name="texto" value="{{ $stickyBar->texto }}">
                                         <input type="hidden" name="color" value="{{ $stickyBar->color }}">
                                         <input type="hidden" name="text_color" value="{{ $stickyBar->text_color ?? '#ffffff' }}">
-                                    </div>
+                                    </label>
                                 </form>
                             </div>
                             
-                            
                             <!-- Formulario Sticky Bar -->
-                            <form action="{{ route('admin.sticky-bar.update') }}" method="POST" class="space-y-4">
+                            <form action="{{ route('admin.sticky-bar.update') }}" method="POST" class="space-y-5">
                                 @csrf
-                                
-                                <!-- Input hidden para el estado del checkbox visible -->
                                 <input type="hidden" name="visible" id="visibleHidden" value="{{ $stickyBar->visible ? '1' : '0' }}">
                                 
-                                <!-- Fila 1: Texto del sticky -->
-                                <div class="space-y-1">
-                                    <label class="text-white text-sm">Texto del sticky (**text** para bold, //text// para italic):</label>
-                <input type="text" name="texto" id="texto" 
-                       class="w-full p-2 rounded text-gray-800 text-sm"
-                       placeholder="¡Oferta especial! 🎉 **50% descuento** //hasta agotar stock//"
-                       value="{{ $stickyBar->texto }}">
-                                </div>
-                                
-                                <!-- Fila 2: Texto del URL -->
-                                <div class="space-y-1">
-                                    <label class="text-white text-sm">Texto del URL:</label>
-                                    <input type="text" name="texto_url" id="texto_url" 
-                                           class="w-full p-2 rounded text-gray-800 text-sm"
-                                           placeholder="más info"
-                                           value="{{ $stickyBar->texto_url }}">
-                                </div>
-                                
-                                <!-- Fila 3: URL del enlace -->
-                                <div class="space-y-1">
-                                    <label class="text-white text-sm">URL del enlace (opcional):</label>
-                                    <input type="url" name="url" id="url" 
-                                           class="w-full p-2 rounded text-gray-800 text-sm"
-                                           placeholder="https://ejemplo.com"
-                                           value="{{ $stickyBar->url }}">
-                                </div>
-                                
-                                <!-- Fila 4: Selectores de Color (Fondo y Texto) -->
-                                <div class="grid grid-cols-2 gap-4 mt-4">
-                                    <!-- Color de Fondo -->
-                                    <div class="space-y-2">
-                                        <label class="text-white text-sm">Selección color de fondo:</label>
-                                        <div class="flex items-center gap-3">
-                                            <input type="color" name="color" id="bgColorInput" 
-                                                   value="{{ $stickyBar->color }}" 
-                                                   class="h-10 w-20 rounded cursor-pointer border-0 p-0"
-                                                   oninput="document.getElementById('bgColorHex').textContent = this.value">
-                                            <span id="bgColorHex" class="text-white text-sm font-mono">{{ $stickyBar->color }}</span>
-                                        </div>
+                                <div class="space-y-2">
+                                    <label class="block text-gray-300 text-sm font-medium">Contenido del anuncio</label>
+                                    <div class="relative">
+                                        <input type="text" name="texto" id="texto" 
+                                               class="w-full pl-4 pr-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                               placeholder="Ej: ¡Oferta especial! text para bold"
+                                               value="{{ $stickyBar->texto }}">
                                     </div>
+                                    <p class="text-xs text-gray-500">Usa **texto** para negrita y //texto// para cursiva.</p>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <div class="space-y-2">
+                                        <label class="block text-gray-300 text-sm font-medium">Texto del botón</label>
+                                        <input type="text" name="texto_url" id="texto_url" 
+                                               class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-blue-500 transition-all"
+                                               placeholder="Ej: Ver más"
+                                               value="{{ $stickyBar->texto_url }}">
+                                    </div>
+                                    
+                                    <div class="space-y-2">
+                                        <label class="block text-gray-300 text-sm font-medium">Enlace (URL)</label>
+                                        <input type="url" name="url" id="url" 
+                                               class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-blue-500 transition-all"
+                                               placeholder="https://..."
+                                               value="{{ $stickyBar->url }}">
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-gray-800 p-4 rounded-lg border border-gray-600 mt-2">
+                                    <h4 class="text-sm font-medium text-gray-300 mb-3">Apariencia</h4>
+                                    <div class="grid grid-cols-2 gap-6">
+                                        <div class="space-y-2">
+                                            <label class="text-gray-400 text-xs uppercase tracking-wider">Fondo</label>
+                                            <div class="flex items-center gap-3">
+                                                <div class="relative w-10 h-10 rounded-full overflow-hidden border border-gray-500 shadow-sm cursor-pointer hover:scale-105 transition-transform">
+                                                    <input type="color" name="color" id="bgColorInput" 
+                                                        value="{{ $stickyBar->color }}" 
+                                                        class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] p-0 cursor-pointer border-0"
+                                                        oninput="document.getElementById('bgColorHex').textContent = this.value">
+                                                </div>
+                                                <span id="bgColorHex" class="text-gray-300 text-sm font-mono">{{ $stickyBar->color }}</span>
+                                            </div>
+                                        </div>
 
-                                    <!-- Color de Texto -->
-                                    <div class="space-y-2">
-                                        <label class="text-white text-sm">Selección color de texto:</label>
-                                        <div class="flex items-center gap-3">
-                                            <input type="color" name="text_color" id="textColorInput" 
-                                                   value="{{ $stickyBar->text_color ?? '#ffffff' }}" 
-                                                   class="h-10 w-20 rounded cursor-pointer border-0 p-0"
-                                                   oninput="document.getElementById('textColorHex').textContent = this.value">
-                                            <span id="textColorHex" class="text-white text-sm font-mono">{{ $stickyBar->text_color ?? '#ffffff' }}</span>
+                                        <div class="space-y-2">
+                                            <label class="text-gray-400 text-xs uppercase tracking-wider">Texto</label>
+                                            <div class="flex items-center gap-3">
+                                                <div class="relative w-10 h-10 rounded-full overflow-hidden border border-gray-500 shadow-sm cursor-pointer hover:scale-105 transition-transform">
+                                                    <input type="color" name="text_color" id="textColorInput" 
+                                                        value="{{ $stickyBar->text_color ?? '#ffffff' }}" 
+                                                        class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] p-0 cursor-pointer border-0"
+                                                        oninput="document.getElementById('textColorHex').textContent = this.value">
+                                                </div>
+                                                <span id="textColorHex" class="text-gray-300 text-sm font-mono">{{ $stickyBar->text_color ?? '#ffffff' }}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <!-- Botón Guardar -->
-                                <div class="pt-2">
-                                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded text-sm">
-                                        Guardar
+                                <div class="pt-4 border-t border-gray-700 flex justify-end">
+                                    <button type="submit" class="bg-green-600 hover:bg-green-500 text-white font-medium px-6 py-2.5 rounded-lg text-sm shadow-lg shadow-green-900/20 transition-all transform active:scale-95 flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                        Guardar Cambios
                                     </button>
                                 </div>
                             </form>
                             
                             <script>
-                                // Sincronizar checkbox del header con input hidden del formulario
                                 function syncVisibleCheckbox() {
                                     const headerCheckbox = document.getElementById('visible');
                                     const hiddenInput = document.getElementById('visibleHidden');
-                                    
                                     if (headerCheckbox && hiddenInput) {
                                         hiddenInput.value = headerCheckbox.checked ? '1' : '0';
                                     }
                                 }
-                                
-                                // Sincronizar cuando cambia el checkbox del header
                                 document.addEventListener('DOMContentLoaded', function() {
                                     const headerCheckbox = document.getElementById('visible');
                                     if (headerCheckbox) {
                                         headerCheckbox.addEventListener('change', syncVisibleCheckbox);
-                                        // Sincronizar estado inicial
+                                        // Initial sync
                                         syncVisibleCheckbox();
                                     }
                                 });
@@ -484,24 +286,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        // Habilitar botón Delete cuando se sube una imagen
-        document.addEventListener('DOMContentLoaded', function() {
-            const deleteButton = document.querySelector('button[type="submit"]:not([disabled])');
-            const deleteButtonDisabled = document.querySelector('button[disabled]');
-            
-            // Si hay un toast de éxito, significa que se subió una imagen
-            if (document.getElementById('toast')) {
-                // Habilitar el botón Delete
-                if (deleteButtonDisabled) {
-                    deleteButtonDisabled.classList.remove('bg-gray-400', 'text-gray-600', 'cursor-not-allowed');
-                    deleteButtonDisabled.classList.add('bg-red-500', 'hover:bg-red-600', 'text-white');
-                    deleteButtonDisabled.disabled = false;
-                    deleteButtonDisabled.innerHTML = 'Delete';
-                }
-            }
-        });
-    </script>
-
 </x-app-layout>

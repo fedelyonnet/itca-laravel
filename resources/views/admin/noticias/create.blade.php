@@ -1,197 +1,494 @@
 <x-app-layout>
     <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-100">
-                    <div class="flex justify-between items-center mb-6">
-                        <div>
-                            <h1 class="text-2xl font-bold">Agregar Nueva Noticia</h1>
-                            <p class="text-sm text-gray-400 mt-1">Completá los campos para crear una nueva noticia</p>
-                        </div>
-                        <a href="{{ route('admin.noticias') }}" 
-                           class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition-colors">
-                            ← Volver a Noticias
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg border border-gray-700">
+                <!-- Header -->
+                <div class="border-b border-gray-700 bg-gray-900/50 px-6 py-4">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-2xl font-bold text-white">Nueva Noticia</h2>
+                        <a href="{{ route('admin.noticias.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm font-medium rounded transition-colors">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                            Volver a la grilla
                         </a>
                     </div>
-
-                    <form action="{{ route('admin.noticias.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6" novalidate onsubmit="return validateForm(event)">
-                        @csrf
+                </div>
+                
+                <form id="noticiaForm" action="{{ route('admin.noticias.store') }}" method="POST" enctype="multipart/form-data" novalidate>
+                    @csrf
+                    
+                    <div class="flex flex-row gap-6 p-6" style="display: flex; flex-direction: row; gap: 1.5rem;">
                         
-                        <!-- Primer renglón: Título, Fecha, Visible -->
-                        <div class="grid grid-cols-12 gap-6">
-                            <!-- Título -->
-                            <div class="col-span-6">
-                                <label for="titulo" class="block text-sm font-medium text-gray-300 mb-2">
-                                    Título de la Noticia <span class="text-red-400">*</span>
-                                </label>
-                                <input type="text" 
-                                       id="titulo" 
-                                       name="titulo" 
-                                       value="{{ old('titulo') }}"
-                                       class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('titulo') border-red-500 @enderror"
-                                       placeholder="Ingresá el título de la noticia (usá &lt;strong&gt;&lt;/strong&gt; para texto en negrita)"
-                                       required>
-                                @error('titulo')
-                                    <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
-                                @enderror
-                            </div>
+                        <!-- COLUMNA PRINCIPAL (70% - 2 cols) -->
+                        <div class="w-2/3 flex-shrink-0 space-y-6" style="width: 66.666%; flex-shrink: 0;">
+                            
+                            <!-- 📝 CONTENIDO PRINCIPAL -->
+                            <div class="bg-gray-900 rounded-lg border border-gray-700">
+                                <div class="px-4 py-3 border-b border-gray-700 flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                    <h3 class="text-sm font-bold text-white uppercase">Contenido Principal</h3>
+                                </div>
+                                
+                                <div class="p-4 space-y-4">
+                                    <!-- Título -->
+                                    <div>
+                                        <div class="flex items-center justify-between mb-2">
+                                            <label class="block text-sm font-bold text-gray-300">Título <span class="text-red-400">*</span></label>
+                                            <span id="titulo-count" class="text-xs text-gray-500">0/255</span>
+                                        </div>
+                                        <input type="text" name="titulo" id="titulo" value="{{ old('titulo') }}" required maxlength="255"
+                                               class="w-full bg-gray-800 border-gray-600 text-gray-100 rounded focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-base px-4 py-2.5"
+                                               placeholder="Ej: Nueva alianza entre ITCA y Royal Enfield">
+                                        @error('titulo')
+                                            <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
 
-                            <!-- Fecha -->
-                            <div class="col-span-3">
-                                <label for="fecha_publicacion" class="block text-sm font-medium text-gray-300 mb-2">
-                                    Fecha <span class="text-red-400">*</span>
-                                </label>
-                                <input type="text" 
-                                       id="fecha_publicacion" 
-                                       name="fecha_publicacion" 
-                                       value="{{ old('fecha_publicacion', now()->format('d/m/Y')) }}"
-                                       placeholder="dd/mm/aaaa"
-                                       pattern="\d{2}/\d{2}/\d{4}"
-                                       class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('fecha_publicacion') border-red-500 @enderror"
-                                       required>
-                                @error('fecha_publicacion')
-                                    <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
-                                @enderror
-                            </div>
+                                    <!-- Extracto -->
+                                    <div>
+                                        <div class="flex items-center justify-between mb-2">
+                                            <label class="block text-sm font-bold text-gray-300 flex items-center gap-2">
+                                                Extracto
+                                                <span class="text-xs text-gray-500 font-normal italic">(opcional)</span>
+                                            </label>
+                                            <span id="extracto-count" class="text-xs text-gray-500">0/500</span>
+                                        </div>
+                                        <textarea name="extracto" id="extracto" rows="2" maxlength="500"
+                                                  class="w-full bg-gray-800 border-gray-600 text-gray-100 rounded focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm px-4 py-2.5 resize-none"
+                                                  placeholder="Resumen breve que aparecerá en el listado de noticias...">{{ old('extracto') }}</textarea>
+                                        <p class="text-xs text-gray-500 mt-1 font-bold">Este texto se mostrará en las tarjetas de vista previa y en la vista previa del home si es destacada</p>
+                                    </div>
 
-                            <!-- Visible -->
-                            <div class="col-span-3 flex items-end">
-                                <div class="flex items-center h-10">
-                                    <input type="checkbox" 
-                                           id="visible" 
-                                           name="visible" 
-                                           value="1"
-                                           {{ old('visible', true) ? 'checked' : '' }}
-                                           class="h-4 w-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2">
-                                    <label for="visible" class="ml-2 text-sm text-gray-300">
-                                        Visible
-                                    </label>
+                                    <!-- Contenido -->
+                                    <div>
+                                        <div class="flex items-center justify-between mb-2">
+                                            <label class="block text-sm font-bold text-gray-300">Contenido <span class="text-red-400">*</span></label>
+                                            <button type="button" onclick="document.getElementById('formatHelp').classList.toggle('hidden')" 
+                                                    class="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                                Ayuda de formato
+                                            </button>
+                                        </div>
+                                        
+                                        <div id="formatHelp" class="hidden mb-3 bg-blue-900/20 border border-blue-700/30 rounded p-3">
+                                            <p class="text-xs font-bold text-blue-300 mb-2">Etiquetas de formato:</p>
+                                            <div class="grid grid-cols-2 gap-2 text-xs text-gray-400">
+                                                <div><code class="text-blue-400 bg-blue-900/30 px-2 py-0.5 rounded">*/texto/*</code> = Negrita</div>
+                                                <div><code class="text-blue-400 bg-blue-900/30 px-2 py-0.5 rounded">&lt;titulo&gt;</code> = Subtítulo</div>
+                                                <div><code class="text-blue-400 bg-blue-900/30 px-2 py-0.5 rounded">#</code> = Salto de línea</div>
+                                                <div><code class="text-blue-400 bg-blue-900/30 px-2 py-0.5 rounded">http://...</code> = Link automático</div>
+                                            </div>
+                                        </div>
+
+                                        <textarea name="contenido" id="contenido" rows="16" required
+                                                  class="w-full bg-gray-800 border-gray-600 text-gray-100 rounded focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm px-4 py-3 font-mono leading-relaxed"
+                                                  placeholder="Escribe el contenido completo de la noticia aquí...">{{ old('contenido') }}</textarea>
+                                        @error('contenido')
+                                            <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
                                 </div>
                             </div>
+
+                            <!-- 🖼️ IMÁGENES -->
+                            <div class="bg-gray-900 rounded-lg border border-gray-700">
+                                <div class="px-4 py-3 border-b border-gray-700 flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    <h3 class="text-sm font-bold text-white uppercase">Imágenes</h3>
+                                </div>
+                                
+                                <div class="p-4">
+                                    <div class="grid grid-cols-3 gap-4">
+                                        <!-- Hero -->
+                                        <div>
+                                            <div class="flex items-center justify-center gap-1 mb-2">
+                                                <label class="text-xs font-bold text-gray-400 uppercase">Principal</label>
+                                            </div>
+                                            <div class="group">
+                                                <input type="file" name="imagen_hero" id="imagen_hero" accept="image/*" class="hidden" data-no-auto-submit="true" onchange="previewImage(this, 'heroPreview', 'heroPlaceholder')">
+                                                <label for="imagen_hero" class="relative flex flex-col items-center justify-center w-full py-10 bg-gray-800 rounded-lg overflow-hidden border border-gray-600 hover:border-green-500 hover:bg-gray-750 cursor-pointer transition-all">
+                                                    <img id="heroPreview" class="w-full h-48 object-cover rounded-md hidden">
+                                                    <div id="heroPlaceholder" class="flex flex-col items-center justify-center text-gray-500 group-hover:text-green-400 transition-colors">
+                                                        <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                                        <span class="text-sm font-bold">Subir Imagen</span>
+                                                        <span class="text-xs mt-1 text-gray-400">1920x1080</span>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Thumb -->
+                                        <div>
+                                            <div class="flex items-center justify-center gap-1 mb-2">
+                                                <label class="text-xs font-bold text-gray-400 uppercase">Miniatura</label>
+                                            </div>
+                                            <div class="group">
+                                                <input type="file" name="imagen_thumb" id="imagen_thumb" accept="image/*" class="hidden" data-no-auto-submit="true" onchange="previewImage(this, 'thumbPreview', 'thumbPlaceholder')">
+                                                <label for="imagen_thumb" class="relative flex flex-col items-center justify-center w-full py-10 bg-gray-800 rounded-lg overflow-hidden border border-gray-600 hover:border-green-500 hover:bg-gray-750 cursor-pointer transition-all">
+                                                    <img id="thumbPreview" class="w-full h-48 object-cover rounded-md hidden">
+                                                    <div id="thumbPlaceholder" class="flex flex-col items-center justify-center text-gray-500 group-hover:text-green-400 transition-colors">
+                                                        <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                                        <span class="text-sm font-bold">Subir Imagen</span>
+                                                        <span class="text-xs mt-1 text-gray-400">800x800</span>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Banner -->
+                                        <div>
+                                            <div class="flex items-center justify-center gap-1 mb-2">
+                                                <label class="text-xs font-bold text-gray-400 uppercase">Banner</label>
+                                            </div>
+                                            <div class="group">
+                                                <input type="file" name="banner_publicitario" id="banner_publicitario" accept="image/*" class="hidden" data-no-auto-submit="true" onchange="previewImage(this, 'bannerPreview', 'bannerPlaceholder')">
+                                                <label for="banner_publicitario" class="relative flex flex-col items-center justify-center w-full py-10 bg-gray-800 rounded-lg overflow-hidden border border-gray-600 hover:border-green-500 hover:bg-gray-750 cursor-pointer transition-all">
+                                                    <img id="bannerPreview" class="w-full h-48 object-cover rounded-md hidden">
+                                                    <div id="bannerPlaceholder" class="flex flex-col items-center justify-center text-gray-500 group-hover:text-green-400 transition-colors">
+                                                        <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                                        <span class="text-sm font-bold">Subir Banner</span>
+                                                        <span class="text-xs mt-1 text-gray-400">Opcional</span>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
 
-                        <!-- Segundo renglón: Contenido -->
-                        <div>
-                            <label for="contenido" class="block text-sm font-medium text-gray-300 mb-2">
-                                Contenido de la Noticia <span class="text-red-400">*</span>
-                            </label>
-                            <textarea id="contenido" 
-                                      name="contenido" 
-                                      rows="8"
-                                      class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('contenido') border-red-500 @enderror"
-                                      placeholder="Escribí el contenido completo de la noticia..."
-                                      required>{{ old('contenido') }}</textarea>
-                            @error('contenido')
-                                <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
-                            @enderror
-                        </div>
+                        <!-- SIDEBAR (30% - 1 col) -->
+                        <div class="w-1/3 flex-shrink-0 space-y-6" style="width: 33.333%; flex-shrink: 0;">
+                            
+                            <!-- 📅 PUBLICACIÓN -->
+                            <div class="bg-gray-900 rounded-lg border border-gray-700">
+                                <div class="px-4 py-3 border-b border-gray-700 flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    <h3 class="text-sm font-bold text-white uppercase">Publicación</h3>
+                                </div>
+                                
+                                <div class="p-4 space-y-4">
+                                    <!-- Fecha -->
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-400 mb-2 uppercase">Fecha <span class="text-red-400">*</span></label>
+                                        <input type="date" name="fecha_publicacion" value="{{ old('fecha_publicacion', date('Y-m-d')) }}" required
+                                               class="w-full bg-gray-800 border-gray-600 rounded text-gray-100 text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 px-3 py-2">
+                                    </div>
 
-                        <!-- Tercer renglón: Imagen -->
-                        <div>
-        <label for="imagen" class="block text-sm font-medium text-gray-300 mb-2">
-            Imagen de la Noticia <span class="text-red-400">*</span>
-        </label>
-                            <input type="file" 
-                                   id="imagen" 
-                                   name="imagen" 
-                                   accept="image/*"
-                                   data-no-auto-submit>
-                            <p class="mt-1 text-xs text-gray-400">
-                                Formatos permitidos: JPG, PNG, GIF, WebP. Tamaño máximo: 2MB - Tamaño recomendado: 653x215px
-                            </p>
-                            @error('imagen')
-                                <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
-                            @enderror
-                        </div>
+                                    <!-- Visible -->
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-400 mb-2 uppercase">Visible en el sitio</label>
+                                        <div class="flex gap-3">
+                                            <label class="flex items-center cursor-pointer">
+                                                <input type="radio" name="visible" value="1" {{ old('visible', '1') == '1' ? 'checked' : '' }} class="w-4 h-4 text-green-500 bg-gray-700 border-gray-600 focus:ring-green-500">
+                                                <span class="ml-2 text-sm text-gray-300">Sí</span>
+                                            </label>
+                                            <label class="flex items-center cursor-pointer">
+                                                <input type="radio" name="visible" value="0" {{ old('visible', '1') == '0' ? 'checked' : '' }} class="w-4 h-4 text-green-500 bg-gray-700 border-gray-600 focus:ring-green-500">
+                                                <span class="ml-2 text-sm text-gray-300">No</span>
+                                            </label>
+                                        </div>
+                                    </div>
 
-                        <!-- Botones -->
-                        <div class="flex justify-end space-x-4 pt-6">
-                            <a href="{{ route('admin.noticias') }}" 
-                               class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-md transition-colors">
-                                Cancelar
+                                    <!-- Destacada -->
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-400 mb-2 uppercase">Destacada en home</label>
+                                        <div class="flex gap-3">
+                                            <label class="flex items-center cursor-pointer">
+                                                <input type="radio" name="destacada" value="1" {{ old('destacada', '0') == '1' ? 'checked' : '' }} class="w-4 h-4 text-green-500 bg-gray-700 border-gray-600 focus:ring-green-500">
+                                                <span class="ml-2 text-sm text-gray-300">Sí</span>
+                                            </label>
+                                            <label class="flex items-center cursor-pointer">
+                                                <input type="radio" name="destacada" value="0" {{ old('destacada', '0') == '0' ? 'checked' : '' }} class="w-4 h-4 text-green-500 bg-gray-700 border-gray-600 focus:ring-green-500">
+                                                <span class="ml-2 text-sm text-gray-300">No</span>
+                                            </label>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-2 font-bold">Solo una noticia puede estar destacada</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 🏷️ CATEGORÍAS -->
+                            <div class="bg-gray-900 rounded-lg border border-gray-700">
+                                <div class="px-4 py-3 border-b border-gray-700 flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+                                        <h3 class="text-sm font-bold text-white uppercase">Categorías</h3>
+                                    </div>
+                                    <button type="button" id="btn-add-cat" class="text-xs bg-gray-800 hover:bg-gray-700 text-green-400 border border-gray-600 rounded px-2 py-1 transition-colors flex items-center gap-1" title="Agregar Categoría">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                    </button>
+                                </div>
+                                <div class="p-4">
+                                    <!-- Input para nueva categoría (Oculto por defecto) -->
+                                    <div id="new-cat-container" class="hidden mb-3">
+                                        <div class="flex gap-2">
+                                            <input type="text" id="new-cat-name" class="flex-1 bg-gray-800 border-gray-600 rounded text-xs text-gray-100 px-2 py-1" placeholder="Nombre categoría...">
+                                            <button type="button" id="btn-save-cat" class="bg-green-600 hover:bg-green-500 text-white text-xs px-2 py-1 rounded">OK</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Listado de categorías -->
+                                    <div class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar" id="categorias-list">
+                                        @forelse($categorias as $categoria)
+                                            <label class="flex items-center space-x-2 cursor-pointer group">
+                                                <input type="checkbox" name="categorias[]" value="{{ $categoria->id }}" 
+                                                    {{ in_array($categoria->id, old('categorias', [])) ? 'checked' : '' }}
+                                                    class="w-4 h-4 text-green-500 bg-gray-700 border-gray-600 rounded focus:ring-green-500">
+                                                <span class="text-sm text-gray-300 group-hover:text-white transition-colors">{{ $categoria->nombre }}</span>
+                                            </label>
+                                        @empty
+                                            <p class="text-xs text-gray-500 italic text-center py-2" id="no-cats-msg">No hay categorías créadas aún.</p>
+                                        @endforelse
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ✍️ AUTOR -->
+                            <div class="bg-gray-900 rounded-lg border border-gray-700">
+                                <div class="px-4 py-3 border-b border-gray-700 flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                    <h3 class="text-sm font-bold text-white uppercase">Autor</h3>
+                                    <span class="ml-auto text-xs text-gray-500">Opcional</span>
+                                </div>
+                                
+                                <div class="p-4 space-y-3">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-400 mb-2 uppercase">Nombre</label>
+                                        <input type="text" name="autor_nombre" value="{{ old('autor_nombre') }}"
+                                               class="w-full bg-gray-800 border-gray-600 rounded text-gray-100 text-sm focus:border-orange-500 focus:ring-1 focus:ring-orange-500 px-3 py-2"
+                                               placeholder="Ej: María García">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-400 mb-2 uppercase">Cargo</label>
+                                        <input type="text" name="autor_puesto" value="{{ old('autor_puesto') }}"
+                                               class="w-full bg-gray-800 border-gray-600 rounded text-gray-100 text-sm focus:border-orange-500 focus:ring-1 focus:ring-orange-500 px-3 py-2"
+                                               placeholder="Ej: Instructora">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- BOTONES -->
+                    <div class="border-t border-gray-700 bg-gray-900/30 px-6 py-4">
+                        <div class="flex justify-center gap-4">
+                            <a href="{{ route('admin.noticias.index') }}" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-10 rounded-lg transition-all transform hover:-translate-y-0.5 flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                                CANCELAR
                             </a>
-                            <button type="submit" 
-                                    class="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors">
-                                Crear Noticia
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-12 rounded-lg shadow-lg transition-all transform hover:-translate-y-0.5 flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                                PUBLICAR NOTICIA
                             </button>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
     <script>
-        // Auto-resize textarea
-        document.getElementById('contenido').addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = this.scrollHeight + 'px';
+        // Manejo de envío AJAX
+        document.getElementById('noticiaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Limpiar errores previos
+            document.querySelectorAll('.js-error-msg').forEach(el => el.remove());
+            document.querySelectorAll('.border-red-500').forEach(el => el.classList.remove('border-red-500'));
+            
+            // Mostrar estado de carga (opcional: deshabilitar botón)
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Procesando...';
+
+            const formData = new FormData(this);
+            
+            fetch(this.action, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: formData
+            })
+            .then(async response => {
+                const data = await response.json();
+                
+                if (response.status === 422) {
+                    // Errores de validación
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+
+                    Object.keys(data.errors).forEach(field => {
+                        // Buscar el input correspondiente
+                        let input = document.querySelector(`[name="${field}"]`);
+                        
+                        // Si no lo encuentra directo (casos especiales como arrays), intentar buscar variantes
+                        if (!input && field.includes('.')) {
+                             // Lógica para campos anidados si fuera necesario
+                        }
+
+                        if (input) {
+                            // Marcar borde rojo
+                            input.classList.add('border-red-500');
+                            
+                            // Crear mensaje de error
+                            const errorMsg = document.createElement('p');
+                            errorMsg.classList.add('text-red-400', 'text-xs', 'mt-1', 'js-error-msg');
+                            errorMsg.innerText = data.errors[field][0];
+                            
+                            // Insertar mensaje. 
+                            // Para inputs de archivo en contenedores especiales, buscar el padre adecuado
+                            if (input.type === 'file' && input.closest('.group')) {
+                                input.closest('.group').appendChild(errorMsg);
+                            } else {
+                                input.parentElement.appendChild(errorMsg);
+                            }
+                        }
+                    });
+                    
+                    // Mostrar alerta flotante
+                    if (window.showValidationModal) {
+                        window.showValidationModal('Error de validación', 'Por favor revisa los campos marcados en rojo.');
+                    } else {
+                        alert('Por favor revisa los errores en el formulario.');
+                    }
+                    
+                    // Scroll al primer error
+                    const firstError = document.querySelector('.js-error-msg');
+                    if (firstError) {
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                } 
+                else if (data.success) {
+                    // Éxito: Redirigir
+                    window.location.href = data.redirect;
+                } else {
+                    // Otro error
+                    throw new Error('Error desconocido');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+                alert('Ocurrió un error inesperado. Por favor intenta nuevamente.');
+            });
         });
 
-        // Mostrar errores de validación usando el modal de confirmación
-        @if($errors->any())
-            @foreach($errors->all() as $error)
-                showValidationModal('Error', '{{ $error }}');
-            @endforeach
-        @endif
-
-        // Función para validar el formulario
-        function validateForm(event) {
-            event.preventDefault();
-            
-            const titulo = document.querySelector('input[name="titulo"]').value.trim();
-            const contenido = document.querySelector('textarea[name="contenido"]').value.trim();
-            const fechaPublicacion = document.querySelector('input[name="fecha_publicacion"]').value.trim();
-            const imagen = document.querySelector('input[name="imagen"]').files.length;
-            
-            // Validar campos obligatorios
-            if (!titulo) {
-                showValidationModal('Error', 'El título es obligatorio');
-                return false;
+        // Preview de imágenes
+        function previewImage(input, previewId, placeholderId) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById(previewId).src = e.target.result;
+                    document.getElementById(previewId).classList.remove('hidden');
+                    document.getElementById(placeholderId).classList.add('hidden');
+                }
+                reader.readAsDataURL(input.files[0]);
             }
-            if (!contenido) {
-                showValidationModal('Error', 'El contenido es obligatorio');
-                return false;
-            }
-            if (!fechaPublicacion) {
-                showValidationModal('Error', 'La fecha de publicación es obligatoria');
-                return false;
-            }
-            if (imagen === 0) {
-                showValidationModal('Error', 'La imagen es obligatoria');
-                return false;
-            }
-            
-            // Si todo está bien, enviar el formulario
-            event.target.submit();
-            return false;
         }
 
-        // Función para mostrar modal de validación
-        function showValidationModal(title, message) {
-            const modal = document.getElementById('confirmation-modal');
-            if (modal && modal._x_dataStack && modal._x_dataStack[0]) {
-                modal._x_dataStack[0].title = title;
-                modal._x_dataStack[0].message = message;
-                modal._x_dataStack[0].onConfirm = () => modal._x_dataStack[0].open = false;
-                modal._x_dataStack[0].open = true;
-                
-                // Hide cancel button and modify confirm button for validation
-                const cancelButton = modal.querySelector('button[class*="bg-white"]');
-                const confirmButton = modal.querySelector('button[class*="bg-red-600"]');
-                
-                if (cancelButton) {
-                    cancelButton.style.display = 'none';
-                }
-                
-                if (confirmButton) {
-                    confirmButton.textContent = 'Aceptar';
-                    confirmButton.className = confirmButton.className.replace('bg-red-600', 'bg-blue-600').replace('hover:bg-red-700', 'hover:bg-blue-700');
-                }
-            } else {
-                // Fallback to native alert
-                alert(title + ": " + message);
-            }
+        // Contador de caracteres para título
+        const tituloInput = document.getElementById('titulo');
+        const tituloCount = document.getElementById('titulo-count');
+        if (tituloInput) {
+            tituloInput.addEventListener('input', function() {
+                tituloCount.textContent = this.value.length + '/255';
+            });
+            // Inicializar contador
+            tituloCount.textContent = tituloInput.value.length + '/255';
         }
+
+        // Contador de caracteres para extracto
+        const extractoInput = document.getElementById('extracto');
+        const extractoCount = document.getElementById('extracto-count');
+        if (extractoInput) {
+            extractoInput.addEventListener('input', function() {
+                extractoCount.textContent = this.value.length + '/500';
+            });
+            // Inicializar contador
+            extractoCount.textContent = extractoInput.value.length + '/500';
+        }
+        // Lógica de Categorías
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnAddCat = document.getElementById('btn-add-cat');
+            const container = document.getElementById('new-cat-container');
+            const input = document.getElementById('new-cat-name');
+            const btnSave = document.getElementById('btn-save-cat');
+            const list = document.getElementById('categorias-list');
+            const noCatsMsg = document.getElementById('no-cats-msg');
+
+            if (btnAddCat) {
+                // Toggle input
+                btnAddCat.addEventListener('click', () => {
+                    container.classList.toggle('hidden');
+                    if (!container.classList.contains('hidden')) {
+                        input.focus();
+                    }
+                });
+
+                // Guardar categoría
+                btnSave.addEventListener('click', saveCategory);
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault(); // Evitar submit del form principal
+                        saveCategory();
+                    }
+                });
+
+                function saveCategory() {
+                    const nombre = input.value.trim();
+                    if (!nombre) return;
+
+                    btnSave.disabled = true;
+                    btnSave.innerText = '...';
+
+                    fetch('{{ route("admin.noticias.categorias.store") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify({ nombre: nombre })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Crear elemento checkbox
+                            const label = document.createElement('label');
+                            label.className = 'flex items-center space-x-2 cursor-pointer group';
+                            label.innerHTML = `
+                                <input type="checkbox" name="categorias[]" value="${data.categoria.id}" checked
+                                    class="w-4 h-4 text-green-500 bg-gray-700 border-gray-600 rounded focus:ring-green-500">
+                                <span class="text-sm text-gray-300 group-hover:text-white transition-colors">${data.categoria.nombre}</span>
+                            `;
+                            
+                            // Agregar a la lista
+                            if (noCatsMsg) noCatsMsg.remove();
+                            list.prepend(label); // Agregar al principio para que se vea
+                            
+                            // Limpiar input
+                            input.value = '';
+                            container.classList.add('hidden');
+                        } else {
+                            alert('Error al crear categoría: ' + (data.message || 'Error desconocido'));
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert('Error de conexión');
+                    })
+                    .finally(() => {
+                        btnSave.disabled = false;
+                        btnSave.innerText = 'OK';
+                    });
+                }
+            }
+        });
     </script>
 </x-app-layout>

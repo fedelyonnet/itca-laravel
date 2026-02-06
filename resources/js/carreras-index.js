@@ -410,7 +410,7 @@ function handleModalidadFormSubmit(event) {
                 closeModalidadModal();
                 // Recargar la página manteniendo el curso_id y la pestaña activa
                 setTimeout(() => {
-                    const url = new URL(window.routes.admin.carreras.test);
+                    const url = new URL(window.routes.admin.carreras.index);
                     if (cursoId) {
                         url.searchParams.set('curso_id', cursoId);
                     }
@@ -731,10 +731,10 @@ function carreraManager() {
                             this.tabActiva = tabActivaActual;
                             setTimeout(() => {
                                 if (!this.carreraId) {
-                                    window.location.href = `${window.routes.admin.carreras.test}?curso_id=${result.curso_id}&tab=${tabActivaActual}`;
+                                    window.location.href = `${window.routes.admin.carreras.index}?curso_id=${result.curso_id}&tab=${tabActivaActual}`;
                                 } else {
                                     // Recargar pero mantener la pestaña
-                                    window.location.href = `${window.routes.admin.carreras.test}?curso_id=${this.carreraId}&tab=${tabActivaActual}`;
+                                    window.location.href = `${window.routes.admin.carreras.index}?curso_id=${this.carreraId}&tab=${tabActivaActual}`;
                                 }
                             }, 1500);
                         }
@@ -822,7 +822,7 @@ function carreraManager() {
                             showNotify('success', 'Imágenes guardadas exitosamente');
                             // Recargar manteniendo el curso_id y la pestaña activa usando GET
                             setTimeout(() => {
-                                window.location.href = window.routes.admin.carreras.test + '?curso_id=' + this.carreraId + '&tab=' + tabActivaActual;
+                                window.location.href = window.routes.admin.carreras.index + '?curso_id=' + this.carreraId + '&tab=' + tabActivaActual;
                             }, 1500);
                         } else {
                             showNotify('error', result.message || 'Error al guardar las imágenes');
@@ -831,7 +831,7 @@ function carreraManager() {
                         // Si no es JSON, probablemente es un redirect, recargar manteniendo parámetros usando GET
                         showNotify('success', 'Imágenes guardadas exitosamente');
                         setTimeout(() => {
-                            window.location.href = window.routes.admin.carreras.test + '?curso_id=' + this.carreraId + '&tab=' + tabActivaActual;
+                            window.location.href = window.routes.admin.carreras.index + '?curso_id=' + this.carreraId + '&tab=' + tabActivaActual;
                         }, 1500);
                     }
                 } else {
@@ -1088,7 +1088,7 @@ function carreraManager() {
                     showNotify('success', 'Carrera eliminada correctamente');
                     // Redirigir a la vista test sin carrera seleccionada
                     setTimeout(() => {
-                        window.location.href = window.routes.admin.carreras.test;
+                        window.location.href = window.routes.admin.carreras.index;
                     }, 1000);
                 } else {
                     const errorData = await response.json().catch(() => ({ message: 'Error desconocido' }));
@@ -1480,7 +1480,7 @@ function modalidadManager(modalidad) {
             // Recargar los datos de la carrera completa para actualizar las columnas
             if (carreraId) {
                 try {
-                    const response = await fetch(`${window.routes.admin.carreras.test}?curso_id=${carreraId}`, {
+                    const response = await fetch(`${window.routes.admin.carreras.index}?curso_id=${carreraId}`, {
                         headers: {
                             'Accept': 'application/json',
                             'X-Requested-With': 'XMLHttpRequest'
@@ -1750,7 +1750,7 @@ function abrirModalOrdenCarreras() {
 
     // Hacer fetch para obtener el orden real de cada carrera desde el backend
     // Necesitamos obtener los datos completos de las carreras para tener el orden correcto
-    fetch(window.routes.admin.carreras.test, {
+    fetch(window.routes.admin.carreras.index, {
         headers: {
             'Accept': 'text/html',
             'X-Requested-With': 'XMLHttpRequest'
@@ -1897,7 +1897,7 @@ function moverCarreraOrden(carreraId, direccion) {
             if (data.success) {
                 // Recargar la lista desde el servidor para obtener el orden actualizado
                 // Esto asegura que tenemos el orden correcto después del cambio
-                fetch(window.routes.admin.carreras.test, {
+                fetch(window.routes.admin.carreras.index, {
                     headers: {
                         'Accept': 'text/html',
                         'X-Requested-With': 'XMLHttpRequest'

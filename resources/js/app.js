@@ -1912,25 +1912,25 @@ function updateFotosNavigationButtons(swiper) {
 // CARRUSEL DE FOTOS CON SWIPER
 // ========================================
 document.addEventListener('DOMContentLoaded', function () {
-    initFormadoresSwiper();
+    initFotosSwiper();
 
     // Inicializar carrusel de Formadores (similar a Fotos)
-    function initFormadoresSwiper(retryCount = 0) {
-        const formadoresSwiperElements = document.querySelectorAll('.formadores-section .fotos-carousel-section .fotos-swiper');
-        if (formadoresSwiperElements.length === 0) {
+    function initFotosSwiper(retryCount = 0) {
+        const swiperElements = document.querySelectorAll('.fotos-carousel-section .fotos-swiper');
+        if (swiperElements.length === 0) {
             if (retryCount < 20) {
-                return setTimeout(() => initFormadoresSwiper(retryCount + 1), 100);
+                return setTimeout(() => initFotosSwiper(retryCount + 1), 100);
             }
             return;
         }
         if (typeof window === 'undefined' || typeof window.Swiper === 'undefined') {
             if (retryCount < 20) {
-                return setTimeout(() => initFormadoresSwiper(retryCount + 1), 100);
+                return setTimeout(() => initFotosSwiper(retryCount + 1), 100);
             }
             return;
         }
 
-        formadoresSwiperElements.forEach(swiperElement => {
+        swiperElements.forEach(swiperElement => {
             if (swiperElement.swiper) return; // Already initialized
 
             const container = swiperElement.closest('.fotos-carousel-section');
@@ -1941,7 +1941,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Mobile buttons
             const mobileNextBtn = container.querySelector('.mobile-next-btn');
             const mobilePrevBtn = container.querySelector('.mobile-prev-btn');
-            const mobileProgressBar = container.querySelector('.mobile-progress-indicator');
+            const mobileProgressBar = container.querySelector('.mobile-progress-indicator') || container.querySelector('.fotos-desktop-progress-indicator');
 
             const swiperInstance = new window.Swiper(swiperElement, {
                 loop: false,
@@ -2007,10 +2007,27 @@ document.addEventListener('DOMContentLoaded', function () {
             function updateMobileProgress(swiper, progressBar) {
                 // 1. Update Progress Bar
                 if (progressBar) {
-                    const totalSteps = swiper.snapGrid.length;
-                    const currentStep = swiper.snapIndex + 1;
-                    const percentage = (currentStep / totalSteps) * 100;
-                    progressBar.style.width = `${percentage}%`;
+                    if (progressBar.classList.contains('fotos-desktop-progress-indicator')) {
+                        // Lógica de movimiento (Desktop)
+                        const track = progressBar.parentElement;
+                        if (track) {
+                            const trackWidth = track.offsetWidth;
+                            const indicatorWidth = progressBar.offsetWidth;
+                            const maxPosition = Math.max(0, trackWidth - indicatorWidth);
+
+                            // Usar el progreso de swiper (0 a 1)
+                            const progress = swiper.progress || 0;
+                            const position = progress * maxPosition;
+
+                            progressBar.style.left = `${position}px`;
+                        }
+                    } else {
+                        // Lógica de ancho (Mobile/Otras secciones)
+                        const totalSteps = swiper.snapGrid.length;
+                        const currentStep = swiper.snapIndex + 1;
+                        const percentage = (currentStep / totalSteps) * 100;
+                        progressBar.style.width = `${percentage}%`;
+                    }
                 }
 
                 // 2. Update Button States (Disabled/Opacity)

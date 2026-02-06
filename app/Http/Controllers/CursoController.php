@@ -19,11 +19,7 @@ use Illuminate\Support\Facades\DB;
 
 class CursoController extends Controller
 {
-    public function index()
-    {
-        // Redirigir a la vista unificada de gestión de carreras
-        return redirect()->route('admin.carreras.test');
-    }
+
 
     public function store(Request $request)
     {
@@ -189,7 +185,7 @@ class CursoController extends Controller
                 ]);
             }
 
-            return redirect()->route('admin.carreras.test')->with('success', 'Carrera agregada correctamente');
+            return redirect()->route('admin.carreras.index')->with('success', 'Carrera agregada correctamente');
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Si viene de test, devolver JSON con errores
             if ($request->has('from_test') || str_contains($request->header('Referer') ?? '', 'carreras/test')) {
@@ -219,7 +215,7 @@ class CursoController extends Controller
     public function edit($id)
     {
         // Redirigir a la vista unificada de gestión de carreras con el curso seleccionado
-        return redirect()->route('admin.carreras.test', ['curso_id' => $id]);
+        return redirect()->route('admin.carreras.index', ['curso_id' => $id]);
     }
 
     public function update(Request $request, $id)
@@ -473,7 +469,7 @@ class CursoController extends Controller
             'carreras_restantes' => $carrerasRestantes->count()
         ]);
 
-        return redirect()->route('admin.carreras.test')->with('success', 'Carrera eliminada correctamente');
+        return redirect()->route('admin.carreras.index')->with('success', 'Carrera eliminada correctamente');
     }
 
     public function mover(Request $request)
@@ -616,7 +612,7 @@ class CursoController extends Controller
         return view('carreras.show', compact('curso', 'partners', 'sedes', 'sedesPorZona', 'anios', 'modalidades', 'testimonios', 'videosMobile', 'dudas', 'fotos', 'videoTestimonios', 'certificados', 'stickyBar'));
     }
 
-    public function test()
+    public function index()
     {
         try {
             $carreras = Curso::ordered()->get();
@@ -655,9 +651,9 @@ class CursoController extends Controller
                 $featuredCount = Curso::where('featured', true)->count();
             }
             
-            return view('admin.carreras.test', compact('carreras', 'sedes', 'carreraSeleccionada', 'featuredCount'));
+            return view('admin.carreras.index', compact('carreras', 'sedes', 'carreraSeleccionada', 'featuredCount'));
         } catch (\Exception $e) {
-            return view('admin.carreras.test', [
+            return view('admin.carreras.index', [
                 'carreras' => collect([]),
                 'sedes' => collect([]),
                 'carreraSeleccionada' => null,
@@ -1396,6 +1392,17 @@ class CursoController extends Controller
 
     public function moverFoto(Request $request)
     {
+        // Soporte para reordenamiento masivo (Drag & Drop)
+        if ($request->has('orden') && is_array($request->orden)) {
+            foreach ($request->orden as $index => $id) {
+                FotosCarrera::where('id', $id)->update(['orden' => $index + 1]);
+            }
+            return response()->json([
+                'success' => true, 
+                'message' => 'Orden actualizado correctamente'
+            ]);
+        }
+
         $request->validate([
             'id' => 'required|exists:fotos_carrera,id',
             'direccion' => 'required|in:up,down'

@@ -187,4 +187,29 @@ class SedeController extends Controller
             'message' => 'Sede movida correctamente'
         ]);
     }
+
+    public function updateOrder(Request $request)
+    {
+        $request->validate([
+            'orden' => 'required|array',
+            'orden.*' => 'required|exists:sedes,id'
+        ]);
+
+        try {
+            foreach ($request->orden as $index => $id) {
+                Sede::where('id', $id)->update(['orden' => $index + 1]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Orden actualizado correctamente'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al actualizar el orden: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
+

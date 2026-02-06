@@ -2,7 +2,7 @@
     $isActivePanel = request()->routeIs('admin.dashboard');
     
     $carrerasRoutes = [
-        'admin.carreras.test',
+        'admin.carreras.index',
         'admin.carreras.multimedia',
         'admin.carreras.importacion',
         'admin.carreras.ordenar-filtros',
@@ -13,19 +13,18 @@
     $cmsRoutes = [
         'admin.edit-hero',
         'admin.beneficios',
-        'admin.dudas',
+        'admin.dudas.index',
         'admin.sedes',
         'admin.testimonios',
         'admin.partners',
         'admin.en-accion',
-        'admin.noticias',
-        'admin.contacto',
+        'admin.contacto.index',
     ];
     $isActiveCMS = request()->routeIs($cmsRoutes);
 
     $cmsPaginasRoutes = [
-        'admin.somos-itca',
-        'admin.beneficios.page',
+        'admin.somos-itca-page.index',
+        'admin.beneficios-page.index',
     ];
     $isActiveCMSPaginas = request()->routeIs($cmsPaginasRoutes);
     
@@ -35,8 +34,11 @@
         'admin.leads.mail-templates',
     ];
     $isActiveLeads = request()->routeIs($leadsRoutes);
+    // $isActiveLeads = false;
     
     $isActiveInscriptos = request()->routeIs('admin.inscriptos');
+    // $isActiveInscriptos = false;
+    $isActiveNoticias = request()->routeIs('admin.noticias.index');
 @endphp
 
 <nav class="flex items-center space-x-6">
@@ -47,6 +49,8 @@
             <div class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500"></div>
         @endif
     </a>
+
+    
     
     <div class="relative inline-flex items-center" 
          x-data="{ open: false }" 
@@ -80,8 +84,8 @@
              role="menu">
             
             <div class="py-1">
-                <a href="{{ route('admin.carreras.test') }}" 
-                   @keydown.enter="window.location.href = '{{ route('admin.carreras.test') }}'"
+                <a href="{{ route('admin.carreras.index') }}" 
+                   @keydown.enter="window.location.href = '{{ route('admin.carreras.index') }}'"
                    class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
                    role="menuitem">
                     Gestión de Carreras
@@ -164,8 +168,8 @@
                     Beneficios
                 </a>
 
-                <a href="{{ route('admin.dudas') }}" 
-                   @keydown.enter="window.location.href = '{{ route('admin.dudas') }}'"
+                <a href="{{ route('admin.dudas.index') }}" 
+                   @keydown.enter="window.location.href = '{{ route('admin.dudas.index') }}'"
                    class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
                    role="menuitem">
                     FAQs
@@ -199,15 +203,8 @@
                     En Acción
                 </a>
                 
-                <a href="{{ route('admin.noticias') }}" 
-                   @keydown.enter="window.location.href = '{{ route('admin.noticias') }}'"
-                   class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
-                   role="menuitem">
-                    Noticias
-                </a>
                 
-                <a href="{{ route('admin.contacto') }}" 
-                   @keydown.enter="window.location.href = '{{ route('admin.contacto') }}'"
+                <a href="{{ route('admin.contacto.index') }}" 
                    class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
                    role="menuitem">
                     Contacto
@@ -249,15 +246,15 @@
              role="menu">
             
             <div class="py-1">
-                 <a href="{{ route('admin.somos-itca') }}" 
-                   @keydown.enter="window.location.href = '{{ route('admin.somos-itca') }}'"
+                <a href="{{ route('admin.somos-itca-page.index') }}" 
+                   @keydown.enter="window.location.href = '{{ route('admin.somos-itca-page.index') }}'"
                    class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
                    role="menuitem">
                     Página Somos ITCA
                 </a>
 
-                <a href="{{ route('admin.beneficios.page') }}" 
-                   @keydown.enter="window.location.href = '{{ route('admin.beneficios.page') }}'"
+                <a href="{{ route('admin.beneficios-page.index') }}" 
+                   @keydown.enter="window.location.href = '{{ route('admin.beneficios-page.index') }}'"
                    class="block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700 hover:text-white focus:outline-none focus:bg-gray-700 transition duration-150 ease-in-out"
                    role="menuitem">
                     Página Beneficios
@@ -326,6 +323,14 @@
        class="relative inline-flex items-center text-white hover:text-gray-300 px-2 py-1">
         Inscriptos
         @if($isActiveInscriptos)
+            <div class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500"></div>
+        @endif
+    </a>
+
+    <a href="{{ route('admin.noticias.index') }}" 
+       class="relative inline-flex items-center text-white hover:text-gray-300 px-2 py-1">
+        Noticias
+        @if($isActiveNoticias)
             <div class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500"></div>
         @endif
     </a>

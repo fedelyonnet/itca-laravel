@@ -43,7 +43,7 @@
                             <table class="min-w-full divide-y divide-gray-700">
                                 <thead class="bg-gray-700">
                                     <tr>
-                                        <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Orden</th>
+                                        <th class="px-2 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider text-center w-12"></th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Desktop</th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Mobile</th>
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Nombre</th>
@@ -54,22 +54,15 @@
                                         <th class="px-4 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider">Acciones</th>
                                     </tr>
                                 </thead>
-                                <tbody class="bg-gray-800 divide-y divide-gray-700">
+                                <tbody id="sortable-sedes" class="bg-gray-800 divide-y divide-gray-700">
                                     @foreach($sedes as $sede)
-                                        <tr>
-                                            <!-- Orden -->
-                                            <td class="px-4 py-4">
-                                                <div class="flex flex-col items-center space-y-1">
-                                                    <button onclick="moverSede({{ $sede->id }}, 'up')" 
-                                                            class="mover-btn bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-xs transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed"
-                                                            title="Mover arriba">
-                                                        ↑
-                                                    </button>
-                                                    <button onclick="moverSede({{ $sede->id }}, 'down')" 
-                                                            class="mover-btn bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-xs transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed"
-                                                            title="Mover abajo">
-                                                        ↓
-                                                    </button>
+                                        <tr data-id="{{ $sede->id }}" class="sede-draggable hover:bg-gray-700/50 transition-colors">
+                                            <!-- Drag Handle -->
+                                            <td class="px-2 py-4">
+                                                <div class="flex items-center justify-center cursor-move drag-handle">
+                                                    <svg class="w-5 h-5 text-gray-500 hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                                                    </svg>
                                                 </div>
                                             </td>
                                             
@@ -639,6 +632,52 @@
                 setTimeout(() => {
                     errorMessage.classList.add('translate-x-full');
                 }, 5000);
+            }
+        });
+
+
+        // Sortable for Sedes
+        document.addEventListener('DOMContentLoaded', function() {
+            const sedesList = document.getElementById('sortable-sedes');
+            if (sedesList && typeof Sortable !== 'undefined') {
+                new Sortable(sedesList, {
+                    animation: 150,
+                    handle: '.drag-handle',
+                    draggable: '.sede-draggable',
+                    ghostClass: 'opacity-50',
+                    chosenClass: 'bg-blue-900/30',
+                    dragClass: 'opacity-75',
+                    onEnd: function (evt) {
+                        const items = Array.from(sedesList.querySelectorAll('.sede-draggable'));
+                        const orderedIds = items.map(item => item.getAttribute('data-id'));
+                        
+                        fetch('{{ route("admin.sedes.update-order") }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({ orden: orderedIds })
+                        }).then(async response => {
+                            const data = await response.json();
+                            if (!response.ok) {
+                                throw new Error(data.message || 'Error al reordenar');
+                            }
+                            return data;
+                        }).then(data => {
+                            if (data.success) {
+                                showMessage(data.message || 'Orden actualizado correctamente', 'success');
+                            } else {
+                                throw new Error(data.message || 'Error al actualizar el orden');
+                            }
+                        }).catch(error => {
+                            showMessage(error.message || 'Error al conectar con el servidor', 'error');
+                            // Recargar para restaurar el orden original
+                            setTimeout(() => location.reload(), 1500);
+                        });
+                    }
+                });
             }
         });
     </script>

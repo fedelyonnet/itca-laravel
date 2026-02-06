@@ -199,6 +199,30 @@ class WelcomeController extends Controller
         return view('beneficios', compact('stickyBar', 'contactosInfo', 'contactosSocial', 'partners', 'sedes', 'content', 'beneficios'));
     }
 
+    public function noticias()
+    {
+        // Obtener Sticky Bar
+        $stickyBar = StickyBar::first();
+        
+        // Obtener noticias ordenadas y visibles
+        $noticias = Noticia::where('visible', true)->orderBy('orden')->get();
+
+        // Obtener partners ordenados
+        $partners = Partner::ordered()->get();
+        
+        // Obtener sedes disponibles para contacto
+        $sedes = Sede::where('disponible', true)
+                    ->whereNotIn('nombre', ['online', 'Online', 'ONLINE', 'próximamente', 'Proximamente', 'PROXIMAMENTE'])
+                    ->ordered()
+                    ->get();
+        
+        // Obtener datos de contacto
+        $contactosInfo = \App\Models\DatoContacto::info()->get();
+        $contactosSocial = \App\Models\DatoContacto::social()->get();
+
+        return view('noticias', compact('stickyBar', 'noticias', 'partners', 'sedes', 'contactosInfo', 'contactosSocial'));
+    }
+
     public function retomarInscripcion(Request $request)
     {
         $cursadaId = $request->get('retomar');

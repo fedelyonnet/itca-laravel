@@ -3,12 +3,6 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('admin.dashboard') }}">
-                        <img src="{{ asset('admin-assets/logo-small.png') }}" alt="Admin Logo" class="block h-9 w-auto">
-                    </a>
-                </div>
 
                 <!-- Navigation Menu -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
@@ -71,7 +65,7 @@
             <x-responsive-nav-link :href="route('admin.edit-hero')" :active="request()->routeIs('admin.edit-hero')">
                 Edición CMS Home
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('admin.carreras.test')" :active="request()->routeIs('admin.carreras.test')">
+            <x-responsive-nav-link :href="route('admin.carreras.index')" :active="request()->routeIs('admin.carreras.index')">
                 Gestión de Carreras
             </x-responsive-nav-link>
         </div>

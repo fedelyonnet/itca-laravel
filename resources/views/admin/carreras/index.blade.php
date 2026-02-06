@@ -1,6 +1,6 @@
 <x-app-layout>
     @push('head')
-        @vite(['resources/js/carreras-test.js'])
+        @vite(['resources/js/carreras-index.js'])
         <!-- Flatpickr CSS -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
         <!-- Flatpickr JS -->
@@ -32,7 +32,7 @@
                     store: '{{ route("admin.carreras.store") }}',
                     update: '{{ route("admin.carreras.update", ":id") }}',
                     destroy: '{{ route("admin.carreras.destroy", ":id") }}',
-                    test: '{{ route("admin.carreras.test") }}'
+                    index: '{{ route("admin.carreras.index") }}'
                 },
                 programas: {
                     anios: {
@@ -98,7 +98,7 @@
                             <p class="text-sm text-gray-400">Crea y edita carreras con todas sus configuraciones</p>
                         </div>
                         <div class="flex gap-3">
-                            <form method="GET" action="{{ route('admin.carreras.test') }}" class="flex gap-3">
+                            <form method="GET" action="{{ route('admin.carreras.index') }}" class="flex gap-3">
                                 <select 
                                     name="curso_id"
                                     onchange="this.form.submit()"

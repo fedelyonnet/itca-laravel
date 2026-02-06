@@ -252,4 +252,28 @@ class BeneficioController extends Controller
             'message' => 'Beneficio movido correctamente'
         ]);
     }
+
+    public function reorder(Request $request)
+    {
+        $request->validate([
+            'orden' => 'required|array',
+            'orden.*' => 'required|exists:beneficios,id'
+        ]);
+
+        try {
+            foreach ($request->orden as $index => $id) {
+                Beneficio::where('id', $id)->update(['orden' => $index + 1]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Orden actualizado correctamente'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al actualizar el orden: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

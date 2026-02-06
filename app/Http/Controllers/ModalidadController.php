@@ -14,7 +14,7 @@ class ModalidadController extends Controller
     {
         // Redirigir a la vista unificada de gestión de carreras
         // Las modalidades ahora se gestionan desde test.blade.php
-        return redirect()->route('admin.carreras.test');
+        return redirect()->route('admin.carreras.index');
     }
 
     public function store(Request $request)
@@ -51,7 +51,7 @@ class ModalidadController extends Controller
 
         // Si viene de la vista test, redirigir a test con curso_id y tab
         if ($request->has('from_test') || str_contains($request->header('Referer') ?? '', 'carreras/test')) {
-            return redirect()->route('admin.carreras.test', [
+            return redirect()->route('admin.carreras.index', [
                 'curso_id' => $request->curso_id,
                 'tab' => 'modalidades'
             ])->with('success', 'Modalidad creada correctamente.');

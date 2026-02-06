@@ -42,125 +42,46 @@
                         </button>
                     </div>
                     @if($fotos->count() > 0)
-                                <div class="overflow-x-auto w-full">
-                                    <table class="w-full divide-y divide-gray-700">
-                                    <thead class="bg-gray-800">
-                                    <tr>
-                                        <th class="px-2 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider text-center w-20">Orden</th>
-                                        <th class="px-2 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider text-center w-24">Imagen</th>
-                                        <th class="px-2 py-3 text-[10px] font-medium text-gray-300 uppercase tracking-wider text-center w-32">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="bg-gray-800 divide-y divide-gray-700">
+
+                                <div id="sortable-multimedia" class="space-y-2 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                                     @foreach($fotos->sortBy('orden') as $foto)
-                                        <tr>
-                                            <!-- Orden -->
-                                            <td class="px-2 py-4 text-center w-20">
-                                                <div class="flex flex-col items-center space-y-1 justify-center">
-                                                    <button onclick="moverFoto({{ $foto->id }}, 'up')" 
-                                                            class="mover-btn bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-xs transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed"
-                                                            title="Mover arriba">
-                                                        ↑
-                                                    </button>
-                                                    <button onclick="moverFoto({{ $foto->id }}, 'down')" 
-                                                            class="mover-btn bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-xs transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed"
-                                                            title="Mover abajo">
-                                                        ↓
-                                                    </button>
-                                                </div>
-                                            </td>
-                                            
-                                            <!-- Imagen Thumbnail -->
-                                            <td class="px-2 py-4 text-center w-24">
-                                                <div class="relative group inline-block" 
-                                                     x-data="{ showTooltip: false }" 
-                                                     @mouseenter="showTooltip = true" 
-                                                     @mouseleave="showTooltip = false">
-                                                    <div class="w-16 h-16 bg-gray-500 rounded overflow-hidden cursor-pointer">
-                                                        @if($foto->imagen)
-                                                            <img src="{{ asset('storage/' . $foto->imagen) }}" 
-                                                                 alt="Foto carrera" 
-                                                                 class="w-full h-full object-cover">
-                                                        @else
-                                                            <div class="flex items-center justify-center h-full text-gray-400">
-                                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                                                </svg>
-                                                            </div>
-                                                        @endif
-                                                    </div>
+                                        <div data-id="{{ $foto->id }}" class="multimedia-draggable flex items-center justify-between bg-gray-800 p-2 rounded border border-gray-700 group hover:border-blue-500/50 cursor-move">
+                                            <div class="flex items-center gap-3">
+                                                <!-- Drag Handle -->
+                                                <svg style="cursor: move;" class="w-4 h-4 text-gray-600 drag-handle group-hover:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                                                
+                                                <!-- Thumbnail & Preview -->
+                                                <div class="relative group/preview flex items-center">
+                                                    <img src="{{ asset('storage/' . $foto->imagen) }}" class="h-8 w-8 rounded object-cover border border-gray-600 cursor-pointer group-hover/preview:border-blue-400 transition-colors">
                                                     
-                                                    <!-- Tooltip con imagen -->
-                                                    <div x-show="showTooltip" 
-                                                         x-cloak
-                                                         x-transition:enter="transition ease-out duration-200"
-                                                         x-transition:enter-start="opacity-0 scale-95"
-                                                         x-transition:enter-end="opacity-100 scale-100"
-                                                         x-transition:leave="transition ease-in duration-150"
-                                                         x-transition:leave-start="opacity-100 scale-100"
-                                                         x-transition:leave-end="opacity-0 scale-95"
-                                                         class="fixed bottom-auto left-1/2 transform -translate-x-1/2 mb-2 bg-white rounded-lg shadow-2xl border border-gray-200 overflow-hidden pointer-events-none"
-                                                         style="z-index: 9999; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-                                                        @if($foto->imagen)
-                                                            <img src="{{ asset('storage/' . $foto->imagen) }}" 
-                                                                 alt="Foto Preview" 
-                                                                 class="max-w-xs max-h-64 object-contain">
-                                                        @else
-                                                            <div class="w-64 h-40 bg-gray-100 flex items-center justify-center">
-                                                                <div class="text-center text-gray-500">
-                                                                    <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                                                    </svg>
-                                                                    <div class="text-sm">Sin imagen</div>
-                                                                </div>
-                                                            </div>
-                                                        @endif
+                                                    <!-- Hover Image Preview -->
+                                                    <div class="fixed hidden group-hover/preview:block z-[9999] w-64 bg-gray-900 border border-gray-600 rounded-lg shadow-2xl overflow-hidden pointer-events-none" style="transform: translate(20px, -50%);">
+                                                        <img src="{{ asset('storage/' . $foto->imagen) }}" class="w-full h-auto object-cover">
                                                     </div>
                                                 </div>
-                                            </td>
-                                            
-                                            <!-- Acciones -->
-                                            <td class="px-2 py-4 text-center w-32">
-                                                <div class="flex space-x-2 justify-center items-center">
-                                                    <!-- Editar -->
-                                                    <div class="relative group">
-                                                        <button onclick="editFoto({{ $foto->id }})" 
-                                                                class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded text-sm transition-colors">
-                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                                            </svg>
-                                                        </button>
-                                                        <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
-                                                            Editar Foto
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <!-- Eliminar -->
-                                                    <div class="relative group">
-                                                        <form action="{{ route('admin.carreras.multimedia.destroy', $foto->id) }}" 
-                                                              method="POST" 
-                                                              onsubmit="return confirmDeleteFoto(event)" 
-                                                              class="inline">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" 
-                                                                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded text-sm transition-colors">
-                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                                                </svg>
-                                                            </button>
-                                                        </form>
-                                                        <div class="absolute bottom-full right-0 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
-                                                            Eliminar Foto
-                                                        </div>
-                                                    </div>
+
+                                                <div class="flex flex-col">
+                                                    <span class="text-xs text-gray-400">Orden: {{ $foto->orden }}</span>
                                                 </div>
-                                            </td>
-                                        </tr>
+                                            </div>
+
+                                            <div class="flex items-center gap-2">
+                                                <button onclick="editFoto({{ $foto->id }})" class="text-gray-500 hover:text-blue-500 transition-colors p-1" title="Editar">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                                </button>
+
+                                                <form action="{{ route('admin.carreras.multimedia.destroy', $foto->id) }}" method="POST" onsubmit="return confirmDeleteFoto(event)" class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-gray-500 hover:text-red-500 transition-colors p-1" title="Eliminar">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
                                     @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                                </div>
+
                     @else
                         <div class="text-center py-8">
                             <svg class="mx-auto h-12 w-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -222,43 +143,23 @@
                                             </button>
                                         </div>
                                         @if($certificados && $certificados->certificado_1)
-                                            <div class="relative group inline-block w-full" 
-                                                 x-data="{ showTooltip: false }" 
-                                                 @mouseenter="showTooltip = true" 
-                                                 @mouseleave="showTooltip = false">
-                                                <div class="w-full h-32 bg-gray-500 rounded overflow-hidden cursor-pointer">
-                                                    <img src="{{ asset('storage/' . $certificados->certificado_1) }}" 
-                                                         alt="Certificado ITCA" 
-                                                         class="w-full h-full object-cover">
-                                                </div>
-                                                <div class="mt-2 flex justify-center">
-                                                    <form action="{{ route('admin.carreras.multimedia.deleteCertificado', 1) }}" 
-                                                          method="POST" 
-                                                          onsubmit="return confirmDeleteCertificado(event)" 
-                                                          class="inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" 
-                                                                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs transition-colors">
-                                                            Eliminar
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                                <!-- Tooltip con imagen -->
-                                                <div x-show="showTooltip" 
-                                                     x-cloak
-                                                     x-transition:enter="transition ease-out duration-200"
-                                                     x-transition:enter-start="opacity-0 scale-95"
-                                                     x-transition:enter-end="opacity-100 scale-100"
-                                                     x-transition:leave="transition ease-in duration-150"
-                                                     x-transition:leave-start="opacity-100 scale-100"
-                                                     x-transition:leave-end="opacity-0 scale-95"
-                                                     class="fixed bottom-auto left-1/2 transform -translate-x-1/2 mb-2 bg-white rounded-lg shadow-2xl border border-gray-200 overflow-hidden pointer-events-none"
-                                                     style="z-index: 9999; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-                                                    <img src="{{ asset('storage/' . $certificados->certificado_1) }}" 
-                                                         alt="Certificado Preview" 
-                                                         class="max-w-xs max-h-64 object-contain">
-                                                </div>
+                                            <div class="w-full h-32 bg-gray-500 rounded overflow-hidden">
+                                                <img src="{{ asset('storage/' . $certificados->certificado_1) }}" 
+                                                     alt="Certificado ITCA" 
+                                                     class="w-full h-full object-cover">
+                                            </div>
+                                            <div class="mt-2 flex justify-center">
+                                                <form action="{{ route('admin.carreras.multimedia.deleteCertificado', 1) }}" 
+                                                      method="POST" 
+                                                      onsubmit="return confirmDeleteCertificado(event)" 
+                                                      class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" 
+                                                            class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs transition-colors">
+                                                        Eliminar
+                                                    </button>
+                                                </form>
                                             </div>
                                         @else
                                             <div class="w-full h-32 bg-gray-600 rounded flex items-center justify-center">
@@ -276,43 +177,23 @@
                                             </button>
                                         </div>
                                         @if($certificados && $certificados->certificado_2)
-                                            <div class="relative group inline-block w-full" 
-                                                 x-data="{ showTooltip: false }" 
-                                                 @mouseenter="showTooltip = true" 
-                                                 @mouseleave="showTooltip = false">
-                                                <div class="w-full h-32 bg-gray-500 rounded overflow-hidden cursor-pointer">
-                                                    <img src="{{ asset('storage/' . $certificados->certificado_2) }}" 
-                                                         alt="Certificado UTN" 
-                                                         class="w-full h-full object-cover">
-                                                </div>
-                                                <div class="mt-2 flex justify-center">
-                                                    <form action="{{ route('admin.carreras.multimedia.deleteCertificado', 2) }}" 
-                                                          method="POST" 
-                                                          onsubmit="return confirmDeleteCertificado(event)" 
-                                                          class="inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                <button type="submit" 
-                                                                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs transition-colors">
-                                                            Eliminar
-                                </button>
-                                                    </form>
-                                                </div>
-                                                <!-- Tooltip con imagen -->
-                                                <div x-show="showTooltip" 
-                                                     x-cloak
-                                                     x-transition:enter="transition ease-out duration-200"
-                                                     x-transition:enter-start="opacity-0 scale-95"
-                                                     x-transition:enter-end="opacity-100 scale-100"
-                                                     x-transition:leave="transition ease-in duration-150"
-                                                     x-transition:leave-start="opacity-100 scale-100"
-                                                     x-transition:leave-end="opacity-0 scale-95"
-                                                     class="fixed bottom-auto left-1/2 transform -translate-x-1/2 mb-2 bg-white rounded-lg shadow-2xl border border-gray-200 overflow-hidden pointer-events-none"
-                                                     style="z-index: 9999; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-                                                    <img src="{{ asset('storage/' . $certificados->certificado_2) }}" 
-                                                         alt="Certificado Preview" 
-                                                         class="max-w-xs max-h-64 object-contain">
-                                                </div>
+                                            <div class="w-full h-32 bg-gray-500 rounded overflow-hidden">
+                                                <img src="{{ asset('storage/' . $certificados->certificado_2) }}" 
+                                                     alt="Certificado UTN" 
+                                                     class="w-full h-full object-cover">
+                                            </div>
+                                            <div class="mt-2 flex justify-center">
+                                                <form action="{{ route('admin.carreras.multimedia.deleteCertificado', 2) }}" 
+                                                      method="POST" 
+                                                      onsubmit="return confirmDeleteCertificado(event)" 
+                                                      class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" 
+                                                            class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs transition-colors">
+                                                        Eliminar
+                                                    </button>
+                                                </form>
                                             </div>
                                         @else
                                             <div class="w-full h-32 bg-gray-600 rounded flex items-center justify-center">
@@ -1055,4 +936,83 @@
             }, 3000);
         }
     </script>
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const multimediaList = document.getElementById('sortable-multimedia');
+            
+            if (!multimediaList) {
+                return;
+            }
+
+            if (typeof Sortable === 'undefined') {
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js';
+                script.onload = initSortable;
+                document.head.appendChild(script);
+            } else {
+                initSortable();
+            }
+
+            function initSortable() {
+                try {
+                    new Sortable(multimediaList, {
+                        animation: 150,
+                        handle: '.drag-handle',
+                        draggable: '.multimedia-draggable',
+                        ghostClass: 'bg-gray-700',
+                        chosenClass: 'border-blue-500',
+                        dragClass: 'opacity-50',
+                        forceFallback: false,
+                        onEnd: function (evt) {
+                            const items = Array.from(multimediaList.querySelectorAll('.multimedia-draggable'));
+                            const orderedIds = items.map(item => item.getAttribute('data-id'));
+
+                            // Enviar solicitud de reordenamiento
+                            fetch('{{ route("admin.carreras.multimedia.mover") }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                    'Accept': 'application/json',
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                },
+                                body: JSON.stringify({
+                                    orden: orderedIds
+                                })
+                            }).then(async response => {
+                                 const contentType = response.headers.get('content-type');
+                                 const data = (contentType && contentType.includes('application/json')) 
+                                    ? await response.json() 
+                                    : { success: response.ok };
+                                    
+                                 if (!response.ok) {
+                                    throw new Error(data.message || 'Error al reordenar');
+                                 }
+                                 return data;
+                            }).then(data => {
+                                if (data.success) {
+                                    if (typeof showMessage === 'function') {
+                                        showMessage('Orden actualizado correctamente', 'success');
+                                    } else {
+                                        alert('Orden actualizado correctamente');
+                                    }
+                                } else {
+                                    throw new Error(data.message || 'Error al actualizar el orden');
+                                }
+                            }).catch(error => {
+                                if (typeof showMessage === 'function') {
+                                    showMessage(error.message || 'Error al conectar con el servidor', 'error');
+                                } else {
+                                    alert('Error: ' + error.message);
+                                }
+                            });
+                        }
+                    });
+                } catch (e) {
+                }
+            }
+        });
+    </script>
+    @endpush
 </x-app-layout>
