@@ -56,6 +56,9 @@ class BeneficiosPageController extends Controller
             'manuales_img2' => 'nullable|image|max:2048',
             'manuales_texto' => 'nullable|string',
             'manuales_button_url' => 'nullable|string',
+            // Sorteos y Concursos
+            'sorteos_text' => 'nullable|string',
+            'sorteos_button_url' => 'nullable|string',
         ]);
 
         $content = BeneficiosContent::first();
@@ -177,6 +180,15 @@ class BeneficiosPageController extends Controller
             $content->manuales_texto = $request->manuales_texto;
         }
 
+
+        // Sorteos y Concursos
+        if ($request->has('sorteos_text')) {
+            $content->sorteos_text = $request->sorteos_text;
+        }
+
+        if ($request->has('sorteos_button_url')) {
+            $content->sorteos_button_url = $request->sorteos_button_url;
+        }
         if ($request->has('manuales_button_url')) {
             $content->manuales_button_url = $request->manuales_button_url;
         }
@@ -227,6 +239,52 @@ class BeneficiosPageController extends Controller
         if ($orden && is_array($orden)) {
             foreach ($orden as $index => $id) {
                 \App\Models\BeneficioProducto::where('id', $id)->update(['orden' => $index]);
+            }
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    // --- SORTEOS IMAGES ---
+    public function storeSorteo(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|max:2048',
+        ]);
+
+        $content = BeneficiosContent::firstOrCreate([]);
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('uploads/beneficios/sorteos', 'public');
+            
+            $content->sorteos()->create([
+                'image_path' => $path,
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Sorteo agregado correctamente.')->with('active_tab', 'sorteos');
+    }
+
+    public function destroySorteo($id)
+    {
+        $sorteo = \App\Models\BeneficioSorteo::findOrFail($id);
+        
+        if ($sorteo->image_path) {
+            Storage::disk('public')->delete($sorteo->image_path);
+        }
+        
+        $sorteo->delete();
+
+        return redirect()->back()->with('success', 'Sorteo eliminado.')->with('active_tab', 'sorteos');
+    }
+
+    public function reorderSorteos(Request $request)
+    {
+        $orden = $request->input('orden');
+        
+        if ($orden && is_array($orden)) {
+            foreach ($orden as $index => $id) {
+                \App\Models\BeneficioSorteo::where('id', $id)->update(['orden' => $index]);
             }
         }
 

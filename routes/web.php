@@ -249,6 +249,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/beneficios-page/producto', [App\Http\Controllers\BeneficiosPageController::class, 'storeProducto'])->name('admin.beneficios.producto.store');
         Route::delete('/beneficios-page/producto/{id}', [App\Http\Controllers\BeneficiosPageController::class, 'destroyProducto'])->name('admin.beneficios.producto.destroy');
         Route::post('/beneficios-page/producto/reorder', [App\Http\Controllers\BeneficiosPageController::class, 'reorderProductos'])->name('admin.beneficios.producto.reorder');
+        Route::post('/beneficios-page/sorteo', [App\Http\Controllers\BeneficiosPageController::class, 'storeSorteo'])->name('admin.beneficios.sorteo.store');
+        Route::delete('/beneficios-page/sorteo/{id}', [App\Http\Controllers\BeneficiosPageController::class, 'destroySorteo'])->name('admin.beneficios.sorteo.destroy');
+        Route::post('/beneficios-page/sorteo/reorder', [App\Http\Controllers\BeneficiosPageController::class, 'reorderSorteos'])->name('admin.beneficios.sorteo.reorder');
     });
 });
 

@@ -39,29 +39,42 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg border border-gray-700">
                 
-                <!-- TABS NAVIGATION -->
-                <div class="flex border-b border-gray-700 bg-gray-900/50">
-                    <button @click="setActiveTab('header')" :class="activeTab === 'header' ? 'bg-gray-800 text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'" class="px-6 py-4 text-sm font-bold uppercase transition-all outline-none">
-                        1) Header
-                    </button>
-                    <button @click="setActiveTab('club_itca')" :class="activeTab === 'club_itca' ? 'bg-gray-800 text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'" class="px-6 py-4 text-sm font-bold uppercase transition-all outline-none">
-                        2) Club ITCA
-                    </button>
-                    <button @click="setActiveTab('bolsa_laboral')" :class="activeTab === 'bolsa_laboral' ? 'bg-gray-800 text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'" class="px-6 py-4 text-sm font-bold uppercase transition-all outline-none">
-                        3) Bolsa Laboral
-                    </button>
-                    <button @click="setActiveTab('productos')" :class="activeTab === 'productos' ? 'bg-gray-800 text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'" class="px-6 py-4 text-sm font-bold uppercase transition-all outline-none">
-                        4) Productos y herramientas
-                    </button>
-                    <button @click="setActiveTab('competencia_itca')" :class="activeTab === 'competencia_itca' ? 'bg-gray-800 text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'" class="px-6 py-4 text-sm font-bold uppercase transition-all outline-none">
-                        5) Competencia ITCA
-                    </button>
-                    <button @click="setActiveTab('charlas')" :class="activeTab === 'charlas' ? 'bg-gray-800 text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'" class="px-6 py-4 text-sm font-bold uppercase transition-all outline-none">
-                        6) Charlas
-                    </button>
-                    <button @click="setActiveTab('manuales')" :class="activeTab === 'manuales' ? 'bg-gray-800 text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'" class="px-6 py-4 text-sm font-bold uppercase transition-all outline-none">
-                        7) Manuales
-                    </button>
+                <!-- TABS NAVIGATION - Improved Design -->
+                <div class="border-b border-gray-700 bg-gray-900/50 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
+                    <div class="flex min-w-max">
+                        <button @click="setActiveTab('header')" :class="activeTab === 'header' ? 'bg-gray-800 text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'" class="px-5 py-3 text-xs font-semibold uppercase transition-all outline-none whitespace-nowrap flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <span>1. Header</span>
+                        </button>
+                        <button @click="setActiveTab('club_itca')" :class="activeTab === 'club_itca' ? 'bg-gray-800 text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'" class="px-5 py-3 text-xs font-semibold uppercase transition-all outline-none whitespace-nowrap flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <span>2. Club ITCA</span>
+                        </button>
+                        <button @click="setActiveTab('bolsa_laboral')" :class="activeTab === 'bolsa_laboral' ? 'bg-gray-800 text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'" class="px-5 py-3 text-xs font-semibold uppercase transition-all outline-none whitespace-nowrap flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            <span>3. Bolsa Laboral</span>
+                        </button>
+                        <button @click="setActiveTab('productos')" :class="activeTab === 'productos' ? 'bg-gray-800 text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'" class="px-5 py-3 text-xs font-semibold uppercase transition-all outline-none whitespace-nowrap flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                            <span>4. Productos</span>
+                        </button>
+                        <button @click="setActiveTab('competencia_itca')" :class="activeTab === 'competencia_itca' ? 'bg-gray-800 text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'" class="px-5 py-3 text-xs font-semibold uppercase transition-all outline-none whitespace-nowrap flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+                            <span>5. Competencia</span>
+                        </button>
+                        <button @click="setActiveTab('charlas')" :class="activeTab === 'charlas' ? 'bg-gray-800 text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'" class="px-5 py-3 text-xs font-semibold uppercase transition-all outline-none whitespace-nowrap flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                            <span>6. Charlas</span>
+                        </button>
+                        <button @click="setActiveTab('manuales')" :class="activeTab === 'manuales' ? 'bg-gray-800 text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'" class="px-5 py-3 text-xs font-semibold uppercase transition-all outline-none whitespace-nowrap flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                            <span>7. Manuales</span>
+                        </button>
+                        <button @click="setActiveTab('sorteos')" :class="activeTab === 'sorteos' ? 'bg-gray-800 text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'" class="px-5 py-3 text-xs font-semibold uppercase transition-all outline-none whitespace-nowrap flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"></path></svg>
+                            <span>8. Sorteos</span>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="p-6">
@@ -538,6 +551,91 @@
                         </div>
                     </div>
 
+                    <!-- TAB 8: SORTEOS Y CONCURSOS -->
+                    <div x-show="activeTab === 'sorteos'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+                         
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            
+                            <!-- Left: Texts & URL -->
+                            <div class="space-y-6">
+                                <form action="{{ route('admin.beneficios.page.update') }}" method="POST" class="bg-gray-900 p-4 rounded border border-gray-700 h-fit">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="active_tab" value="sorteos">
+                                    
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-bold text-gray-300 mb-2 uppercase italic">Texto Descriptivo (Sorteos)</label>
+                                        <textarea name="sorteos_text" rows="8" class="w-full bg-gray-800 border-gray-700 text-gray-300 rounded focus:ring-blue-500 focus:border-blue-500 text-sm font-mono custom-scrollbar" placeholder="Participá de nuestros sorteos y concursos...">{{ $content->sorteos_text }}</textarea>
+                                        <p class="text-[10px] text-gray-500 mt-1 uppercase">Usa */texto/* para poner en negrita</p>
+                                    </div>
+
+                                    <div class="mb-6">
+                                        <label class="block text-sm font-bold text-gray-300 mb-2 uppercase italic">URL Botón Sorteos</label>
+                                        <input type="text" name="sorteos_button_url" value="{{ $content->sorteos_button_url }}" class="w-full bg-gray-800 border-gray-700 text-gray-300 rounded focus:ring-blue-500 focus:border-blue-500 text-sm font-mono" placeholder="https://...">
+                                    </div>
+
+                                    <div class="flex justify-center">
+                                        <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-10 rounded-full shadow-lg transition-all transform hover:-translate-y-1 active:scale-95 flex items-center gap-2">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                                            GUARDAR TEXTOS
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Right: Carousel Images (Instalaciones Style) -->
+                            <div class="space-y-6">
+                                <div class="bg-gray-900 p-4 rounded border border-gray-700">
+                                    <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-2">
+                                        <label class="text-sm font-bold text-gray-300 uppercase">Carrusel de Sorteos</label>
+                                        <button onclick="document.getElementById('modalSorteo').classList.remove('hidden')" class="bg-green-600 hover:bg-green-500 text-white px-2 py-1 rounded text-[10px] font-bold uppercase transition-all shadow-md">
+                                            + Agregar Foto
+                                        </button>
+                                    </div>
+                                    @if(isset($content->sorteos) && $content->sorteos->count() > 0)
+                                        <div id="sortable-sorteos" class="space-y-2 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                                            @foreach($content->sorteos as $sorteo)
+                                                <div data-id="{{ $sorteo->id }}" class="sorteo-draggable flex items-center justify-between bg-gray-800 p-2 rounded border border-gray-700 group hover:border-blue-500/50 cursor-move">
+                                                    <div class="flex items-center gap-3">
+                                                        <!-- Drag Handle -->
+                                                        <svg style="cursor: move;" class="w-4 h-4 text-gray-600 drag-handle group-hover:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                                                        
+                                                        <!-- Icon & Preview Container -->
+                                                        <div class="relative group/preview flex items-center">
+                                                            <!-- Thumbnail Icon -->
+                                                            <img src="{{ asset('storage/' . $sorteo->image_path) }}" class="h-8 w-8 rounded object-cover border border-gray-600 cursor-pointer group-hover/preview:border-blue-400 transition-colors">
+                                                            
+                                                            <!-- Hover Image Preview -->
+                                                            <div class="fixed hidden group-hover/preview:block z-[9999] w-64 bg-gray-900 border border-gray-600 rounded-lg shadow-2xl overflow-hidden pointer-events-none" style="transform: translate(20px, -50%);">
+                                                                <img src="{{ asset('storage/' . $sorteo->image_path) }}" class="w-full h-auto object-cover">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="flex flex-col">
+                                                            <span class="text-xs text-gray-400">ID: {{ $sorteo->id }}</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <form action="{{ route('admin.beneficios.sorteo.destroy', $sorteo->id) }}" method="POST" onsubmit="return confirm('¿Eliminar esta imagen?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-gray-500 hover:text-red-500 transition-colors">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        <div class="py-12 flex flex-col items-center border border-dashed border-gray-700 rounded bg-gray-800/20 text-gray-600 text-xs italic">
+                                            Sin fotos cargadas
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
 
 
                 </div>
@@ -584,6 +682,33 @@
                     }
                 });
             }
+
+            // Sortable for Sorteos
+            const sorteosList = document.getElementById('sortable-sorteos');
+            if (sorteosList) {
+                new Sortable(sorteosList, {
+                    animation: 150,
+                    handle: '.drag-handle',
+                    onEnd: function (evt) {
+                        const items = Array.from(sorteosList.children);
+                        const orderedIds = items.map(item => item.getAttribute('data-id'));
+                        
+                        // Send Reorder Request
+                        fetch('{{ route('admin.beneficios.sorteo.reorder') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({ orden: orderedIds })
+                        }).then(response => {
+                            if (!response.ok) {
+                                alert('Error al reordenar items');
+                            }
+                        });
+                    }
+                });
+            }
         });
     </script>
 
@@ -600,6 +725,25 @@
                 </div>
                 <div class="flex justify-end space-x-3">
                     <button type="button" onclick="document.getElementById('modalProducto').classList.add('hidden')" class="px-4 py-2 bg-gray-700 text-gray-300 rounded text-xs font-bold uppercase hover:bg-gray-600 transition-colors">Cancelar</button>
+                    <button type="submit" class="px-6 py-2 bg-green-600 text-white rounded text-xs font-bold uppercase hover:bg-green-500 shadow-lg shadow-green-900/20 transition-all">Subir Imagen</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL ADD SORTEO -->
+    <div id="modalSorteo" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4 border border-gray-700 shadow-2xl">
+            <h3 class="text-lg font-bold text-white mb-4 uppercase border-b border-gray-700 pb-2">Agregar Sorteo</h3>
+            <form action="{{ route('admin.beneficios.sorteo.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="mb-4 bg-gray-900 p-6 rounded border border-gray-700 border-dashed text-center">
+                    <label class="block text-sm font-medium text-gray-400 mb-4 uppercase">Subir archivo</label>
+                    <input type="file" name="image" accept="image/*" required class="w-full text-gray-400 text-xs font-mono">
+                    <p class="text-[10px] text-gray-600 mt-2 italic">Formatos: JPG, PNG, WEBP</p>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="document.getElementById('modalSorteo').classList.add('hidden')" class="px-4 py-2 bg-gray-700 text-gray-300 rounded text-xs font-bold uppercase hover:bg-gray-600 transition-colors">Cancelar</button>
                     <button type="submit" class="px-6 py-2 bg-green-600 text-white rounded text-xs font-bold uppercase hover:bg-green-500 shadow-lg shadow-green-900/20 transition-all">Subir Imagen</button>
                 </div>
             </form>

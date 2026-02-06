@@ -213,6 +213,13 @@
     padding-bottom: clamp(14px, calc(14px + (100vw - 1100px) * 0.0073), 20px);
 }
 
+/* Sorteos Dropdown Text Center Override */
+.sorteos-dropdown .itca-text {
+    text-align: center;
+    padding-bottom: clamp(14px, calc(14px + (100vw - 1100px) * 0.0073), 20px);
+}
+
+
 /* Club ITCA Button Styles */
 .club-itca-btn-wrapper {
     display: flex;
@@ -845,14 +852,18 @@
     border-radius: 10px;
     overflow: hidden;
     margin-bottom: 15px;
-    background-color: #f5f5f5;
-    /* Placeholder bg */
+    position: relative;
 }
 
 .formador-img {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 10px;
+    display: block;
 }
 
 /* Controls */
@@ -1426,5 +1437,39 @@
 
     .manuales-image-item:nth-child(2) {
         display: block;
+    }
+}
+
+/* Mobile Color Sequence - Match Somos ITCA */
+@media (max-width: 599px) {
+
+    /* Ensure header section is dark blue */
+    .beneficios-header-section {
+        background-color: #010C42 !important;
+    }
+
+    /* Dropdowns section stays dark blue */
+    .beneficios-dropdowns-section {
+        background-color: #010C42 !important;
+    }
+
+    /* CTA section is medium blue */
+    .cta-decide-section {
+        background-color: #02115A !important;
+    }
+
+    /* Partners section back to dark blue */
+    .partners-section {
+        background-color: #010C42 !important;
+    }
+
+    /* Contact section is medium blue */
+    .contacto-section {
+        background-color: #02115A !important;
+    }
+
+    .contacto-tercio.contacto-contacto,
+    .contacto-tercio.contacto-sedes {
+        background-color: #02115A !important;
     }
 }

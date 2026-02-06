@@ -29,10 +29,17 @@ class BeneficiosContent extends Model
         'charla4_img', 'charla4_title', 'charla4_text', 'charla4_fecha',
         // Material Didáctico
         'manuales_img1', 'manuales_img2', 'manuales_texto', 'manuales_button_url',
+        // Sorteos y Concursos
+        'sorteos_text', 'sorteos_button_url',
     ];
 
     public function productos()
     {
         return $this->hasMany(BeneficioProducto::class)->orderBy('orden');
+    }
+
+    public function sorteos()
+    {
+        return $this->hasMany(BeneficioSorteo::class)->orderBy('orden');
     }
 }

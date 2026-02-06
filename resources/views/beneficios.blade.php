@@ -483,6 +483,94 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Dropdown: Sorteos y concursos -->
+                    <div class="info-dropdown sorteos-dropdown">
+                        <div class="info-dropdown-header">
+                            <span class="info-dropdown-title">Sorteos y concursos</span>
+                            <img src="/images/desktop/chevron.png" alt="Abrir" class="info-dropdown-chevron">
+                        </div>
+                        <div class="info-dropdown-content">
+                            <p class="itca-text sorteos-text">
+                                @if(isset($content) && $content->sorteos_text)
+                                    @php
+                                        $text = e($content->sorteos_text);
+                                        $text = preg_replace('/\*\/(.*?)\/\*/', '<strong>$1</strong>', $text);
+                                        $text = nl2br($text);
+                                    @endphp
+                                    {!! $text !!}
+                                @else
+                                    Participá de nuestros sorteos y concursos exclusivos para alumnos y egresados.
+                                @endif
+                            </p>
+
+                            <!-- Carrusel Sorteos -->
+                            <div class="formadores-section sorteos-carousel-section">
+                                <div class="fotos-carousel-section">
+                                    <div class="swiper fotos-swiper sorteos-swiper">
+                                        <div class="swiper-wrapper">
+                                            @if(isset($content) && $content->sorteos && $content->sorteos->count() > 0)
+                                                @foreach($content->sorteos as $sorteo)
+                                                <div class="swiper-slide fotos-carousel-slide formador-slide">
+                                                    <div class="formador-img-wrapper">
+                                                        <img src="{{ asset('storage/' . $sorteo->image_path) }}" 
+                                                             alt="Sorteo ITCA" 
+                                                             class="fotos-slide-img formador-img" 
+                                                             loading="lazy" 
+                                                             style="object-fit: cover;" />
+                                                    </div>
+                                                </div>
+                                                @endforeach
+                                            @else
+                                                <!-- Fallback Static Slides -->
+                                                @for ($i = 1; $i <= 6; $i++)
+                                                <div class="swiper-slide fotos-carousel-slide formador-slide">
+                                                    <div class="formador-img-wrapper">
+                                                        <img src="/images/desktop/gear.png" 
+                                                             alt="Sorteo {{ $i }}" 
+                                                             class="fotos-slide-img formador-img" 
+                                                             loading="lazy" 
+                                                             style="object-fit: cover;" />
+                                                    </div>
+                                                </div>
+                                                @endfor
+                                            @endif
+                                        </div>
+                                        <!-- Paginación para Mobile -->
+                                        <div class="fotos-carousel-controls mobile-only-controls" style="margin-top: 20px;">
+                                            <div class="fotos-progress-bar mobile-progress-bar" style="width: 100%; max-width: 200px; height: 4px; background-color: rgba(255,255,255,0.2); border-radius: 2px; position: relative; overflow: hidden;">
+                                                <div class="fotos-progress-indicator mobile-progress-indicator" style="position: absolute; top: 0; left: 0; height: 100%; background-color: #65E09C; width: 0%; transition: width 0.3s ease;"></div>
+                                            </div>
+                                            <div class="mobile-arrows-wrapper" style="display: flex; gap: 20px;">
+                                                <button class="fotos-carousel-btn fotos-carousel-btn-prev mobile-prev-btn" style="background: none; border: none; cursor: pointer; padding: 0; opacity: 0.5; transition: opacity 0.3s;">
+                                                    <img src="/images/desktop/arrow-b.svg" alt="Anterior" class="fotos-arrow-left mobile-control-img" style="transform: rotate(180deg);" />
+                                                </button>
+                                                <button class="fotos-carousel-btn fotos-carousel-btn-next mobile-next-btn" style="background: none; border: none; cursor: pointer; padding: 0; opacity: 1; transition: opacity 0.3s;">
+                                                    <img src="/images/desktop/arrow-b.svg" alt="Siguiente" class="mobile-control-img" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Controles Desktop -->
+                                    <div class="fotos-controls-wrapper formadores-controls">
+                                        <button class="fotos-carousel-btn fotos-carousel-btn-prev">
+                                            <img src="/images/desktop/arrow-b.svg" alt="Anterior" class="fotos-arrow-left" />
+                                        </button>
+                                        <button class="fotos-carousel-btn fotos-carousel-btn-next">
+                                            <img src="/images/desktop/arrow-b.svg" alt="Siguiente" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="club-itca-btn-wrapper sorteos-btn-wrapper" style="justify-content: center; margin-top: 30px;">
+                                <a href="{{ (isset($content) && $content->sorteos_button_url) ? (Str::startsWith($content->sorteos_button_url, ['http://', 'https://']) ? $content->sorteos_button_url : 'https://' . $content->sorteos_button_url) : '#' }}" class="club-itca-btn sorteos-cta-btn" target="{{ (isset($content) && $content->sorteos_button_url) ? '_blank' : '_self' }}">
+                                    <strong>Ingresar</strong>&nbsp;a promociones
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
