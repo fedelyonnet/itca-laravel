@@ -4847,8 +4847,6 @@ section h2 {
     padding-bottom: 0;
     align-items: flex-start;
     justify-content: space-between;
-    transform: scale(clamp(0.5, calc(0.5 + (100vw - 1100px) * 0.00061), 1));
-    transform-origin: top left;
 }
 
 .en-accion-item-2-content {
@@ -4903,12 +4901,23 @@ section h2 {
 }
 
 .en-accion-item-2-div-2,
-.en-accion-item-2-div-2-text,
+.en-accion-item-2-div-2-text {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: clamp(4px, calc(4px + (100vw - 1100px) * 0.0098), 12px) 0;
+}
+
 .en-accion-item-2-div-3 {
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
     padding: clamp(4px, calc(4px + (100vw - 1100px) * 0.0098), 12px) 0;
+    flex: 1;
+    width: 100%;
+    margin-right: clamp(10px, 2vw, 30px);
+    /* Add margin before the button at the bottom */
+    overflow: hidden;
 }
 
 .en-accion-item-2-div-4 {
@@ -5008,8 +5017,10 @@ section h2 {
 
 
 .en-accion-item-2-div-3-image {
-    width: clamp(470px, calc(480px + (100vw - 1366px) * 0.31), 652px);
-    height: clamp(155px, calc(160px + (100vw - 1366px) * 0.1), 215px);
+    width: 100%;
+    height: 100%;
+    max-height: clamp(300px, 25vw, 450px);
+    /* Balance between filling and pushing button too far */
     object-fit: cover;
     object-position: center;
     border-radius: 14px;
@@ -5479,7 +5490,8 @@ section h2 {
 
     .en-accion-tablet-news-img {
         width: 100%;
-        height: clamp(120px, 15vw, 180px);
+        height: 250px;
+        /* Fixed height for consistency in tablet row */
         object-fit: cover;
         object-position: center;
         border-radius: clamp(8px, 1vw, 12px);
@@ -7613,7 +7625,8 @@ section h2 {
 
     .en-accion-mobile-news-img {
         width: 100%;
-        height: clamp(100px, 25vw, 150px);
+        height: 200px;
+        /* Standardize mobile featured image height */
         object-fit: cover;
         object-position: center;
         border-radius: 8px;

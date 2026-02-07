@@ -797,9 +797,9 @@
                             <div class="en-accion-tablet-news-content">
                                 @if($noticiaDestacada)
                                     <h3 class="en-accion-tablet-news-title">{!! $noticiaDestacada->titulo !!}</h3>
-                                    <p class="en-accion-tablet-news-text">{{ Str::limit(strip_tags($noticiaDestacada->contenido), 280) }}...<a href="{{ $noticiaDestacada->slug }}" class="en-accion-tablet-news-link">Ver más</a></p>
+                                    <p class="en-accion-tablet-news-text">{{ $noticiaDestacada->extracto ?? Str::limit(strip_tags($noticiaDestacada->contenido), 280) }}<a href="{{ $noticiaDestacada->slug }}" class="en-accion-tablet-news-link">Ver más</a></p>
                                     <div class="en-accion-tablet-news-image">
-                                        <img src="{{ asset('storage/' . $noticiaDestacada->imagen) }}" alt="{{ $noticiaDestacada->titulo }}" class="en-accion-tablet-news-img">
+                                        <img src="{{ asset('storage/' . ($noticiaDestacada->imagen_hero ?? $noticiaDestacada->imagen_thumb)) }}" alt="{{ $noticiaDestacada->titulo }}" class="en-accion-tablet-news-img">
                                     </div>
                                     <a href="{{ $noticiaDestacada->slug }}" class="en-accion-tablet-news-btn">Ver más noticias</a>
                                 @endif
@@ -883,9 +883,9 @@
                                 <h3 class="en-accion-mobile-news-title">
                                     {!! $noticiaDestacada->titulo !!}
                                 </h3>
-                                <p class="en-accion-mobile-news-text">{{ Str::words(strip_tags($noticiaDestacada->contenido), 25) }}<a href="{{ $noticiaDestacada->slug }}" class="en-accion-mobile-news-link">Ver más</a></p>
+                                <p class="en-accion-mobile-news-text">{{ $noticiaDestacada->extracto ?? Str::words(strip_tags($noticiaDestacada->contenido), 25) }}<a href="{{ $noticiaDestacada->slug }}" class="en-accion-mobile-news-link">Ver más</a></p>
                                 <div class="en-accion-mobile-news-image">
-                                    <img src="{{ asset('storage/' . $noticiaDestacada->imagen) }}" alt="{{ $noticiaDestacada->titulo }}" class="en-accion-mobile-news-img">
+                                    <img src="{{ asset('storage/' . ($noticiaDestacada->imagen_hero ?? $noticiaDestacada->imagen_thumb)) }}" alt="{{ $noticiaDestacada->titulo }}" class="en-accion-mobile-news-img">
                                 </div>
                                 <div class="en-accion-mobile-news-bottom">
                                     <a href="{{ $noticiaDestacada->slug }}" class="en-accion-mobile-news-btn">Ver más noticias</a>
@@ -956,11 +956,11 @@
                                         </div>
                                         <div class="en-accion-item-2-div-2-text">
                                             <p class="en-accion-item-2-text-content">
-                                                {{ Str::limit(strip_tags($noticiaDestacada->contenido), 280) }}<a href="{{ $noticiaDestacada->slug }}" class="en-accion-item-2-div-2-link">Ver más</a>
+                                                {{ $noticiaDestacada->extracto ?? Str::limit(strip_tags($noticiaDestacada->contenido), 280) }}<a href="{{ $noticiaDestacada->slug }}" class="en-accion-item-2-div-2-link">Ver más</a>
                                             </p>
                                         </div>
-                                        <div class="en-accion-item-2-div-3">
-                                            <img src="{{ asset('storage/' . $noticiaDestacada->imagen) }}" alt="{{ $noticiaDestacada->titulo }}" class="en-accion-item-2-div-3-image">
+                                    <div class="en-accion-item-2-div-3">
+                                            <img src="{{ asset('storage/' . ($noticiaDestacada->imagen_hero ?? $noticiaDestacada->imagen_thumb)) }}" alt="{{ $noticiaDestacada->titulo }}" class="en-accion-item-2-div-3-image">
                                         </div>
                                         <div class="en-accion-item-2-div-4">
                                             <a href="{{ $noticiaDestacada->slug }}" class="en-accion-item-2-div-4-btn">Ver más noticias</a>

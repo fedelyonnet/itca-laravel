@@ -5,7 +5,7 @@
                 <!-- Header -->
                 <div class="border-b border-gray-700 bg-gray-900/50 px-6 py-4">
                     <div class="flex items-center justify-between">
-                        <h2 class="text-2xl font-bold text-white">Nueva Noticia</h2>
+                        <h2 class="text-2xl font-bold text-white">Editar Noticia</h2>
                         <a href="{{ route('admin.noticias.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm font-medium rounded transition-colors">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                             Volver a la grilla
@@ -13,8 +13,9 @@
                     </div>
                 </div>
                 
-                <form id="noticiaForm" action="{{ route('admin.noticias.store') }}" method="POST" enctype="multipart/form-data" novalidate>
+                <form id="noticiaForm" action="{{ route('admin.noticias.update', $noticia->id) }}" method="POST" enctype="multipart/form-data" novalidate>
                     @csrf
+                    @method('PUT')
                     
                     <div class="flex flex-row gap-6 p-6" style="display: flex; flex-direction: row; gap: 1.5rem;">
                         
@@ -35,7 +36,7 @@
                                             <label class="block text-sm font-bold text-gray-300">Título <span class="text-red-400">*</span></label>
                                             <span id="titulo-count" class="text-xs text-gray-500">0/255</span>
                                         </div>
-                                        <input type="text" name="titulo" id="titulo" value="{{ old('titulo') }}" required maxlength="255"
+                                        <input type="text" name="titulo" id="titulo" value="{{ old('titulo', $noticia->titulo) }}" required maxlength="255"
                                                class="w-full bg-gray-800 border-gray-600 text-gray-100 rounded focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-base px-4 py-2.5"
                                                placeholder="Ej: Nueva alianza entre ITCA y Royal Enfield">
                                         @error('titulo')
@@ -54,7 +55,7 @@
                                         </div>
                                         <textarea name="extracto" id="extracto" rows="2" maxlength="500"
                                                   class="w-full bg-gray-800 border-gray-600 text-gray-100 rounded focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm px-4 py-2.5 resize-none"
-                                                  placeholder="Resumen breve que aparecerá en el listado de noticias...">{{ old('extracto') }}</textarea>
+                                                  placeholder="Resumen breve que aparecerá en el listado de noticias...">{{ old('extracto', $noticia->extracto) }}</textarea>
                                         <p class="text-xs text-gray-500 mt-1 font-bold">Este texto se mostrará en las tarjetas de vista previa y en la vista previa del home si es destacada</p>
                                     </div>
 
@@ -81,7 +82,7 @@
 
                                         <textarea name="contenido" id="contenido" rows="16" required
                                                   class="w-full bg-gray-800 border-gray-600 text-gray-100 rounded focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm px-4 py-3 font-mono leading-relaxed"
-                                                  placeholder="Escribe el contenido completo de la noticia aquí...">{{ old('contenido') }}</textarea>
+                                                  placeholder="Escribe el contenido completo de la noticia aquí...">{{ old('contenido', $noticia->contenido) }}</textarea>
                                         @error('contenido')
                                             <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
                                         @enderror
@@ -106,12 +107,12 @@
                                             <div class="group">
                                                 <input type="file" name="imagen_hero" id="imagen_hero" accept="image/*" class="hidden" data-no-auto-submit="true" onchange="previewImage(this, 'heroPreview', 'heroPlaceholder')">
                                                 <label for="imagen_hero" class="relative flex flex-col items-center justify-center w-full py-10 bg-gray-800 rounded-lg overflow-hidden border border-gray-600 hover:border-green-500 hover:bg-gray-750 cursor-pointer transition-all">
-                                                    <img id="heroPreview" class="w-full h-48 object-cover rounded-md hidden">
-                                                    <div id="heroPlaceholder" class="flex flex-col items-center justify-center text-gray-500 group-hover:text-green-400 transition-colors">
-                                                        <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                                                        <span class="text-sm font-bold">Subir Imagen</span>
-                                                        <span class="text-xs mt-1 text-gray-400">1920x1080</span>
-                                                    </div>
+                                                <img id="heroPreview" src="{{ $noticia->imagen_hero ? asset('storage/' . $noticia->imagen_hero) : '' }}" class="w-full h-48 object-cover rounded-md {{ $noticia->imagen_hero ? '' : 'hidden' }}">
+                                                <div id="heroPlaceholder" class="flex flex-col items-center justify-center text-gray-500 group-hover:text-green-400 transition-colors {{ $noticia->imagen_hero ? 'hidden' : '' }}">
+                                                    <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                                    <span class="text-sm font-bold">Subir Imagen</span>
+                                                    <span class="text-xs mt-1 text-gray-400">1920x1080</span>
+                                                </div>
                                                 </label>
                                             </div>
                                         </div>
@@ -124,12 +125,12 @@
                                             <div class="group">
                                                 <input type="file" name="imagen_thumb" id="imagen_thumb" accept="image/*" class="hidden" data-no-auto-submit="true" onchange="previewImage(this, 'thumbPreview', 'thumbPlaceholder')">
                                                 <label for="imagen_thumb" class="relative flex flex-col items-center justify-center w-full py-10 bg-gray-800 rounded-lg overflow-hidden border border-gray-600 hover:border-green-500 hover:bg-gray-750 cursor-pointer transition-all">
-                                                    <img id="thumbPreview" class="w-full h-48 object-cover rounded-md hidden">
-                                                    <div id="thumbPlaceholder" class="flex flex-col items-center justify-center text-gray-500 group-hover:text-green-400 transition-colors">
-                                                        <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                                                        <span class="text-sm font-bold">Subir Imagen</span>
-                                                        <span class="text-xs mt-1 text-gray-400">800x800</span>
-                                                    </div>
+                                                <img id="thumbPreview" src="{{ $noticia->imagen_thumb ? asset('storage/' . $noticia->imagen_thumb) : '' }}" class="w-full h-48 object-cover rounded-md {{ $noticia->imagen_thumb ? '' : 'hidden' }}">
+                                                <div id="thumbPlaceholder" class="flex flex-col items-center justify-center text-gray-500 group-hover:text-green-400 transition-colors {{ $noticia->imagen_thumb ? 'hidden' : '' }}">
+                                                    <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                                    <span class="text-sm font-bold">Subir Imagen</span>
+                                                    <span class="text-xs mt-1 text-gray-400">800x800</span>
+                                                </div>
                                                 </label>
                                             </div>
                                         </div>
@@ -142,12 +143,12 @@
                                             <div class="group">
                                                 <input type="file" name="banner_publicitario" id="banner_publicitario" accept="image/*" class="hidden" data-no-auto-submit="true" onchange="previewImage(this, 'bannerPreview', 'bannerPlaceholder')">
                                                 <label for="banner_publicitario" class="relative flex flex-col items-center justify-center w-full py-10 bg-gray-800 rounded-lg overflow-hidden border border-gray-600 hover:border-green-500 hover:bg-gray-750 cursor-pointer transition-all">
-                                                    <img id="bannerPreview" class="w-full h-48 object-cover rounded-md hidden">
-                                                    <div id="bannerPlaceholder" class="flex flex-col items-center justify-center text-gray-500 group-hover:text-green-400 transition-colors">
-                                                        <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                                                        <span class="text-sm font-bold">Subir Banner</span>
-                                                        <span class="text-xs mt-1 text-gray-400">Opcional</span>
-                                                    </div>
+                                                <img id="bannerPreview" src="{{ $noticia->banner_publicitario ? asset('storage/' . $noticia->banner_publicitario) : '' }}" class="w-full h-48 object-cover rounded-md {{ $noticia->banner_publicitario ? '' : 'hidden' }}">
+                                                <div id="bannerPlaceholder" class="flex flex-col items-center justify-center text-gray-500 group-hover:text-green-400 transition-colors {{ $noticia->banner_publicitario ? 'hidden' : '' }}">
+                                                    <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                                    <span class="text-sm font-bold">Subir Banner</span>
+                                                    <span class="text-xs mt-1 text-gray-400">Opcional</span>
+                                                </div>
                                                 </label>
                                             </div>
                                         </div>
@@ -171,7 +172,7 @@
                                     <!-- Fecha -->
                                     <div>
                                         <label class="block text-xs font-bold text-gray-400 mb-2 uppercase">Fecha <span class="text-red-400">*</span></label>
-                                        <input type="date" name="fecha_publicacion" value="{{ old('fecha_publicacion', date('Y-m-d')) }}" required
+                                        <input type="date" name="fecha_publicacion" value="{{ old('fecha_publicacion', $noticia->fecha_publicacion ? $noticia->fecha_publicacion->format('Y-m-d') : date('Y-m-d')) }}" required
                                                class="w-full bg-gray-800 border-gray-600 rounded text-gray-100 text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 px-3 py-2">
                                     </div>
 
@@ -231,23 +232,23 @@
                                     <!-- Listado de categorías -->
                                     <div class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar p-1" id="categorias-list">
                                         @forelse($categorias as $categoria)
-                                            <label id="cat-item-{{ $categoria->id }}" class="flex items-center space-x-2 cursor-pointer group bg-gray-800/30 p-2 rounded hover:bg-gray-800 transition-colors">
+                                            <label class="flex items-center space-x-2 cursor-pointer group">
                                                 <input type="checkbox" name="categorias[]" value="{{ $categoria->id }}" 
-                                                    {{ in_array($categoria->id, old('categorias', [])) ? 'checked' : '' }}
+                                                    {{ in_array($categoria->id, old('categorias', $noticia->categorias->pluck('id')->toArray())) ? 'checked' : '' }}
                                                     class="w-4 h-4 text-green-500 bg-gray-700 border-gray-600 rounded focus:ring-green-500">
-                                                <span class="text-sm text-gray-300 group-hover:text-white transition-colors flex-1" id="cat-text-{{ $categoria->id }}">{{ $categoria->nombre }}</span>
+                                                <span class="text-sm text-gray-300 group-hover:text-white transition-colors" id="cat-text-{{ $categoria->id }}">{{ $categoria->nombre }}</span>
                                                 
-                                                <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <div class="ml-auto flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                                     <button type="button" onclick="editCategory({{ $categoria->id }}, '{{ $categoria->nombre }}')" class="p-1 text-gray-500 hover:text-blue-400" title="Editar">
-                                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                                     </button>
-                                                    <button type="button" onclick="deleteCategory({{ $categoria->id }})" class="p-1 text-gray-500 hover:text-red-400" title="Eliminar">
+                                                    <button type="button" onclick="deleteCategory({{ $categoria->id }}, this)" class="p-1 text-gray-500 hover:text-red-400" title="Eliminar">
                                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                                     </button>
                                                 </div>
                                             </label>
                                         @empty
-                                            <p class="text-xs text-gray-500 italic text-center py-2" id="no-cats-msg">No hay categorías creadas aún.</p>
+                                            <p class="text-xs text-gray-500 italic text-center py-2" id="no-cats-msg">No hay categorías créadas aún.</p>
                                         @endforelse
                                     </div>
                                 </div>
@@ -264,13 +265,13 @@
                                 <div class="p-4 space-y-3">
                                     <div>
                                         <label class="block text-xs font-bold text-gray-400 mb-2 uppercase">Nombre</label>
-                                        <input type="text" name="autor_nombre" value="{{ old('autor_nombre') }}"
+                                        <input type="text" name="autor_nombre" value="{{ old('autor_nombre', $noticia->autor_nombre) }}"
                                                class="w-full bg-gray-800 border-gray-600 rounded text-gray-100 text-sm focus:border-orange-500 focus:ring-1 focus:ring-orange-500 px-3 py-2"
                                                placeholder="Ej: María García">
                                     </div>
                                     <div>
                                         <label class="block text-xs font-bold text-gray-400 mb-2 uppercase">Cargo</label>
-                                        <input type="text" name="autor_puesto" value="{{ old('autor_puesto') }}"
+                                        <input type="text" name="autor_puesto" value="{{ old('autor_puesto', $noticia->autor_puesto) }}"
                                                class="w-full bg-gray-800 border-gray-600 rounded text-gray-100 text-sm focus:border-orange-500 focus:ring-1 focus:ring-orange-500 px-3 py-2"
                                                placeholder="Ej: Instructora">
                                     </div>
@@ -289,7 +290,7 @@
                             </a>
                             <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-12 rounded-lg shadow-lg transition-all transform hover:-translate-y-0.5 flex items-center gap-2">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
-                                PUBLICAR NOTICIA
+                                GUARDAR CAMBIOS
                             </button>
                         </div>
                     </div>
@@ -500,7 +501,7 @@
                             } else {
                                 // CREAR nuevo elemento en la lista
                                 const newLabel = document.createElement('label');
-                                newLabel.className = 'flex items-center space-x-2 cursor-pointer group bg-gray-800/50 p-2 rounded hover:bg-gray-800 transition-colors';
+                                newLabel.className = 'flex items-center space-x-2 cursor-pointer group bg-gray-800/30 p-2 rounded hover:bg-gray-800 transition-colors';
                                 newLabel.id = `cat-item-${data.categoria.id}`;
                                 newLabel.innerHTML = `
                                     <input type="checkbox" name="categorias[]" value="${data.categoria.id}" checked

@@ -18,6 +18,8 @@ class AdminNoticiaController extends Controller
         return view('admin.noticias.index', compact('noticias'));
     }
 
+
+
     public function create()
     {
         $categorias = CategoriaNoticia::orderBy('nombre')->get();
@@ -214,6 +216,11 @@ class AdminNoticiaController extends Controller
             $noticia->categorias()->sync([]);
         }
 
+        if ($request->wantsJson()) {
+            session()->flash('success', 'Noticia actualizada exitosamente');
+            return response()->json(['success' => true, 'redirect' => route('admin.noticias.index')]);
+        }
+
         return redirect()->route('admin.noticias.index')->with('success', 'Noticia actualizada exitosamente');
     }
 
@@ -249,6 +256,11 @@ class AdminNoticiaController extends Controller
 
         $slug = Str::slug($request->nombre);
         
+        // Si el slug queda vacío (ej: caracteres raros), usar timestamp
+        if (empty($slug)) {
+            $slug = 'categoria-' . time();
+        }
+
         // Verificar si el slug ya existe
         if (CategoriaNoticia::where('slug', $slug)->exists()) {
             $slug = $slug . '-' . time();
@@ -263,8 +275,52 @@ class AdminNoticiaController extends Controller
             'success' => true,
             'categoria' => [
                 'id' => $categoria->id,
-                'nombre' => $categoria->nombre
+                'nombre' => $categoria->nombre,
+                'slug' => $categoria->slug, // Ensure slug is returned
+                'noticias_count' => 0
             ]
+        ]);
+    }
+
+    public function updateCategoria(Request $request, $id)
+    {
+        $categoria = CategoriaNoticia::findOrFail($id);
+        
+        $request->validate([
+            'nombre' => 'required|string|max:255|unique:categorias_noticias,nombre,' . $id
+        ]);
+
+        $categoria->nombre = $request->nombre;
+        $slug = Str::slug($request->nombre);
+        
+        if (empty($slug)) {
+            $slug = 'categoria-' . time();
+        }
+
+        // Verificar unicidad del slug excluyendo el actual
+        if (CategoriaNoticia::where('slug', $slug)->where('id', '!=', $id)->exists()) {
+             $slug = $slug . '-' . time();
+        }
+
+        $categoria->slug = $slug;
+        $categoria->save();
+
+        return response()->json([
+            'success' => true,
+            'categoria' => $categoria
+        ]);
+    }
+
+    public function destroyCategoria($id)
+    {
+        $categoria = CategoriaNoticia::findOrFail($id);
+        
+        // Laravel borrara automáticamente las entradas en la tabla pivot noticia_categoria 
+        // debido a onDelete('cascade') en la migración.
+        $categoria->delete();
+
+        return response()->json([
+            'success' => true
         ]);
     }
 }

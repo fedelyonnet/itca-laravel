@@ -265,11 +265,15 @@ Route::middleware('auth')->group(function () {
         // INSCRIPTOS
         Route::get('/inscriptos', [App\Http\Controllers\InscripcionController::class, 'index'])->name('admin.inscriptos');
 
-        // Noticias
-        Route::resource('noticias', App\Http\Controllers\AdminNoticiaController::class)->names('admin.noticias');
-        
-        // Nueva ruta para agregar categorías
+        // Rutas para categorías de noticias (API para gestión en modal)
         Route::post('noticias/categorias', [App\Http\Controllers\AdminNoticiaController::class, 'storeCategoria'])->name('admin.noticias.categorias.store');
+        Route::put('noticias/categorias/{id}', [App\Http\Controllers\AdminNoticiaController::class, 'updateCategoria'])->name('admin.noticias.categorias.update');
+        Route::delete('noticias/categorias/{id}', [App\Http\Controllers\AdminNoticiaController::class, 'destroyCategoria'])->name('admin.noticias.categorias.destroy');
+
+        // Noticias (Recurso al final para no opacar rutas específicas)
+        Route::resource('noticias', App\Http\Controllers\AdminNoticiaController::class)
+            ->names('admin.noticias')
+            ->except(['show']); // Excluir show ya que no existe
     });
 });
 
